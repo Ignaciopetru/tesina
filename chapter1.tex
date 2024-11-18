@@ -129,7 +129,6 @@ Todos estos inconvenientes son derivados de que el \textit{hardware} comprende u
 
 \begin{figure}
 \caption{Interfaz MotorDC}
-\end{figure}
 \begin{center}
 \begin{tikzpicture}
 \umlclass[x=-3]{MotorDC}
@@ -205,7 +204,6 @@ Aún podemos mejorar el diseño haciendo uso del concepto de herencia (anteriorm
 
 \begin{figure}
 \caption{Módulo MotorDC abstractor y estructura de herencia.}
-\end{figure}
 \begin{center}
 \begin{tikzpicture}
 \umlclass[x=0]{MotorDC}
@@ -1198,12 +1196,12 @@ Algunos sistemas se encargan de mostrar, almacenar o verificar información de s
 Una implementación intuitiva es escribir un \textit{loop} y en el que verificamos la información de los sensores y luego ejecutamos una función \textit{sleep} que bloquea la ejecución determinada cantidad de tiempo. Esto tiene varias desventajas, primero el tiempo de ejecución de nuestra rutina alarga el periodo, si queremos agregar otras funcionalidades a realizar mientras esperamos el periodo tendríamos que dividir el \textit{sleep} y calcular tiempo de ejecución.
 
 Una solución que nos parece más adecuada desde el punto de vista del diseño orientado al cambio es la siguiente. Se registra un temporizador que cada \textit{x} cantidad de tiempo gatilla una interrupción, esto es provisto por muchos entornos de desarrollo para sistemas embebidos como \textit{Arduino}.
-Registraremos un \textit{handler} para esta que será un módulo orden del patrón  \textit{Command} el cual encapsula que funiones son necesarias ejecutar para llevar a cabo la funcionalidad deseada. Por ejemplo, pedir la información de los sensores, ya sea a sus respectivos \textbf{Buffers} (si tenemos sensores como en el ejemplo anterior) o a los sensores en si, si son de otro tipo y luego registrarka en cierta módulo (que oculte una estructura de daros). De esta forma liberamos el procesador en los tiempos de espera y desacoplamos esta funcionalidad.
+Registraremos un \textit{handler} para esta que será un módulo orden del patrón  \textit{Command} el cual encapsula que funciones son necesarias ejecutar para llevar a cabo la funcionalidad deseada. Por ejemplo, pedir la información de los sensores, ya sea a sus respectivos \textbf{Buffers} (si tenemos sensores como en el ejemplo anterior) o a los sensores en si, si son de otro tipo y luego registrarla en cierta módulo (que oculte una estructura de datos). De esta forma liberamos el procesador en los tiempos de espera y desacoplamos esta funcionalidad.
 
 
 
 \section{Control anti-rebote}
-Muchos dispositivos de entrada para sistemás embebidos utilizan contacto metal con metal para indicar eventos de interés, como botones, interruptores y relés. A medida que el metal entra en contacto, se produce una deformación física que resulta en un contacto intermitente de las superficies. Esto genera señales que de no ser filtradas pueden causar una lectura errónea. 
+Muchos dispositivos de entrada para sistemas embebidos utilizan contacto metal con metal para indicar eventos de interés, como botones, interruptores y relés. A medida que el metal entra en contacto, se produce una deformación física que resulta en un contacto intermitente de las superficies. Esto genera señales que de no ser filtradas pueden causar una lectura errónea. 
 
 En la bibliografía encontramos una propuesta de solución que desde mi punto de vista está más cerca de la implementación que del diseño. Esta consiste en utilizar un temporizador para dar un tiempo de gracia antes de confirmar una transición en el estado. Esto es, al percibir un cambio en la entrada se inicia el \textit{timer} y se confirma el cambio de estado solo si el valor de la entrada sigue siendo distinto que antes de percibir la modificación. 
 
