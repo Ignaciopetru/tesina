@@ -34,7 +34,7 @@ En resumen, el software de un sistema embebido actúa como el cerebro que dirige
         \textbf{Mercado} & \textbf{Dispositivo Embebido} \\ \hline
         Automotriz & Sistema de encendido \\ 
         & Control del motor \\ 
-        & Sistema de frenos (e.g., Sistema Antibloqueo de Frenos - ABS) \\ \hline
+        & Sistema de frenos (Sistema Antibloqueo de Frenos - ABS) \\ \hline
         Electrónica de consumo & Decodificadores (DVDs, VCRs, Cajas de cable, etc.) \\ 
         & Asistentes Personales Digitales (PDAs) \\ 
         & Electrodomésticos (Refrigeradores, Tostadoras, Microondas) \\ 
@@ -60,4 +60,136 @@ En resumen, el software de un sistema embebido actúa como el cerebro que dirige
     \label{tab:sistemas_embebidos}
 \end{table}
 
-\section{Ingeniería de software y diseño}
+Otros autores \cite{lee2017introduction} describen sistemas \textit{ciber-físicos} (CSP\footnote{por sus siglas en inglés (cyber-physical system)}) como la integración de la computación con procesos físicos. Usualmente llevada a cabo utilizando sistemas embebidos con ciclos de retroalimentación. En los cuales la parte computacional afecta al ámbito físico y viceversa. Para realizarlo se utiliza una serie de sensores y actuadores que permiten la comunicación entre ambos mundos.
+Además, si tomamos en cuenta los ejemplos que se presentan tanto en \cite{noergaard2005embedded} como en \cite{lee2017introduction}, podemos decir que la mayoría de los sistemas embebidos realizan tareas de \textbf{control} sobre el mundo físico y por lo tanto el software lleva a cabo tareas de control.
+
+
+\section{Ingeniería de Software}
+
+
+
+
+
+\section{Arquitectura Control de Procesos}
+
+Si nos centramos en los sistemas embebidos de control, encontramos que existen trabajos sobre arquitecturas de software orientadas al control de procesos, por ejemplo el estilo arquitectónico de control del procesos presentado en \cite{ShawGarlan1996}. El mismo está definido para ser usado en sistemas de control donde se quiere mantener ciertas propiedades de la salida del proceso cerca de valores de referencia.
+Para llevar a cabo el enfoque se fundamenta en tres componentes básicos: \textbf{Control}, \textbf{Proceso} y \textbf{Sensores}, los cuales trabajan de manera independiente.
+
+\begin{figure}[h!]
+\caption{Diagrama de la arquitectura control de procesos}
+\label{fig:arqCtrlRobot}
+\vspace{0.5cm}
+\centering
+\begin{tikzpicture}\hypertarget{fig:arqCtrlRobot}{}
+
+\tikzstyle{moduloL}=[minimum width=3cm, minimum height=1.5cm,inner sep=2mm,above right,draw,align=center, font=\scshape] 
+
+\tikzstyle{supest}=[rounded corners=1.5mm, minimum width=2cm,inner sep=2mm,draw,text width=2cm]
+
+\tikzstyle{nombre}=[inner sep=0mm, font=\bfseries]
+
+\tikzstyle{pipe}=[-latex,thick,line width=4pt]
+
+\tikzstyle{nombreLogico}=[inner sep=0mm, font=\scshape, minimum width=1.5cm]
+
+%---figura control-----
+\tikzstyle{ctrl}=[shape=circle,draw,minimum width=2.5cm,text width=2cm, inner sep=2, align=center,font=\scshape];
+
+
+%----figura de sensor---
+\tikzstyle{sensor}=[draw,circle, minimum width=1cm,after node path={(\tikzlastnode) circle (0.2cm)}]
+% se usa así: \draw node[sensor]{};
+
+%---------------------------------------
+%---control del proceso rueda----
+\node[ctrl, text width=1.8cm] (0,0) (controlR){Control};
+%
+\node[moduloL, below=2cm of controlR, minimum width=5cm](proceso){Proceso};
+%%
+\draw node[sensor, below =2cm of proceso.-160](sensorVel){};
+\draw node[sensor, below=2cm of proceso.-110](sensorCte){};
+\draw node[sensor, below=2cm of proceso.-20](sensorDir){};
+%%
+%%%puntos para hacer las flechas de las señales hacia los sensores
+\node[below=4.5cm of proceso.-160](pto1){};
+\node[below=4.5cm of proceso.-110](pto2){};
+\node[below=4.5cm of proceso.-20](pto3){};
+%%
+\draw[dashed, -latex](proceso.-160)--(pto1);
+\draw[dashed, -latex](proceso.-110)--(pto2);
+\draw[dashed, -latex](proceso.-20)--(pto3);
+%%
+\node[nombreLogico, below left=-0.1cm and 0.1cm of sensorVel, text width=1.5cm]{Sensor};
+\node[nombreLogico, above right=0.2cm and -0.1cm of sensorCte, text width=1.5cm]{Sensor};
+\node[nombreLogico, below right=0.2cm and -0.1cm of sensorDir, text width=1.5cm]{Sensor};
+%%
+%%%---pipes
+\draw[pipe] (sensorVel.west) -| (-3.3,-4) |- (controlR.south west);
+\draw[pipe] (sensorCte.south) |- (-4.5,-8.7) |- (controlR.west);
+\draw[pipe] (sensorDir.east) -| (3.5,-4) |- (controlR.east);
+%
+%%
+
+\draw[-latex](controlR.250) -- (proceso.120);
+\draw[-latex](controlR.-70) -- (proceso.60);
+%%
+\node[below left=0.7cm and -0.7cm of controlR, text width=1.3cm]{};
+\node[below right=0.7cm and -0.5cm of controlR, text width=1.3cm]{};
+%%
+%
+
+
+%---Referencias---
+\node[below left=3.5cm and 4cm of sensorVel](f11){};
+\node[below left=3.5cm and 2cm of sensorVel](f12){};
+\draw[*-latex] (f11) edge node[above](f1){evento} (f12);
+
+\node[below left=3.5cm and 2cm of sensorCte](f21){};
+\node[below left=3.5cm and 0cm of sensorCte](f22){};
+\draw[-latex] (f21) edge node[above, text width =2.1cm](f2){llamada a\\ procedimiento} (f22);
+
+
+\node[below left=3.5cm and 1cm of sensorDir](f31){};
+\node[below right=3.5cm and 1cm of sensorDir](f32){};
+\draw[dashed,-latex] (f31) edge node[above, text width =1.5cm](f3){respuesta física}
+ (f32);
+ 
+\node[below right=3.5cm and 2.5cm of sensorDir](f41){};
+\node[below right=3.5cm and 4.5cm of sensorDir](f42){};
+\draw[pipe] (f41) edge node[above, text width =1.5cm]{tubo}
+ (f42);
+ 
+\node[shape=circle,draw,minimum width=1.2cm,below=1.5cm of f1,label={above,text width=1.7cm:algoritmo\\ de control}](c){};
+
+\node[shape=rectangle,draw,minimum width=1.5cm,minimum height=0.8cm ,below=1.5cm of f2,label={above:proceso}](p){};
+
+\draw node[below=1.5cm of f3,draw,circle, minimum width=1cm,after node path={(\tikzlastnode) circle (0.2cm)}, label={above:sensor}]{};
+ 
+\node[supest, fit=(f11)(f2)(f32)(f42)(c)(p)]{};
+\end{tikzpicture}
+\end{figure}
+
+El componente \textbf{Control} es responsable de implementar el algoritmo de control, procesar datos provenientes de los sensores y realizar ajustes al proceso para mantener las variables dentro de los valores deseados. Además, se encarga de activar y desactivar el sistema, y de configurar los rangos de operación o \textit{set-points}. Por otro lado, el \textbf{Proceso} encapsula los dispositivos que generan las salidas controladas, proporcionando interfaces para modificar sus variables según las instrucciones del \textbf{Control}. Finalmente, los \textbf{Sensores} miden las variables clave del proceso y transmiten estos datos al componente Control, ocultando la complejidad de los dispositivos de medición.
+
+Esta arquitectura emplea conectores como eventos, llamadas a procedimiento y tubos (pipes) para gestionar la comunicación y las acciones entre los componentes. A nivel computacional, el sistema funciona en un ciclo continuo de retroalimentación donde los sensores miden las variables, el \textbf{Control} evalúa estas mediciones y, de ser necesario, ajusta el \textbf{Proceso} para garantizar el cumplimiento de los objetivos definidos. Este enfoque modular facilita la incorporación de nuevos sensores, actualizaciones en el algoritmo de control y cambios en el hardware, promoviendo flexibilidad y escalabilidad.
+
+\begin{table}[h!]
+\label{tab:conceptosArq}
+\caption{Conceptos clave en la arquitectura de control de procesos.}
+
+\setlength{\extrarowheight}{5pt} % Incrementa el espacio vertical entre filas
+\renewcommand{\arraystretch}{1.0} % Ajusta el espacio vertical adicional en las celdas
+\begin{tabular}{|>{\raggedright\arraybackslash}p{4.5cm}|>{\raggedright\arraybackslash}p{10.5cm}|}
+\hline
+\textbf{Término}               & \textbf{Definición}                                                                                                                                       \\ \hline
+\textbf{Variable del proceso}  & Propiedades del proceso que pueden medirse y monitorearse, como temperatura, presión, flujo o velocidad. Estas variables reflejan el estado del sistema. \\ \hline
+\textbf{Variable controlada}   & Una variable del proceso cuyo valor el sistema intenta mantener en un rango deseado, como la temperatura de un horno o el nivel de agua en un tanque.    \\ \hline
+\textbf{Variable manipulada}   & Variable del proceso que el controlador puede ajustar directamente para influir en la variable controlada, como la válvula de flujo en un sistema de bombeo. \\ \hline
+\textbf{Variable de entrada}   & Variable que mide una entrada al proceso, como la potencia suministrada a un motor o la cantidad de material en una cinta transportadora.               \\ \hline
+\textbf{Set Point}             & El valor deseado para una variable controlada. El controlador busca ajustar el sistema para alcanzar y mantener este valor.                              \\ \hline
+
+\end{tabular}
+\end{table}
+
+
+
