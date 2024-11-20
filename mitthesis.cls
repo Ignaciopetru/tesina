@@ -496,7 +496,7 @@
 	\int_compare:nNnTF { \g_author_authorcnt_int } = {0} {
 		\msg_error:nn { \ClassName } { no_author }
 	}	
-	{by\par
+	{por\par
 	\int_until_do:nNnn { \l__author_authorno_int } = { \g_author_authorcnt_int } {
 		{ \g__author_namesize_tl \seq_item:cn { g_author_name_seq } { \l__author_authorno_int } } \par
 		\tl_set:Nx \l_tmpa_tl { \seq_item:cn { g_author_prevdegree_seq } { \l__author_authorno_int} }
@@ -579,8 +579,8 @@
 
 \tl_new:N   \g_titlepage_supervisor_designation_tl
 \tl_new:N   \g_abstract_supervisor_designation_tl
-\tl_gset:Nn \g_titlepage_supervisor_designation_tl {Thesis\ Supervisor} 
-\tl_gset:Nn \g_abstract_supervisor_designation_tl  {Thesis\ supervisor}% style from MIT Libraries
+\tl_gset:Nn \g_titlepage_supervisor_designation_tl
+\tl_gset:Nn \g_abstract_supervisor_designation_tl% style from MIT Libraries
 
 % If for some reason you need to change "Thesis Supervisor" to a different string (say, "Doctoral Advisor")
 % This construction removes leading and trailing spaces and lowercases the string.
@@ -608,9 +608,9 @@
 			Title:\space              \seq_item:cn { g_supervisor_title_seq } { \l__supervisor_supervisorno_int }\par\medskip
 			\int_incr:N \l__supervisor_supervisorno_int
 		}
-			\g_abstract_supervisor_designation_tl  :\space  
-			\seq_item:cn { g_supervisor_name_seq } { \l__supervisor_supervisorno_int }\par
-			Title:\space  \seq_item:cn { g_supervisor_title_seq } { \l__supervisor_supervisorno_int }\ignorespaces
+			%\g_abstract_supervisor_designation_tl  :\space  
+			%\seq_item:cn { g_supervisor_name_seq } { \l__supervisor_supervisorno_int }\par
+			%Title:\space  \seq_item:cn { g_supervisor_title_seq } { \l__supervisor_supervisorno_int }\ignorespaces
     }
 }
 \msg_new:nnnn { \ClassName } { no_supervisor }
@@ -728,16 +728,13 @@
 	\cs_new:Nx \__degree_prevdept: {\seq_item:cn { g_degree_department_seq } { \l__degree_departmentno_int } }
 	\cs_new:Nn \__degree_currdept: {}
 %	\mbox {Submitted\ to\ the\ } \mbox {\__degree_prevdept:} 
-	{Submitted\ to\ the\ \__degree_prevdept:} 
+	{\__degree_prevdept:} 
 	\int_until_do:nNnn { \l__degree_departmentno_int } = { \g_degree_deptcnt_int } {
 		\int_incr:N      \l__degree_departmentno_int
 		\cs_set:Nx \__degree_currdept: {\seq_item:cn { g_degree_department_seq } { \l__degree_departmentno_int } }
 		\mbox {\ and}\linebreak
 		\mbox {the\ \__degree_currdept: }
 	}
-    \linebreak \mbox {in\ partial\ fulfillment\ of\ the\ requirements\ for\ the\ 
-		\int_compare:nNnTF { \g_degree_degreecnt_int } > {1} {degrees} {degree}
-	\ of}
 	\par
 	\int_until_do:nNnn { \l__degree_degreeno_int } = { \g_degree_degreecnt_int } {
     	\textls[60]{\text_uppercase:n {\seq_item:cn { g_degree_name_seq } { \l__degree_degreeno_int }}}\par and\par
@@ -814,15 +811,14 @@
     \hspace{1.35in} \= \hspace{1in} \kill
 	\int_do_while:nNnn { \g__signature_autno_int } < { \g_author_authorcnt_int } {
 		\int_gincr:N  \g__signature_autno_int
-		Authored\ by: \> \seq_item:cn { g_author_name_seq } { \g__signature_autno_int } \\  
+		Tesinista: \> \seq_item:cn { g_author_name_seq } { \g__signature_autno_int } \\  
 		\> \seq_item:cn { g_author_department_seq } { \g__signature_autno_int } \\
 		\> \g_dd_thesisdate_tl \\[1em]
 	}
 	\int_do_while:nNnn { \g__signature_supno_int } < { \g_supervisor_supervisorcnt_int } {
 		\int_gincr:N  \g__signature_supno_int
-		Certified\ by: \> \seq_item:cn { g_supervisor_name_seq } { \g__signature_supno_int } \\
-		\> \seq_item:cn { g_supervisor_title_seq } { \g__signature_supno_int },\ 
-			\g_titlepage_supervisor_designation_tl \\[1em]
+		Directora: \> \seq_item:cn { g_supervisor_name_seq } { \g__signature_supno_int } \\
+		\> \seq_item:cn { g_supervisor_title_seq } { \g__signature_supno_int }
 	}
 	\int_compare:nNnF { \g_acceptor_acceptorcnt_int } = {0} {
     	\int_do_while:nNnn { \g__signature_accno_int } < { \g_acceptor_acceptorcnt_int } {
@@ -922,7 +918,7 @@
 	}
 
 \tl_new:N \g_titlepage_institution_name_tl
-\tl_gset:Nn \g_titlepage_institution_name_tl {Massachusetts\ Institute\ of\ Technology} 
+\tl_gset:Nn \g_titlepage_institution_name_tl {Universidad\ Nacional\ de\ Rosario} 
 \cs_new:Npn \Institution #1 { \tl_gset:Nn \g_titlepage_institution_name_tl {\tl_trim_spaces:n #1} }
 
 
@@ -990,7 +986,7 @@
             \__author_block:
 			\__titlepage_blockskip:nn {12}{1.5}
             \__degree_block:
-            at~the\par
+            %at~the\par
             \textls[60]{\text_uppercase:n { \g_titlepage_institution_name_tl }}\par
             \DegreeMonth\ \DegreeYear\par
 			\__titlepage_blockskip:nn {12}{2}

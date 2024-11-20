@@ -1,26 +1,26 @@
 \babel@toc {spanish}{}\relax 
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {1.1}{\ignorespaces Diagrama de la arquitectura control de procesos}}{20}{figure.caption.9}%
+\contentsline {figure}{\numberline {1.1}{\ignorespaces Diagrama de la arquitectura control de procesos}}{18}{figure.caption.8}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {2.1}{\ignorespaces Conexionado módulo DRV8838}}{23}{figure.caption.11}%
-\contentsline {figure}{\numberline {2.2}{\ignorespaces Interfaz MotorDC}}{26}{figure.caption.13}%
-\contentsline {figure}{\numberline {2.3}{\ignorespaces Módulo MotorDC abstractor y estructura de herencia.}}{28}{figure.caption.14}%
-\contentsline {figure}{\numberline {2.4}{\ignorespaces Display 7 segmentos 4 digitos}}{29}{figure.caption.15}%
-\contentsline {figure}{\numberline {2.5}{\ignorespaces Configuración original}}{29}{figure.caption.16}%
-\contentsline {figure}{\numberline {2.6}{\ignorespaces Configuración nueva}}{30}{figure.caption.17}%
-\contentsline {figure}{\numberline {2.7}{\ignorespaces Módulos de un subsistema}}{32}{figure.caption.19}%
-\contentsline {figure}{\numberline {2.8}{\ignorespaces Control}}{33}{figure.caption.20}%
-\contentsline {figure}{\numberline {2.9}{\ignorespaces Diagrama componentes sistema brazo}}{35}{figure.caption.21}%
-\contentsline {figure}{\numberline {2.10}{\ignorespaces Actuadores paso a paso}}{36}{figure.caption.22}%
-\contentsline {figure}{\numberline {2.11}{\ignorespaces Sensores}}{37}{figure.caption.24}%
-\contentsline {figure}{\numberline {2.12}{\ignorespaces Timer}}{38}{figure.caption.25}%
-\contentsline {figure}{\numberline {2.13}{\ignorespaces Módulos necesarios para complementar el Controller}}{39}{figure.caption.26}%
-\contentsline {figure}{\numberline {2.14}{\ignorespaces Controller}}{40}{figure.caption.28}%
-\contentsline {figure}{\numberline {2.15}{\ignorespaces Iterator y ordenes}}{41}{figure.caption.29}%
-\contentsline {figure}{\numberline {2.16}{\ignorespaces MainController}}{43}{figure.caption.31}%
-\contentsline {figure}{\numberline {2.17}{\ignorespaces Componente sensor activo.}}{44}{figure.caption.33}%
-\contentsline {figure}{\numberline {2.18}{\ignorespaces Ejemplo}}{45}{figure.caption.34}%
-\contentsline {figure}{\numberline {2.19}{\ignorespaces State chart microondas}}{48}{figure.caption.35}%
-\contentsline {figure}{\numberline {2.20}{\ignorespaces Ejemplo \textit {Decorator} integridad de la información}}{53}{figure.caption.38}%
-\contentsline {figure}{\numberline {2.21}{\ignorespaces Ejemplo de handler usando \textit {State}.}}{57}{figure.caption.40}%
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Conexionado módulo DRV8838}}{21}{figure.caption.10}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Interfaz MotorDC}}{24}{figure.caption.12}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Módulo MotorDC abstracto y estructura de herencia.}}{26}{figure.caption.13}%
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Display 7 segmentos 4 digitos}}{27}{figure.caption.14}%
+\contentsline {figure}{\numberline {2.5}{\ignorespaces Configuración original}}{28}{figure.caption.15}%
+\contentsline {figure}{\numberline {2.6}{\ignorespaces Configuración nueva}}{28}{figure.caption.16}%
+\contentsline {figure}{\numberline {2.7}{\ignorespaces Módulos de un subsistema}}{30}{figure.caption.18}%
+\contentsline {figure}{\numberline {2.8}{\ignorespaces Control}}{31}{figure.caption.19}%
+\contentsline {figure}{\numberline {2.9}{\ignorespaces Diagrama componentes sistema brazo}}{33}{figure.caption.20}%
+\contentsline {figure}{\numberline {2.10}{\ignorespaces Actuadores paso a paso}}{34}{figure.caption.21}%
+\contentsline {figure}{\numberline {2.11}{\ignorespaces Sensores}}{35}{figure.caption.23}%
+\contentsline {figure}{\numberline {2.12}{\ignorespaces Timer}}{36}{figure.caption.24}%
+\contentsline {figure}{\numberline {2.13}{\ignorespaces Módulos necesarios para complementar el Controller}}{37}{figure.caption.25}%
+\contentsline {figure}{\numberline {2.14}{\ignorespaces Controller}}{38}{figure.caption.27}%
+\contentsline {figure}{\numberline {2.15}{\ignorespaces Iterator y ordenes}}{39}{figure.caption.28}%
+\contentsline {figure}{\numberline {2.16}{\ignorespaces MainController}}{41}{figure.caption.30}%
+\contentsline {figure}{\numberline {2.17}{\ignorespaces Componente sensor activo.}}{42}{figure.caption.32}%
+\contentsline {figure}{\numberline {2.18}{\ignorespaces Ejemplo}}{43}{figure.caption.33}%
+\contentsline {figure}{\numberline {2.19}{\ignorespaces State chart microondas}}{46}{figure.caption.34}%
+\contentsline {figure}{\numberline {2.20}{\ignorespaces Ejemplo \textit {Decorator} integridad de la información}}{51}{figure.caption.37}%
+\contentsline {figure}{\numberline {2.21}{\ignorespaces Ejemplo de handler usando \textit {State}.}}{55}{figure.caption.39}%
 \addvspace {10\p@ }

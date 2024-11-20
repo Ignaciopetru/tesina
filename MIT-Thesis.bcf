@@ -2372,14 +2372,49 @@
     <bcf:datasource type="file" datatype="bibtex" glob="false">bibtex-file.bib</bcf:datasource>
   </bcf:bibdata>
   <bcf:section number="0">
-    <bcf:citekey order="1" intorder="1">douglass</bcf:citekey>
-    <bcf:citekey order="2" intorder="1">elecia</bcf:citekey>
-    <bcf:citekey order="3" intorder="1">noergaard2005embedded</bcf:citekey>
-    <bcf:citekey order="4" intorder="1">noergaard2005embedded</bcf:citekey>
-    <bcf:citekey order="5" intorder="1">lee2017introduction</bcf:citekey>
+    <bcf:citekey order="1" intorder="1">paperPomponio</bcf:citekey>
+    <bcf:citekey order="2" intorder="1">douglass</bcf:citekey>
+    <bcf:citekey order="3" intorder="1">elecia</bcf:citekey>
+    <bcf:citekey order="4" intorder="1">douglass</bcf:citekey>
+    <bcf:citekey order="5" intorder="1">elecia</bcf:citekey>
     <bcf:citekey order="6" intorder="1">noergaard2005embedded</bcf:citekey>
-    <bcf:citekey order="7" intorder="1">lee2017introduction</bcf:citekey>
-    <bcf:citekey order="8" intorder="1">ShawGarlan1996</bcf:citekey>
+    <bcf:citekey order="7" intorder="1">noergaard2005embedded</bcf:citekey>
+    <bcf:citekey order="8" intorder="1">lee2017introduction</bcf:citekey>
+    <bcf:citekey order="9" intorder="1">noergaard2005embedded</bcf:citekey>
+    <bcf:citekey order="10" intorder="1">lee2017introduction</bcf:citekey>
+    <bcf:citekey order="11" intorder="1">ShawGarlan1996</bcf:citekey>
+    <bcf:citekey order="11" intorder="2">ghezzi2003</bcf:citekey>
+    <bcf:citekey order="11" intorder="3">bass2003</bcf:citekey>
+    <bcf:citekey order="11" intorder="4">DBLP:books/daglib/0030743</bcf:citekey>
+    <bcf:citekey order="12" intorder="1">code-1</bcf:citekey>
+    <bcf:citekey order="12" intorder="2">code-2</bcf:citekey>
+    <bcf:citekey order="13" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
+    <bcf:citekey order="13" intorder="2">DBLP:books/lib/BuschmannHS07</bcf:citekey>
+    <bcf:citekey order="14" intorder="1">Parnas1972</bcf:citekey>
+    <bcf:citekey order="14" intorder="2">ShawGarlan1996</bcf:citekey>
+    <bcf:citekey order="14" intorder="3">ghezzi2003</bcf:citekey>
+    <bcf:citekey order="14" intorder="4">bass2003</bcf:citekey>
+    <bcf:citekey order="14" intorder="5">DBLP:books/daglib/0030743</bcf:citekey>
+    <bcf:citekey order="15" intorder="1">Parnas02</bcf:citekey>
+    <bcf:citekey order="15" intorder="2">DBLP:books/daglib/0019719</bcf:citekey>
+    <bcf:citekey order="16" intorder="1">Parnas1972</bcf:citekey>
+    <bcf:citekey order="17" intorder="1">DBLP:books/ph/Meyer97</bcf:citekey>
+    <bcf:citekey order="18" intorder="1">DBLP:books/ph/Meyer97</bcf:citekey>
+    <bcf:citekey order="19" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
+    <bcf:citekey order="19" intorder="2">DBLP:books/lib/BuschmannHS07</bcf:citekey>
+    <bcf:citekey order="20" intorder="1">ShawGarlan1996</bcf:citekey>
+    <bcf:citekey order="21" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
+    <bcf:citekey order="22" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
+    <bcf:citekey order="23" intorder="1">Parnas02</bcf:citekey>
+    <bcf:citekey order="24" intorder="1">Parnas1972</bcf:citekey>
+    <bcf:citekey order="25" intorder="1">ShawGarlan1996</bcf:citekey>
+    <bcf:citekey order="26" intorder="1">ShawGarlan1996</bcf:citekey>
+    <bcf:citekey order="27" intorder="1">Parnas02</bcf:citekey>
+    <bcf:citekey order="28" intorder="1">ShawGarlan1996</bcf:citekey>
+    <bcf:citekey order="28" intorder="2">ghezzi2003</bcf:citekey>
+    <bcf:citekey order="28" intorder="3">bass2003</bcf:citekey>
+    <bcf:citekey order="28" intorder="4">DBLP:books/daglib/0030743</bcf:citekey>
+    <bcf:citekey order="29" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">

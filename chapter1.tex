@@ -25,15 +25,16 @@
 \section{Acceso al hardware}
 Una de las características distintivas de los sistemas embebidos es que trabajan directamente con dispositivos de hardware. Cada uno de estos tiene sus propios protocolos de comunicación y estándares de funcionamiento (por ejemplo, direcciones de memoria, codificación de bits, etc), por lo tanto el software se debe ajustar a sus requerimientos. Como se puede entender esta tarea no es simple y puede demandar mucho esfuerzo cada vez que se quiera modificar o agregar un componente de hardware. A su vez, puede que múltiples módulos de nuestro sistema embebido quieran acceder al dispositivo, por lo que cada uno debe encargarse de la comunicación creando código repetido y complicando aún más las modificaciones. 
 
-Para entender los inconvenientes que puede conllevar no diseñar pensando en el cambio veamos un ejemplo simple. Suponga que nuestro sistema embebido debe controlar un motor de corriente continua (DC) y que el software para hacerlo corre en un microcontrolador Arduino. Los requerimientos definen que es necesario poder asignar el sentido y la velocidad de rotación del motor según se necesite. Para controlar el motor se utiliza un módulo \textit{DRV8838}, el cual se coloca entre el microcontrolador y el motor. Es necesario ya que el microcontrolador y su plataforma no pueden manejar las potencias necesarias para hacer funcionar el dispositivo. Podemos ver el conexionado del mismo en la figura 1.
+Para entender los inconvenientes que puede conllevar no diseñar pensando en el cambio veamos un ejemplo simple. Suponga que nuestro sistema embebido debe controlar un motor de corriente continua (DC) y que el software para hacerlo corre en un microcontrolador Arduino. Los requerimientos definen que es necesario poder asignar el sentido y la velocidad de rotación del motor según se necesite. Para controlar el motor se utiliza un módulo \textit{DRV8838}, el cual se coloca entre el microcontrolador y el motor. Es necesario ya que el microcontrolador y su plataforma no pueden manejar las potencias necesarias para hacer funcionar el dispositivo. Podemos ver el conexionado del mismo en la figura \ref{drv8838}.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.65\linewidth]{drv8838.png}
     \caption{Conexionado módulo DRV8838}
+    \label{drv8838}
 \end{figure}
 
-Notemos que el DRV8838 tiene 3 pines de control, \textit{ENABLE}. \textit{PHASE} y \textit{SLEEP} pero solo utilizaremos los 2 primeros para simplificar el ejemplo. De todas formas, esta es la función de cada pin:
+Notemos que el DRV8838 tiene 3 pines de control, \textit{ENABLE}. \textit{PHASE} y \textit{SLEEP} pero solo utilizaremos los 2 primeros para simplificar el ejemplo. De todas formas, en esta tabla \ref{funciones_pin_drv8838} podemos ver la función de cada pin.
 
 
 \begin{table}[h]
@@ -45,11 +46,13 @@ Notemos que el DRV8838 tiene 3 pines de control, \textit{ENABLE}. \textit{PHASE}
 \multicolumn{1}{|l|}{SLEEP}  & \multicolumn{1}{l|}{liberar fuerza}        & \multicolumn{1}{l|}{digital}   &  &  \\ \cline{1-3}
                              &                                            &                                &  & 
 \end{tabular}
+\caption{Funciones de cada pin del módulo DRV8838}
+\label{funciones_pin_drv8838}
 \end{table}
 
-Por lo tanto, con los dos primeros pines podremos cumplir los requerimientos mencionados. Repasando, tendremos dos cables conectados a nuestro microcontrolador Arduino, uno que se dirige a \textit{ENABLE} y otro a \textit{PHASE}. Veamos ahora que código necesitamos escribir para poder hacer uso del motor:
+Por lo tanto, con los dos primeros pines podremos cumplir los requerimientos mencionados. \textbf{•}, tendremos dos cables conectados a nuestro microcontrolador \textbf{Arduino}, uno que se dirige a \textit{ENABLE} y otro a \textit{PHASE}. Veamos ahora que código \ref{listing1} necesitamos escribir para poder hacer uso del motor.
 
-\begin{lstlisting}[caption=Configuración inicial]
+\begin{lstlisting}[caption=Configuración inicial,label={listing1}]
 # Notar que los numeros asignados a los pines son arbritarios dentro del conjunto de pines disponibles en nuestro Aruino.
 
 # Constantes globales
@@ -77,9 +80,9 @@ analogWrite(VEL\_pin, 255); # Maximo valor aceptado, PWM siempre encendido
 analogWrite(VEL\_pin, 0);
 \end{lstlisting}
 
-No es necesario entender por completo que hace cada llamada, pero si es importante comprender que es necesario ejecutar ese código para controlar el motor. Es decir, que si cualquier cliente (se supone que ya definimos que es cliente) del motor en nuestro sistema deberá saber que para hacer que el motor vaya hacia adelante a la mayor velocidad posible es necesario ejecutar las dos funciones indicadas sobre los pines correspondientes al motor. Un pequeño ejemplo podría ser el siguiente, en el cual se consulta una bandera asociada al estado de un valor y en base a este se acciona el motor:
+No es necesario entender por completo que hace cada llamada, pero si es importante comprender que es necesario ejecutar ese código para controlar el motor. Es decir, que si cualquier cliente (se supone que ya definimos que es cliente) del motor en nuestro sistema deberá saber que para hacer que el motor vaya hacia adelante a la mayor velocidad posible es necesario ejecutar las dos funciones indicadas sobre los pines correspondientes al motor. Un pequeño ejemplo podría ser el siguiente \ref{listingMotor}, en el cual se consulta una bandera asociada al estado de un valor y en base a este se acciona el motor.
 
-\begin{lstlisting}
+\begin{lstlisting}[caption=Ejemplo uso del motor,label={listingMotor}]
     .
     .
     .
@@ -99,8 +102,8 @@ if (valor > 100) {
     \item Hace que el código sea poco evidente, es decir, no es fácil saber de que se trata una cierta porción de código con solo leerlo. Y por lo tanto provoca que sea difícil de modificar, requiere un trabajo extra de entendimiento antes de poder aplicar cualquier cambio.
     \item Imagine el caso en el que por cierto motivo se debe invertir el sentido de giro del motor, de manera que lo que era ir hacia adelante ahora es hacia atrás. Para llevar a cabo el cambio, debemos modificar todas las llamadas a \verb|digitalWrite(DIR_pin, | cambiando \verb|HIGH| por \verb|DOWN| y viceversa. Es fácil cometer un error y dejar al sistema en un estado inconsistente.
     \item Ahora, qué pasa si tenemos que agregar un segundo motor del mismo tipo con el mismo controlador? Ya sea por duplicación de la potencia o un motor que cumpla otra función en el sistema. En el código tenemos que declarar nuevamente 2 constantes (suponga \verb|DIR_pin2| y \verb|VEL_pin2|, una para cada nuevo pin de control, también debemos setear esos pines como \verb|OUTPUT| y ahora en diferentes partes del código tendremos llamadas a \verb|digitalWrite| y \verb|analogWrite| sobre diferentes pines lo cual es cada vez más confuso.
-    \item Por cierto motivo se descompuso el controlador del motor, y no se consigue un reemplazo idéntico, sino que se adquiere un nuevo controlador de otra marca, por ejemplo, un \textit{Pololu Simple Motor Controller G2}. En este caso, este controlador no utilizar la misma interfaz de control que el DVR8838, sino para controlarlo hay que acceder a el mediante comunicación serial (utiliza un solo pin especifico). Incluso utilizando las herramientas provistas por el entorno de Arduino, el código no es similar:
-    \begin{lstlisting}[caption=Configuración]
+    \item Por cierto motivo se descompuso el controlador del motor, y no se consigue un reemplazo idéntico, sino que se adquiere un nuevo controlador de otra marca, por ejemplo, un \textit{Pololu Simple Motor Controller G2}. En este caso, este controlador no utilizar la misma interfaz de control que el DVR8838, sino para controlarlo hay que acceder a el mediante comunicación serial (utiliza un solo pin especifico). Incluso utilizando las herramientas provistas por el entorno de Arduino, el código no es similar \ref{listingDistinto}.
+    \begin{lstlisting}[caption=Configuración, label={listingDistinto}]
         void set_up() {
             .
             .
@@ -125,10 +128,11 @@ if (valor > 100) {
     Por lo tanto debemos modificar todos los usos de la antigua implementación por la nueva, lo cual además requerir un esfuerzo considerable, da pie a errores y obliga a re-probar código que ya se sabia que funcionaba correctamente.
 \end{itemize}
 
-Todos estos inconvenientes son derivados de que el \textit{hardware} comprende un ítem de cambio frecuente; por lo que si seguimos la metodología de Parnas, debemos asignarle un módulo. Este es una representación virtual de hardware que debe proveer una interfaz lo suficientemente insensible a la implementación. Es decir, debemos pensar en lo que, en este caso, el motor siempre va a hacer independientemente de los posibles cambios que sufra el hardware subyacente. Un motor DC siempre recibirá ordenes para definir su sentido y velocidad de rotación. Veamos como podemos definir este módulo y que ventajas nos trae hacerlo.
+Todos estos inconvenientes son derivados de que el \textit{hardware} comprende un ítem de cambio frecuente; por lo que si seguimos la metodología de Parnas \cite{Parnas02}, debemos asignarle un módulo \ref{interfazMotor}. Este es una representación virtual de hardware que debe proveer una interfaz lo suficientemente insensible a la implementación. Es decir, debemos pensar en lo que, en este caso, el motor siempre va a hacer independientemente de los posibles cambios que sufra el hardware subyacente. Un motor DC siempre recibirá ordenes para definir su sentido y velocidad de rotación. Veamos como podemos definir este módulo y que ventajas nos trae hacerlo.
 
 \begin{figure}
 \caption{Interfaz MotorDC}
+\label{interfazMotor}
 \begin{center}
 \begin{tikzpicture}
 \umlclass[x=-3]{MotorDC}
@@ -144,18 +148,15 @@ MotorDC(i: int, i: int)
 \end{center}
 \end{figure}
 
-Donde los parámetros del constructor \verb|MotorDC| son los pines de control, el parámetro de \verb|set_dir| es de tipo \verb|Dir| el cual es un enum que tiene dos entradas, horario y anti-horario y por ultimo el input de \verb|set_vel| es un int entre 0 y 255 que representa la velocidad porcentual. Veamos una posible implementación de esta interfaz utilizando el controlador DVR8838:
+Donde los parámetros del constructor \verb|MotorDC| son los pines de control, el parámetro de \verb|set_dir| es de tipo \verb|Dir| el cual es un enum que tiene dos entradas, horario y anti-horario y por ultimo el input de \verb|set_vel| es un int entre 0 y 255 que representa la velocidad porcentual. Veamos en el ejemplo \ref{constructorMotor} una posible implementación de esta interfaz utilizando el controlador DVR8838.
 
-\begin{lstlisting}[caption=Constructor]
+\begin{lstlisting}[caption=Posible implementación de la interfaz del módulo MotorDC,label={constructorMotor}]
 void MotorDC(int dir_pin, int vel_pin) {
     this->dir_pin = dir_pin;
     this->vel_pin = vel_pin;
     pinMode(this->dir_pin, OUTPUT);
     pinMode(this->vel_pin, OUTPUT);
 }
-\end{lstlisting}
-
-\begin{lstlisting}
 
 void set_dir(Dir dir) {
     if (dir == Dir.HORARIO) {
@@ -164,6 +165,7 @@ void set_dir(Dir dir) {
         digitalWrite(DIR_pin, DOWN);
     }
 }
+
 void set_vel(int vel) {
     if vel > 0 && vel <= 255 {
         analogWrite(VEL_pin, vel);
@@ -171,25 +173,26 @@ void set_vel(int vel) {
 }
 \end{lstlisting}
 
-Ya son evidentes las primeras ventajas, es mucho más claro el siguiente código:
+Ya son evidentes las primeras ventajas, es mucho más claro en el código \ref{ejeploUsoMotor}
 
-\begin{lstlisting}
+\begin{lstlisting}[caption=Ejmplo de uso de la interfaz del módulo MotorDC, label={ejeploUsoMotor}]
+	motor = MotorDC(1, 2)
     motor->set_dir(Dir.HORARIO)
     motor->set_vel(255)
 \end{lstlisting}
 
-Además si debemos modificar el sentido de giro es tan fácil como cambiar la función \verb|set_dir| y listo, los clientes no notaran el cambio. A su vez, si queremos controlar otro motor podemos hacer lo siguiente:
+Además si debemos modificar el sentido de giro es tan fácil como cambiar la función \verb|set_dir|, los clientes no notarán el cambio. A su vez, si queremos controlar otro motor podemos hacerlo como en \ref{ejemploOtroMotor}. 
 
-\begin{lstlisting}
+\begin{lstlisting}[caption=Ejemplo control nuevo motor,label={ejemploOtroMotor}]
     MotorDC motor_delantero = MotorDC(18, 19)
 
     motor_delantero->set_dir(Dir.ANTIHORARIO)
     motor_delantero->set_vel(10)
 \end{lstlisting}
 
-Y para un cambio de componente, como el explicado anteriormente, los clientes del módulo lo ignoraran, ya que sera prácticamente la misma (a menos un cambio en el constructor, donde ya no se necesitaran los pines). Por ejemplo, ahora \verb|set\_dir| será:
+Y para un cambio de componente, como el explicado anteriormente, los clientes del módulo lo ignoraran, ya que sera prácticamente la misma (a menos un cambio en el constructor, donde ya no se necesitaran los pines). Por ejemplo, ahora \verb|set_dir| será definida como en el listing \ref{nuevaSetDir}.
 
-\begin{lstlisting}
+\begin{lstlisting}[caption=Nueva definicion set_dir,label={nuevaSetDir}]
 void set_vel(vel: int) {
     if vel > 0 && vel <= 255 {
         this->serial.write(0xAA);
@@ -200,10 +203,11 @@ void set_vel(vel: int) {
 }
 \end{lstlisting}
 
-Aún podemos mejorar el diseño haciendo uso del concepto de herencia (anteriormente explicado). Esto nos permitirá reutilizar módulos ya implementados y abstraer aun más a los clientes de la implementación. Para hacerlo definiremos un módulo MotorDC abstracto del cual heredarán la interfaz cada modelo o combinación de motor y controlador. En este caso tendremos:
+Aún podemos mejorar el diseño haciendo uso del concepto de herencia (anteriormente explicado). Esto nos permitirá reutilizar módulos ya implementados y abstraer aun más a los clientes de la implementación. Para hacerlo definiremos un módulo MotorDC abstracto del cual heredarán la interfaz cada modelo o combinación de motor y controlador. En este caso tendremos la estructura de la figura \ref{estructuraHerencia}.
 
 \begin{figure}
-\caption{Módulo MotorDC abstractor y estructura de herencia.}
+\caption{Módulo MotorDC abstracto y estructura de herencia.}
+\label{estructuraHerencia}
 \begin{center}
 \begin{tikzpicture}
 \umlclass[x=0]{MotorDC}
@@ -235,9 +239,9 @@ Aún podemos mejorar el diseño haciendo uso del concepto de herencia (anteriorm
 \end{center}
 \end{figure}
 
-Al cliente no le importa con cual de los dos tipos de controladores esta tratando, solo llama a las funciones provistas. También es posible agregar mas herederos para cada modelo de controlador/motor, y reutilizar las módulos implementados en caso de utilizar hardware idéntico. 
+El cliente no tiene noción con cual de los dos tipos de controladores esta tratando, solo llama a las funciones provistas. También es posible agregar mas herederos para cada modelo de controlador/motor, y reutilizar las módulos implementados en caso de utilizar hardware idéntico. 
 
-De esta manera seguimos las prácticas recomendadas en las IS y logramos un diseño orientado al cambio.
+De esta manera seguimos las prácticas recomendadas en la IS \cite{ShawGarlan1996, ghezzi2003, bass2003, DBLP:books/daglib/0030743} y logramos un diseño orientado al cambio \cite{Gamma:1995:DPE:186897}.
 
 \section{Interfaces que no se ajustan perfectamente}
 Muchas veces el proveedor del hardware incluye con este librerías para su control, otras veces las conseguimos en internet o las extraemos previos proyectos. El problema recae en que estas interfaces pueden no ajustarse a las expectativas del sistema, generando la necesidad de ajustar la implementación de múltiples módulos. El hecho de que no se ajusten al sistema no quiere decir que este ultimo este mal diseñado o que las interfaces lo estén. Simplemente puede ocurrir que se diseñaron teniendo en cuenta diferentes puntos de vista, probablemente influenciados por los requerimientos particulares.
