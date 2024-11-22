@@ -2417,6 +2417,11 @@
     <bcf:citekey order="30" intorder="3">bass2003</bcf:citekey>
     <bcf:citekey order="30" intorder="4">DBLP:books/daglib/0030743</bcf:citekey>
     <bcf:citekey order="31" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
+    <bcf:citekey order="32" intorder="1">paperPomponio</bcf:citekey>
+    <bcf:citekey order="33" intorder="1">douglass</bcf:citekey>
+    <bcf:citekey order="34" intorder="1">paperPomponio</bcf:citekey>
+    <bcf:citekey order="35" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
+    <bcf:citekey order="36" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">

@@ -182,7 +182,7 @@ Ya son evidentes las primeras ventajas, es mucho más claro en el código \ref{e
     motor->set_vel(255)
 \end{lstlisting}
 
-Además si debemos modificar el sentido de giro es tan fácil como cambiar la función \verb|set_dir|, los clientes no notarán el cambio. A su vez, si queremos controlar otro motor podemos hacerlo como en \ref{ejemploOtroMotor}. 
+Además si debemos modificar el sentido de giro es tan fácil como cambiar el método \verb|set_dir|, los clientes no notarán el cambio. A su vez, si queremos controlar otro motor podemos hacerlo como en \ref{ejemploOtroMotor}. 
 
 \begin{lstlisting}[caption=Ejemplo control nuevo motor,label={ejemploOtroMotor}]
     MotorDC motor_delantero = MotorDC(18, 19)
@@ -267,7 +267,7 @@ Veamos un ejemplo, supóngase que un cierto sistema embebido está utilizando un
 
 Este display recibe la información utilizando comunicación en serie, con un protocolo propio del fabricante. Para facilitar su uso, este provee una librería que implementa la comunicación y provee funciones simples de usar, tales como \textit{escribir(i: str): bool} y \textit{limpiar()}. Por lo tanto, se implementó el sistema utilizando las funciones provistas para comunicarse, múltiples módulos llaman esas funciones.
 
-En cierto momento el módulo display dejó de funcionar y se lo reemplazó por otro de un fabricante distinto, que funciona con otro protocolo de comunicación. De la misma manera, la empresa provee una librería para utilizar el display. Pero la interfaz no es la misma que la anterior e incluso algunos comportamientos son diferentes. Por ejemplo, en la primer librería la función de escritura devolvía \verb|False| si se quería escribir y ya estaba mostrándose algo en el display, en la nueva si el display esta mostrando algo es pisado al momento de imprimir. Pero, provee una nueva función para verificar que se está mostrando en el momento en que es invocada \verb|get_current(): str|. Entonces para adaptarnos al nuevo display tenemos que modificar todas las llamadas a las viejas funciones al rededor del sistema agregando la lógica nueva.
+En cierto momento el módulo display dejó de funcionar y se lo reemplazó por otro de un fabricante distinto, que funciona con otro protocolo de comunicación. De la misma manera, la empresa provee una librería para utilizar el display. Pero la interfaz no es la misma que la anterior e incluso algunos comportamientos son diferentes. Por ejemplo, en la primer librería el método de escritura devolvía \verb|False| si se quería escribir y ya estaba mostrándose algo en el display, en la nueva si el display esta mostrando algo es pisado al momento de imprimir. Pero, provee un nueva método para verificar que se está mostrando en el momento en que es invocada \verb|get_current(): str|. Entonces para adaptarnos al nuevo display tenemos que modificar todas las llamadas a las viejas funciones al rededor del sistema agregando la lógica nueva.
 
 \begin{figure}[!h]
 \caption{Configuración original}
@@ -389,7 +389,6 @@ Proponemos al creación de un \textit{subsistema de control} por cada variable a
 
 Veamos ahora de manera mas concreta qué módulos forman parte de cada componente:
 
-\newpage
 
 \begin{figure}[h]
 \caption{Módulos de un subsistema}
@@ -401,7 +400,7 @@ Veamos ahora de manera mas concreta qué módulos forman parte de cada component
 {setConnection(i: Pipe) \\
 signal()
 }
-\umlnote[below left=-1cm and 1cm of Sensor]{Sensor}{
+\umlnote[below left=-1cm and 1cm of Sensor,width=4cm]{Sensor}{
 signal()\{ \\
 \ \ \ \ value = getValue()\\
 \ \ \ \ pipe.write(value)\\
@@ -444,28 +443,28 @@ setCurrent(i: Measure) \\
 getCurrent(): Measure
 }
 
-\umluniaggreg{Control}{Algoritmo}
-\umluniaggreg{Control}{Data}
+\umluniaggreg[anchor1=10,anchor2=west]{Control}{Algoritmo}
+\umluniaggreg[anchor1=-10,anchor2=west]{Control}{Data}
 
 \end{tikzpicture}
 \end{center}
 \end{figure}
 
-La manera en la que un \textit{cliente} utiliza el subsistema para lograr que la propiedad que controla vaya al valor que se desea es así:
+La manera en la que un \textit{cliente} utiliza el subsistema para lograr que la propiedad que controla vaya al valor que se desea es de la forma indicada en el código \ref{usoSubsistema}.
 
-\begin{lstlisting}
+\begin{lstlisting}[caption=Ejemplo de uso del subsistema.,label={usoSubsistema}]
 control.setPoint(valorDeseado)
 sensor.signal()
 control.connectionRead()
 control.control()
 \end{lstlisting}
 
-Notar que aparecen un par de módulos que no mencionamos anteriormente, por un lado tenemos \textit{Algoritmo} el cual se encarga de el calculo necesario para determinar de que manera llamar aplicar un cambio con el/los actuadores. Por ejemplo, determina si se llego o no al setPoint. Por otro lado, tenemos \textit{Data} que desacopla el almacenamiento de información relacionada al subsistema. En el caso mas básico solo tenemos el setPoint, pero puede agregarse todo lo necesario, incluso llevar registro de los valores actuales y pasados.
+Notar que aparecen un par de módulos que no mencionamos anteriormente, por un lado tenemos \textbf{Algoritmo} el cual se encarga de el calculo necesario para determinar de que manera llamar aplicar un cambio con el/los actuadores. Por ejemplo, determina si se llego o no al \textit{set-point}. Por otro lado, tenemos \textbf{Data} que desacopla el almacenamiento de información relacionada al subsistema. En el caso mas básico solo tenemos el \textit{set-point}, pero puede agregarse todo lo necesario, incluso llevar registro de los valores actuales y pasados.
 
-Ahora, para brindar un comportamiento más complejo, es posible que el control necesite realizar múltiples ciclos para ajustar la variable al valor deseador, como pasa cuando trabajamos con motores paso a paso (luego veremos un ejemplo). ¿Cómo podemos hacer esto usando nuestra estructura? Necesitamos dos modificaciones/adiciones, por un lado, una interrupción de control que llame a cierta función del módulo \textit{Control} cada determinado tiempo (tiempo del ciclo), generalmente resuelto con una interrupción \textit{temporizada} y por el otro, necesitamos crear la noción de estado a nuestro módulo de control. Tendremos dos estados básico, en espera, cuando no se esta realizando un ciclo de control y trabajando, cuando se haya establecido un setPoint y se este trabajando para llegar. Para hacerlo utilizamos una nueva función y el patrón \textit{state} \footnote{La aplicación de este patrón está explicada en la sección \ref{cap:state} Máquinas de estado}.
+Ahora, para brindar un comportamiento más complejo, es posible que el control necesite realizar múltiples ciclos para ajustar la variable al valor deseador, como pasa cuando trabajamos con motores paso a paso (luego veremos un ejemplo). ¿Cómo podemos hacer esto usando nuestra estructura? Necesitamos dos modificaciones/adiciones, por un lado, una interrupción de control que llame a cierto método del módulo \textbf{Control} cada determinado tiempo (tiempo del ciclo), generalmente resuelto con una interrupción \textit{temporizada} y por el otro, necesitamos crear la noción de estado a nuestro módulo de control. Tendremos dos estados básico, en espera, cuando no se esta realizando un ciclo de control y trabajando, cuando se haya establecido un \textit{set-point} y se este trabajando para llegar. Para hacerlo utilizamos un nuevo método y el patrón \textit{state} \footnote{La aplicación de este patrón está explicada en la sección \ref{cap:state} Máquinas de estado}.
 
 \begin{figure}[h]
-\caption{Control}
+\caption{Estructura módulo \textbf{Control} extendida con estado.}
 \begin{center}
 \begin{tikzpicture}
 \umlclass[x=-4]{Control}
@@ -477,7 +476,7 @@ leer() \\
 setAlgoritmo(i: Algoritmo) \\
 changeState(i: State)
 }
-\umlnote[x=-5, y=5]{Control}{
+\umlnote[x=-5, y=5, width=4cm]{Control}{
 Delega al estado interno tanto control() como cicle()
 }
 
@@ -511,29 +510,35 @@ cicle() \\
 \end{center}
 \end{figure}
 
-El cliente ejecuta control() y la interrupción que marca el ciclo de trabajo ejecuta cicle(). De esta manera, cuando el estado es \textit{waiting}, cicle no hace nada y cuando esta en \textit{working} control no hace nada y la otra función se encarga de realizar el ciclo de control.
-Por supuesto, estas dos funciones son las encargadas se llagar a changeState cuando sea necesario. Control cambia a \textit{working} y cuando se alcanza el setPoint cicle devuelve el estado a \textit{waiting}.
+El cliente ejecuta \verb|control()| y la interrupción que marca el ciclo de trabajo ejecuta \verb|cicle()|. De esta manera, cuando el estado es \textit{waiting}, \verb|cicle()| no hace nada y cuando está en \textit{working} \verb|control()| no hace nada y la otra función se encarga de realizar el ciclo de control.
+Por supuesto, estas dos funciones son las encargadas de llamar a \verb|changeState()| cuando sea necesario. \verb|control()| cambia a \textit{working} y cuando se alcanza el \textit{set-point}, \verb|cicle()| cambia el estado a \textit{waiting}.
 
-En el diseño del robot desmalezador existe un timer que desencadena una interrupción cada 1.5\textit{ms} la cual ejecuta el ciclo de control del subsistema de dirección del robot. Este consta de un motor paso a paso, por lo que cada ciclo verifica la diferencia de posición actual con la deseada y si aun no se llego al mínimo deseado se envía un pulso al motor para que avance.
+En el diseño del robot desmalezador\cite{paperPomponio} existe un \textit{timer} que desencadena una interrupción cada 1.5\textit{ms} la cual ejecuta el ciclo de control del subsistema de dirección del robot. Este consta de un motor paso a paso, por lo que cada ciclo verifica la diferencia de posición actual con la deseada y si aun no se llego al mínimo de diferencia deseado se envía un pulso al motor para que avance.
 
 Antes de ver un ejemplo repasemos que conseguimos al usar los subsistemas de control. Principalmente encapsulamos el control de cada propiedad de manera independiente, permitiendo que cada una pueda modificarse de manera aislada. Además, se logra que agregar nuevas propiedades con su conjunto de actuadores y sensores conste únicamente en crear nuevos módulos. Se provee una capa de abstracción para construir sobre los sistemas un controlado general (ej. MainController) el cual organizará los esfuerzos de cada uno con el fin de llevar a cabo comportamientos más complejos. Luego veremos como incluso podemos aplicar para esto el patrón \textit{mediator}.
 
 \subsection{Ejemplo}
 
-Veamos como podemos resolver el ejemplo propuesto en el libro de Douglass en la sección de Mediator Pattern.
+Veamos como podemos resolver el ejemplo propuesto en el libro de Douglass\cite{douglass} en la sección de 3.4 Mediator Pattern.
+\\
+\noident
+\textbf{Requisitos}
+\\
+\noident
+Se necesita desarrollar el software de control de un brazo robótico que consta de tres actuadores, dos servomotores (uno para rotar y otro para extender o retraer el brazo) y una pinza que se puede cerrar o abrir. Para ello, se provee una función compleja la cual toma coordenadas en el espacio y genera una secuencia de ordenes para que el brazo tome un objeto en la posición determinada por las coordenadas. La secuencia es una serie de pasos, y cada uno consta de una orden para cada actuador del brazo robótico. Estos se deben ejecutar de manera secuencial, es decir que el paso número 2 empezará su ejecución solo si el primero culmino completamente y con éxito. En caso de que las coordenadas sean inalcanzables devuelve 0 pasos. A su vez cada actuador puede informar un error al intentar ejecutar cada movimiento, y si esto pasa se requiere frenar la ejecución total del sistema.
 
-\textbf{Requisitos}:
-
-Se necesita desarrollar el software de control de un brazo robótico que consta de 3 actuadores, 2 
-servomotores (uno para rotar y otro para extender o retraer el brazo) y una pinza que se puede cerrar o abrir. Para ello, se provee una función compleja la cual toma coordenadas en el espacio y genera una secuencia de ordenes para que el brazo tome un objeto en la posición determinada por las coordenadas. La secuencia es una serie de pasos, y cada uno consta de una orden para cada actuador del brazo robótico. Estos se deben ejecutar de manera secuencial, es decir que el paso número 2 empezará su ejecución solo si el primero culmino completamente y con éxito. En caso de que las coordenadas sean inalcanzables devuelve 0 pasos. A su vez cada actuador puede informar un error al intentar ejecutar cada movimiento, y si esto pasa se requiere frenar la ejecución total del sistema.
-
+\begin{figure}[h]
+\caption{Brazo robótico.}
 \begin{centering}
 {\includegraphics[width=0.5\textwidth]{Screenshot from 2024-08-29 18-44-50.png}\par}
 \end{centering}
-
-\textbf{Diseño}:
-
-La idea es utilizar el concepto de subsistemas que se introdujo previamente, para ello primero necesitamos identificar las propiedades del mundo físico que debemos controlar. Claramente, lo que se quiere modificar es la posición y el estado de la pinza del brazo, para hacerlo tenemos distintos actuadores que intervienen en diferentes propiedades atómicas. Además, en los requisitos nos especifican que poseemos una función que nos genera una orden para cada actuador. De esta manera definimos un subsistema de control por cada actuador que serán los encargados de llevar a cabo las ordenes generadas. Un ejemplo de orden es rotar 30\textdegree, es claro el \textit{setPoint} que se está indicando. Para coordinar los subsistemas proponemos un controlador principal llamado \textit{MainController}, el cual provee la función \verb|graspAt(i: Coordenadas)| al cliente, realiza la generación de los pasos y controla su ejecución. La estructura seria algo así:
+\end{figure}
+\\
+\noident
+\textbf{Diseño}
+\\
+\noident
+La idea es utilizar el concepto de subsistemas que se introdujo previamente, para ello primero necesitamos identificar las propiedades del mundo físico que debemos controlar. Claramente, lo que se quiere modificar es la posición y el estado de la pinza del brazo, para hacerlo tenemos distintos actuadores que intervienen en diferentes propiedades atómicas. Además, en los requisitos nos especifican que poseemos una función que nos genera una orden para cada actuador. De esta manera definimos un subsistema de control por cada actuador que serán los encargados de llevar a cabo las ordenes generadas. Un ejemplo de orden es rotar 30\textdegree, es claro el \textit{set-point} que se está indicando. Para coordinar los subsistemas proponemos un controlador principal llamado \textbf{MainController}, el cual provee el método \verb|graspAt(i: Coordenadas)| al cliente, realiza la generación de los pasos y controla su ejecución. La estructura seria algo así:
 
 
 \begin{figure}[h]
@@ -562,12 +567,13 @@ La idea es utilizar el concepto de subsistemas que se introdujo previamente, par
 \end{figure}
 (Añadir al gráfico que significa cada flecha, control(), notifyEnd() y onError())
 
-Podemos pensar que el gráfico tiene cierta similaridad conceptual con el patrón \textit{mediator}, donde tenemos un módulo \textit{Mediator} que coordina el trabajo de los \textit{College} en este caso los subsistemas. Gamma indica que el patrón suele ser apropiado para casos en lo que se tiene un conjunto de objetos que se comunican de manera compleja pero fija. En este caso la comunicación no es tan compleja, pero puede considerarse lo suficiente como para implementar el patrón. En particular, el MainController indica los setPoints de cada subsistema y desencadena el proceso de control en cada uno. Y viceversa, los subsistemas indican cuando llegan al setPoint o cuando se encuentran un error. A su vez, los subsistemas no se comunican de manera directa entre si, todo pasa por el MainController.
+Podemos pensar que el gráfico tiene cierta similaridad conceptual con el patrón \textit{mediator}, donde tenemos un módulo \textbf{Mediator} que coordina el trabajo de los \textbf{College} en este caso los subsistemas. Gamma indica que el patrón suele ser apropiado para casos en lo que se tiene un conjunto de objetos que se comunican de manera compleja pero fija. En este caso la comunicación no es tan compleja, pero puede considerarse lo suficiente como para implementar el patrón. En particular, el \textbf{MainController} indica los \textit{set-point} de cada subsistema y desencadena el proceso de control en cada uno. Y viceversa, los subsistemas indican cuando llegan al \textit{set-point} o cuando se encuentran un error. A su vez, los subsistemas no se comunican de manera directa entre si, todo pasa por el \textbf{MainController}.
 
-Veamos en detalle los módulos conforman cada componente comenzando por los módulos básicos que debemos crear para representar el hardware dado:
+Veamos en detalle los módulos conforman cada componente comenzando por los módulos básicos que debemos crear para representar el hardware dado (ver grafico \ref{estructuraActuadores}):
 
 \begin{figure}[h]
-\caption{Actuadores paso a paso}
+\label{estructuraActuadores}
+\caption{Actuadores paso a paso.}
 \begin{center}
 \begin{tikzpicture}
 \umlclass[]{StepDevice}
@@ -580,7 +586,7 @@ enable() \\
 pulse()
 }
 
-\umlclass[x=-3,y=-5]{Rotor}
+\umlclass[below left=1cm and -0.3cm of StepDevice]{Rotor}
 {}
 {
 right() \\
@@ -590,7 +596,7 @@ enable() \\
 pulse()
 }
 
-\umlclass[x=3,y=-5]{Extensor}
+\umlclass[below right=1cm and -0.3cm of StepDevice]{Extensor}
 {}
 {
 right() \\
@@ -607,11 +613,12 @@ pulse()
 \end{center}
 \end{figure}
 
-Estos son motores paso a paso \footnote{Se utiliza el mismo diseño propuesto para el robot desmalezador.}, lo cuales para controlarlos debemos primero setear su dirección llamando a las funciones \verb|right| o \verb|left| para luego avanzar un paso llamando a la función pulse. Claramente para que lleguen a la posición deseada puede ser necesario invocar reiteradas veces la función pulse. Esto será importante a la hora de diseñar el subsistema que controlará cada dispositivo.
+Estos son motores paso a paso \footnote{Se utiliza el mismo diseño propuesto para el robot desmalezador\cite{paperPomponio}.}, lo cuales para controlarlos debemos primero setear su dirección llamando a las funciones \verb|right| o \verb|left| para luego avanzar un paso llamando al método \verb|pulse|. Claramente para que lleguen a la posición deseada puede ser necesario invocar reiteradas veces al método \verb|pulse|. Esto será importante a la hora de diseñar el subsistema que controlará cada dispositivo.
 
 En cambio, en el caso de la pinza se utiliza un dispositivo que tiene dos estados, abierto o cerrado, por lo que solo tenemos dos funciones para cambiar entre los estados.
 
 \begin{figure}[h]
+\caption{Interfaz módulo Pinza.}
 \begin{center}
 \begin{tikzpicture}
 \umlclass[]{Pinza}
@@ -625,7 +632,7 @@ cerrar()
 \end{center}
 \end{figure}
 
-Vemos ahora los sensores asociados a cada actuador, estos heredaran del módulo sensor pasivo el cual provee dos funciones, \verb|setConnection(i: Pipe)| la cual configura el Pipe por el cual se enviará la información obtenida del sensor cuando la otra funciones, \verb|signal()| sea invocada.
+Vemos ahora los sensores asociados a cada actuador, estos heredaran del módulo sensor pasivo el cual provee dos funciones, \verb|setConnection(i: Pipe)| la cual configura el \textbf{Pipe} por el cual se enviará la información obtenida del sensor cuando la otra funciones, \verb|signal()| sea invocada.
 
 \begin{figure}[h]
 \caption{Sensores}
@@ -668,7 +675,7 @@ signal() \\
 \end{center}
 \end{figure}
 
-Para completar los módulos que conforman a un subsistema de control nos falta mostrar como se define el Controller. Vamos a diferenciar dos tipos de Controllers, uno para los sensores que requieren un control durante un determinado lapso de tiempo para poder llegar a su setPoint y los que no. En este ejemplo, tenemos dos motores paso a paso que representan el primer tipo y la pinza que corresponde al segundo. Vemos primero el caso más ``complejo'', como el proceso de control se extiende en el tiempo necesitamos añadir al sistema un mecanismo por el cual cada cierto intervalo ejecute un ciclo de control, es decir, lea la posición actual, decida y actúe. Para eso, en el diseño del robot desmalezador se propuso la creación de una interrupción temporizada, la cual se ejecuta cada 1.5ms y desencadena el control de los subestimas necesarios.
+Para completar los módulos que conforman a un subsistema de control nos falta mostrar como se define el \textbf{Controller}. Vamos a diferenciar dos tipos de \textbf{Controllers}, uno para los sensores que requieren un control durante un determinado lapso de tiempo para poder llegar a su \textit{set-point} y los que no. En este ejemplo, tenemos dos motores paso a paso que representan el primer tipo y la pinza que corresponde al segundo. Vemos primero el caso más ``complejo'', como el proceso de control se extiende en el tiempo necesitamos añadir al sistema un mecanismo por el cual cada cierto intervalo ejecute un ciclo de control, es decir, lea la posición actual, decida y actúe. Para eso, en el diseño del robot desmalezador se propuso la creación de una interrupción temporizada, la cual se ejecuta cada 1.5\textit{ms} y desencadena el control de los subestimas necesarios.
 
 
 \begin{figure}[h]
@@ -684,21 +691,21 @@ stop() \\
 tickHandler()
 }
 
-\umlnote[x=-2, y=4,width=5cm]{Timer}{
+\umlnote[above right=-2cm and 1cm of Timer,width=7cm]{Timer}{
 tickHandler() \{ \\
 subsistemControlTimeout.execute() \\
 \}
 }
 
-\umlsimpleclass[x=-5,y=-2]{Command}
+\umlsimpleclass[below right=0cm and 2cm of Timer]{Command}
 \umluniassoc[geometry=|-]{Timer}{Command}
 \end{tikzpicture}
 \end{center}
 \end{figure}
 
-La función \verb|tickHandler()| ejecutara \textit{Commands} por cada subsistema que lo necesite, por lo tanto se iniciará en cada uno el ciclo de control. En particular, la orden la usamos para desacoplar como triggerear el comienzo del Timer.
+El método \verb|tickHandler()| ejecutará \textit{Commands} por cada subsistema que lo necesite, por lo tanto se iniciará en cada uno el ciclo de control. En particular, la orden la usamos para desacoplar como es invocado el inicio del \textbf{Timer}.
 
-Una vez solucionada la invocación, tenemos que introducir un nuevo módulo que será usado en el Controller. Ahora, tenemos dos modos de operación de este ultimo, cuando no se está trabajando y cuando si. Dependiendo de cual de los dos esté activo el comportamiento será diferente, ya que por ejemplo, no apagamos el Timer cuando no se está haciendo un movimiento, sino que cuando este triggeree la ejecución del ciclo el Controller ignorará la orden. Para esto hacemos uso del patrón \textit{State} de Gamma, el cual está explicado en la tesina. En particular, el Controller delegará dos funciones de su interfaz al state, \verb|control()| y \verb|move()| (luego lo veremos en más detalle).
+Una vez solucionada la invocación, tenemos que introducir un nuevo módulo que será usado en el \textbf{Controller}. Ahora, tenemos dos modos de operación de este ultimo, cuando no se está trabajando y cuando si. Dependiendo de cual de los dos esté activo el comportamiento será diferente, ya que por ejemplo, no apagamos el \textbf{Timer} cuando no se está haciendo un movimiento, sino que cuando este desencadene la ejecución del ciclo el \textbf{Controller} ignorará la orden. Para esto hacemos uso del patrón \textit{State} de Gamma[\cite{Gamma:1995:DPE:186897}, el cual está explicado en la sección \ref{cap:state}. En particular, el \textbf{Controller} delegará dos funciones de su interfaz al \textit{state}, \verb|control()| y \verb|move()| (luego lo veremos en más detalle).
 
 \begin{figure}[h]
 \caption{Módulos necesarios para complementar el Controller}
@@ -711,14 +718,14 @@ control(i: Controller) \\
 move(i: Controller) \\
 }
 
-\umlclass[x=-3,y=-5]{Moving}
+\umlclass[x=-3,y=-4]{Moving}
 {}
 {
 control(i: Controller) \\
 move(i: Controller) \\
 }
 
-\umlclass[x=3,y=-5]{Waiting}
+\umlclass[x=3,y=-4]{Waiting}
 {}
 {
 control(i: Controller) \\
@@ -732,9 +739,10 @@ move(i: Controller) \\
 \end{center}
 \end{figure}
 
-Siguiendo con la guía de creación de subsistemas, también debemos definir el módulo Data que almacena la información utilizada por el mismo y el módulo Algoritmo que encapsula los cálculos necesarios para determinar que cambio aplicar.
+Siguiendo con la guía de creación de subsistemas, también debemos definir el módulo \textbf{Data} que almacena la información utilizada por el mismo y el módulo \textbf{Algoritmo} que encapsula los cálculos necesarios para determinar que cambio aplicar.
 
 \begin{figure}[h]
+\caption{Módulos complementarios a Controller.}
 \begin{center}
 \begin{tikzpicture}
 \umlclass[x=-3]{Data}
@@ -756,13 +764,13 @@ compute(i: Data): Measure
 \end{center}
 \end{figure}
 
-Ahora si tenemos todos los módulos necesarios para mostrar nuestro Controller.
+Ahora si tenemos todos los módulos necesarios para mostrar nuestro \textbf{Controller}.
 
 \begin{figure}[h]
 \caption{Controller}
 \begin{center}
 \begin{tikzpicture}
-\umlclass[x=-3,y=-2]{Controller}
+\umlclass[]{Controller}
 {}
 {
 setConnection(i: Pipe) \\
@@ -775,15 +783,15 @@ move() \\
 control()
 }
 
-\umlsimpleclass[x=3]{Data}
-\umlsimpleclass[x=3, y=-1]{Algoritmo}
-\umlsimpleclass[x=3, y=-2]{OperationState}
-\umlsimpleclass[x=3, y=-3]{Pipe}
+\umlsimpleclass[above right=-1.5cm and 1cm of Controller]{Data}
+\umlsimpleclass[above right=-2.5cm and 1cm of Controller]{Algoritmo}
+\umlsimpleclass[above right=-3.5cm and 1cm of Controller]{OperationState}
+\umlsimpleclass[above right=-4.5cm and 1cm of Controller]{Pipe}
 
-\umluniaggreg[anchor1=30,anchor2=west]{Controller}{Data}
-\umluniaggreg[anchor1=17,anchor2=west]{Controller}{Algoritmo}
-\umluniaggreg[anchor1=-1,anchor2=west]{Controller}{OperationState}
-\umluniaggreg[anchor1=-18,anchor2=west]{Controller}{Pipe}
+\umluniaggreg[anchor1=22,anchor2=west]{Controller}{Data}
+\umluniaggreg[anchor1=7,anchor2=west]{Controller}{Algoritmo}
+\umluniaggreg[anchor1=-7,anchor2=west]{Controller}{OperationState}
+\umluniaggreg[anchor1=-22,anchor2=west]{Controller}{Pipe}
 
 \end{tikzpicture}
 \end{center}
@@ -794,16 +802,16 @@ Veamos la funcionalidad de cada método que provee la interfaz de Controller:
     \item setConnection: configura el tubo por el cual llegará la información proveniente de el/los sensores.
     \item readConnection: lee del pipe y almacenar la información en el módulo data.
     \item setSetPoint: se utiliza antes de comenzar el control para configurar el valor al que se quiere llegar.
-    \item getData: devuelve el objeto Data asociado al Controller.
+    \item getData: devuelve el objeto Data asociado al \textbf{Controller}.
     \item getAlgoritmo: lo mismo que con Data.
     \item changeOperationState: cambia el estado del modo de operación, en la configuración básica las transiciones posibles son de \textit{Waiting} a \textit{Moving} y viceversa.
-    \item move: es la función ejecutada en cada timeout del timer de control, realiza un paso del ciclo de control si el estado es \textit{Moving}.
+    \item move: es el método ejecutado en cada timeout del \textbf{Timer} de control, realiza un paso del ciclo de control si el estado es \textit{Moving}.
     \item control: se utiliza para comenzar el ciclo de control, es el puntapié inicial que desencadena el comportamiento de todo el subsistema.
 \end{itemize}
 
-Imaginemos que un cliente quiere utilizar el subsistema, qué métodos tiene que ejecutar si ya está configurado? Primero debe indicarle a los sensores que escriban el valor de lectura en el pipe, para esto hay que ejecutar la función \verb|signal| en cada uno. Luego el Controller debe leer esta información del pipe y almacenarla, para esto ejecutamos \verb|readConnection|. Ahora, seteamos el setPoint deseado y por ultimo ejecutamos \verb|control|, la cual tomará los valores actuales, el setPoint y decidirá utilizando el módulo Algoritmo que cambio realizar en los actuadores. En el caso del Rotor, por ejemplo, podrá tanto cambiar la dirección de giro, como avanzar un paso ejecutando pulse. Un ejemplo de función \verb|control| para el caso del subsistema del Rotor y estado de operación Waiting, puede ser la siguiente (recordar que el setPoint del subsistema del rotor es una medida en grados):
+Imaginemos que un cliente quiere utilizar el subsistema, qué métodos tiene que ejecutar si ya está configurado? Primero debe indicarle a los sensores que escriban el valor de lectura en el pipe, para esto hay que ejecutar el método \verb|signal| en cada uno. Luego el \textbf{Controller} debe leer esta información del pipe y almacenarla, para esto ejecutamos \verb|readConnection|. Ahora, seteamos el setPoint deseado y por ultimo ejecutamos \verb|control|, la cual tomará los valores actuales, el \textit{set-point} y decidirá utilizando el módulo \textbf{Algoritmo} que cambio realizar en los actuadores. En el caso del \textbf{Rotor}, por ejemplo, podrá tanto cambiar la dirección de giro, como avanzar un paso ejecutando \verb|pulse()|. Un ejemplo del metodo \verb|control()| para el caso del subsistema del \textbf{Rotor} y estado de operación \textit{Waiting}, puede ser la del código \ref{impControl} (recordar que el \textit{set-point} del subsistema del rotor es una medida en grados).
 
-\begin{lstlisting}
+\begin{lstlisting}[caption=Ejemplo implementación control,label={impControl}]
     void control(Controller controller) {
         setPoint = data.getSetPoint();
         current = data.getCurrent();
@@ -823,31 +831,44 @@ Imaginemos que un cliente quiere utilizar el subsistema, qué métodos tiene que
     }
 \end{lstlisting}
 
-La función \verb|move| tendrá un comportamiento similar pero en el aso de cambiar de estado lo hará a Waiting. Para el caso de la Pinza, el Controller es más simple ya que no necesitamos los estados, pero el uso y comportamiento es similar. Por lo que para este ejemplo, vamos a necesitar crear dos subsistemas con estados y uno sin.
+El método \verb|move| tendrá un comportamiento similar pero en el aso de cambiar de estado lo hará a \textit{Waiting}. Para el caso de la \textbf{Pinza}, el \textbf{Controller} es más simple ya que no necesitamos los estados, pero el uso y comportamiento es similar. Por lo que para este ejemplo, vamos a necesitar crear dos subsistemas con estados y uno sin.
 
-Ya tenemos los subsistemas, por lo que siguiendo con nuestro diagrama, nos falta la parte del MainController. El cual sera el encargado de brindar una interfaz al cliente y a su vez coordinar cada subsistema. Recordando los requerimientos, sabemos que tenemos una función que generar una secuencia de pasos donde cada uno implica una acción sobre los tres actuadores. ¿Cómo podemos diseñar este comportamiento? Se me ocurre usar un \textit{iterator} para recorrer los pasos y usar el patrón \textit{command} para cada uno. En particular, aplicaremos una de las modificaciones del patrón mencionada por Gamma, en donde una orden al ser ejecutada desencadena una ejecución del resto de las ordenes. Veamoslo en el siguiente gráfico:
+Ya tenemos los subsistemas, por lo que siguiendo con nuestro diagrama, nos falta la parte del \textbf{MainController}. El cual sera el encargado de brindar una interfaz al cliente y a su vez coordinar cada subsistema. Recordando los requerimientos, sabemos que tenemos una función que generar una secuencia de pasos donde cada uno implica una acción sobre los tres actuadores. ¿Cómo podemos diseñar este comportamiento? Se me ocurre usar un \textit{iterator} para recorrer los pasos y usar el patrón \textit{command} para cada uno. En particular, aplicaremos una de las modificaciones del patrón mencionada por Gamma\cite{Gamma:1995:DPE:186897}, en donde una orden al ser ejecutada desencadena una ejecución del resto de las ordenes. Veamoslo en los gráficos \ref{iterator} y \ref{orden}.
 
 
 \begin{figure}[h]
-\caption{Iterator y ordenes}
+\caption{Iterator}
+\label{iterator}
 \begin{center}
 \begin{tikzpicture}
-\umlclass[y=5]{Steps}
+\umlclass[]{Steps}
 {}
 {
 primero() \\
-siguiente() \\
-elementoActual(): Orden \\
-haTerminado(): Bool \\
+siguiente()\\
+elementoActual(): Orden\\
+haTerminado(): Bool\\
 }
 
-\umlclass[y=0]{Orden}
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+\begin{figure}[h]
+\caption{Orden}
+\label{orden}
+\begin{center}
+\scalebox{.75}{
+\begin{tikzpicture}
+
+\umlclass[]{Orden}
 {}
 {
 ejecutar()
 }
 
-\umlclass[x=-6,y=-4]{OrdenRotor}
+\umlclass[below left=2cm and 4.5cm of Orden]{OrdenRotor}
 {
 OrdenRotor(i: Measure)
 }
@@ -855,7 +876,7 @@ OrdenRotor(i: Measure)
 ejecutar()
 }
 
-\umlclass[x=-3,y=-4]{OrdenExtensor}
+\umlclass[below left=2cm and -1cm of Orden]{OrdenExtensor}
 {
 OrdenExtensor(i: Measure)
 }
@@ -863,7 +884,7 @@ OrdenExtensor(i: Measure)
 ejecutar()
 }
 
-\umlclass[x=0,y=-4]{OrdenPinza}
+\umlclass[below right=2cm and -1cm of Orden]{OrdenPinza}
 {
 OrdenPinza(i: Measure)
 }
@@ -871,7 +892,7 @@ OrdenPinza(i: Measure)
 ejecutar()
 }
 
-\umlclass[x=5,y=-4]{OrdenMultiple}
+\umlclass[below right=2cm and 4cm of Orden]{OrdenMultiple}
 {
 OrdenMultiple(i: OrdenRotor, \\ i: OrdenExtensor, \\i: OrdenPinza)
 
@@ -882,28 +903,28 @@ ejecutar()
 \umlinherit[geometry=|-|]{OrdenRotor}{Orden}
 \umlinherit[geometry=|-|]{OrdenExtensor}{Orden}
 \umlinherit[geometry=|-|]{OrdenPinza}{Orden}
-\umlinherit[geometry=|-|]{OrdenMultiple}{Orden}
+\umlinherit[geometry=|-|,arm1=2.54cm]{OrdenMultiple}{Orden}
 \umluniaggreg[geometry=-|-, anchor1=east, arm1=1cm]{OrdenMultiple}{Orden}
-\umlnote[x=6,y=3,width=4cm]{OrdenMultiple}{
-void ejecutar() \{  \\
-    ordenRotor.ejecutar() \\
-    ordenExtensor.ejecutar() \\
-    ordenPinza.ejecutar() \\
+\umlnote[above=4cm of OrdenMultiple,width=5cm]{OrdenMultiple}{
+ejecutar() \{  \\
+\ \ \ \ ordenRotor.ejecutar() \\
+\ \ \ \ ordenExtensor.ejecutar() \\
+\ \ \ \ ordenPinza.ejecutar() \\
 \}
 }
 
-\end{tikzpicture}
+\end{tikzpicture}}
 \end{center}
 \end{figure}
 
 \begin{figure}
 \begin{lstlisting}[caption=Ejemplo OrdenRotor]
-    void ejecutar {
-        rotorController.setSetPoint(setPoint)
-        rotorSensor.signal()
-        rotorController.readConnection()
-        rotorController.control()
-    }
+void ejecutar {
+    rotorController.setSetPoint(setPoint)
+    rotorSensor.signal()
+    rotorController.readConnection()
+    rotorController.control()
+}
 \end{lstlisting}
 \end{figure}
 
@@ -912,8 +933,9 @@ Tenemos un iterado de ordenes, en particular múltiples, que almacena todos los 
 \begin{figure}[h]
 \caption{MainController}
 \begin{center}
+\scalebox{.75}{
 \begin{tikzpicture}
-\umlclass[x=-4,y=0]{MainController}
+\umlclass[x=-5,y=0]{MainController}
 {
 MainContoller(i: StepsComputator)
 }
@@ -929,13 +951,13 @@ changeState()
 graspAt(i: Coordenadas) \\
 notifyReady(i: MainCtrl) \\
 }
-\umlclass[x=-8,y=-8]{MainWaiting}
+\umlclass[x=-10,y=-8]{MainWaiting}
 {}
 {
 graspAt(i: Coordenadas) \\
 notifyReady(i: MainCtrl) \\
 }
-\umlclass[x=-4,y=-8]{Main0}
+\umlclass[x=-5,y=-8]{Main0}
 {}
 {
 graspAt(i: Coordenadas) \\
@@ -947,7 +969,7 @@ notifyReady(i: MainCtrl) \\
 graspAt(i: Coordenadas) \\
 notifyReady(i: MainCtrl) \\
 }
-\umlclass[x=4,y=-8]{Main2}
+\umlclass[x=5,y=-8]{Main2}
 {}
 {
 graspAt(i: Coordenadas) \\
@@ -968,21 +990,24 @@ geneararStepts(i: Coordenadas) \\
 \umlinherit[geometry=|-|]{Main0}{MainControllerState}
 \umlinherit[geometry=|-|]{Main1}{MainControllerState}
 \umlinherit[geometry=|-|]{Main2}{MainControllerState}
-\umlnote[x=-8,y=-4,width=5cm]{MainController}
+\umlnote[x=-9,y=-4,width=6.5cm]{MainController}
 {
 void notifyReady() \{ \\
-    mainControllerState.notifyReady() \\
+\ \ \ \ mainControllerState.notifyReady() \\
 \}
 }
 
 
 \end{tikzpicture}
+}
 \end{center}
 \end{figure}
 
-Hasta la introducción de MainController todo lo que estábamos haciendo era solo seguir con el concepto de subsistemas. Pero para poder cumplir los requerimientos particulares del ejemplo, necesitamos introducir ciertos cambios. Como necesitamos ejecutar un paso a la vez, tenemos que esperar que todas las ordenes que enviamos en el paso anterior a los subsistemas. Para ello hacemos uso del patrón \textit{state}, al cual delegaremos las funciones \verb|graspAt| y \verb|notifyReady|. La idea es cambiar el comportamiento de estas dependiendo de en qué estadio estamos, seguiremos el siguiente gráfico:
+Hasta la introducción de \textbf{MainController} todo lo que estábamos haciendo era solo seguir con el concepto de subsistemas. Pero para poder cumplir los requerimientos particulares del ejemplo, necesitamos introducir ciertos cambios. Como necesitamos ejecutar un paso a la vez, tenemos que esperar que todas las ordenes que enviamos en el paso anterior a los subsistemas. Para ello hacemos uso del patrón \textit{state}, al cual delegaremos las funciones \verb|graspAt| y \verb|notifyReady|. La idea es cambiar el comportamiento de estas dependiendo de en qué estadio estamos, seguiremos el siguiente gráfico \ref{statesMainController}.
 
 \begin{figure}[h]
+\label{statesMainController}
+\caption{Transiciones de estados del MainController}
 \begin{center}
 \begin{tikzpicture}
 
@@ -1000,7 +1025,7 @@ Hasta la introducción de MainController todo lo que estábamos haciendo era sol
 \end{center}
 \end{figure}
 
-Por lo que, el estado Waiting no implementa \verb|notifyOrder| y a su vez 0, 1 y 2 no implementan \verb|graspAt|. En cambio, Waitating implementan \verb|graspAt| la cual computa los pasos y ejecuta el primero utilizando el iterator. Luego, por cada \verb|notifyEnd| los subsistemas le avisan al MainController que terminaron la orden y por cada una transaccionamos a un estado nuevo. Luego de que se ejecuta \verb|graspAt| se transiciona al estado 0 en el cual al recibir un \verb|notifyEnd| se transiciona a 1 y lo mismo hasta llegar a 2. En cambio, cuando estamos en el estado 2 y se ejecuta \verb|notifyEnd| lo que se hará es ejecutar un nuevo paso si en el iterador de pasos quedan pasos, en caso contrario se transicionará a Waiting ya que se terminó la ejecución. Está claro que para poder llevar a cabo este comportamiento es necesario que los subsistemas respondan a las necesidades. Por lo que cada uno tendrá que llamar a la función \verb|notifyEnd| del MainController cuando efectivamente terminen la ejecución de la orden, es decir, el ciclo de control. Para hacerlo se puede agregar la llamada en la cuando se decide transicionar de Moving a Waiting o en el caso de los subsistemas sin estados, luego de aplicar los cambios en los actuadores.
+Por lo que, el estado Waiting no implementa \verb|notifyOrder| y a su vez 0, 1 y 2 no implementan \verb|graspAt|. En cambio, Waitating implementan \verb|graspAt| la cual computa los pasos y ejecuta el primero utilizando el iterator. Luego, por cada \verb|notifyEnd| los subsistemas le avisan al MainController que terminaron la orden y por cada una transaccionamos a un estado nuevo. Luego de que se ejecuta \verb|graspAt| se transiciona al estado 0 en el cual al recibir un \verb|notifyEnd| se transiciona a 1 y lo mismo hasta llegar a 2. En cambio, cuando estamos en el estado 2 y se ejecuta \verb|notifyEnd| lo que se hará es ejecutar un nuevo paso si en el iterador de pasos quedan pasos, en caso contrario se transicionará a Waiting ya que se terminó la ejecución. Está claro que para poder llevar a cabo este comportamiento es necesario que los subsistemas respondan a las necesidades. Por lo que cada uno tendrá que llamar al método \verb|notifyEnd| del \textbf{MainController} cuando efectivamente terminen la ejecución de la orden, es decir, el ciclo de control. Para hacerlo se puede agregar la llamada en la cuando se decide transicionar de \textit{Moving} a \textit{Waiting }o en el caso de los subsistemas sin estados, luego de aplicar los cambios en los actuadores.
 
 \newpage
 \section{Obtención de información}
@@ -1028,7 +1053,7 @@ Generalmente una tarea importante que tienen los sistemas embebidos es recavar i
 %--------------------------
 
 
-\node[módulo, below =4cm of CR](Pin){Sensor};
+\node[módulo, below =4cm of CR](Pin){Pin};
 
 \node[módulo, above left=0.5cm and 2cm of Pin](CountTime){Count};
 
@@ -1078,7 +1103,7 @@ Generalmente una tarea importante que tienen los sistemas embebidos es recavar i
 
 
 
-Podemos distinguir 4 módulos principales, \textbf{Sensor} que es la representación en el diseño del hardware asociado al dispositivo de hardware que sensa, este genera la interrupción que es manejada por \textbf{Count} que es un módulo perteneciente al patrón \textit{Command} el cual cumple la función de comando para reemplazar la utilización de \textit{callbacks}. En particular, opera sobre \textbf{Collector} almacenando en este la información relevante del evento (interrupción). Esta por lo general es un \textit{timestamp} y la cantidad de veces que sucedió.  Por ultimo, \textbf{Buffer} actúa como buffer de la información recibida a través, posee una función que permite obtener el valor recibido. Cuando es invocada toma los valores necesarios que se almacenan en el \textbf{Collector} y realiza los cómputos necesarios para calcular el dato pedido.
+Podemos distinguir 4 módulos principales, \textbf{Pin} que es la representación en el diseño del hardware asociado al dispositivo que genera e introduce la interrupción, esta es manejada por \textbf{Count} que es un módulo perteneciente al patrón \textit{Command} el cual cumple la función de comando para reemplazar la utilización de \textit{callbacks}. En particular, opera sobre \textbf{Collector} almacenando en este la información relevante del evento (interrupción). Esta por lo general es un \textit{timestamp} y la cantidad de veces que sucedió.  Por ultimo, \textbf{Buffer} actúa como buffer de la información recibida a través, posee un método que permite obtener el valor recibido. Cuando es invocada toma los valores necesarios que se almacenan en el \textbf{Collector} y realiza los cómputos necesarios para calcular el dato pedido.
 
 Veamos esta estructura más en detalle con un ejemplo de aplicación. Supongamos que tenemos un sensor \textit{Hall} montado en una rueda y con este queremos medir la velocidad a la que se está moviendo. Por lo tanto, cada vez que el sensor detecte un campo magnético emitirá una interrupción que será manejada por el módulo \textbf{Count} que es un comando, por lo que sabe que funciones ejecutar del módulo \textbf{Collector}. \textbf{Count} tiene la siguiente interfaz:
 \begin{itemize}
@@ -1102,9 +1127,10 @@ Por ejemplo, si tenemos un sensor de efecto Hall que emite una interrupción en 
 \begin{figure}[H]
 \caption{Ejemplo}
 \begin{center}
+\scalebox{.90}{
 \begin{tikzpicture}
 
-\umlclass[x=-2]{HallSensor}
+\umlclass[]{HallSensor}
 {}
 {
 start() \\
@@ -1113,29 +1139,29 @@ signalHandler() \\
 setCommand(i: Command)
 }
 
-\umlnote[x=-3,y=4]{HallSensor}
+\umlnote[above left=1cm and -1cm of HallSensor,width=3cm]{HallSensor}
 {
-void signalHandler() \{\\
-cmd.execute() \\
+signalHandler() \{\\
+\ \ \ \ cmd.execute() \\
 \}
 }
 
-\umlclass[x=3]{Count}
+\umlclass[right=2cm of HallSensor]{Count}
 {}
 {
 execute() \\
 }
 
-\umlnote[x=5,y=4]{Count}
+\umlnote[above=1cm of Count,width=4cm]{Count}
 {
 Hereda de Command \\
-void execute() \{ \\
-\ \ coll.currentTime() \\
-\ \ coll.addOne() \\
+execute() \{ \\
+\ \ \ coll.currentTime() \\
+\ \ \ coll.addOne() \\
 \}
 }
 
-\umlclass[x=-2,y=-5]{Collector}
+\umlclass[below=1cm of HallSensor]{Collector}
 {}
 {
 currentTime() \\
@@ -1147,7 +1173,7 @@ periodTime(): Real \\
 initPeriod()\\
 }
 
-\umlclass[x=4,y=-4]{Buffer}
+\umlclass[right=2cm of Collector]{Buffer}
 {
 Buffer(i: Collector)
 }
@@ -1156,7 +1182,7 @@ setConnection(i: Pipe) \\
 signal() \\
 }
 
-\umlnote[x=3,y=-10,width=5  cm]{Buffer}
+\umlnote[below left=1.5cm and -4cm of Buffer,width=7.5cm]{Buffer}
 {
 signal() \{ \\
 \ \ vColl.initPeriod() \\
@@ -1169,7 +1195,7 @@ signal() \{ \\
 DELTAT y NINTERRUP son constantes
 }
 
-\umlnote[x=-7,y=-5,width=4cm]{Collector}
+\umlnote[left=1cm of Collector,width=4cm]{Collector}
 {
 addOne() \{ \\
 \ \ nbr++ \}\\
@@ -1198,6 +1224,7 @@ periodTime()\{\\
 \umluniaggreg{HallSensor}{Count}
 
 \end{tikzpicture}
+}
 \end{center}
 \end{figure}
 
@@ -1253,7 +1280,7 @@ Parece ser un problema vigente, se habla mucho en internet sobre eso, por ejempl
 
 
 \section{Manejo de interrupciones}
-Algunos microcontroladores como \textbf{Arduino} proveen en su entorno de desarrollo herramientas para manejar interrupciones. En particular, permiten asociar una función (\textit{handler}) a un cierto evento por ejemplo un cambio en un pin digital.
+Algunos microcontroladores como \textbf{Arduino} proveen en su entorno de desarrollo herramientas para manejar interrupciones. En particular, permiten asociar un método (\textit{handler}) a un cierto evento por ejemplo un cambio en un pin digital.
 
 \section{Máquinas de estado}\label{cap:state}
 
@@ -1309,7 +1336,7 @@ Antes de ver un enfoque desde el punto de vista del diseño orientado al cambio,
 
 Todo el funcionamiento principal del sistema es representado utilizando estados y transiciones, en cada transición se realizan cierto comportamiento relacionado con la salida del estado actual y la llegada al siguiente. Por ejemplo, si se está en el estado \textit{PuertaAbierta} y se recibe el evento \textit{puertaCerrada} se transicionará al estado \textit{Calentando}. En el proceso se encenderá el magnetrón para que este emita las ondas que finalmente calienten la comida.
 
-A simple vista parece un comportamiento complejo y eso que solo es un ejemplo simplificado, por lo que en la vida real encontraremos casos mucho más extensos. Este es uno de los motivos por los cuales es útil contar con un buen diseño. Debemos tener en cuenta que sea fácil modificar las transiciones y también agregar y quitar estados. Doublass construye un módulo encargado de mantener el estado, el cual que sabe qué funciones ejecutar cuando se da una transición. Esto es, recibe el evento, verifica si corresponde a un cambio de estado y de ser así ejecuta la función de ``salida'' del estado actual, ejecuta la función de ``entrada'' del nuevo estado y actualiza el valor del estado actual. Además, propone una implementación utilizando una tabla bidimensional lo cual lo hace un sistema eficiente computacional hablando. En el caso de querer modificar estados, agregarlos o quitarlo es necesario cambiar la implementación de este módulo. Gamma explica esto en la sección implementación del patrón \textit{State}, menciona que Cargill propuso esta implementación y efectivamente es una manera de convertir código condicional en algo que se parece a una tabla.
+A simple vista parece un comportamiento complejo y eso que solo es un ejemplo simplificado, por lo que en la vida real encontraremos casos mucho más extensos. Este es uno de los motivos por los cuales es útil contar con un buen diseño. Debemos tener en cuenta que sea fácil modificar las transiciones y también agregar y quitar estados. Doublass construye un módulo encargado de mantener el estado, el cual que sabe qué funciones ejecutar cuando se da una transición. Esto es, recibe el evento, verifica si corresponde a un cambio de estado y de ser así ejecuta el método de ``salida'' del estado actual, ejecuta el método de ``entrada'' del nuevo estado y actualiza el valor del estado actual. Además, propone una implementación utilizando una tabla bidimensional lo cual lo hace un sistema eficiente computacional hablando. En el caso de querer modificar estados, agregarlos o quitarlo es necesario cambiar la implementación de este módulo. Gamma explica esto en la sección implementación del patrón \textit{State}, menciona que Cargill propuso esta implementación y efectivamente es una manera de convertir código condicional en algo que se parece a una tabla.
 
 \begin{lstlisting}[Codigo ejemplo Douglas State Table]
 void TokenizerStateTable_eventDispatch(TokenizerStateTable* const me, Event e) {
@@ -1356,7 +1383,7 @@ En este ejemplo de código, que es una porción de la solución propuesta en el 
 
 Como el otro enfoque, proponemos utilizar el patrón \textit{State} de Gamma con ciertos ajustes para permitir a los estados transicionar a otros por si mismos. Básicamente, el patrón establece la creación de un módulo por cada estado del sistema con el fin de cambiar la implementación para que se ajuste al comportamiento cuando el sistema se encuentra en dicho estado. Esto nos permite transicionar dinamicamente entre estados, ya que cambiar de estado es usar otro módulo que hereda la interfaz.
 
-Para permitir que cada estado pueda transicionar de manera independiente a otros estados lo que hacemos es agrear una referencia de los posibles siguientes estados, para que en caso de recibir el evento adecuado pueda invocar la función de cambiar estado pasando la referencia del nuevo. Por lo tanto, al constructor de cada estado hay que agregarle como argumento cada posible estado siguiente. Esto lo podemos ver en la siguiente porción de código perteneciente al diseño del robot desmalezador:
+Para permitir que cada estado pueda transicionar de manera independiente a otros estados lo que hacemos es agrear una referencia de los posibles siguientes estados, para que en caso de recibir el evento adecuado pueda invocar el método de cambiar estado pasando la referencia del nuevo. Por lo tanto, al constructor de cada estado hay que agregarle como argumento cada posible estado siguiente. Esto lo podemos ver en la siguiente porción de código perteneciente al diseño del robot desmalezador:
 
 \begin{lstlisting}
 buildOpStates(){
@@ -1385,7 +1412,7 @@ actionWithMsg(MainController mCtrl, Mode md){
 Este uso del patrón \textit{State} también es propuesto en \textit{Chapter 10 : Finite State Machine Patterns Part III: New Patterns as Design Components}.
 
 
-Volviendo al ejemplo del microondas, aplicando este enfoque de diseño, tendremos un módulo que provee una función que maneja cada evento y otro que delega al estado cada manejo de evento.
+Volviendo al ejemplo del microondas, aplicando este enfoque de diseño, tendremos un módulo que provee un método que maneja cada evento y otro que delega al estado cada manejo de evento.
 
 \begin{figure}[h]
 \begin{center}
@@ -1502,7 +1529,7 @@ pausar() \\
 \end{center}
 \end{figure}
 
-Por lo tanto el módulo PuertaAbierta implementará la función \verb|puertaAbierta|, completando en ella el comportamiento definido para la transición PuertaAbierta $\xrightarrow{}$ Calentando.
+Por lo tanto el módulo PuertaAbierta implementará el método \verb|puertaAbierta|, completando en ella el comportamiento definido para la transición PuertaAbierta $\xrightarrow{}$ Calentando.
 
 \begin{lstlisting}
 puertaAbierta() {
