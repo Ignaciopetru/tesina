@@ -23,6 +23,7 @@
 \chapter{Problemas comunes}
 
 \section{Acceso al hardware}
+\label{Accesoalhardware}
 Una de las características distintivas de los sistemas embebidos es que trabajan directamente con dispositivos de hardware. Cada uno de estos tiene sus propios protocolos de comunicación y estándares de funcionamiento (por ejemplo, direcciones de memoria, codificación de bits, etc), por lo tanto el software se debe ajustar a sus requerimientos. Como se puede entender esta tarea no es simple y puede demandar mucho esfuerzo cada vez que se quiera modificar o agregar un componente de hardware. A su vez, puede que múltiples módulos de nuestro sistema embebido quieran acceder al dispositivo, por lo que cada uno debe encargarse de la comunicación creando código repetido y complicando aún más las modificaciones. 
 
 Para entender los inconvenientes que puede conllevar no diseñar pensando en el cambio veamos un ejemplo simple. Suponga que nuestro sistema embebido debe controlar un motor de corriente continua (DC) y que el software para hacerlo corre en un microcontrolador Arduino. Los requerimientos definen que es necesario poder asignar el sentido y la velocidad de rotación del motor según se necesite. Para controlar el motor se utiliza un módulo \textit{DRV8838}, el cual se coloca entre el microcontrolador y el motor. Es necesario ya que el microcontrolador y su plataforma no pueden manejar las potencias necesarias para hacer funcionar el dispositivo. Podemos ver el conexionado del mismo en la figura \ref{drv8838}.
@@ -148,7 +149,7 @@ MotorDC(i: int, i: int)
 \end{center}
 \end{figure}
 
-Donde los parámetros del constructor \verb|MotorDC| son los pines de control, el parámetro de \verb|set_dir| es de tipo \verb|Dir| el cual es un enum que tiene dos entradas, horario y anti-horario y por ultimo el input de \verb|set_vel| es un int entre 0 y 255 que representa la velocidad porcentual. Veamos en el ejemplo \ref{constructorMotor} una posible implementación de esta interfaz utilizando el controlador DVR8838.
+Donde los parámetros del constructor \verb|MotorDC| son los pines de control, el parámetro de \verb|set_dir| es de tipo \verb|Dir| el cual es un int que puede tomar dos valores uno para el sentido de giro horario y otro anti-horario y por último el input de \verb|set_vel| es un int entre 0 y 255 que representa la velocidad porcentual. Veamos en el ejemplo \ref{constructorMotor} una posible implementación de esta interfaz utilizando el controlador DVR8838.
 
 \begin{lstlisting}[caption=Posible implementación de la interfaz del módulo MotorDC,label={constructorMotor}]
 void MotorDC(int dir_pin, int vel_pin) {
@@ -192,7 +193,7 @@ Además si debemos modificar el sentido de giro es tan fácil como cambiar la fu
 
 Y para un cambio de componente, como el explicado anteriormente, los clientes del módulo lo ignoraran, ya que sera prácticamente la misma (a menos un cambio en el constructor, donde ya no se necesitaran los pines). Por ejemplo, ahora \verb|set_dir| será definida como en el listing \ref{nuevaSetDir}.
 
-\begin{lstlisting}[caption=Nueva definicion set_dir,label={nuevaSetDir}]
+\begin{lstlisting}[caption=Nueva definición set\_dir,label={nuevaSetDir}]
 void set_vel(vel: int) {
     if vel > 0 && vel <= 255 {
         this->serial.write(0xAA);
@@ -255,20 +256,20 @@ Para solventar este inconveniente, podemos aplicar el patrón \textit{Adapter} d
     \item \textbf{Adapter}: módulo que adapta la interfaz.
 \end{itemize}
 
-Veamos un ejemplo, supóngase que un cierto sistema embebido está utilizando un display de 7 segmentos de 4 dígitos para mostrar la temperatura de funcionamiento y posición en grados de cierto actuador. Como el de la siguiente imagen:
+Veamos un ejemplo, supóngase que un cierto sistema embebido está utilizando un display de 7 segmentos de 4 dígitos para mostrar la temperatura de funcionamiento y posición en grados de cierto actuador, como el de la imagen \ref{fig:enter-label}.
 
-\begin{figure}
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.5\linewidth]{display.png}
     \caption{Display 7 segmentos 4 digitos}
     \label{fig:enter-label}
 \end{figure}
 
-Este display recibe la información utilizando comunicación en serie, con un protocolo propio del fabricante. Para facilitar su uso, este provee una librería que implementa la comunicación y provee funciones simples de usar, tales como \textit{escribir(i: str): bool} y \textit{limpiar()}. Por lo tanto, se implemento el sistema utilizando las funciones provistas para comunicarse, múltiples módulos llaman esas funciones.
+Este display recibe la información utilizando comunicación en serie, con un protocolo propio del fabricante. Para facilitar su uso, este provee una librería que implementa la comunicación y provee funciones simples de usar, tales como \textit{escribir(i: str): bool} y \textit{limpiar()}. Por lo tanto, se implementó el sistema utilizando las funciones provistas para comunicarse, múltiples módulos llaman esas funciones.
 
-En cierto momento el módulo display dejó de funcionar y se reemplazó por otro de un fabricante distinto, que funciona con otro protocolo de comunicación. De la misma manera, la empresa provee una librería para utilizar el display. Pero la interfaz no es la misma que la anterior e incluso algunos comportamientos son diferentes. Por ejemplo, en la primer librería la función de escritura devolvía False si se quería escribir y ya estaba mostrándose algo en el display, en la nueva si el display esta mostrando algo es pisado al momento de imprimir. Pero, provee una nueva función para verificar que se está mostrando en el momento en que es invocada \verb|get_current(): str|. Entonces para adaptarnos al nuevo display tenemos que modificar todas las llamadas a las viejas funciones al rededor del sistema agregando la lógica nueva.
+En cierto momento el módulo display dejó de funcionar y se lo reemplazó por otro de un fabricante distinto, que funciona con otro protocolo de comunicación. De la misma manera, la empresa provee una librería para utilizar el display. Pero la interfaz no es la misma que la anterior e incluso algunos comportamientos son diferentes. Por ejemplo, en la primer librería la función de escritura devolvía \verb|False| si se quería escribir y ya estaba mostrándose algo en el display, en la nueva si el display esta mostrando algo es pisado al momento de imprimir. Pero, provee una nueva función para verificar que se está mostrando en el momento en que es invocada \verb|get_current(): str|. Entonces para adaptarnos al nuevo display tenemos que modificar todas las llamadas a las viejas funciones al rededor del sistema agregando la lógica nueva.
 
-\begin{figure}[h]
+\begin{figure}[!h]
 \caption{Configuración original}
 \begin{center}
 \begin{tikzpicture}
@@ -286,6 +287,35 @@ limpiar()
 \end{tikzpicture}
 \end{center}
 \end{figure}
+
+\begin{figure}[!h]
+\caption{Configuración utilizando la solución de la sección anterior \ref{Accesoalhardware}.}
+\begin{center}
+\begin{tikzpicture}
+\umlsimpleclass[]{Cliente}
+
+\umlclass[right=1.5cm of Cliente]{ControlDisplay}
+{}
+{
+escribir(i: str): bool  \\
+limpiar()
+}
+
+\umlclass[right=0.5cm of Cliente,below=2cm of Cliente]{ControlAcme}
+{}
+{
+escribir(i: str): bool  \\
+limpiar()
+}
+
+\umluniassoc[]{Cliente}{ControlDisplay}
+\umlinherit[geometry=|-|]{ControlAcme}{ControlDisplay}
+
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
 
 Para permitir el cambio propuesto sin tener que realizar todas las modificaciones mencionadas, podemos aplicar el patrón \textit{Adapter}, creando un módulo intermedio con la misma interfaz que \textbf{DisplayLib}.
 
@@ -331,9 +361,9 @@ umluniassoc
 
 Por lo tanto el cliente sigue utilizando la misma interfaz para utilizar el display, reduciendo la cantidad y complejidad de los cambios necesarios para utilizar el nuevo display.
 
-Una posible implementación para las funciones \verb|escribir(i: str): bool| y \verb|limpiar()| del módulo \textbf{ControlEmca} es la siguiente:
+Una posible implementación para las funciones \verb|escribir(i: str): bool| y \verb|limpiar()| del módulo \textbf{ControlEmca} es la del código \ref{codigoAdapter}.
 
-\begin{lstlisting}
+\begin{lstlisting}[label={codigoAdapter}, caption=Ejemplo implementación módulo Adapter.]
 bool escribir(char* cadena) {
     if (libEmca.get_current() != "") {
         return False;
@@ -354,29 +384,7 @@ Como se discutió previamente, en casos como este se puede aplicar la arquitectu
 
 \subsection{Subsistemas de control}
 
-Proponemos al creación de un \textit{subsistema de control} por cada propiedad atómica\footnote{Generalmente modificada por un actuador o por la cantidad mínima posible, por ejemplo, dada la propiedad no atómica de la posición en el plano, teniendo dos actuadores uno que modifica la posición en el eje x y otra en el, podemos dividirla en dos propiedades atómicas, posición en el eje x y posición en el eje y} que sea necesaria controlar por el sistema. Como se puede intuir, un subsistema de control se encarga del control de una propiedad en particular y para hacerlo lleva a cabo todas las tareas de la arquitectura a su nivel. Por lo tanto, debe proveer una interfaz que permita setear un valor al que se quiera llevar la propiedad (\textit{setPoint}) y que indique el comienzo de la tarea de control. Un subsistema tiene la siguiente estructura y componentes (similar a la arquitectura):
-
-
-\begin{figure}[h]
-
-\begin{center}
-\begin{tikzpicture}
-\umlsimpleclass[y=1]{Control}
-\umlsimpleclass[y=-1]{Actuadores}
-
-\umlsimpleclass[y=-3,x=-1]{Sensor1}
-\umlsimpleclass[y=-3,x=1]{Sensor2}
-
-\umltrans[geometry=-|-, anchor1=west,anchor2=west,arm1=-1cm]{Sensor1}{Control}
-\umltrans[geometry=-|-,anchor1=east,anchor2=east,arm1=1cm]{Sensor2}{Control}
-\umltrans[anchor1=-60,anchor2=60]{Control}{Actuadores}
-\umltrans[anchor1=-120,anchor2=120]{Control}{Actuadores}
-\umldep[anchor1=-159]{Actuadores}{Sensor1}
-\umldep[anchor1=-21,]{Actuadores}{Sensor2}
-
-\end{tikzpicture}
-\end{center}
-\end{figure}
+Proponemos al creación de un \textit{subsistema de control} por cada variable a manipular\footnote{Ver tabla conceptos arquitectura Control de Procesos \ref{tab:conceptosArq}} que sea necesaria controlar por el sistema. Como se puede intuir, un subsistema de control se encarga del control de una propiedad en particular y para hacerlo lleva a cabo todas las tareas de la arquitectura a su nivel. Por lo tanto, debe proveer una interfaz que permita setear un valor al que se quiera llevar la propiedad (\textit{setPoint}) y que indique el comienzo de la tarea de control. Un subsistema tiene una estructura similar a la de la arquitectura \ref{fig:arqCtrlRobot}, pero su alcance estará restringido a la variable a manipular y las variables medidas relacionadas.
 
 
 Veamos ahora de manera mas concreta qué módulos forman parte de cada componente:
@@ -387,34 +395,35 @@ Veamos ahora de manera mas concreta qué módulos forman parte de cada component
 \caption{Módulos de un subsistema}
 \begin{center}
 \begin{tikzpicture}
-\umlclass[x=-3]{Pipe}
+
+\umlclass[below=6cm of Control]{Sensor}
+{}
+{setConnection(i: Pipe) \\
+signal()
+}
+\umlnote[below left=-1cm and 1cm of Sensor]{Sensor}{
+signal()\{ \\
+\ \ \ \ value = getValue()\\
+\ \ \ \ pipe.write(value)\\
+\}
+}
+
+\umlclass[below=3cm of Control]{Actuador}
+{}
+{actuar()
+}
+\umlclass[left=2cm of Actuador]{Pipe}
 {}
 {read(): Measure \\
 write(i: Measure)
 }
 
-\umlclass[x=2, y=1]{Sensor}
-{}
-{setConnection(i: Pipe) \\
-signal()
-}
-\umlnote[x=3, y=4]{Sensor}{
-signal()\{ \\
-    value = getValue()\\
-    pipe.write(value)\\
-\}
-}
 
-\umlclass[x=-3, y=-3]{Actuador}
-{}
-{actuar()
-}
-
-\umlnote[x=-7, y=-2]{Actuador}{
+\umlnote[below right=0.5cm and 2cm of Actuador]{Actuador}{
 Por lo general se desacopla usando el patrón \textit{command} y su uso puede ser más complejo que solo ejecutar una función.
 }
 
-\umlclass[x=2, y=-3]{Control}
+\umlclass[]{Control}
 {}
 {setPoint(i: Measure)\\
 control() \\
@@ -423,11 +432,11 @@ setAlgoritmo(i: Algoritmo) \\
 setConnection(i: Pipe)
 }
 
-\umlclass[x=7, y=-3]{Algoritmo}
+\umlclass[above right=-1cm and 2cm of Control]{Algoritmo}
 {}
 {calcular(): Measure
 }
-\umlclass[x=7, y=-6]{Data}
+\umlclass[below right=-1.5cm and 2cm of Control]{Data}
 {}
 {setSetPoint(i: Measure) \\
 getSetPoint(): Measure \\

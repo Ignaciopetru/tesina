@@ -40,6 +40,7 @@
 
 %% Package for code listing in Appendix A.
 \usepackage{listings}%   documentation is here https://ctan.org/pkg/listings
+\DeclareCaptionType{code}[Code Listing][Índice de códigos] 
 
 %% Set chemical formulas nicely
 \usepackage[version=4]{mhchem}%   documentation at https://ctan.org/pkg/mhchem
@@ -293,11 +294,13 @@
 \tableofcontents
 \listoffigures
 \listoftables
+\lstlistoflistings
 
 %%% Chapters of thesis  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% If you want to use "double spacing", you should start here...
  \include{conceptos}
+ \include{tecnicas_utiles}
  \include{chapter1}% .tex extension is presumed
 % \include{chapter2}
 % \include{chapter3}

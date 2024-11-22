@@ -74,6 +74,11 @@ El diseño para el cambio, como principio fundamental, se centra en prever modif
 Para abordar estos retos, el diseño modular es clave \cite{Parnas1972}. Este enfoque organiza el software como un conjunto de módulos simples con responsabilidades claramente definidas y relaciones explícitas entre ellos. Cada módulo se diseña para ocultar información específica y gestionar un cambio probable de forma aislada, lo que minimiza el impacto de las modificaciones en el resto del sistema. Por ejemplo, si un sensor cambia su forma de reportar datos, el ajuste puede limitarse al módulo responsable de interactuar con ese sensor.
 
 Además, el principio de diseño abierto-cerrado \cite{DBLP:books/ph/Meyer97} se implementa para garantizar que el sistema pueda extenderse mediante nuevos módulos en lugar de modificar los existentes, reduciendo el riesgo de introducir errores al alterar componentes ya probados. Es decir, que un sistema debe estar abierto a extensiones pero cerrado a modificaciones \cite{DBLP:books/ph/Meyer97}. Esto se complementa con la aplicación de patrones de diseño y estilos arquitectónicos, que aportan soluciones probadas para manejar cambios recurrentes en dominios específicos \cite{Gamma:1995:DPE:186897, DBLP:books/lib/BuschmannHS07}. Por ejemplo, en sistemas robóticos, un estilo arquitectónico basado en bucles de control puede destacar las características esenciales del sistema y facilitar decisiones de diseño óptimas \cite{ShawGarlan1996}.
+\\\\
+\noindent\fbox{\begin{minipage}{\textwidth}
+Principio de Ocultación de la Información: Los ítem con alta probabilidad de cambio son el fundamento para descomponer un sistema en módulos. Cada módulo de la descomposición debe ocultar un único ítem con alta probabilidad de cambio, y debe ofrecer a los demás módulos una interfaz insensible a los cambios anticipados. \cite{Parnas1972}
+\end{minipage}} 
+
 
 \subsection{Patrones de Diseño}
 

@@ -2403,18 +2403,20 @@
     <bcf:citekey order="19" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
     <bcf:citekey order="19" intorder="2">DBLP:books/lib/BuschmannHS07</bcf:citekey>
     <bcf:citekey order="20" intorder="1">ShawGarlan1996</bcf:citekey>
-    <bcf:citekey order="21" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
+    <bcf:citekey order="21" intorder="1">Parnas1972</bcf:citekey>
     <bcf:citekey order="22" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
-    <bcf:citekey order="23" intorder="1">Parnas02</bcf:citekey>
-    <bcf:citekey order="24" intorder="1">Parnas1972</bcf:citekey>
-    <bcf:citekey order="25" intorder="1">ShawGarlan1996</bcf:citekey>
+    <bcf:citekey order="23" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
+    <bcf:citekey order="24" intorder="1">Parnas02</bcf:citekey>
+    <bcf:citekey order="25" intorder="1">Parnas1972</bcf:citekey>
     <bcf:citekey order="26" intorder="1">ShawGarlan1996</bcf:citekey>
-    <bcf:citekey order="27" intorder="1">Parnas02</bcf:citekey>
-    <bcf:citekey order="28" intorder="1">ShawGarlan1996</bcf:citekey>
-    <bcf:citekey order="28" intorder="2">ghezzi2003</bcf:citekey>
-    <bcf:citekey order="28" intorder="3">bass2003</bcf:citekey>
-    <bcf:citekey order="28" intorder="4">DBLP:books/daglib/0030743</bcf:citekey>
-    <bcf:citekey order="29" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
+    <bcf:citekey order="27" intorder="1">ShawGarlan1996</bcf:citekey>
+    <bcf:citekey order="28" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
+    <bcf:citekey order="29" intorder="1">Parnas02</bcf:citekey>
+    <bcf:citekey order="30" intorder="1">ShawGarlan1996</bcf:citekey>
+    <bcf:citekey order="30" intorder="2">ghezzi2003</bcf:citekey>
+    <bcf:citekey order="30" intorder="3">bass2003</bcf:citekey>
+    <bcf:citekey order="30" intorder="4">DBLP:books/daglib/0030743</bcf:citekey>
+    <bcf:citekey order="31" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">
