@@ -2,6 +2,9 @@
 % Version: 1.07, 2024/09/26
 % Documentation: https://ctan.org/pkg/mitthesis
 
+
+
+
 \lstdefinestyle{mystyle}{
     backgroundcolor=\color{CadetBlue!15!white},   
     commentstyle=\color{Red3},
@@ -51,34 +54,34 @@ Notemos que el DRV8838 tiene 3 pines de control, \textit{ENABLE}. \textit{PHASE}
 \label{funciones_pin_drv8838}
 \end{table}
 
-Por lo tanto, con los dos primeros pines podremos cumplir los requerimientos mencionados. \textbf{•}, tendremos dos cables conectados a nuestro microcontrolador \textbf{Arduino}, uno que se dirige a \textit{ENABLE} y otro a \textit{PHASE}. Veamos ahora que código \ref{listing1} necesitamos escribir para poder hacer uso del motor.
+Por lo tanto, con los dos primeros pines podremos cumplir los requerimientos mencionados. Tendremos dos cables conectados a nuestro microcontrolador \textbf{Arduino}, uno que se dirige a \textit{ENABLE} y otro a \textit{PHASE}. En el código \ref{listing1} se encuentran las lineas necesarias para poder configurar el motor para luego poder utilizarlo como en los códigos \ref{codigoMax} y \ref{codigoDet}. Las funciones \verb|pinMode|, \verb|digitalWrite| y \verb|analogWrite| son provistas por el entorno de desarrollo de Arduino. Sus nombres son bastastantes descriptivos de su comportamiento, \verb|pinMode| configura el modo de operacion de un PIN en particular, puede ser \verb|OUTPUT| o \verb|INPUT|. Y tanto \verb|digitalWrite| como \verb|analogWrite|, escriben en un PIN el valor especificado.
 
 \begin{lstlisting}[caption=Configuración inicial,label={listing1}]
 # Notar que los numeros asignados a los pines son arbritarios dentro del conjunto de pines disponibles en nuestro Aruino.
 
 # Constantes globales
-const int DIR\_pin = 7;
-const int VEL\_pin = 9;
+const int DIR_pin = 7;
+const int VEL_pin = 9;
 
 void setup() {
      .
      .
      .
-  pinMode(DIR\_pin, OUTPUT);
-  pinMode(VEL\_pin, OUTPUT);
+  pinMode(DIR_pin, OUTPUT);
+  pinMode(VEL_pin, OUTPUT);
      .
      .
      .
 }
 \end{lstlisting}
 
-\begin{lstlisting}[caption=Máxima velocidad giro horario]
-digitalWrite(DIR\_pin, HIGH);
-analogWrite(VEL\_pin, 255); # Maximo valor aceptado, PWM siempre encendido
+\begin{lstlisting}[caption=Máxima velocidad giro horario,label={codigoMax}]
+digitalWrite(DIR_pin, HIGH);
+analogWrite(VEL_pin, 255); # Maximo valor aceptado, PWM siempre encendido
 \end{lstlisting}
 
-\begin{lstlisting}[caption=Detenerce]
-analogWrite(VEL\_pin, 0);
+\begin{lstlisting}[caption=Detenerce, label={codigoDet}]
+analogWrite(VEL_pin, 0);
 \end{lstlisting}
 
 No es necesario entender por completo que hace cada llamada, pero si es importante comprender que es necesario ejecutar ese código para controlar el motor. Es decir, que si cualquier cliente (se supone que ya definimos que es cliente) del motor en nuestro sistema deberá saber que para hacer que el motor vaya hacia adelante a la mayor velocidad posible es necesario ejecutar las dos funciones indicadas sobre los pines correspondientes al motor. Un pequeño ejemplo podría ser el siguiente \ref{listingMotor}, en el cual se consulta una bandera asociada al estado de un valor y en base a este se acciona el motor.
@@ -88,10 +91,10 @@ No es necesario entender por completo que hace cada llamada, pero si es importan
     .
     .
 if (valor > 100) {
-    digitalWrite(DIR\_pin, HIGH);
-    analogWrite(VEL\_pin, 255);
+    digitalWrite(DIR_pin, HIGH);
+    analogWrite(VEL_pin, 255);
 } else {
-    analogWrite(VEL\_pin, 0);
+    analogWrite(VEL_pin, 0);
 }
     .
     .
@@ -214,8 +217,8 @@ Aún podemos mejorar el diseño haciendo uso del concepto de herencia (anteriorm
 \umlclass[x=0]{MotorDC}
 {}
 {
-    set\_dir(i: Dir) \\ 
-    set\_vel(i: int) \\
+    set_dir(i: Dir) \\ 
+    set_vel(i: int) \\
 }
 
 \umlclass[x=-3, y=-4]{MotorDCDVR8838}
@@ -223,16 +226,16 @@ Aún podemos mejorar el diseño haciendo uso del concepto de herencia (anteriorm
 	MotorDC(i: int, i: int)
 }
 {
-    set\_dir(i: Dir) \\ 
-    set\_vel(i: int) \\
+    set_dir(i: Dir) \\ 
+    set_vel(i: int) \\
 }
 \umlclass[x=3, y=-4]{MotorDCG2}
 {
 	MotorDC(i: Serial)
 }
 {
-    set\_dir(i: Dir) \\ 
-    set\_vel(i: int) \\
+    set_dir(i: Dir) \\ 
+    set_vel(i: int) \\
 }
 \umlinherit[geometry=|-|]{MotorDCDVR8838}{MotorDC}
 \umlinherit[geometry=|-|]{MotorDCG2}{MotorDC}
@@ -265,9 +268,35 @@ Veamos un ejemplo, supóngase que un cierto sistema embebido está utilizando un
     \label{fig:enter-label}
 \end{figure}
 
-Este display recibe la información utilizando comunicación en serie, con un protocolo propio del fabricante. Para facilitar su uso, este provee una librería que implementa la comunicación y provee funciones simples de usar, tales como \textit{escribir(i: str): bool} y \textit{limpiar()}. Por lo tanto, se implementó el sistema utilizando las funciones provistas para comunicarse, múltiples módulos llaman esas funciones.
+Este display recibe la información utilizando comunicación en serie, con un protocolo propio del fabricante. Para facilitar su uso, este provee una librería que implementa la comunicación y provee funciones simples de usar, tales como \verb|escribir(i: str): bool| y \verb|limpiar()|. La primera intenta escribir la cadena de caracteres indicada, pero solo lo hace si el display no está mostrando nada. En ese caso devuelve \verb|True| indicando que la acción fue completada con éxito, en caso contrario, es decir el display está mostrando texto al momento de llamar la función, retorna \verb|False|. \verb|limpiar()|, siempre limpia el display. Por lo tanto, se implementó el sistema utilizando las funciones provistas para comunicarse, múltiples módulos llaman esas funciones.
 
-En cierto momento el módulo display dejó de funcionar y se lo reemplazó por otro de un fabricante distinto, que funciona con otro protocolo de comunicación. De la misma manera, la empresa provee una librería para utilizar el display. Pero la interfaz no es la misma que la anterior e incluso algunos comportamientos son diferentes. Por ejemplo, en la primer librería el método de escritura devolvía \verb|False| si se quería escribir y ya estaba mostrándose algo en el display, en la nueva si el display esta mostrando algo es pisado al momento de imprimir. Pero, provee un nueva método para verificar que se está mostrando en el momento en que es invocada \verb|get_current(): str|. Entonces para adaptarnos al nuevo display tenemos que modificar todas las llamadas a las viejas funciones al rededor del sistema agregando la lógica nueva.
+En cierto momento el módulo display dejó de funcionar y se lo reemplazó por otro de un fabricante distinto, que funciona con otro protocolo de comunicación. De la misma manera, la empresa provee una librería para utilizar el display. Pero la interfaz no es la misma que la anterior e incluso algunos comportamientos son diferentes. Por ejemplo, en la primer librería el método de escritura devolvía \verb|False| si se quería escribir y ya estaba mostrándose algo en el display, en la nueva si el display está mostrando algo el texto es pisado al momento de imprimir. Pero, provee un nueva método para verificar qué es lo que se está mostrando en el momento en que es invocada \verb|get_current(): str|. Entonces para adaptarnos al nuevo display tenemos que modificar todas las llamadas a las viejas funciones al rededor del sistema agregando la lógica nueva, como en el código \ref{cambiosAdapter}. El cambio puedo parecer no muy profundo, pero hay que tener en cuenta que se deben verificar \textbf{todos} los usos de la librería, actualizarlos a mano y re-verificarlos. Además, este es un ejemplo simple, en el mundo real los cambios pueden ser mucho mas profundo y de diferente naturaleza.
+
+\begin{lstlisting}[label={cambiosAdapter}, caption=Ejemplo de modificaciones necesarias para adaptar la nueva librería.]
+libAcme = LibAcme()
+libEmca = LibEmca()
+
+
+// Con ACME
+
+if libAcme.escribir("Hola mundo!") {
+	print("El display estaba vacio, se pudo escribir el nuevo texto.")
+} else {
+	print("El display esta ocupado mostrando algo, no se pudo escribir")
+}
+
+// Con EMCA
+
+if libEmca.get_current() == "" {
+	libEmca.imprimir("Hola mundo!")
+	print("El display estaba vacio, se pudo escribir el nuevo texto.")
+} else {
+	print("El display esta ocupado mostrando algo, no se pudo escribir")
+}
+
+
+\end{lstlisting}
+
 
 \begin{figure}[!h]
 \caption{Configuración original}
@@ -317,11 +346,11 @@ limpiar()
 \end{figure}
 
 
-Para permitir el cambio propuesto sin tener que realizar todas las modificaciones mencionadas, podemos aplicar el patrón \textit{Adapter}, creando un módulo intermedio con la misma interfaz que \textbf{DisplayLib}.
+Para permitir el cambio propuesto sin tener que realizar todas las modificaciones mencionadas, podemos aplicar el patrón \textit{Adapter}, creando un módulo intermedio con la misma interfaz que \textbf{DisplayLib}. El cual utilice los métodos provistos por la librería que encapsula el display con el objetivo de proveer la misma interfaz que la librería original. Podemos ver la nueva estructura en \ref{configNueva}.
 
 \begin{figure}[h]
 \caption{Configuración nueva}
-
+\label{configNueva}
 \begin{center}
 \begin{tikzpicture}
 \umlsimpleclass[x=-4.5,y=1]{Cliente}

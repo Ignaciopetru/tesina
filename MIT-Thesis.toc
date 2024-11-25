@@ -14,15 +14,15 @@
 \contentsline {chapter}{\numberline {3}Problemas comunes}{27}{chapter.3}%
 \contentsline {section}{\numberline {3.1}Acceso al hardware}{27}{section.3.1}%
 \contentsline {section}{\numberline {3.2}Interfaces que no se ajustan perfectamente}{32}{section.3.2}%
-\contentsline {section}{\numberline {3.3}Control en conjunto de dispositivos}{34}{section.3.3}%
-\contentsline {subsection}{\numberline {3.3.1}Subsistemas de control}{35}{subsection.3.3.1}%
-\contentsline {subsection}{\numberline {3.3.2}Ejemplo}{38}{subsection.3.3.2}%
-\contentsline {section}{\numberline {3.4}Obtención de información}{47}{section.3.4}%
-\contentsline {section}{\numberline {3.5}Control anti-rebote}{50}{section.3.5}%
-\contentsline {section}{\numberline {3.6}Manejo de interrupciones}{51}{section.3.6}%
-\contentsline {section}{\numberline {3.7}Máquinas de estado}{51}{section.3.7}%
-\contentsline {section}{\numberline {3.8}Integridad de la información}{57}{section.3.8}%
-\contentsline {section}{\numberline {3.9}Verificación de precondiciones.}{58}{section.3.9}%
-\contentsline {section}{\numberline {3.10}Organización de la ejecución}{60}{section.3.10}%
+\contentsline {section}{\numberline {3.3}Control en conjunto de dispositivos}{35}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Subsistemas de control}{36}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Ejemplo}{39}{subsection.3.3.2}%
+\contentsline {section}{\numberline {3.4}Obtención de información}{48}{section.3.4}%
+\contentsline {section}{\numberline {3.5}Control anti-rebote}{51}{section.3.5}%
+\contentsline {section}{\numberline {3.6}Manejo de interrupciones}{52}{section.3.6}%
+\contentsline {section}{\numberline {3.7}Máquinas de estado}{52}{section.3.7}%
+\contentsline {section}{\numberline {3.8}Integridad de la información}{58}{section.3.8}%
+\contentsline {section}{\numberline {3.9}Verificación de precondiciones.}{59}{section.3.9}%
+\contentsline {section}{\numberline {3.10}Organización de la ejecución}{61}{section.3.10}%
 \contentsline {chapter}{\numberline {A}Code listing}{63}{appendix.Alph1}%
 \contentsline {backmatter}{Referencias}{65}{appendix*.45}%
