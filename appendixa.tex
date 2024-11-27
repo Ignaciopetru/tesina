@@ -3,65 +3,216 @@
 % Documentation: https://ctan.org/pkg/mitthesis
 
 
-\chapter{Code listing}
+\chapter{Patrones de diseño de Gamma}
 
-This example uses the \texttt{listings} package.
+\section{Adapter}
 
-\bigskip
+\textbf{Intención}
 
-\lstdefinestyle{mystyle}{
-    backgroundcolor=\color{CadetBlue!15!white},   
-    commentstyle=\color{Red3},
-    numberstyle=\tiny\color{gray},
-    stringstyle=\color{Blue3},
-    basicstyle=\small\ttfamily,
-    breakatwhitespace=false,         
-    breaklines=true,                 
-    numbers=left,                    
-    numbersep=5pt,                  
-    showspaces=false,                
-    showstringspaces=false,
-    showtabs=false,                  
-    tabsize=2
-}%
-\lstset{language=[5.3]Lua,style={mystyle}}%
+Convierte la interfaz de una clase en otra interfaz que los clientes esperan, permitiendo que clases con interfaces incompatibles trabajen juntas. Es una solución para integrar clases existentes sin modificar su código original, asegurando que cumplan con los requisitos de una aplicación específica.
 
-\begin{lstlisting}
-function print_rate(kappa,xMin,xMax,npoints,option)
-     local c = 1-kappa*kappa
-     local croot = (1-kappa*kappa)^(1/2)
-     local logx = math.log(xMin)
-     local psi = 0
-     
-     local xstep = (math.log(xMax)-math.log(xMin))/(npoints-1)
-     
-     arg0 = math.sqrt(xMin/c)
-     psi0 = (1/c)*math.exp((kappa*arg0)^2)*(erfc(kappa*arg0)-erfc(arg0))
-     
-     if option~=[[]] then
-  		 tex.sprint("\\addplot+["..option.."] coordinates{") 
-  		 -- addplot+ for color cycle to work
-     else
-  		 tex.sprint("\\addplot+ coordinates{")
-     end
-     tex.sprint("("..xMin..","..psi0..")")
-     
-     for i=1, (npoints-1) do
-  		 x = math.exp(logx + xstep)
-  		 arg = math.sqrt(x/c)
-  		 karg = kappa*arg
-  		 if karg<5 then 
-		 -- this break compensates for exp(karg^2), which multiplies the error in the erf approximation...
-  		    logpsi = -math.log(croot) + karg^2 + math.log(erfc(karg)-erfc(arg))
-  		    psi = math.exp(logpsi)
-  		 else
-  		    psi = (1/(karg) - 1/(2*(karg^3)) + 3/(4*(arg^5)) )/(1.77245385*croot)
-  		    -- this is the large x asymptote of the reaction rate
-  		 end
-  		 logx = math.log(x)
-  		 tex.sprint("("..x..","..psi..")")
-     end
-     tex.sprint("}")
-end
-\end{luacode*}
-\end{lstlisting}
+\textbf{Aplicabilidad}
+
+\begin{itemize}
+\item Se desea usar una clase existente cuya interfaz no coincide con la requerida.
+\item Se necesita crear una clase reutilizable que coopere con clases no relacionadas o no previstas inicialmente.
+\item Se necesita adaptar varias subclases existentes sin modificar su interfaz de manera individual.
+\end{itemize}
+
+
+\textbf{Participantes}
+
+\begin{itemize}
+\item \textbf{Objetivo}\\
+Define la interfaz específica del dominio que el cliente utiliza.
+\item \textbf{Clientes}\\
+Colabora con objetos que cumplen con la interfaz del \textbf{Objetivo}.
+\item \textbf{Adaptable}\\
+Define una interfaz existente que necesita ser adaptada.
+\item \textbf{Adaptador}\\
+Adapta la interfaz del \textbf{Adaptable} para que cumpla con la interfaz del \textbf{Objetivo}.
+\end{itemize}
+
+\textbf{Estructura}
+
+\begin{figure}[h]
+\caption{Estructura patrón \textbf{Adapter}}
+\begin{center}
+\begin{tikzpicture}
+\umlsimpleclass[x=-4.5,y=1]{Cliente}
+
+\umlclass[x=0,y=1]{Objetivo}
+{}
+{
+peticion()
+}
+\umlclass[below=1.5cm of Objetivo]{Adaptador}
+{}
+{
+peticion()
+}
+\umlclass[x=6]{Adaptable}
+{}
+{
+peticionConcreta()
+}
+umluniassoc
+\umlinherit[geometry=|-|]{Adaptador}{Objetivo}
+\umluniassoc[]{Cliente}{Objetivo}
+\umluniassoc[geometry=-|-]{Adaptador}{Adaptable}
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+
+\section{Command}
+
+
+\textbf{Intención}
+
+El patrón encapsula una solicitud como un módulo, permitiendo parametrizar clientes con diferentes solicitudes, encolar o registrar solicitudes, y admitir operaciones reversibles. Este enfoque facilita la creación de sistemas flexibles y extensibles que manejan comandos de manera uniforme.
+
+\textbf{Aplicabilidad}
+
+\begin{itemize}
+\item Parametrizar objetos con una acción a realizar. Esta parametrización puede expresarse en un lenguaje procedimental mediante una función de callback, es decir, una función registrada para ser llamada posteriormente. Los comandos representan una solución orientada a objetos que reemplaza los callbacks.
+
+\item Especificar, encolar y ejecutar solicitudes en diferentes momentos. Un módulo Command puede tener una vida útil independiente de la solicitud original. Si el receptor de una solicitud puede representarse de forma independiente del espacio de direcciones, puedes transferir un objeto Command a otro proceso y ejecutar la solicitud allí.
+
+\item Soportar la funcionalidad de deshacer ("undo"). El método Execute del Command puede almacenar el estado necesario para revertir sus efectos. La interfaz del Command debe incluir una operación Unexecute para revertir los efectos de una ejecución previa. Los comandos ejecutados se almacenan en una lista de historial, lo que permite deshacer y rehacer a múltiples niveles navegando hacia adelante y hacia atrás en la lista mientras se llaman a Unexecute y Execute.
+
+\item Registrar cambios para que puedan reaplicarse en caso de una falla del sistema. Al ampliar la interfaz del Command con operaciones de carga y almacenamiento, puedes mantener un registro persistente de los cambios. Recuperar un sistema tras una falla implica recargar los comandos registrados desde el disco y reejecutarlos mediante la operación Execute.
+
+\item Estructurar un sistema en torno a operaciones de alto nivel basadas en operaciones primitivas. Esta estructura es común en sistemas de información que admiten transacciones. Una transacción encapsula un conjunto de cambios a los datos. El patrón Command proporciona una forma de modelar transacciones, ya que los comandos tienen una interfaz común, lo que permite invocar todas las transacciones de la misma manera. Además, el patrón facilita la extensión del sistema con nuevas transacciones.
+\end{itemize}
+
+
+\textbf{Participantes}
+
+\begin{itemize}
+\item \textbf{Orden}\\
+Declara una interfaz para ejecutar una operación.
+
+\item \textbf{OrdenConcreta}\\
+Define una asociación entre un módulo receptor (Receiver) y una acción.
+Implementa el método Execute invocando las operaciones correspondientes en el receptor.
+
+\item \textbf{Cliente}\\
+Utiliza OrdenConcreta y configura su receptor.
+
+\item \textbf{Invocador}\\
+Solicita al comando que lleve a cabo la solicitud.
+
+\item \textbf{Receptor}\\
+Conoce cómo realizar las operaciones asociadas con la ejecución de una solicitud. Cualquier clase puede actuar como un receptor.
+\end{itemize}
+
+
+\textbf{Estructura}
+
+\begin{figure}[h]
+\caption{Estructura patrón \textbf{Command}}
+\begin{center}
+\begin{tikzpicture}
+\umlsimpleclass[]{Invocador}
+\umlclass[right=2cm of Invocador]{Orden}
+{}
+{
+ejecutar()
+}
+\umlclass[below=2cm of Invocador]{Receptor}
+{}
+{
+acción
+}
+
+\umlclass[below=1.45cm of Orden]{OrdenConcreta}
+{}
+{
+ejecutar()
+}
+
+\umluniassoc{OrdenConcreta}{Receptor}
+\umlinherit{OrdenConcreta}{Orden}
+\umluniaggreg{Invocador}{Orden}
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+
+\section{State}
+
+
+\textbf{Intención}
+
+Permitir que un módulo altere su comportamiento cuando su estado interno cambia. El módulo parecerá cambiar de clase.
+
+\textbf{Aplicabilidad}
+
+\begin{itemize}
+\item El comportamiento de un objeto depende de su estado, y debe cambiar su comportamiento en tiempo de ejecución según ese estado.
+\item Las operaciones suelen tener declaraciones condicionales grandes y complejas que dependen del estado del módulo. Este estado generalmente está representado por una o más constantes enumeradas. Frecuentemente, varias operaciones comparten la misma estructura condicional. El patrón separa cada rama de la estructura condicional en una clase independiente. Esto permite tratar el estado del módulo como un módulo por derecho propio, que puede variar independientemente de otros módulos.
+\end{itemize}
+
+\textbf{Participantes}
+
+\begin{itemize}
+\item \textbf{Contexto}\\
+Define la interfaz de interés para los clientes. Mantiene una instancia de una subclase de EstadoConcreto que define el estado actual.
+
+\item \textbf{Estado}\\
+Define una interfaz para encapsular el comportamiento asociado con un estado particular del contexto.
+
+\item \textbf{EstadoConcreto}\\
+Cada subclase implementa un comportamiento asociado con un estado del contexto.
+\end{itemize}
+
+
+\textbf{Estructura}
+
+\begin{figure}[h]
+\caption{Estructura patrón \textbf{State}}
+\begin{center}
+\begin{tikzpicture}
+\umlclass[]{Contexto}
+{}
+{
+peticion()
+}
+\umlnote[below=1cm of Contexto]{Contexto}
+{
+estado.manejar()
+}
+
+\umlclass[right=7cm of Context]{Estado}
+{}
+{
+manejar()
+}
+\umlclass[below left=1.5cm and -0.5cm of Estado]{EstadoConcretoA}
+{}
+{
+manejar()
+}
+\umlclass[below right=1.5cm and -0.5cm of Estado]{EstadoConcretoB}
+{}
+{
+manejar()
+}
+
+\umlinherit[geometry=|-|]{EstadoConcretoB}{Estado}
+\umlinherit[geometry=|-|]{EstadoConcretoA}{Estado}
+\umluniaggreg[]{Contexto}{Estado}
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+
+
+
+
+
+
+

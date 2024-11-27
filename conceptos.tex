@@ -65,6 +65,7 @@ Además, si tomamos en cuenta los ejemplos que se presentan tanto en \cite{noerg
 
 
 \section{Ingeniería de Software}
+\label{ingso}
 
 La arquitectura y el diseño del software se consideran herramientas esenciales para lograr atributos importantes de calidad del software, como la modificabilidad, reusabilidad, mantenibilidad, etc.\cite{ShawGarlan1996, ghezzi2003, bass2003, DBLP:books/daglib/0030743}
 Tradicionalmente, el software para robots tiende a desarrollarse de manera monolítica, con pocas funciones de gran tamaño y numerosos condicionales anidados, o mediante una descomposición funcional básica que resulta ineficiente para mantener y reutilizar componentes \cite{code-1,code-2}. Frente a esto, se propone un diseño sistemático basado en principios de la ingeniería de software, aplicados para anticipar y manejar los cambios \cite{Gamma:1995:DPE:186897, DBLP:books/lib/BuschmannHS07}.
@@ -74,10 +75,56 @@ El diseño para el cambio, como principio fundamental, se centra en prever modif
 Para abordar estos retos, el diseño modular es clave \cite{Parnas1972}. Este enfoque organiza el software como un conjunto de módulos simples con responsabilidades claramente definidas y relaciones explícitas entre ellos. Cada módulo se diseña para ocultar información específica y gestionar un cambio probable de forma aislada, lo que minimiza el impacto de las modificaciones en el resto del sistema. Por ejemplo, si un sensor cambia su forma de reportar datos, el ajuste puede limitarse al módulo responsable de interactuar con ese sensor.
 
 Además, el principio de diseño abierto-cerrado \cite{DBLP:books/ph/Meyer97} se implementa para garantizar que el sistema pueda extenderse mediante nuevos módulos en lugar de modificar los existentes, reduciendo el riesgo de introducir errores al alterar componentes ya probados. Es decir, que un sistema debe estar abierto a extensiones pero cerrado a modificaciones \cite{DBLP:books/ph/Meyer97}. Esto se complementa con la aplicación de patrones de diseño y estilos arquitectónicos, que aportan soluciones probadas para manejar cambios recurrentes en dominios específicos \cite{Gamma:1995:DPE:186897, DBLP:books/lib/BuschmannHS07}. Por ejemplo, en sistemas robóticos, un estilo arquitectónico basado en bucles de control puede destacar las características esenciales del sistema y facilitar decisiones de diseño óptimas \cite{ShawGarlan1996}.
-\\\\
+
+\subsection{Metodología de Parnas}
+
+La metodología de \textbf{Parnas}\cite{Parnas1972}, conocida como Diseño Basado en Ocultación de la Información (DBOI), es una estrategia de diseño modular que tiene como objetivo preparar los sistemas de software para gestionar el cambio de manera eficiente y con el menor costo posible. Esta metodología parte del principio de que los requerimientos de un sistema no son inmutables, sino que evolucionarán durante su vida útil. Por ello, el diseño debe anticipar y facilitar la incorporación de cambios sin comprometer la integridad del sistema.
+
 \noindent\fbox{\begin{minipage}{\textwidth}
-Principio de Ocultación de la Información: Los ítem con alta probabilidad de cambio son el fundamento para descomponer un sistema en módulos. Cada módulo de la descomposición debe ocultar un único ítem con alta probabilidad de cambio, y debe ofrecer a los demás módulos una interfaz insensible a los cambios anticipados. \cite{Parnas1972}
+Principio de Ocultación de la Información: Los ítem con alta probabilidad de cambio son el fundamento para descomponer un sistema en módulos. Cada módulo de la descomposición debe ocultar un \textbf{único} ítem con alta probabilidad de cambio, y debe ofrecer a los demás módulos una interfaz insensible a los cambios anticipados. \cite{Parnas1972}
 \end{minipage}} 
+\\\\
+\indent
+El núcleo de esta metodología es la identificación de los ítems con alta probabilidad de cambio dentro del sistema. Estos ítems representan aspectos de diseño o implementación susceptibles de modificaciones futuras, como algoritmos, estructuras de datos, interfaces con hardware o incluso requerimientos del usuario (ver lista estendida en \ref{listaItems}). Una vez identificados, Parnas sugiere aislar cada ítem en módulos independientes, asegurando que cada módulo oculte las decisiones de diseño específicas que podrían cambiar. Esto se logra diseñando interfaces que no expongan detalles de implementación, permitiendo que los módulos interactúen sin conocer sus detalles internos.
+
+La razón por la que queremos aplicar esta metodología es clara: minimizar los costos asociados al desarrollo y mantenimiento del software. Al aislar las áreas susceptibles de cambio, cualquier modificación futura afectará únicamente al módulo correspondiente, sin propagarse al resto del sistema. Además, esta aproximación mejora la capacidad de escalar el sistema, facilita la colaboración en equipos de desarrollo grandes y permite que diferentes programadores trabajen en módulos específicos de manera independiente.
+
+La metodología de Parnas nos ayuda a diseñar para el cambio porque impone una disciplina clara en la forma en que los módulos se estructuran e interactúan. Al encapsular las decisiones de diseño que podrían cambiar, evitamos la degradación de la integridad conceptual del sistema y reducimos significativamente el riesgo de introducir errores al realizar modificaciones. En definitiva, el DBOI fomenta un diseño robusto y adaptable, preparado para enfrentar la evolución inevitable de los sistemas de software.
+
+
+Los pasos de la metodología son:
+
+\begin{enumerate}
+	\item Identificar los ítem con probabilidad de cambio presentes en los requerimientos.
+	\item Analizar la diversas formas en que cada ítem puede cambiar.
+	\item Se asigna una probabilidad de cambio a cada variación analizada.
+	\item Aislar en módulos separados los ítem cuya probabilidad de cambio sea alta; implícitamente este punto indica que en cada módulo se debe aislar un único ítem con probabilidad de cambio.
+	\item Diseñar las interfaces de los módulos de manera que resulten insensibles a los cambios anticipados.
+
+\end{enumerate}
+
+
+
+\subsection{Items de cambio comunes}
+\label{listaItems}
+
+Cuando se diseña pensando en el cambio, una tarea que se agrega es identificar las características o requerimientos del sistema que pueden variar en el tiempo. Naturalmente existen elementos que son mas probables a cambiar que otros, por lo que resulta importante anticiparse a esos cambios en particular. Algunos autores mencionaron algunos items de cambio comunes entre múltiples sistemas \cite{Parnas02}.
+
+\begin{itemize}
+	\item Contracción o extension de requisitos.
+	\item Configuraciones de hardware.
+	\item Formato de los datos de entrada y salida.
+	\item Estructuras de datos.
+	\item Algoritmos.
+	\item Algunos usuarios pueden requerir solo un subconjunto de los servicios o características que otros usuarios necesitan.
+	\item Dispositivos periféricos.
+	\item Entorno socio-cultural (moneda, impuestos, fechas, idioma, etc.).
+	\item Cambios propios del dominio de aplicación.
+	\item Cambios propios del negocio de la compañía desarrolladora.
+	\item Interconexión con otros sistemas.
+\end{itemize}
+
+Es útil consultar estos items a la hora de diseñar siguiendo los criterios de modularización de \cite{Parnas1972}.
 
 
 \subsection{Patrones de Diseño}
@@ -104,25 +151,6 @@ Notar no solo se quiere saber como resolver un problema, sino que se busca que l
 
 Para anticiparse al cambio, los patrones aseguran que un sistema pueda cambiar de manera concreta, es decir, que se deja que algún aspecto de la estructura varíe de manera independiente y esperada.
 
-\subsection{Items de cambio comunes}
-
-Cuando se diseña pensando en el cambio, una tarea que se agrega es identificar las características o requerimientos del sistema que pueden variar en el tiempo. Naturalmente existen elementos que son mas probables a cambiar que otros, por lo que resulta importante anticiparse a esos cambios en particular. Algunos autores mencionaron algunos items de cambio comunes entre múltiples sistemas \cite{Parnas02}.
-
-\begin{itemize}
-	\item Contracción o extension de requisitos.
-	\item Configuraciones de hardware.
-	\item Formato de los datos de entrada y salida.
-	\item Estructuras de datos.
-	\item Algoritmos.
-	\item Algunos usuarios pueden requerir solo un subconjunto de los servicios o características que otros usuarios necesitan.
-	\item Dispositivos periféricos.
-	\item Entorno socio-cultural (moneda, impuestos, fechas, idioma, etc.).
-	\item Cambios propios del dominio de aplicación.
-	\item Cambios propios del negocio de la compañía desarrolladora.
-	\item Interconexión con otros sistemas.
-\end{itemize}
-
-Es útil consultar estos items a la hora de diseñar siguiendo los criterios de modularización de \cite{Parnas1972}.
 
 \subsection{Arquitectura de software}
 
