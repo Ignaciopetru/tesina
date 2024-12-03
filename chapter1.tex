@@ -19,17 +19,21 @@
     showstringspaces=false,
     showtabs=false,                  
     tabsize=2,
-    language=C
+    language=C,
+    basicstyle=\ttfamily,
+	keywordstyle=\color{blue}\ttfamily,
+	stringstyle=\color{red}\ttfamily,
+    commentstyle=\color{green}\ttfamily,
+    morecomment=[l][\color{magenta}]{\#}
 }%
-\lstset{language=C,style={mystyle}}%
-
+\lstset{language=C++,style={mystyle}}%
 \chapter{Problemas comunes}
 
 \section{Acceso al hardware}
 \label{Accesoalhardware}
 Una de las características distintivas de los sistemas embebidos es que trabajan directamente con dispositivos de hardware. Cada uno de estos tiene sus propios protocolos de comunicación y estándares de funcionamiento (por ejemplo, direcciones de memoria, codificación de bits, etc), por lo tanto el software se debe ajustar a sus requerimientos. Como se puede entender esta tarea no es simple y puede demandar mucho esfuerzo cada vez que se quiera modificar o agregar un componente de hardware. A su vez, puede que múltiples módulos de nuestro sistema embebido quieran acceder al dispositivo, por lo que cada uno debe encargarse de la comunicación creando código repetido y complicando aún más las modificaciones. 
 
-Para entender los inconvenientes que puede conllevar no diseñar pensando en el cambio veamos un ejemplo simple. Suponga que nuestro sistema embebido debe controlar un motor de corriente continua (DC) y que el software para hacerlo corre en un microcontrolador Arduino. Los requerimientos definen que es necesario poder asignar el sentido y la velocidad de rotación del motor según se necesite. Para controlar el motor se utiliza un módulo \textit{DRV8838}, el cual se coloca entre el microcontrolador y el motor. Es necesario ya que el microcontrolador y su plataforma no pueden manejar las potencias necesarias para hacer funcionar el dispositivo. Podemos ver el conexionado del mismo en la figura \ref{drv8838}.
+Para entender los inconvenientes que puede conllevar no diseñar pensando en el cambio veamos un ejemplo simple. Suponga que nuestro sistema embebido debe controlar un motor de corriente continua (\gls{DC}) y que el software para hacerlo corre en un microcontrolador Arduino. Los requerimientos definen que es necesario poder asignar el sentido y la velocidad de rotación del motor según se necesite. Para controlar el motor se utiliza un módulo \gls{DRV8838}, el cual se coloca entre el microcontrolador y el motor. Es necesario ya que el microcontrolador y su plataforma no pueden manejar las potencias necesarias para hacer funcionar el dispositivo. Podemos ver el conexionado del mismo en la figura \ref{drv8838}.
 
 \begin{figure}[h]
     \centering
@@ -38,7 +42,7 @@ Para entender los inconvenientes que puede conllevar no diseñar pensando en el 
     \label{drv8838}
 \end{figure}
 
-Notemos que el DRV8838 tiene 3 pines de control, \textit{ENABLE}. \textit{PHASE} y \textit{SLEEP} pero solo utilizaremos los 2 primeros para simplificar el ejemplo. De todas formas, en esta tabla \ref{funciones_pin_drv8838} podemos ver la función de cada pin.
+Notemos que el \gls{DRV8838} tiene 3 pines de control, \textit{ENABLE}. \textit{PHASE} y \textit{SLEEP} pero solo utilizaremos los 2 primeros para simplificar el ejemplo. De todas formas, en esta tabla \ref{funciones_pin_drv8838} podemos ver la función de cada pin.
 
 
 \begin{table}[h]
@@ -54,7 +58,7 @@ Notemos que el DRV8838 tiene 3 pines de control, \textit{ENABLE}. \textit{PHASE}
 \label{funciones_pin_drv8838}
 \end{table}
 
-Por lo tanto, con los dos primeros pines podremos cumplir los requerimientos mencionados. Tendremos dos cables conectados a nuestro microcontrolador \textbf{Arduino}, uno que se dirige a \textit{ENABLE} y otro a \textit{PHASE}. En el código \ref{listing1} se encuentran las lineas necesarias para poder configurar el motor para luego poder utilizarlo como en los códigos \ref{codigoMax} y \ref{codigoDet}. Las funciones \verb|pinMode|, \verb|digitalWrite| y \verb|analogWrite| son provistas por el entorno de desarrollo de Arduino. Sus nombres son bastastantes descriptivos de su comportamiento, \verb|pinMode| configura el modo de operacion de un PIN en particular, puede ser \verb|OUTPUT| o \verb|INPUT|. Y tanto \verb|digitalWrite| como \verb|analogWrite|, escriben en un PIN el valor especificado.
+Por lo tanto, con los dos primeros pines podremos cumplir los requerimientos mencionados. Tendremos dos cables conectados a nuestro \gls{microcontrolador} \gls{arduino}, uno que se dirige a \textit{ENABLE} y otro a \textit{PHASE}. En el código \ref{listing1} se encuentran las lineas necesarias para poder configurar el motor para luego poder utilizarlo como en los códigos \ref{codigoMax} y \ref{codigoDet}. Las funciones \verb|pinMode|, \verb|digitalWrite| y \verb|analogWrite| son provistas por el entorno de desarrollo de Arduino. Sus nombres son bastastantes descriptivos de su comportamiento, \verb|pinMode| configura el modo de operacion de un PIN en particular, puede ser \verb|OUTPUT| o \verb|INPUT|. Y tanto \verb|digitalWrite| como \verb|analogWrite|, escriben en un PIN el valor especificado.
 
 \begin{lstlisting}[caption=Configuración inicial,label={listing1}]
 # Notar que los numeros asignados a los pines son arbritarios dentro del conjunto de pines disponibles en nuestro Aruino.
@@ -132,7 +136,7 @@ if (valor > 100) {
     Por lo tanto debemos modificar todos los usos de la antigua implementación por la nueva, lo cual además requerir un esfuerzo considerable, da pie a errores y obliga a re-probar código que ya se sabia que funcionaba correctamente.
 \end{itemize}
 
-Todos estos inconvenientes son derivados de que el \textit{hardware} comprende un ítem de cambio frecuente; por lo que si seguimos la metodología de Parnas \cite{Parnas1972}, debemos asignarle un módulo \ref{interfazMotor}. Este es una representación virtual de hardware que debe proveer una interfaz lo suficientemente insensible a la implementación. Es decir, debemos pensar en lo que, en este caso, el motor siempre va a hacer independientemente de los posibles cambios que sufra el hardware subyacente. Como afirma Parnas en \cite{Parnas02, parnas1977abstract}, debemos construir interfaces con la cantidad de mínima de métodos del modo más abstracto posible, sin agregar métodos que puedan ser reemplazados utilizando otros ya definidos, \textit{abstracción} y \textit{encapsulando} con el objetivo de ocultar la implementación.
+Todos estos inconvenientes son derivados de que el \textit{hardware} comprende un ítem de cambio frecuente; por lo que si seguimos la metodología de Parnas (ver \ref{metoParnas}), debemos asignarle un módulo \ref{interfazMotor}. Este es una representación virtual de hardware que debe proveer una interfaz lo suficientemente insensible a la implementación. Es decir, debemos pensar en lo que, en este caso, el motor siempre va a hacer independientemente de los posibles cambios que sufra el hardware subyacente. Como afirma Parnas en \cite{Parnas02, parnas1977abstract}, debemos construir interfaces con la cantidad de mínima de métodos del modo más abstracto posible, sin agregar métodos que puedan ser reemplazados utilizando otros ya definidos, \textit{abstracción} y \textit{encapsulando} con el objetivo de ocultar la implementación.
 Un motor DC siempre recibirá ordenes para definir su sentido y velocidad de rotación. Veamos como podemos definir este módulo y que ventajas nos trae hacerlo.
 
 \begin{figure}
@@ -208,7 +212,7 @@ void set_vel(vel: int) {
 }
 \end{lstlisting}
 
-Aún podemos mejorar el diseño haciendo uso del concepto de herencia de interfaz (explicado en la seccion \ref{ingso}). Esto nos permitirá reutilizar módulos ya implementados y abstraer aun más a los clientes de la implementación. Para hacerlo definiremos un módulo MotorDC abstracto del cual heredarán la interfaz cada modelo o combinación de motor y controlador. En este caso tendremos la estructura de la figura \ref{estructuraHerencia}.
+Aún podemos mejorar el diseño haciendo uso del concepto de herencia de interfaz (explicado en la sección \ref{ingso}). Esto nos permitirá reutilizar módulos ya implementados y abstraer aun más a los clientes de la implementación. Para hacerlo definiremos un módulo \textbf{MotorDC} abstracto del cual heredarán la interfaz cada modelo o combinación de motor y controlador. En este caso tendremos la estructura de la figura \ref{estructuraHerencia}.
 
 \begin{figure}
 \caption{Módulo MotorDC abstracto y estructura de herencia.}
@@ -408,13 +412,13 @@ void limpiar() {
 \end{lstlisting}
 
 \section{Control en conjunto de dispositivos}
-Muchas aplicaciones embebidas robóticas controlan actuadores que deben trabajar en conjunto para lograr el efecto deseado. Por ejemplo, para lograr el movimiento coordinado de un brazo robótico con múltiples articulaciones, todos los motores deben trabajar a la par. De manera similar, el uso de propulsores en una nave espacial en tres dimensiones requiere que muchos de estos dispositivos actúen en el momento preciso y con la cantidad correcta de fuerza para lograr la estabilización de la actitud. En ambos casos existe comunicación entre todos los componentes, ya sea para encadenar la ejecución de ciertos movimientos o para avisar de restricciones. Esto no es tarea simple y requiere de muchas lineas de código, por lo que un diseño orientado al cambio resulta clave.
+Muchas aplicaciones embebidas robóticas controlan \gls{actuadores} que deben trabajar en conjunto para lograr el efecto deseado. Por ejemplo, para lograr el movimiento coordinado de un brazo robótico con múltiples articulaciones, todos los motores deben trabajar a la par. De manera similar, el uso de propulsores en una nave espacial en tres dimensiones requiere que muchos de estos dispositivos actúen en el momento preciso y con la cantidad correcta de fuerza para lograr la estabilización de la actitud. En ambos casos existe comunicación entre todos los componentes, ya sea para encadenar la ejecución de ciertos movimientos o para avisar de restricciones. Esto no es tarea simple y requiere de muchas lineas de código, por lo que un diseño orientado al cambio resulta clave.
 
 Como se discutió previamente, en casos como este se puede aplicar la arquitectura de \textit{Control de procesos}. Este hecho no resuelve todos nuestros problemas de diseño, solo nos brinda una guía y un mecanismo de funcionamiento para el sistema. Veamos que estructuras podemos usar para llevar a cabo esta arquitectura de una manera simple y probada (por ejemplo, en el robot desmalezador).
 
 \subsection{Subsistemas de control}
 
-Proponemos al creación de un \textit{subsistema de control} por cada variable a manipular\footnote{Ver tabla conceptos arquitectura Control de Procesos \ref{tab:conceptosArq}} que sea necesaria controlar por el sistema. Como se puede intuir, un subsistema de control se encarga del control de una propiedad en particular y para hacerlo lleva a cabo todas las tareas de la arquitectura a su nivel. Por lo tanto, debe proveer una interfaz que permita setear un valor al que se quiera llevar la propiedad (\textit{setPoint}) y que indique el comienzo de la tarea de control. Un subsistema tiene una estructura similar a la de la arquitectura \ref{fig:arqCtrlRobot}, pero su alcance estará restringido a la variable a manipular y las variables medidas relacionadas.
+Proponemos al creación de un \textit{subsistema de control} por cada variable a manipular\footnote{Ver tabla conceptos arquitectura Control de Procesos \ref{tab:conceptosArq}} que sea necesaria controlar por el sistema. Como se puede intuir, un subsistema de control se encarga del control de una propiedad en particular y para hacerlo lleva a cabo todas las tareas de la arquitectura a su nivel. Por lo tanto, debe proveer una interfaz que permita setear un valor al que se quiera llevar la propiedad (\textit{setPoint} (ver  \ref{tab:conceptosArq})) y que indique el comienzo de la tarea de control. Un subsistema tiene una estructura similar a la de la arquitectura \ref{fig:arqCtrlRobot}, pero su alcance estará restringido a la variable a manipular y las variables medidas relacionadas.
 
 
 Veamos ahora de manera mas concreta qué módulos forman parte de cada componente:
@@ -563,9 +567,36 @@ Se necesita desarrollar el software de control de un brazo robótico que consta 
 {\includegraphics[width=0.5\textwidth]{Screenshot from 2024-08-29 18-44-50.png}\par}
 \end{centering}
 \end{figure}
+
+\noident
+\textbf{Solución libro}
 \\
 \noident
-\textbf{Diseño}
+El ejemplo que plantea el libro es similar al descrito, pero el brazo robótico tiene más articulaciones y actuadores. Como solución, se propone la creación de un módulo llamado \textbf{RobotArmManager}, cuya función es gestionar los actuadores y coordinar su comportamiento. Además, para cada tipo de articulación o actuador, se crea un módulo específico encargado de su control. Este módulo proporciona métodos para consultar el estado actual (posición, longitud, etc.) y otros para configurar un valor similar a un \textit{set-point}. Dichos métodos desempeñan el rol de ejecutores de la acción, es decir, toman un valor \textit{set-point}, ejecutan la acción y retornan \verb|True| si fue satisfactoria, o \verb|False| en caso contrario.
+
+El comportamiento del sistema comienza con la generación de una lista de pasos a realizar. Luego, se itera sobre esta lista ejecutando las acciones definidas en cada paso. Como el sistema debe interrumpir la ejecución si encuentra un error, el \textbf{RobotArmManager} verifica el valor de retorno tras cada acción. La ejecución de un movimiento completo finaliza cuando se completan todos los pasos generados previamente por el método \verb|graspAt(i: Coordenadas)|.
+
+La solución propuesta parece estar un nivel por encima de lo que se esperaría para este caso. Aunque no hay suficiente información sobre el hardware del brazo robótico, generalmente mover una articulación no es tan simple como invocar un método. Este proceso suele requerir el control continuo de un motor paso a paso, que opera mediante pulsos que avanzan un paso. Por lo tanto, los módulos encargados de los movimientos probablemente tengan más responsabilidades de las que se plantean en el libro. Además, sería necesario implementar un sistema de control más complejo, utilizando algún tipo de \textit{timer} o espera, para garantizar que el motor paso a paso tenga el tiempo necesario para actuar.
+
+De todas formas, suponiendo que los módulos mencionados se adaptan al hardware subyacente, la manera en la que el \textbf{RobotArmManager} interactúa con ellos resulta rígida, tanto por la invocación directa como por la dependencia del valor de retorno. Esto se evidencia en el código resultante, que incluye múltiples sentencias \textit{if} consecutivas.
+
+Por otro lado, un ítem de cambio común son las estructuras de datos, como se mencionó en \ref{listaItems}. Por ello, establecer el uso de una lista directamente en el diseño no responde a una buena práctica.
+
+Es posible que el problema haya sido simplificado con fines didácticos. Sin embargo, la forma planteada parece alejarse de una implementación realista, dejando requisitos menos específicos que podrían dar lugar a diferentes interpretaciones.
+
+Por le lado de la aplicacion del patron \textit{Mediator}, Gamma establece que es aplicable en los siguientes casos:
+\begin{itemize}
+\item Un conjunto de módulos se comunica de maneras bien definidas pero complejas. Las interdependencias resultantes son desestructuradas y difíciles de comprender.
+
+\item Reutilizar un módulo resulta complicado porque este se refiere y se comunica con muchos otros módulos.
+
+\item Un comportamiento distribuido entre varios módulos debería ser personalizable sin requerir una gran cantidad de subclases.
+\end{itemize}
+
+Entiendo que la estructura lograda sea similar al patrón, pero originalmente los módulos encargados de ejecutar tareas relacionadas con un actuador específico no necesitaban comunicarse entre sí. Según el propósito del patrón, Gamma establece que el objetivo principal es reducir el acoplamiento, evitando que los módulos se refieran directamente entre ellos. Y este objetivo parece estar logrado en el diseño propuesto.
+
+\noident
+\textbf{Solución orientada al cambio}
 \\
 \noident
 La idea es utilizar el concepto de subsistemas que se introdujo previamente, para ello primero necesitamos identificar las propiedades del mundo físico que debemos controlar. Claramente, lo que se quiere modificar es la posición y el estado de la pinza del brazo, para hacerlo tenemos distintos actuadores que intervienen en diferentes propiedades atómicas. Además, en los requisitos nos especifican que poseemos una función que nos genera una orden para cada actuador. De esta manera definimos un subsistema de control por cada actuador que serán los encargados de llevar a cabo las ordenes generadas. Un ejemplo de orden es rotar 30\textdegree, es claro el \textit{set-point} que se está indicando. Para coordinar los subsistemas proponemos un controlador principal llamado \textbf{MainController}, el cual provee el método \verb|graspAt(i: Coordenadas)| al cliente, realiza la generación de los pasos y controla su ejecución. La estructura seria algo así:
@@ -735,7 +766,7 @@ subsistemControlTimeout.execute() \\
 
 El método \verb|tickHandler()| ejecutará \textit{Commands} por cada subsistema que lo necesite, por lo tanto se iniciará en cada uno el ciclo de control. En particular, la orden la usamos para desacoplar como es invocado el inicio del \textbf{Timer}.
 
-Una vez solucionada la invocación, tenemos que introducir un nuevo módulo que será usado en el \textbf{Controller}. Ahora, tenemos dos modos de operación de este ultimo, cuando no se está trabajando y cuando si. Dependiendo de cual de los dos esté activo el comportamiento será diferente, ya que por ejemplo, no apagamos el \textbf{Timer} cuando no se está haciendo un movimiento, sino que cuando este desencadene la ejecución del ciclo el \textbf{Controller} ignorará la orden. Para esto hacemos uso del patrón \textit{State} de Gamma[\cite{Gamma:1995:DPE:186897}, el cual está explicado en la sección \ref{cap:state}. En particular, el \textbf{Controller} delegará dos funciones de su interfaz al \textit{state}, \verb|control()| y \verb|move()| (luego lo veremos en más detalle).
+Una vez solucionada la invocación, tenemos que introducir un nuevo módulo que será usado en el \textbf{Controller}. Ahora, tenemos dos modos de operación de este ultimo, cuando no se está trabajando y cuando si. Dependiendo de cual de los dos esté activo el comportamiento será diferente, ya que por ejemplo, no apagamos el \textbf{Timer} cuando no se está haciendo un movimiento, sino que cuando este desencadene la ejecución del ciclo el \textbf{Controller} ignorará la orden. Para esto hacemos uso del patrón \textit{State} de Gamma\cite{Gamma:1995:DPE:186897}, el cual está explicado en la sección \ref{cap:state}. En particular, el \textbf{Controller} delegará dos funciones de su interfaz al \textit{state}, \verb|control()| y \verb|move()| (luego lo veremos en más detalle).
 
 \begin{figure}[h]
 \caption{Módulos necesarios para complementar el Controller}
@@ -1059,6 +1090,7 @@ Por lo que, el estado Waiting no implementa \verb|notifyOrder| y a su vez 0, 1 y
 
 \newpage
 \section{Obtención de información}
+\label{obtInfo}
 
 Generalmente una tarea importante que tienen los sistemas embebidos es recavar información proveniente de sensores. Existen diferentes formas en las que los sensores transmiten información al sistema, algunos, por ejemplo un sensor de temperatura, setea en el pin en el que esta conectado un cierto valor de tensión, por lo que el sistema solo debe consultar el valor del pin. Otros, en cambio, se comunican mediante interrupciones, por ejemplo un sensor de efecto \textbf{Hall} genera una interrupción por cada detección de campo magnético. Por lo tanto, si lo estamos usando para calcular las \textbf{RPM} de cierto componente giratorio, debemos llevar una cuenta de las interrupciones que generó en cierto periodo de tiempo y realizar cierta matemática. Evidentemente, es necesario que alguna porción de nuestro sistema se encargue de hacerlo y maneje las interrupciones generadas por el sensor. Algo similar pasa con otro tipos de sensores como joysticks, botones, etc. Es por esto que resulta útil una forma general de atacar este problema, en el diseño del robot desmalezador, Laura utilizo una estructura de módulos que lleva a cabo las actividades necesarias para integrar al sistema los sensores que generan interrupciones.
 
@@ -1137,15 +1169,15 @@ Podemos distinguir 4 módulos principales, \textbf{Pin} que es la representació
 
 Veamos esta estructura más en detalle con un ejemplo de aplicación. Supongamos que tenemos un sensor \textit{Hall} montado en una rueda y con este queremos medir la velocidad a la que se está moviendo. Por lo tanto, cada vez que el sensor detecte un campo magnético emitirá una interrupción que será manejada por el módulo \textbf{Count} que es un comando, por lo que sabe que funciones ejecutar del módulo \textbf{Collector}. \textbf{Count} tiene la siguiente interfaz:
 \begin{itemize}
-    \item execute() registra en el acumulador el instante actual, mediante Collector::currentTime, y luego incrementa el contador de interrupciones invocando Collector::addOne.
+    \item \verb|execute()| registra en el acumulador el instante actual, mediante Collector::currentTime, y luego incrementa el contador de interrupciones invocando Collector::addOne.
 \end{itemize}
 
 Y la de el módulo \textbf{Collector}:
 \begin{itemize}
-    \item currentTime(): registra internamente el momento actual de cuando el método es invocado.
-    \item getCurrentTime(): devuelve el último instante de tiempo registrado por el módulo.
-    \item addOne(): incrementa el contador interno que cuenta las ocurrencias de interrupción del sensor \textit{Hall}.
-    \item total(): retorna el valor del contador interno.
+    \item \verb|currentTime()|: registra internamente el momento actual de cuando el método es invocado.
+    \item \verb|getCurrentTime()|: devuelve el último instante de tiempo registrado por el módulo.
+    \item \verb|addOne()|: incrementa el contador interno que cuenta las ocurrencias de interrupción del sensor \textit{Hall}.
+    \item \verb|total()|: retorna el valor del contador interno.
 \end{itemize}
 
 Por lo tanto cuando se pida el valor de velocidad al \textbf{Buffer} este llamará a las funciones necesarias del \textbf{Collector} para obtener información, computará el valor y lo retornará.
@@ -1306,11 +1338,7 @@ void ButtonDriver_eventReceive(ButtonDriver* const me) {
 
 Desde el punto de vista de la IS, creo que se están combinando múltiples responsabilidades en un mismo módulo, lo cual no ayuda a lograr el objetivo de diseñar para el cambio. El estado y la decisión de transicionar son responsabilidad de un módulo, lo que puede generar inconvenientes si se quiere cambiar el criterio de aceptación de la señal, por ejemplo. Esto se evidencia en el código ejemplo del libro de Douglass donde tenemos múltiples sentencias \textit{if} anidadas. Una solución que se ajusta más a nuestros principios involucraría el patrón \textit{State} de Gamma y otro módulo que cumpla la función de verificar el cambio.
 
-Parece ser un problema vigente, se habla mucho en internet sobre eso, por ejemplo \textit{A Guide to Debouncing} de Jack G. Ganssle.
-
-
-\section{Manejo de interrupciones}
-Algunos microcontroladores como \textbf{Arduino} proveen en su entorno de desarrollo herramientas para manejar interrupciones. En particular, permiten asociar un método (\textit{handler}) a un cierto evento por ejemplo un cambio en un pin digital.
+Parece ser un problema común, por ejemplo en \cite{ganssleDebouncing} se realiza un estudio de las diferentes formas en las que se manifiesta este inconveniente. Además, presenta algoritmos utilizados para determinar la ocurrencia y poder ignorarla.
 
 \section{Máquinas de estado}\label{cap:state}
 
@@ -1439,15 +1467,16 @@ actionWithMsg(MainController mCtrl, Mode md){
 }
 \end{lstlisting}
 
-Este uso del patrón \textit{State} también es propuesto en \textit{Chapter 10 : Finite State Machine Patterns Part III: New Patterns as Design Components}.
+Este uso del patrón \textit{State} también es propuesto en \cite[\textit{Chapter 10 : Finite State Machine Patterns Part III: New Patterns as Design Components}]{douglass}.
 
 
 Volviendo al ejemplo del microondas, aplicando este enfoque de diseño, tendremos un módulo que provee un método que maneja cada evento y otro que delega al estado cada manejo de evento.
 
 \begin{figure}[h]
 \begin{center}
+\scalebox{0.7}{
 \begin{tikzpicture}
-\umlclass[x=-4]{Microondas}
+\umlclass[]{Microondas}
 {}
 {
 prender() \\
@@ -1460,7 +1489,7 @@ tempListo() \\
 pausar() \\
 }
 
-\umlclass[x=4]{EstadoMicroondas}
+\umlclass[right=4cm of Microondas]{EstadoMicroondas}
 {}
 {
 prender() \\
@@ -1473,7 +1502,7 @@ tempListo() \\
 pausar() \\
 }
 
-\umlclass[x=8,y=-8]{Apagado}
+\umlclass[below right=2cm and 4cm of EstadoMicroondas]{Apagado}
 {}
 {
 changeEstate(i: Estado) \\
@@ -1488,7 +1517,7 @@ pausar() \\
 }
 
 
-\umlclass[x=-6,y=-8]{Preparado}
+\umlclass[below left=2cm and 6cm of EstadoMicroondas]{Preparado}
 {
 Preparado(i: Estado)
 }
@@ -1503,9 +1532,9 @@ tempListo() \\
 pausar() \\
 }
 
-\umlclass[x=-2,y=-8]{PuertaAbierta}
+\umlclass[below left=2cm and 0.8cm of EstadoMicroondas]{PuertaAbierta}
 {
-PuertaAbierta(i: Estado, i: Estado)
+PuertaAbierta(i: Estado,\\ i: Estado)
 }
 {
 prender() \\
@@ -1518,9 +1547,9 @@ tempListo() \\
 pausar() \\
 }
 
-\umlclass[x=2,y=-8]{Calentando}
+\umlclass[below left=2cm and -4cm of EstadoMicroondas]{Calentando}
 {
-PuertaAbierta(i: Estado, i: Estado)
+Calentando(i: Estado,\\ i: Estado)
 }
 {
 prender() \\
@@ -1533,9 +1562,9 @@ tempListo() \\
 pausar() \\
 }
 
-\umlclass[x=6,y=-8]{Pausa}
+\umlclass[below right=2cm and 0.2cm of EstadoMicroondas]{Pausa}
 {
-Pausa(i: Estado, i: Estado)
+Pausa(i: Estado,\\ i: Estado)
 }
 {
 prender() \\
@@ -1548,14 +1577,14 @@ tempListo() \\
 pausar() \\
 }
 
-\umlinherit[geometry=|-|]{Preparado}{EstadoMicroondas}
-\umlinherit[geometry=|-|]{PuertaAbierta}{EstadoMicroondas}
-\umlinherit[geometry=|-|]{Calentando}{EstadoMicroondas}
-\umlinherit[geometry=|-|]{Pausa}{EstadoMicroondas}
-\umlinherit[geometry=|-|]{Apagado}{EstadoMicroondas}
+\umlinherit[geometry=|-|, arm1=3.75cm]{Preparado}{EstadoMicroondas}
+\umlinherit[geometry=|-|, arm1=4cm]{PuertaAbierta}{EstadoMicroondas}
+\umlinherit[arm1=4cm,anchor1=84]{Calentando}{EstadoMicroondas}\umlinherit[geometry=|-|, arm1=4cm]{Pausa}{EstadoMicroondas}
+\umlinherit[geometry=|-|, arm1=3.802cm]{Apagado}{EstadoMicroondas}
 \umluniaggreg{Microondas}{EstadoMicroondas}
 
 \end{tikzpicture}
+}
 \end{center}
 \end{figure}
 
@@ -1590,8 +1619,8 @@ value: dato \\
 invertedValue: dato
 }
 {
-    get\_data(): dato \\
-    set\_data(i: dato) \\
+    getData(): dato \\
+    setData(i: dato) \\
     invert()
 }
 
@@ -1605,43 +1634,43 @@ Desde el punto de vista del diseño de software podemos aportar una mirada criti
 \caption{Ejemplo \textit{Decorator} integridad de la información}
 \begin{center}
 \begin{tikzpicture}
-\umlclass[x=-3]{Data}
+\umlclass[]{Data}
 {}
 {
-    get\_data(): dato \\
-    set\_data(i: dato)
+    getData(): dato \\
+    setData(i: dato)
 }
-\umlclass[x=3]{CRCData}
+\umlclass[right=3cm of Data]{CRCData}
 {
-    calculated\_crc: crc
-    error\_handler: error\_handler
+    calculatedCrc: crc
+    errorHandler: errorHandler
 }
 {
-    get\_data(): dato \\
-    set\_data(i: dato) \\
-    calcular\_crc(i: dato) \\
-    set\_error\_handler(i: error\_handler)
+    getData(): dato \\
+    setData(i: dato) \\
+    calcularCrc(i: dato) \\
+    setErrorHandler(i: errorHandler)
 }
 
 \umlinherit{Data}{CRCData}
-\umluniaggreg[anchor1=-170, anchor2=-20]{CRCData}{Data}
+\umluniaggreg[anchor1=-170, anchor2=-24]{CRCData}{Data}
 
 \end{tikzpicture}
 \end{center}
 \end{figure}
 
 \begin{lstlisting}
-CRCData:set_data(i: dato){
-    calculated_crc = calcular_crc(i)
-    data.set_data(dato)
+CRCData:setData(i: dato){
+    calculatedCrc = calcularCrc(i)
+    data.setData(dato)
 }
 
-CRCData:get_data() {
-    dato = data.get_data()
-    if calculate_crc(dato) == calculated_crc
+CRCData:getData() {
+    dato = data.getData()
+    if calculateCrc(dato) == calculatedCrc
         return dato
     else
-        error_handler()
+        errorHandler()
 }
 \end{lstlisting}
 
@@ -1732,7 +1761,7 @@ Como primer solución uno piensa en crear funciones para cada parte del proceso 
     \item Aplicar los nuevos valores a los actuadores. Notar que no es tan simple como setear un numero y dejar que actúe, en muchos casos se necesita un seguimiento durante el tiempo.
 \end{itemize}
 
-De las tareas que tenemos, 2 las debemos llamar nosotros y otra (recibir información) en muchos casos se dará en forma de interrupciones que debemos manejar. Ya se comentó un poco de ese proceso en la sección \textbf{Obtención de información}, solo es importante recordar que la estructura propuesta nos provee de una interfaz en la cual podemos llamar para obtener la información recibida de manera simple. Una vez resulta esa cuestión ahora tenemos que ejecutar las otras dos tareas, dado que se quieren hacer los ajustes cada determinado tiempo, se propone crear una nueva interrupción que sea disparada de manera periódica y que su \textit{handler} se encargue de realizar todo el proceso de control y cálculo. En el manejo de esta interrupción, se accederá a la interfaces propuestas para obtener información de los sensores. Y por ultimo, para los actuadores que necesitan un seguimiento temporal para su control, agregamos una nueva interrupción que puede ser individual para el actuador y el tiempo de disparo puede estar determinado de manera particular.
+De las tareas que tenemos, 2 las debemos llamar nosotros y otra (recibir información) en muchos casos se dará en forma de interrupciones que debemos manejar. Ya se comentó un poco de ese proceso en la sección \nameref{obtInfo}, solo es importante recordar que la estructura propuesta nos provee de una interfaz en la cual podemos llamar para obtener la información recibida de manera simple. Una vez resulta esa cuestión ahora tenemos que ejecutar las otras dos tareas, dado que se quieren hacer los ajustes cada determinado tiempo, se propone crear una nueva interrupción que sea disparada de manera periódica y que su \textit{handler} se encargue de realizar todo el proceso de control y cálculo. En el manejo de esta interrupción, se accederá a la interfaces propuestas para obtener información de los sensores. Y por ultimo, para los actuadores que necesitan un seguimiento temporal para su control, agregamos una nueva interrupción que puede ser individual para el actuador y el tiempo de disparo puede estar determinado de manera particular.
 
 Tener interrupciones periódicas puede general una bola de nieve de ejecución si el manejo de una tarda más que el tiempo entre disparos. Para prevenirlo se aplica el patrón \textit{State}, haciendo que cuando se comience a manejar la interrupción cambie el estado y toda nueva llamada al \textit{handler} resulte en un retorno rápido (solo \textit{return}). Una vez terminada la ejecución de este ciclo se cambia el estado otra vez permitiendo la ejecución de nuevos llamados.
 
@@ -1741,7 +1770,15 @@ Tener interrupciones periódicas puede general una bola de nieve de ejecución s
 \begin{center}
 \begin{tikzpicture}
 
-\umlclass[x=-3]{InterruptionHandler}
+
+\umlclass[]{State}
+{
+}
+{
+    handInterruption() \\
+}
+
+\umlclass[left=2cm of State]{InterruptionHandler}
 {
 }
 {
@@ -1749,34 +1786,27 @@ Tener interrupciones periódicas puede general una bola de nieve de ejecución s
     changeState(i: State)
 }
 
-\umlclass[x=2.5]{State}
+\umlclass[below left=2cm and -1cm of State]{Working}
 {
 }
 {
     handInterruption() \\
 }
 
-\umlclass[x=0,y=-3]{Working}
+\umlclass[below right=2cm and -1cm of State]{Waiting}
 {
 }
 {
     handInterruption() \\
 }
 
-\umlclass[x=5,y=-3]{Waiting}
-{
-}
-{
-    handInterruption() \\
-}
-
-\umlnote[x=6.5]{Waiting}{
+\umlnote[above right=1cm and -1.5cm of Waiting]{Waiting}{
 handInterruption() \{ \\
 \ \ \ \ return()\\
 \}
 }
 
-\umlnote[x=-4,y=-3]{Working}{
+\umlnote[left=1.5cm of Working,width=4cm]{Working}{
 handInterruption() \{ \\
 \ \ \ \ \textit{comportamiento}\\
 \}

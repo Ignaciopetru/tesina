@@ -209,9 +209,225 @@ manejar()
 \end{center}
 \end{figure}
 
+\section{Mediator}
+
+\textbf{Intención}
+Define un modulo que encapsula cómo interactúa un conjunto de módulos. Fomenta un acoplamiento débil al evitar que los objetos se refieran explícitamente entre sí, y permite variar sus interacciones de manera independiente.
+
+\textbf{Aplicabilidad}
+\begin{itemize}
+\item Un conjunto de módulos se comunica de maneras bien definidas pero complejas. Las interdependencias resultantes son desestructuradas y difíciles de comprender.
+
+\item Reutilizar un módulo resulta complicado porque este se refiere y se comunica con muchos otros módulos.
+
+\item Un comportamiento distribuido entre varios módulos debería ser personalizable sin requerir una gran cantidad de subclases.
+\end{itemize}
+
+\textbf{Participantes}
+
+\begin{itemize}
+\item \textbf{Mediador} Define una interfaz para comunicarse con los módulos Colega.
+\item \textbf{MediadorConcreto} Implementa un comportamiento cooperativo coordinando los módulos Colega. Conoce y mantiene a sus colegas.
+\item \textbf{Colega} Conoce a su objeto Mediator y se comunica con se siempre que, de otra forma, se habría comunicado con otro Colega.
+\end{itemize}
+
+\textbf{Estructura}
+
+\begin{figure}[h]
+\caption{Estructura patrón \textbf{Mediator}}
+\begin{center}
+\begin{tikzpicture}
+\umlsimpleclass[]{Mediador}
+
+\umlsimpleclass[below=1.5cm of Mediador]{MediadorConcreto}
+
+\umlsimpleclass[right=7cm of Mediador]{Colega}
+
+\umlsimpleclass[below left=1.5cm and -0.5cm of Colega]{ColegaConcretoA}
+
+\umlsimpleclass[below right=1.5cm and -0.5cm of Colega]{ColegaConcretoB}
+
+\umlinherit[geometry=|-|]{ColegaConcretoB}{Colega}
+\umlinherit[geometry=|-|]{ColegaConcretoA}{Colega}
+\umlinherit[]{MediadorConcreto}{Mediador}
+\umluniassoc[]{Colega}{Mediador}
+\umluniassoc[]{MediadorConcreto}{ColegaConcretoA}
+\umluniassoc[geometry=|-|,arm1=-0.7cm,anchor1=-30,anchor2=-150]{MediadorConcreto}{ColegaConcretoB}
 
 
 
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+\section{Decorator}
+
+\textbf{Intención}
+Agregar responsabilidades adicionales a un objeto de manera dinámica. Los decoradores ofrecen una alternativa flexible a la herencia para extender la funcionalidad.
+
+\textbf{Aplicabilidad}
+\begin{itemize}
+\item Agregar responsabilidades a objetos individuales de manera dinámica y transparente, es decir, sin afectar a otros objetos.
+\item Para responsabilidades que pueden ser eliminadas.
+\item Cuando la extensión mediante herencia es impracticable. A veces, es posible tener una gran cantidad de extensiones independientes, lo que produciría una explosión de subclases para admitir cada combinación. O bien, la definición de una clase puede estar oculta o no estar disponible para la subclase.
+\end{itemize}
+
+\textbf{Participantes}
+\begin{itemize}
+\item \textbf{Componente} Define la interfaz para módulos a los que se les pueden agregar responsabilidades de manera dinámica.
+\item \textbf{ComponenteConcreto} Define un módulo al que se le pueden adjuntar responsabilidades adicionales.
+\item \textbf{Decorador} Mantiene una referencia a un módulo \textbf{Componente} y define una interfaz que se ajusta a la interfaz del \textbf{Componente}.
+\item \textbf{DecoradorConcreto} Agrega responsabilidades al componente.
+\end{itemize}
+
+
+\textbf{Estructura}
+
+\begin{figure}[h]
+\caption{Estructura patrón \textbf{Decorator}}
+\begin{center}
+\begin{tikzpicture}
+\umlclass[]{Componente}{}
+{
+operacion()
+}
+
+\umlclass[below left=2cm and -1cm of Componente]{ComponenteConcreto}{}
+{
+operacion()
+}
+
+\umlclass[below right=2cm and -1cm of Componente]{Decorador}{}
+{
+operacion()
+}
+
+\umlclass[below right=2cm and -1cm of Decorador]{DecoradorConcretoA}{}
+{
+operacion() \\
+comportamientoAñadido()
+}
+
+\umlclass[below left=2cm and -1cm of Decorador]{DecoradorConcretoB}
+{
+estadoAñadido
+}
+{
+operacion() \\
+}
+
+\umlnote[right=4cm of Decorador,width=4.5cm]{Decorador}{
+operacion \{\\
+\ \ componente.operacion()\\
+\}
+}
+
+\umlinherit[geometry=|-|]{ComponenteConcreto}{Componente}
+\umlinherit[geometry=|-|]{Decorador}{Componente}
+\umlinherit[geometry=|-|]{DecoradorConcretoA}{Decorador}
+\umlinherit[geometry=|-|,arm1=2.04cm]{DecoradorConcretoB}{Decorador}
+\umluniaggreg[geometry=-|-,arm1=3cm,anchor1=20,arg1=componente,pos1=0.5]{Decorador}{Componente}
+
+
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+
+
+
+\section{Proxy}
+
+
+\textbf{Intención}
+Proporcionar un sustituto o marcador de posición para otro objeto con el fin de controlar el acceso a este.
+
+\textbf{Aplicabilidad}
+
+El patrón Proxy es aplicable siempre que se necesite una referencia más versátil o sofisticada a un objeto que un simple puntero. Estas son varias situaciones comunes en las que se puede aplicar el patrón:
+
+\begin{enumerate}
+\item Proxy Remoto:
+
+Proporciona un representante local para una instancia en un espacio de direcciones diferente.
+
+\item Proxy Virtual:
+
+Crea instancias costosas bajo demanda.
+
+\item Proxy de Protección:
+
+Controla el acceso a la instancia original.
+Es útil cuando las instancias necesitan diferentes derechos de acceso.
+
+\item Referencia Inteligente:
+
+Es un reemplazo para un puntero básico que realiza acciones adicionales cuando se accede a un objeto.
+Usos típicos incluyen:
+\begin{itemize}
+\item Contar el número de referencias a la instancia real para que pueda ser liberado automáticamente cuando no queden más referencias (también llamado punteros inteligentes).
+\item Cargar una instancia persistente en memoria cuando se referencia por primera vez.
+\item Verificar que la instancia real esté bloqueado antes de acceder a ella, para asegurar que ningún otra instancia pueda modificarlo.
+\item 
+Este patrón ofrece flexibilidad, seguridad y eficiencia en la gestión de interacciones entre instancias.
+\end{itemize}
+
+\end{enumerate}
+
+
+\textbf{Participantes}
+
+\begin{itemize}
+\item \textbf{Proxy} Mantiene una referencia que permite al proxy acceder al sujeto real. El Proxy puede referirse a un \textbf{Sujuteo} si las interfaces de \textbf{SujetoReal} y \textbf{Sujeto} son las mismas.
+Proporciona una interfaz idéntica a la de \textbf{Sujeto}, de manera que un proxy puede ser sustituido por el sujeto real.
+Controla el acceso al sujeto real y puede ser responsable de crearlo y eliminarlo.
+
+\item \textbf{Sujeto} Define la interfaz común para \textbf{SujetoReal} y \textbf{Proxy}, de modo que un \textbf{Proxy} se pueda usar en cualquier lugar donde se espere un \textbf{SujetoReal}.
+
+\item \textbf{RealSubject} Define el objeto real que el proxy representa.
+
+\end{itemize}
+
+
+\textbf{Estructura}
+
+
+\begin{figure}[h]
+\caption{Estructura patrón \textbf{Proxy}}
+\begin{center}
+\begin{tikzpicture}
+\umlclass[]{Sujeto}{}
+{
+peticion()
+}
+
+\umlclass[below left=1.5cm and -0.5cm of Sujeto]{SujetoReal}{}
+{
+peticion() \\
+...
+}
+
+\umlclass[below right=1.5cm and -0.5cm of Sujeto]{Proxy}{}
+{
+peticion() \\
+...
+}
+
+\umlnote[right=2cm of Proxy,width=4cm]{Proxy}{
+...\\
+sujetoReal.peticion()\\
+...}
+
+\umlinherit[geometry=|-|]{SujetoReal}{Sujeto}
+\umlinherit[geometry=|-|]{Proxy}{Sujeto}
+\umluniassoc[]{Proxy}{SujetoReal}
+
+
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
 
 
 

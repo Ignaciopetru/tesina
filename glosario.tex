@@ -1,0 +1,216 @@
+%Análogo a bib, el doc principal debe ser compilada como: pdflatex, makeglossaries, pdflatex
+
+\makeglossaries %siempre antes de los términos
+
+%------------------------------------------------------------------------------------------------
+%---Acrónimos----------
+
+%\newacronym{ADC}{ADC}{Conversor Analógico Digital (\textit{analog-to-digital converter})}
+%\itemg{MCU}{MCU} Microcontrolador (de las siglas en inglés \textit{microcontroller unit}).
+\newacronym{ADC}{ADC}{Conversor Analógico Digital}
+\newacronym{MCU}{MCU}{Unidad de Microcontrolador}
+\newacronym{RPM}{RPM}{revoluciones por minuto}
+\newacronym{ms}{ms}{milisegundos}
+\newacronym{UART}{UART}{Transmisor-Receptor Asíncrono Universal}
+
+
+%------------------------------------------------------------------------------------------------
+%---Símbolos---------
+\newglossaryentry{dboi}{
+name={DBOI},
+description={Diseño basado en ocultación de la información}
+}
+
+\newglossaryentry{DRV8838}{
+name={DRV8838},
+description={Controlador para un único motor de corriente continua (DC) con escobillas}
+}
+
+\newglossaryentry{DC}{
+name={DC},
+description={Corriente continua}
+}
+
+\newglossaryentry{microcontrolador}{
+name={microcontrolador},
+description={Circuito integrado programable, capaz de ejecutar las órdenes grabadas en su memoria. }
+}
+
+\newglossaryentry{arduino}{
+name={\textbf{Arduino Uno}},
+description={Microcontrolador basado en el microchip ATmega328 y desarrollado por Arduino. La placa está equipada con conjuntos de pines de E/S digitales y analógicas que pueden conectarse a varias placas de expansión y otros circuitos. La placa tiene 13 pines digitales, 6 pines analógicos y programables con el Arduino IDE (Entorno de desarrollo integrado) a través de un cable USB tipo B}
+}
+
+\newglossaryentry{actuadores}{
+name={\textbf{actuadores}},
+description={Dispositivos capaces de transformar energía hidráulica, neumática o eléctrica en la activación de un proceso con la finalidad de generar un efecto sobre un proceso automatizado.}
+}
+
+
+
+
+\newglossaryentry{DeltaT}{
+name={\ensuremath{\Delta T}},
+description={Período de tiempo asociado a un ciclo de ejecución}
+}
+\newglossaryentry{vref}{
+name={\ensuremath{vel_{ref}}},
+description={Velocidad de referencia. Valor originado a partir del gatillo del CR o de una orden proveniente de la PC},
+first={velocidad de referencia (\ensuremath{vel_{ref}})}
+}
+\newglossaryentry{vmedida}{
+name={\ensuremath{vel_{medida}}},
+description={Velocidad medida. Velocidad de desplazamiento de una rueda, medida en un momento particular},
+first={velocidad medida (\ensuremath{vel_{medida}})}
+}
+\newglossaryentry{eVel}{
+name={\ensuremath{\epsilon_{vel}}},
+description={Error de velocidad. Diferencia entre la velocidad de referencia y la velocidad medida,(\gls{vref} - \gls{vmedida})},
+first={error de velocidad (\ensuremath{\epsilon_{vel}})}
+}
+\newglossaryentry{eVelAcum}{
+name={\ensuremath{\epsilon_{velAc}}},
+description={Error de velocidad acumulado. Es la suma de los errores de velocidad \gls{eVel} calculados en una secuencia de ciclos de ejecución en la cual ininterrumpidamente se recibió una orden de velocidad},
+first={error de velocidad acumulado (\ensuremath{\epsilon_{velAc}})}
+}
+\newglossaryentry{cntref}{
+name={\ensuremath{cnt_{ref}}},
+description={Corriente de referencia. Valor originado a partir de una orden proveniente de la \gls{PC}},
+first={corriente de referencia (\ensuremath{cnt_{ref}})}
+}
+\newglossaryentry{cntmedida}{
+name={\ensuremath{cnt_{medida}}},
+description={Corriente medida. Corriente de una rueda, medida en un momento particular},
+first={corriente medida (\ensuremath{cnt_{medida}})}
+}
+\newglossaryentry{eCnt}{
+name={\ensuremath{\epsilon_{cnt}}},
+description={Error de corriente. Diferencia entre la corriente de referencia y la corriente medida (\gls{cntref} - \gls{cntmedida})},
+first={error de corriente (\ensuremath{\epsilon_{cnt}})}
+}
+\newglossaryentry{eCntAcum}{
+name={\ensuremath{\epsilon_{cntAc}}},
+description={Error de corriente acumulado. Suma de todos los errores de corriente \gls{eCnt} calculados en una secuencia de ciclos de ejecución en la cual ininterrumpidamente se recibió una orden de corriente},
+first={error de corriente acumulado (\ensuremath{\epsilon_{cntAx}})}
+}
+\newglossaryentry{eGiro}{
+name={\ensuremath{GIRO_{min}}},
+description={Valor mínimo de giro que el sistema tendrá en cuenta para procesar un pedido de giro},
+first={valor mínimo de giro (\ensuremath{GIRO_{min}})}
+}
+\newglossaryentry{ang}{
+name={\ensuremath{ang}},
+description={Ángulo de giro del eje del dispositivo de dirección representado por un \gls{porcentSig} que indica la posición de giro de las ruedas. Valor originado a partir la perilla del CR o de una orden proveniente de la PC; o valor enviado hacia la PC},
+first={ángulo de giro \ensuremath{ang}}
+}
+\newglossaryentry{angmed}{
+name={\ensuremath{ang_{medido}}},
+description={Ángulo medido. Es el ángulo de la posición de giro medida en la que se encuentran el eje de dirección; y lo tanto, las ruedas},
+first={ángulo medido \ensuremath{ang_{medido}}}
+}
+\newglossaryentry{angref}{
+name={\ensuremath{ang_{ref}}},
+description={Ángulo de referencia. Valor originado a partir la perilla del CR o de una orden proveniente de la PC que indica cuál es la nueva posición de giro que deben tener las ruedas},
+first={ángulo de referencia \ensuremath{ang_{ref}}}
+}
+\newglossaryentry{DeltaB}{
+name={\ensuremath{\Delta \bot}},
+description={Período de tiempo asociado a la \gls{perdidaSenial}}
+}
+\newglossaryentry{perdidaSenial}{
+name={pérdida de señal},
+description={Situación en la cual el sistema no ha recibido un mensaje por un período de tiempo mayor o igual a \gls{DeltaB}}
+}
+\newglossaryentry{AD}{
+name={\ensuremath{ADELANTE}},
+description={Valor que representa el sentido hacia adelante, del movimiento de las ruedas del robot}
+}
+\newglossaryentry{AT}{
+name={\ensuremath{ATRAS}},
+description={Valor que representa el sentido hacia atrás, del movimiento de las ruedas del robot}
+}
+\newglossaryentry{DER}{
+name={\ensuremath{DERECHA}},
+description={Valor que representa la dirección de giro hacia la derecha de las ruedas del robot}
+}
+\newglossaryentry{IZQ}{
+name={\ensuremath{IZQUIERDA}},
+description={Valor que representa la dirección de giro hacia la izquierda de las ruedas del robot}
+}
+\newglossaryentry{encoder}{
+name={encoder},
+description={Dispositivo electromecánico usado para poder convertir la posición angular de un eje a un código digital. Un encoder de 8 pines, cuenta con $256$ posibles códigos binarios y asociará cada posición del eje de giro con alguno de estos códigos. Así, al transformar estos códigos a valores decimales, se cuenta con valores de encoder en el intervalo $[0,255]$}
+}
+
+%------------------------------------------------------------------------------------------------
+%------------Glosario----------
+\newglossaryentry{controlDirec}{
+name={control de dirección},
+description={Dispositivo de hardware que permite controlar la dirección del robot, orientando las ruedas delanteras del mismo.}
+}
+\newglossaryentry{DD}{
+name={DD},
+description={Rueda delantera-derecha del robot},
+first={delantera-derecha (DD)}
+}
+\newglossaryentry{DI}{
+name={delantera-izquierda},
+description={Rueda delantera-izquierda del robot},
+first={delantera-izquierda (DI)}
+}
+\newglossaryentry{TD}{
+name={trasera-derecha},
+description={Rueda trasera-derecha del robot},
+first={trasera-derecha (TD)}
+}
+\newglossaryentry{TI}{
+name={trasera-izquierda},
+description={Rueda trasera-izquierda robot},
+first={trasera-izquierda (TI)}
+}
+\newglossaryentry{cicloEjec}{
+name={ciclo de ejecución},
+plural={ciclos de ejecución},
+description={Conjunto determinado de acciones que el sistema deberá llevar a cabo, cada un cierto período de tiempo \gls{DeltaT}}
+}
+\newglossaryentry{CR}{
+name={CR},
+description={Control remoto. El control remoto cuenta con un gatillo que permite presionar el mismo hacia adelante y hacia atrás para que el robot avance o retroceda a velocidades que dependen de la presión sobre le gatillo. Las presiones hacia adelante y hacia atrás del gatillo serán traducidas como valores positivos y negativos respectivamente. El control remoto cuenta con una perilla que puede ser girada a distintos grados. Este grado de giro establecerá que el robot gire a izquierda o a derecha},
+first={control remoto (CR)}
+}
+\newglossaryentry{PC}{
+name={PC},
+description={Computadora (de las siglas \textit{Personal computer})},
+first={computadora (PC)}
+}
+\newglossaryentry{buffer}{
+name={buffer},
+description={Espacio de memoria reservado para guardar temporalmente información digital}
+}
+\newglossaryentry{grados}{
+name={grado angular},
+description={Valores en el intervalo \ensuremath{[0, 360]}}
+}
+\newglossaryentry{porcentaje}{
+name={porcentaje},
+description={Valores en el intervalo \ensuremath{[0, 100]}}
+}
+\newglossaryentry{porcentSig}{
+name={porcentaje signado},
+description={Valores en el intervalo \ensuremath{[-100, 100]}}
+}
+\newglossaryentry{pin}{
+name={pin},
+description={Contacto metálico de un conector}
+}
+\newglossaryentry{rCR}{
+name={receptor de CR},
+description={Dispositivo que recibe señales del \gls{CR}. Cuenta con una salida que emite una señal correspondiente a la velocidad; y con otra, que emite una señal correspondiente a la dirección. Cada salida está conectada a un pin del \gls{MCU}. Los cambios de tensiones en los pines generan interrupciones que serán recibidas por el MCU}
+}
+
+\newglossaryentry{PWM}{
+name={PWM},
+description={Modulación por ancho de pulso (de las siglas \textit{Pulse-Width Modulation}). Su valor es un \gls{porcentaje}},
+first={PWM (modulación por ancho de pulso)}
+}
+

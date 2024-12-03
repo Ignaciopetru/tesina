@@ -9,30 +9,33 @@
 \contentsline {figure}{\numberline {3.2}{\ignorespaces Interfaz MotorDC}}{29}{figure.caption.14}%
 \contentsline {figure}{\numberline {3.3}{\ignorespaces Módulo MotorDC abstracto y estructura de herencia.}}{30}{figure.caption.15}%
 \contentsline {figure}{\numberline {3.4}{\ignorespaces Display 7 segmentos 4 digitos}}{31}{figure.caption.16}%
-\contentsline {figure}{\numberline {3.5}{\ignorespaces Configuración original}}{32}{figure.caption.17}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Configuración original}}{33}{figure.caption.17}%
 \contentsline {figure}{\numberline {3.6}{\ignorespaces Configuración utilizando la solución de la sección anterior \ref {Accesoalhardware}.}}{33}{figure.caption.18}%
-\contentsline {figure}{\numberline {3.7}{\ignorespaces Configuración nueva}}{33}{figure.caption.19}%
+\contentsline {figure}{\numberline {3.7}{\ignorespaces Configuración nueva}}{34}{figure.caption.19}%
 \contentsline {figure}{\numberline {3.8}{\ignorespaces Módulos de un subsistema}}{35}{figure.caption.20}%
 \contentsline {figure}{\numberline {3.9}{\ignorespaces Estructura módulo \textbf {Control} extendida con estado.}}{36}{figure.caption.21}%
 \contentsline {figure}{\numberline {3.10}{\ignorespaces Brazo robótico.}}{37}{figure.caption.22}%
-\contentsline {figure}{\numberline {3.11}{\ignorespaces Diagrama componentes sistema brazo}}{38}{figure.caption.23}%
-\contentsline {figure}{\numberline {3.12}{\ignorespaces Actuadores paso a paso.}}{39}{figure.caption.24}%
-\contentsline {figure}{\numberline {3.13}{\ignorespaces Interfaz módulo Pinza.}}{39}{figure.caption.25}%
-\contentsline {figure}{\numberline {3.14}{\ignorespaces Sensores}}{40}{figure.caption.26}%
-\contentsline {figure}{\numberline {3.15}{\ignorespaces Timer}}{40}{figure.caption.27}%
-\contentsline {figure}{\numberline {3.16}{\ignorespaces Módulos necesarios para complementar el Controller}}{41}{figure.caption.28}%
-\contentsline {figure}{\numberline {3.17}{\ignorespaces Módulos complementarios a Controller.}}{41}{figure.caption.29}%
-\contentsline {figure}{\numberline {3.18}{\ignorespaces Controller}}{42}{figure.caption.30}%
-\contentsline {figure}{\numberline {3.19}{\ignorespaces Iterator}}{43}{figure.caption.31}%
-\contentsline {figure}{\numberline {3.20}{\ignorespaces Orden}}{43}{figure.caption.32}%
-\contentsline {figure}{\numberline {3.21}{\ignorespaces MainController}}{44}{figure.caption.34}%
-\contentsline {figure}{\numberline {3.22}{\ignorespaces Transiciones de estados del MainController}}{45}{figure.caption.35}%
-\contentsline {figure}{\numberline {3.23}{\ignorespaces Componente sensor activo.}}{46}{figure.caption.36}%
-\contentsline {figure}{\numberline {3.24}{\ignorespaces Ejemplo}}{48}{figure.caption.37}%
+\contentsline {figure}{\numberline {3.11}{\ignorespaces Diagrama componentes sistema brazo}}{39}{figure.caption.23}%
+\contentsline {figure}{\numberline {3.12}{\ignorespaces Actuadores paso a paso.}}{40}{figure.caption.24}%
+\contentsline {figure}{\numberline {3.13}{\ignorespaces Interfaz módulo Pinza.}}{40}{figure.caption.25}%
+\contentsline {figure}{\numberline {3.14}{\ignorespaces Sensores}}{41}{figure.caption.26}%
+\contentsline {figure}{\numberline {3.15}{\ignorespaces Timer}}{41}{figure.caption.27}%
+\contentsline {figure}{\numberline {3.16}{\ignorespaces Módulos necesarios para complementar el Controller}}{42}{figure.caption.28}%
+\contentsline {figure}{\numberline {3.17}{\ignorespaces Módulos complementarios a Controller.}}{42}{figure.caption.29}%
+\contentsline {figure}{\numberline {3.18}{\ignorespaces Controller}}{43}{figure.caption.30}%
+\contentsline {figure}{\numberline {3.19}{\ignorespaces Iterator}}{44}{figure.caption.31}%
+\contentsline {figure}{\numberline {3.20}{\ignorespaces Orden}}{45}{figure.caption.32}%
+\contentsline {figure}{\numberline {3.21}{\ignorespaces MainController}}{46}{figure.caption.34}%
+\contentsline {figure}{\numberline {3.22}{\ignorespaces Transiciones de estados del MainController}}{47}{figure.caption.35}%
+\contentsline {figure}{\numberline {3.23}{\ignorespaces Componente sensor activo.}}{47}{figure.caption.36}%
+\contentsline {figure}{\numberline {3.24}{\ignorespaces Ejemplo}}{49}{figure.caption.37}%
 \contentsline {figure}{\numberline {3.25}{\ignorespaces State chart microondas}}{52}{figure.caption.38}%
 \contentsline {figure}{\numberline {3.26}{\ignorespaces Ejemplo \textit {Decorator} integridad de la información}}{57}{figure.caption.41}%
-\contentsline {figure}{\numberline {3.27}{\ignorespaces Ejemplo de handler usando \textit {State}.}}{60}{figure.caption.43}%
+\contentsline {figure}{\numberline {3.27}{\ignorespaces Ejemplo de handler usando \textit {State}.}}{61}{figure.caption.43}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {A.1}{\ignorespaces Estructura patrón \textbf {Adapter}}}{62}{figure.caption.44}%
-\contentsline {figure}{\numberline {A.2}{\ignorespaces Estructura patrón \textit {Command}}}{63}{figure.caption.45}%
-\contentsline {figure}{\numberline {A.3}{\ignorespaces Estructura patrón \textbf {State}}}{64}{figure.caption.46}%
+\contentsline {figure}{\numberline {A.1}{\ignorespaces Estructura patrón \textbf {Adapter}}}{64}{figure.caption.44}%
+\contentsline {figure}{\numberline {A.2}{\ignorespaces Estructura patrón \textbf {Command}}}{65}{figure.caption.45}%
+\contentsline {figure}{\numberline {A.3}{\ignorespaces Estructura patrón \textbf {State}}}{66}{figure.caption.46}%
+\contentsline {figure}{\numberline {A.4}{\ignorespaces Estructura patrón \textbf {Mediator}}}{67}{figure.caption.47}%
+\contentsline {figure}{\numberline {A.5}{\ignorespaces Estructura patrón \textbf {Decorator}}}{69}{figure.caption.48}%
+\contentsline {figure}{\numberline {A.6}{\ignorespaces Estructura patrón \textbf {Proxy}}}{70}{figure.caption.49}%

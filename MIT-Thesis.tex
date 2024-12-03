@@ -41,7 +41,7 @@
 
 %% Package for code listing in Appendix A.
 \usepackage{listings}%   documentation is here https://ctan.org/pkg/listings
-\DeclareCaptionType{code}[Code Listing][Índice de códigos] 
+%\DeclareCaptionType{code}[Code Listing][Índice de códigos] 
 
 %% Set chemical formulas nicely
 \usepackage[version=4]{mhchem}%   documentation at https://ctan.org/pkg/mhchem
@@ -73,6 +73,8 @@
 \usepackage{tikz-uml}
 \usetikzlibrary{automata, positioning, matrix, fit}
 \usetikzlibrary{snakes}
+\usepackage{glossaries}
+\loadglsentries{glosario}
 
 
 %%%%%%%%%  Graphics path (to figure files)  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -87,6 +89,9 @@
 
 %% Numerical citations of references
 \usepackage[style=alphabetic,giveninits=true,maxbibnames=10,sorting=none,backend=biber]{biblatex}
+
+\usepackage{nameref}
+
 
 %% IEEE style citations and references
 % \usepackage[style=ieee,maxbibnames=10,sorting=none]{biblatex}% style=ext-numeric-comp,articlein=false,giveninits=true
@@ -296,7 +301,6 @@
 \listoffigures
 \listoftables
 \lstlistoflistings
-
 %%% Chapters of thesis  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% If you want to use "double spacing", you should start here...
@@ -318,6 +322,9 @@
 \defbibheading{bibintoc}{\chapter*{#1}\addcontentsline{toc}{backmatter}{\refname}} 
 % this sets the title of contents name for bibliography to \refname (= References)
 % change "backmatter" to "chapter" if you prefer a bold face entry in the table of contents
+\printglossaries
+\addcontentsline{toc}{chapter}{Glosario}
+
 
 \printbibliography[title={\refname},heading=bibintoc]
 
