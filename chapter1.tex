@@ -1369,11 +1369,11 @@ Antes de ver un enfoque desde el punto de vista del diseño orientado al cambio,
 \begin{center}
 \begin{tikzpicture}
 
-\umlsimpleclass[x=-3]{Apagado}
-\umlsimpleclass[x=3]{Preparado}
-\umlsimpleclass[x=-3, y=-3]{PuertaAbierta}
-\umlsimpleclass[x=3, y=-3]{Calentando}
-\umlsimpleclass[x=0, y=-6]{Pausa}
+\umlsimpleclass[fill=red!20, x=-3]{Apagado}
+\umlsimpleclass[fill=red!20, x=3]{Preparado}
+\umlsimpleclass[fill=red!20, x=-3, y=-3]{PuertaAbierta}
+\umlsimpleclass[fill=red!20, x=3, y=-3]{Calentando}
+\umlsimpleclass[fill=red!20, x=0, y=-6]{Pausa}
 
 \umltrans[arg=prender, pos=0.5] {Apagado}{Preparado}
 \umltrans[arg=cancelar, pos=1.5, geometry=|-|, anchor2=-150] {PuertaAbierta}{Preparado}
@@ -1394,9 +1394,9 @@ Antes de ver un enfoque desde el punto de vista del diseño orientado al cambio,
 
 Todo el funcionamiento principal del sistema es representado utilizando estados y transiciones, en cada transición se realizan cierto comportamiento relacionado con la salida del estado actual y la llegada al siguiente. Por ejemplo, si se está en el estado \textit{PuertaAbierta} y se recibe el evento \textit{puertaCerrada} se transicionará al estado \textit{Calentando}. En el proceso se encenderá el magnetrón para que este emita las ondas que finalmente calienten la comida.
 
-A simple vista parece un comportamiento complejo y eso que solo es un ejemplo simplificado, por lo que en la vida real encontraremos casos mucho más extensos. Este es uno de los motivos por los cuales es útil contar con un buen diseño. Debemos tener en cuenta que sea fácil modificar las transiciones y también agregar y quitar estados. Doublass construye un módulo encargado de mantener el estado, el cual que sabe qué funciones ejecutar cuando se da una transición. Esto es, recibe el evento, verifica si corresponde a un cambio de estado y de ser así ejecuta el método de ``salida'' del estado actual, ejecuta el método de ``entrada'' del nuevo estado y actualiza el valor del estado actual. Además, propone una implementación utilizando una tabla bidimensional lo cual lo hace un sistema eficiente computacional hablando. En el caso de querer modificar estados, agregarlos o quitarlo es necesario cambiar la implementación de este módulo. Gamma explica esto en la sección implementación del patrón \textit{State}, menciona que Cargill propuso esta implementación y efectivamente es una manera de convertir código condicional en algo que se parece a una tabla.
+A simple vista parece un comportamiento complejo y eso que solo es un ejemplo simplificado, por lo que en la vida real encontraremos casos mucho más extensos. Este es uno de los motivos por los cuales es útil contar con un buen diseño. Debemos tener en cuenta que sea fácil modificar las transiciones y también agregar y quitar estados. Doublass construye un módulo encargado de mantener el estado, el cual que sabe qué funciones ejecutar cuando se da una transición. Esto es, recibe el evento, verifica si corresponde a un cambio de estado y de ser así ejecuta el método de ``salida'' del estado actual, ejecuta el método de ``entrada'' del nuevo estado y actualiza el valor del estado actual. Además, propone una implementación utilizando una tabla bidimensional lo cual lo hace un sistema eficiente computacional hablando. En el caso de querer modificar estados, agregarlos o quitarlo es necesario cambiar la implementación de este módulo. Gamma explica esto en \cite[State]{Gamma:1995:DPE:186897}, menciona que Tom Cargill\footnote{Escritor de \textit{C++ Programming Style.Addison-Wesley}, 1992} propuso esta implementación y efectivamente es una manera de convertir código condicional en algo que se parece a una tabla.
 
-\begin{lstlisting}[Codigo ejemplo Douglas State Table]
+\begin{lstlisting}[caption=Código ejemplo Douglas State Table]
 void TokenizerStateTable_eventDispatch(TokenizerStateTable* const me, Event e) {
 int takeTransition = 0;
 Mutex_lock(me->itsMutex);
@@ -1441,9 +1441,9 @@ En este ejemplo de código, que es una porción de la solución propuesta en el 
 
 Como el otro enfoque, proponemos utilizar el patrón \textit{State} de Gamma con ciertos ajustes para permitir a los estados transicionar a otros por si mismos. Básicamente, el patrón establece la creación de un módulo por cada estado del sistema con el fin de cambiar la implementación para que se ajuste al comportamiento cuando el sistema se encuentra en dicho estado. Esto nos permite transicionar dinamicamente entre estados, ya que cambiar de estado es usar otro módulo que hereda la interfaz.
 
-Para permitir que cada estado pueda transicionar de manera independiente a otros estados lo que hacemos es agrear una referencia de los posibles siguientes estados, para que en caso de recibir el evento adecuado pueda invocar el método de cambiar estado pasando la referencia del nuevo. Por lo tanto, al constructor de cada estado hay que agregarle como argumento cada posible estado siguiente. Esto lo podemos ver en la siguiente porción de código perteneciente al diseño del robot desmalezador:
+Para permitir que cada estado pueda transicionar de manera independiente a otros estados lo que hacemos es agrear una referencia de los posibles siguientes estados, para que en caso de recibir el evento adecuado pueda invocar el método de cambiar estado pasando la referencia del nuevo. Por lo tanto, al constructor de cada estado hay que agregarle como argumento cada posible estado siguiente. Esto lo podemos ver en la porción de código \ref{waitingDes} perteneciente al diseño del robot desmalezador.
 
-\begin{lstlisting}
+\begin{lstlisting}[label={waitingDes},caption=Código ejemplo transición robot desmalezador]
 buildOpStates(){
     MAX=50
     workSt=new Working(mCtrlOrd)
@@ -1459,8 +1459,8 @@ buildOpStates(){
 }
 \end{lstlisting}
 
-Y para llamar a una transición de estado:
-\begin{lstlisting}
+Y para llamar a una transición de estado se ejecuta el código \ref{transicionDes}.
+\begin{lstlisting}[label={transicionDes}, caption=Ejemplo transición de estado.]
 actionWithMsg(MainController mCtrl, Mode md){
     md.read(mCtrl)
     mCtrl.changeState(workSt) // workSt class attribute
@@ -1473,6 +1473,7 @@ Este uso del patrón \textit{State} también es propuesto en \cite[\textit{Chapt
 Volviendo al ejemplo del microondas, aplicando este enfoque de diseño, tendremos un módulo que provee un método que maneja cada evento y otro que delega al estado cada manejo de evento.
 
 \begin{figure}[h]
+\caption{Módulos participantes del patrón state en el ejemplo del horno microondas.}
 \begin{center}
 \scalebox{0.7}{
 \begin{tikzpicture}
@@ -1588,16 +1589,16 @@ pausar() \\
 \end{center}
 \end{figure}
 
-Por lo tanto el módulo PuertaAbierta implementará el método \verb|puertaAbierta|, completando en ella el comportamiento definido para la transición PuertaAbierta $\xrightarrow{}$ Calentando.
+Por lo tanto el módulo \textbf{PuertaAbierta} implementará el método \verb|puertaAbierta()|, completando en ella el comportamiento definido para la transición PuertaAbierta $\xrightarrow{}$ Calentando.
 
-\begin{lstlisting}
+\begin{lstlisting}[caption=Implementación  puertaAbierta]
 puertaAbierta() {
     magnetron.calentar()
     microondas.changeEstate(calentando)
 }
 \end{lstlisting}
 
-En cambio, en el caso del evento \textit{prender} no hará nada, pues no existe transición posible desde PuertaAbierta que involucre al evento \textit{prender}.
+En cambio, en el caso del evento \textit{prender} no hará nada, pues no existe transición posible desde \textbf{PuertaAbierta} que involucre al evento \textit{prender}.
 
 De esta forma, logramos una solución más elegante y escalable para manejar estados, superando muchas de las limitaciones del enfoque basado en verificaciones de estado dentro de las funciones. Una de las principales ventajas de este patrón es que mejora significativamente la legibilidad y modularidad del código. En lugar de manejar el comportamiento de todos los estados en una misma función, cada estado tiene su propia clase, lo que permite que el código esté mejor organizado y sea más fácil de entender. Los módulos encapsulan el comportamiento específico de cada estado, lo que elimina la necesidad de múltiples verificaciones condicionales y simplifica el flujo de ejecución. Otro beneficio importante es que facilita la adición de nuevos estados. Cuando se necesita agregar un nuevo estado, basta con definir una nueva clase que implemente el comportamiento correspondiente a ese estado, sin necesidad de modificar las funciones existentes que dependen de otros estados. Esto hace que el sistema sea mucho más flexible y escalable a medida que crece en complejidad. Además, el State elimina la duplicación de código, ya que cada clase de estado gestiona su propio comportamiento. En el enfoque tradicional, muchas funciones deben realizar repetidas verificaciones del estado y aplicar el comportamiento adecuado, lo que conduce a código repetido y potencialmente inconsistente. Una ventaja clave que mencionamos es que permite cambiar el comportamiento del sistema dinámicamente. A medida que el estado cambia, el comportamiento del objeto principal también cambia automáticamente. 
 
@@ -1659,7 +1660,7 @@ Desde el punto de vista del diseño de software podemos aportar una mirada criti
 \end{center}
 \end{figure}
 
-\begin{lstlisting}
+\begin{lstlisting}[caption=Implementación métodos setData y getData]
 CRCData:setData(i: dato){
     calculatedCrc = calcularCrc(i)
     data.setData(dato)
@@ -1695,12 +1696,13 @@ La solución que se propone en el libro es una combinación de patrón y practic
 
 De esa manera se estaría separando la responsabilidad de verificar precondiciones de las funciones y de los clientes. Para conseguirlo se puede utilizar el patrón \textit{Proxy} al rededor de un tipo básico (un \textit{array} de \textit{ints}, por ejemplo), y de esa manera proveer múltiples funciones que permitan verificar los rangos, consistencia y demás de \textit{features} de los datos. Y en caso de detectar un problema se llamará a un módulo que cumple el rol de \textit{handler} de errores, responsable de decidir como continuar. Este uso del patrón es mencionado por Gamma en el capitulo del mismo como una posible aplicación. Es decir, realizar operaciones extras cuando se accede a un objeto. Además, comenta que se pueden agregar más funcionalidades que las que menciona Douglass, como contar la cantidad de referencias a cierto objeto con el fin de liberar la memoria si nadie lo esta referenciando, verificar si un objeto está bloqueado por otro (mutex) o controlar el acceso a la información mediante permisos.
 
-Veamos el siguiente ejemplo, se tiene un módulo \textit{DatosProductos} el cual almacena información relacionada al \textit{stock} de los productos, como es información importante se quiere añadir validaciones al momento de guardar como de extraer. Al guardar se quiere ver que la cantidad ingresada no sea negativa y al consultar se quiere estar seguro de que el usuario tiene los permisos requeridos.
+Veamos el siguiente ejemplo, se tiene un módulo \textit{StockProducto} el cual almacena información relacionada al \textit{stock} de los productos, como es información importante se quiere añadir validaciones al momento de guardar como de extraer. Al guardar se quiere ver que la cantidad ingresada no sea negativa y al consultar se quiere estar seguro de que el usuario tiene los permisos requeridos.
 
 \begin{figure}[h]
+\caption{Uso de patron Proxy al ejemplo del módulo stock}
 \begin{center}
 \begin{tikzpicture}
-\umlclass[x=-3]{StockProducto}
+\umlclass[]{StockAbstracto}
 {
 }
 {
@@ -1708,7 +1710,15 @@ Veamos el siguiente ejemplo, se tiene un módulo \textit{DatosProductos} el cual
     setStock(i: int)
 }
 
-\umlclass[x=3]{StockProxy}
+\umlclass[below left=2cm and -0.5cm of StockAbstracto]{StockProducto}
+{
+}
+{
+    getStock(): int \\
+    setStock(i: int)
+}
+
+\umlclass[below right=2cm and -0.5cm of StockAbstracto]{StockProxy}
 {
 }
 {
@@ -1717,7 +1727,7 @@ Veamos el siguiente ejemplo, se tiene un módulo \textit{DatosProductos} el cual
 }
 
 
-\umlclass[y=-3]{ErrorHandler}
+\umlclass[right=2cm of StockProxy]{ErrorHandler}
 {
 }
 {
@@ -1726,7 +1736,8 @@ Veamos el siguiente ejemplo, se tiene un módulo \textit{DatosProductos} el cual
 
 
 \umluniassoc{StockProxy}{StockProducto}
-\umlinherit[anchor1=160,anchor2=20]{StockProxy}{StockProducto}
+\umlinherit[geometry=|-|]{StockProxy}{StockAbstracto}
+\umlinherit[geometry=|-|]{StockProducto}{StockAbstracto}
 \umluniassoc{StockProxy}{ErrorHandler}
 
 \end{tikzpicture}
@@ -1735,18 +1746,18 @@ Veamos el siguiente ejemplo, se tiene un módulo \textit{DatosProductos} el cual
 ErrorHandler decide como manejar el error, esto puede ser desde loggearlo, terminar la ejecución del sistema, ignorarlo, etc. Dos tipos de estrategias comunes al tratar con errores son:
 \begin{itemize}
     \item Reset de componentes: reiniciar o restablecer componentes defectuosos ayuda a borrar errores y restaurarlos a un estado funcional.
-    \item Degradación elegante\footnote{Incorporating Graceful Degradation into Embedded System Design}: permite que el sistema siga funcionando a una capacidad reducida en lugar de fallar por completo. Esto implica deshabilitar las funciones que funcionan mal o cambiar a copias de seguridad, por lo que el sistema continúa funcionando con una funcionalidad limitada en lugar de apagarse por completo.
+    \item Degradación elegante \cite{glass2009graceful} permite que el sistema siga funcionando a una capacidad reducida en lugar de fallar por completo. Esto implica deshabilitar las funciones que funcionan mal o cambiar a copias de seguridad, por lo que el sistema continúa funcionando con una funcionalidad limitada en lugar de apagarse por completo.
 \end{itemize}
 
 
-Con este diseño añadimos una capa de verificación sin modificar el módulo original, ya que \verb|getStock| y \verb|setStock| de \textit{StockProxy} van a realizar la verificación indicada y luego si todo es correcto invocarán las funciones de \textit{DatosProductos}. Con esto conseguimos las siguientes ventajas:
+Con este diseño añadimos una capa de verificación sin modificar el módulo original, ya que \verb|getStock| y \verb|setStock| de \textit{StockProxy} van a realizar la verificación indicada y luego si todo es correcto invocarán los métodos de \textit{StockProducto}. Con esto conseguimos las siguientes ventajas:
 
 \begin{itemize}
     \item encapsular la lógica de validación y control de acceso en un solo lugar, sin necesidad de modificar el módulo original que gestiona los datos. Facilitando la reutilización y la separación de responsabilidades.
 
-    \item centraliza el control sobre cómo y cuándo se accede o modifica el dato sensible. Esto facilita la implementación de reglas de negocio más complejas, como la validación de entradas, sin tener que modificar cada parte del código que interactúa con DatosProductos.
+    \item centraliza el control sobre cómo y cuándo se accede o modifica el dato sensible. Esto facilita la implementación de reglas de negocio más complejas, como la validación de entradas, sin tener que modificar cada parte del código que interactúa con \textbf{StockProducto}.
 
-    \item extender funcionalidades, el proxy puede evolucionar independientemente del objeto real, añadiendo nuevas funciones o cambiando las reglas de validación sin afectar la implementación original del módulo que contiene los datos. Por ejemplo, se pueden implementar restricciones de acceso, límites en las operaciones permitidas o incluso operaciones en diferido, sin necesidad de modificar el objeto real.
+    \item extender funcionalidades, el proxy puede evolucionar independientemente del modulo SujetoReal (ver \ref{patronProxy}), añadiendo nuevas funciones o cambiando las reglas de validación sin afectar la implementación original del módulo que contiene los datos. Por ejemplo, se pueden implementar restricciones de acceso, límites en las operaciones permitidas o incluso operaciones en diferido, sin necesidad de modificar el objeto real.
 \end{itemize}
 
 \section{Organización de la ejecución}

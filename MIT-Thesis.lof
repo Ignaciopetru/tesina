@@ -30,8 +30,10 @@
 \contentsline {figure}{\numberline {3.23}{\ignorespaces Componente sensor activo.}}{47}{figure.caption.36}%
 \contentsline {figure}{\numberline {3.24}{\ignorespaces Ejemplo}}{49}{figure.caption.37}%
 \contentsline {figure}{\numberline {3.25}{\ignorespaces State chart microondas}}{52}{figure.caption.38}%
-\contentsline {figure}{\numberline {3.26}{\ignorespaces Ejemplo \textit {Decorator} integridad de la información}}{57}{figure.caption.41}%
-\contentsline {figure}{\numberline {3.27}{\ignorespaces Ejemplo de handler usando \textit {State}.}}{61}{figure.caption.43}%
+\contentsline {figure}{\numberline {3.26}{\ignorespaces Módulos participantes del patrón state en el ejemplo del horno microondas.}}{56}{figure.caption.39}%
+\contentsline {figure}{\numberline {3.27}{\ignorespaces Ejemplo \textit {Decorator} integridad de la información}}{58}{figure.caption.41}%
+\contentsline {figure}{\numberline {3.28}{\ignorespaces Uso de patron Proxy al ejemplo del módulo stock}}{60}{figure.caption.42}%
+\contentsline {figure}{\numberline {3.29}{\ignorespaces Ejemplo de handler usando \textit {State}.}}{62}{figure.caption.43}%
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {A.1}{\ignorespaces Estructura patrón \textbf {Adapter}}}{64}{figure.caption.44}%
 \contentsline {figure}{\numberline {A.2}{\ignorespaces Estructura patrón \textbf {Command}}}{65}{figure.caption.45}%

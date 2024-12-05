@@ -2426,7 +2426,9 @@
     <bcf:citekey order="37" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
     <bcf:citekey order="38" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
     <bcf:citekey order="39" intorder="1">ganssleDebouncing</bcf:citekey>
-    <bcf:citekey order="40" intorder="1">douglass</bcf:citekey>
+    <bcf:citekey order="40" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
+    <bcf:citekey order="41" intorder="1">douglass</bcf:citekey>
+    <bcf:citekey order="42" intorder="1">glass2009graceful</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">
