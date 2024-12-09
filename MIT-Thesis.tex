@@ -91,6 +91,10 @@
 \usepackage[style=alphabetic,giveninits=true,maxbibnames=10,sorting=none,backend=biber]{biblatex}
 
 \usepackage{nameref}
+\usepackage{minitoc}
+
+\dominitoc
+\renewcommand{\mtctitle}{\\}
 
 
 %% IEEE style citations and references
@@ -304,6 +308,7 @@
 %%% Chapters of thesis  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% If you want to use "double spacing", you should start here...
+ \include{estado}
  \include{conceptos}
  \include{tecnicas_utiles}
  \include{chapter1}% .tex extension is presumed

@@ -63,6 +63,20 @@ En resumen, el software de un sistema embebido actúa como el cerebro que dirige
 Otros autores \cite{lee2017introduction} describen sistemas \textit{ciber-físicos} (CSP\footnote{por sus siglas en inglés (cyber-physical system)}) como la integración de la computación con procesos físicos. Usualmente llevada a cabo utilizando sistemas embebidos con ciclos de retroalimentación. En los cuales la parte computacional afecta al ámbito físico y viceversa. Para realizarlo se utiliza una serie de sensores y actuadores que permiten la comunicación entre ambos mundos.
 Además, si tomamos en cuenta los ejemplos que se presentan tanto en \cite{noergaard2005embedded} como en \cite{lee2017introduction}, podemos decir que la mayoría de los sistemas embebidos realizan tareas de \textbf{control} sobre el mundo físico.
 
+\subsection{Interrupciones}
+Las interrupciones en un microcontrolador son eventos que pausan la ejecución del programa principal para atender una tarea urgente. Funcionan como un mecanismo de respuesta automática que permite que el microcontrolador responda inmediatamente a eventos externos o internos sin depender de que el programa principal revise continuamente el estado de los dispositivos o variables asociadas a la generación de la interrupción.
+
+Cuando ocurre una interrupción (por ejemplo, un cambio en un sensor o una solicitud de un actuador), el microcontrolador detiene su ejecución actual y salta a una rutina de interrupción (ISR, Interrupt Service Routine). Esta rutina es un fragmento de código predefinido que realiza las tareas necesarias, como leer un sensor o activar un actuador. Después de ejecutar la ISR, el microcontrolador regresa automáticamente al punto donde fue interrumpido, reanudando el programa principal sin perder el flujo de ejecución.
+
+Este mecanismo es esencial en sistemas embebidos, especialmente en aquellos que controlan sensores y actuadores, porque permite un control eficiente de múltiples dispositivos. Por ejemplo, un microcontrolador podría usar interrupciones para:
+
+\begin{itemize}
+    \item Leer la temperatura de un sensor cada vez que detecta un cambio.
+    \item Activar un motor o alarma inmediatamente al detectar un evento específico.
+\end{itemize}
+
+Gracias a las interrupciones, el microcontrolador puede realizar tareas en tiempo real y responder rápidamente a eventos críticos, asegurando un control preciso de los sensores y actuadores sin necesidad de monitorear activamente cada dispositivo constantemente.
+
 
 \section{Ingeniería de Software}
 \label{ingso}

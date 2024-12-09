@@ -29,6 +29,13 @@
 \lstset{language=C++,style={mystyle}}%
 \chapter{Problemas comunes}
 
+En este capítulo se enumeran problemas comunes en el desarrollo de software embebido de control, extraídos principalmente del libro \textit{Design Patterns for Embedded Systems in C: An Embedded Software Engineering Toolkit} \cite{douglass}. Además, se analiza la solución de diseño propuesta en este y, a su vez, se intenta aportar otra desde la ingeniería de software, enfocada en el diseño para el cambio. En muchos casos, se identifica la posibilidad de aplicar ciertos patrones de diseño de \cite{Gamma:1995:DPE:186897}, mientras que en otros se utilizan conceptos y metodologías clave del diseño para el cambio propuestos por David L. Parnas \cite{Parnas02,Parnas1972,parnas1977abstract}.
+
+
+\minitoc
+
+
+
 \section{Acceso al hardware}
 \label{Accesoalhardware}
 Una de las características distintivas de los sistemas embebidos es que trabajan directamente con dispositivos de hardware. Cada uno de estos tiene sus propios protocolos de comunicación y estándares de funcionamiento (por ejemplo, direcciones de memoria, codificación de bits, etc), por lo tanto el software se debe ajustar a sus requerimientos. Como se puede entender esta tarea no es simple y puede demandar mucho esfuerzo cada vez que se quiera modificar o agregar un componente de hardware. A su vez, puede que múltiples módulos de nuestro sistema embebido quieran acceder al dispositivo, por lo que cada uno debe encargarse de la comunicación creando código repetido y complicando aún más las modificaciones. 
