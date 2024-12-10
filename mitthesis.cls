@@ -536,7 +536,7 @@
 	\int_compare:nNnTF { \g_author_authorcnt_int } = {0} {
 		\msg_error:nn { \ClassName } { no_author }
 		}	
-		{by\par
+		{\par
 		\int_until_do:nNnn { \l__author_authorno_int } = { \g_author_authorcnt_int } {
 			\seq_item:cn { g_author_name_seq } { \l__author_authorno_int }
 			\par and\par
@@ -753,22 +753,21 @@
 	\cs_set:Nx \__degree_prevdept: {\seq_item:cn { g_degree_department_seq } { \l__degree_departmentno_int } }
 	\cs_set:Nn \__degree_currdept: {}
 %	\mbox {Submitted\ to\ the\ }\mbox {\__degree_prevdept:} % changed 2024/4/20
-	{Submitted\ to\ the\ \__degree_prevdept:}
+%	{Submitted\ to\ the\ \__degree_prevdept:}
 	\int_until_do:nNnn { \l__degree_departmentno_int } = { \g_degree_deptcnt_int } {
 		\int_incr:N      \l__degree_departmentno_int
 		\cs_set:Nx \__degree_currdept: {\seq_item:cn { g_degree_department_seq } { \l__degree_departmentno_int } }
 		\mbox {\ and}\linebreak
 		\mbox {the\ \__degree_currdept: }
 	}
-    \linebreak \mbox{on\ \g_dd_thesisdate_tl\ in\ partial\ fulfillment\ of\ the\ requirements\ for\ the\ 
-		\int_compare:nNnTF { \g_degree_degreecnt_int } > {1} {degrees} {degree}
-	\ of}
 	\par\medskip
 	\int_until_do:nNnn { \l__degree_degreeno_int } = { \g_degree_degreecnt_int } {
     	\textls[60]{\text_uppercase:n {\seq_item:cn { g_degree_name_seq } { \l__degree_degreeno_int }}}\par and\par
 		\int_incr:N     \l__degree_degreeno_int
 		}
     \textls[60]{\text_uppercase:n {\seq_item:cn { g_degree_name_seq } { \l__degree_degreeno_int }}}\par\medskip
+	\rule{\textwidth}{0.3mm}
+
 }
 
 %%%%%%%%%%  End Degree Module  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -854,49 +853,6 @@
 %%%%%%%%%%  End Signature Module  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-%%%%%%%%%%  Copyright Module  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Directly add the xmp property that shows work is copyrighted. See l3pdfmeta.pdf. 
-% This is not automatic with \DocumentMetadata. "True" must be capitalized.
-%
-\cs_if_exist:NT \pdfmeta_xmp_add:n {\pdfmeta_xmp_add:n{<xmpRights:Marked>True</xmpRights:Marked>}}
-
-\tl_new:N \g_copyright_ccname_tl
-\tl_new:N \g_copyright_cclicensetext_tl
-\tl_new:N \g_copyright_copyrightlicencse_tl
-\tl_new:N \g_copyright_pdfrightstext_tl
-\tl_new:N \g__copyright_crwords_tl_
-\tl_new:N \g__copyright_mitpermissionlast_tl
-
-\tl_new:N \g_copyright_mitpermission_tl
-\tl_gset:Nn \g__copyright_mitpermissionlast_tl {to\ MIT\ a\ nonexclusive,\ worldwide,\ irrevocable,\ royalty-free\ license\ to\ exercise\ any\ and\ all\ rights\ under\ copyright,\ including\ to\ reproduce,\ preserve,\ distribute\ and\ publicly\ display\ copies\ of\ the\ thesis,\ or\ release\ the\  thesis\ under\ an\ open-access\ license.}
-
-\bool_new:N \g__cclicense_tf_bool
-\bool_gset_false:N \g__cclicense_tf_bool
-
-\NewDocumentCommand\CClicense{mm}{
-	\__copyright_licensedata:nn {#1}{#2}
-}
-\cs_new_protected:Nn \__copyright_licensedata:nn 
-  {
-	\tl_gset:Nf \g_copyright_cclicensetext_tl {\hrefurl{ \tl_trim_spaces:n {#2} }{ \tl_trim_spaces:n {#1} } }% #1 - text, #2 - url  
-	\tl_gset:Nx \g_copyright_ccname_tl        { \tl_trim_spaces:n {#1} } 
-	\bool_gset_true:N \g__cclicense_tf_bool
-	\cs_if_exist:NT \pdfmeta_xmp_add:n {
-			\pdfmeta_xmp_add:n {<xmpRights:WebStatement>#2</xmpRights:WebStatement>}
-	}
-	\cs_if_exist:NTF \msg_note:nnn % command was added to expl3 2021/05/18
-	  {
-		\msg_note:nnn { \ClassName } { cclicense} {#1}
-	  }
-	  {
-		\msg_log:nnn  { \ClassName } { cclicense} {#1}
-	  } 
-  }
-\msg_new:nnn { \ClassName } { cclicense } { Using\ Creative\ Commons\ License\ #1.}
-
-
-%%%%%%%%%%  End Copyright Module  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 %%%%%%%%%%  Title page Module  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -949,29 +905,7 @@
 \RenewDocumentCommand\maketitle{s}{
 	\cs_if_exist:NTF \DegreeMonth { \scan_stop: } { \msg_error:nn { \ClassName } { no_degree_date } }% msg def'd in degree-date section
 %	
-	\bool_if:NTF \g__cclicense_tf_bool { 
-		\tl_gset:Nn \g_copyright_copyrightlicencse_tl 
-			{This\ work\ is\ licensed\ under\ a\ \mbox{\g_copyright_cclicensetext_tl}\ license.\par\g_copyright_mitpermission_tl}
-		\tl_gset:Nn \g_copyright_pdfrightstext_tl 	 
-			{This\ work\ is\ licensed\ under\ a\ \g_copyright_ccname_tl\ license.\space \g_copyright_mitpermission_tl}
-	}{
-		\tl_gset:Nn \g_copyright_copyrightlicencse_tl 
-			{All\ rights\ reserved. \par\g_copyright_mitpermission_tl}
-		\tl_gset:Nn \g_copyright_pdfrightstext_tl 	 
-			{All\ rights\ reserved.\space \g_copyright_mitpermission_tl}
-   }
-   \int_compare:nNnTF {\g_author_authorcnt_int} > {1} 
-   		{   
-			\tl_gset:Nn \g__copyright_crwords_tl_ {The\ authors\ hereby\ grant} 
-		}
-		{
-			\tl_gset:Nn \g__copyright_crwords_tl_ {The\ author\ hereby\ grants} 
-		}
-    \IfBooleanTF{#1}{
-	    \tl_gset:Nn \g_copyright_mitpermission_tl {\scan_stop:}
-    }{
-	    \tl_gset:Nn \g_copyright_mitpermission_tl {\g__copyright_crwords_tl_\ \g__copyright_mitpermissionlast_tl}
-    }
+
 % 
 	\clearpage
 	\thispagestyle{empty}
@@ -990,7 +924,6 @@
             \textls[60]{\text_uppercase:n { \g_titlepage_institution_name_tl }}\par
             \DegreeMonth\ \DegreeYear\par
 			\__titlepage_blockskip:nn {12}{2}
-            \copyright\space\DegreeYear\space\CopyrightAuthor\@.\c_space_token \g_copyright_copyrightlicencse_tl % \@. in case name ends with III, IV, V,...
 			\__titlepage_blockskip:nn {18}{2}
             \vbox:n {\__signature_block:}
 			\__titlepage_bottomskip:
