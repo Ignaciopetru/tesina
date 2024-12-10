@@ -229,8 +229,8 @@ Aún podemos mejorar el diseño haciendo uso del concepto de herencia de interfa
 \umlclass[x=0]{MotorDC}
 {}
 {
-    set_dir(i: Dir) \\ 
-    set_vel(i: int) \\
+    set\_dir(i: Dir) \\ 
+    set\_vel(i: int) \\
 }
 
 \umlclass[x=-3, y=-4]{MotorDCDVR8838}
@@ -238,16 +238,16 @@ Aún podemos mejorar el diseño haciendo uso del concepto de herencia de interfa
 	MotorDC(i: int, i: int)
 }
 {
-    set_dir(i: Dir) \\ 
-    set_vel(i: int) \\
+    set\_dir(i: Dir) \\ 
+    set\_vel(i: int) \\
 }
 \umlclass[x=3, y=-4]{MotorDCG2}
 {
 	MotorDC(i: Serial)
 }
 {
-    set_dir(i: Dir) \\ 
-    set_vel(i: int) \\
+    set\_dir(i: Dir) \\ 
+    set\_vel(i: int) \\
 }
 \umlinherit[geometry=|-|]{MotorDCDVR8838}{MotorDC}
 \umlinherit[geometry=|-|]{MotorDCG2}{MotorDC}
@@ -1403,7 +1403,7 @@ Todo el funcionamiento principal del sistema es representado utilizando estados 
 
 A simple vista parece un comportamiento complejo y eso que solo es un ejemplo simplificado, por lo que en la vida real encontraremos casos mucho más extensos. Este es uno de los motivos por los cuales es útil contar con un buen diseño. Debemos tener en cuenta que sea fácil modificar las transiciones y también agregar y quitar estados. Doublass construye un módulo encargado de mantener el estado, el cual que sabe qué funciones ejecutar cuando se da una transición. Esto es, recibe el evento, verifica si corresponde a un cambio de estado y de ser así ejecuta el método de ``salida'' del estado actual, ejecuta el método de ``entrada'' del nuevo estado y actualiza el valor del estado actual. Además, propone una implementación utilizando una tabla bidimensional lo cual lo hace un sistema eficiente computacional hablando. En el caso de querer modificar estados, agregarlos o quitarlo es necesario cambiar la implementación de este módulo. Gamma explica esto en \cite[State]{Gamma:1995:DPE:186897}, menciona que Tom Cargill\footnote{Escritor de \textit{C++ Programming Style.Addison-Wesley}, 1992} propuso esta implementación y efectivamente es una manera de convertir código condicional en algo que se parece a una tabla.
 
-\begin{lstlisting}[caption=Código ejemplo Douglas State Table]
+\begin{lstlisting}[caption=Código ejemplo Douglass State Table, label={ifsanidados}]
 void TokenizerStateTable_eventDispatch(TokenizerStateTable* const me, Event e) {
 int takeTransition = 0;
 Mutex_lock(me->itsMutex);
