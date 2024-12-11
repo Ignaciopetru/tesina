@@ -32,5 +32,5 @@
 \contentsline {section}{\numberline {A.4}Mediator}{73}{section.Alph1.4}%
 \contentsline {section}{\numberline {A.5}Decorator}{73}{section.Alph1.5}%
 \contentsline {section}{\numberline {A.6}Proxy}{74}{section.Alph1.6}%
-\contentsline {chapter}{Glosario}{77}{appendix*.52}%
+\contentsline {chapter}{Glosario}{78}{appendix*.52}%
 \contentsline {backmatter}{Referencias}{79}{appendix*.53}%
