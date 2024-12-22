@@ -1,36 +1,38 @@
 \babel@toc {spanish}{}\relax 
 \contentsline {frontmatter}{\'{I}ndice de figuras}{5}{listoffigures}%
 \contentsline {frontmatter}{\'{I}ndice de cuadros}{7}{listoftables}%
-\contentsline {chapter}{\numberline {1}Estado del arte}{11}{chapter.1}%
-\contentsline {chapter}{\numberline {2}Conceptos previos}{15}{chapter.2}%
-\contentsline {section}{\numberline {2.1}Sistemas embebidos}{15}{section.2.1}%
-\contentsline {subsection}{\numberline {2.1.1}Interrupciones}{17}{subsection.2.1.1}%
-\contentsline {section}{\numberline {2.2}Ingeniería de Software}{17}{section.2.2}%
-\contentsline {subsection}{\numberline {2.2.1}Metodología de Parnas}{18}{subsection.2.2.1}%
-\contentsline {subsection}{\numberline {2.2.2}Items de cambio comunes}{19}{subsection.2.2.2}%
-\contentsline {subsection}{\numberline {2.2.3}Patrones de Diseño}{20}{subsection.2.2.3}%
-\contentsline {subsection}{\numberline {2.2.4}Arquitectura de software}{21}{subsection.2.2.4}%
-\contentsline {section}{\numberline {2.3}Arquitectura Control de Procesos}{21}{section.2.3}%
-\contentsline {chapter}{\numberline {3}Técnicas útiles}{25}{chapter.3}%
-\contentsline {section}{\numberline {3.1}Desacople de módulos}{25}{section.3.1}%
-\contentsline {chapter}{\numberline {4}Problemas comunes}{29}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Acceso al hardware}{29}{section.4.1}%
-\contentsline {section}{\numberline {4.2}Interfaces que no se ajustan perfectamente}{35}{section.4.2}%
-\contentsline {section}{\numberline {4.3}Control en conjunto de dispositivos}{38}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}Subsistemas de control}{39}{subsection.4.3.1}%
-\contentsline {subsection}{\numberline {4.3.2}Ejemplo}{41}{subsection.4.3.2}%
-\contentsline {section}{\numberline {4.4}Obtención de información}{52}{section.4.4}%
-\contentsline {section}{\numberline {4.5}Control anti-rebote}{55}{section.4.5}%
-\contentsline {section}{\numberline {4.6}Máquinas de estado}{56}{section.4.6}%
-\contentsline {section}{\numberline {4.7}Integridad de la información}{62}{section.4.7}%
-\contentsline {section}{\numberline {4.8}Verificación de precondiciones.}{63}{section.4.8}%
-\contentsline {section}{\numberline {4.9}Organización de la ejecución}{65}{section.4.9}%
-\contentsline {chapter}{\numberline {A}Patrones de diseño de Gamma}{69}{appendix.Alph1}%
-\contentsline {section}{\numberline {A.1}Adapter}{69}{section.Alph1.1}%
-\contentsline {section}{\numberline {A.2}Command}{70}{section.Alph1.2}%
-\contentsline {section}{\numberline {A.3}State}{72}{section.Alph1.3}%
-\contentsline {section}{\numberline {A.4}Mediator}{73}{section.Alph1.4}%
-\contentsline {section}{\numberline {A.5}Decorator}{73}{section.Alph1.5}%
-\contentsline {section}{\numberline {A.6}Proxy}{74}{section.Alph1.6}%
-\contentsline {chapter}{Glosario}{78}{appendix*.52}%
-\contentsline {backmatter}{Referencias}{79}{appendix*.53}%
+\contentsline {chapter}{\numberline {1}Introducción}{11}{chapter.1}%
+\contentsline {chapter}{\numberline {2}Estado del arte}{13}{chapter.2}%
+\contentsline {chapter}{\numberline {3}Conceptos previos}{17}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Sistemas embebidos}{17}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Interrupciones}{19}{subsection.3.1.1}%
+\contentsline {section}{\numberline {3.2}Ingeniería de Software}{19}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Metodología de Parnas}{20}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Items de cambio comunes}{21}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.2.3}Documentación}{22}{subsection.3.2.3}%
+\contentsline {subsection}{\numberline {3.2.4}Patrones de Diseño}{23}{subsection.3.2.4}%
+\contentsline {subsection}{\numberline {3.2.5}Arquitectura de software}{24}{subsection.3.2.5}%
+\contentsline {section}{\numberline {3.3}Arquitectura Control de Procesos}{24}{section.3.3}%
+\contentsline {chapter}{\numberline {4}Técnicas útiles}{27}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Desacople de módulos}{27}{section.4.1}%
+\contentsline {chapter}{\numberline {5}Problemas comunes}{31}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Acceso al hardware}{31}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Interfaces que no se ajustan perfectamente}{37}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Control en conjunto de dispositivos}{40}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Subsistemas de control}{41}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Ejemplo}{44}{subsection.5.3.2}%
+\contentsline {section}{\numberline {5.4}Obtención de información}{54}{section.5.4}%
+\contentsline {section}{\numberline {5.5}Control anti-rebote}{57}{section.5.5}%
+\contentsline {section}{\numberline {5.6}Máquinas de estado}{58}{section.5.6}%
+\contentsline {section}{\numberline {5.7}Integridad de la información}{64}{section.5.7}%
+\contentsline {section}{\numberline {5.8}Verificación de precondiciones.}{65}{section.5.8}%
+\contentsline {section}{\numberline {5.9}Organización de la ejecución}{67}{section.5.9}%
+\contentsline {chapter}{\numberline {A}Patrones de diseño de Gamma}{71}{appendix.Alph1}%
+\contentsline {section}{\numberline {A.1}Adapter}{71}{section.Alph1.1}%
+\contentsline {section}{\numberline {A.2}Command}{72}{section.Alph1.2}%
+\contentsline {section}{\numberline {A.3}State}{74}{section.Alph1.3}%
+\contentsline {section}{\numberline {A.4}Mediator}{75}{section.Alph1.4}%
+\contentsline {section}{\numberline {A.5}Decorator}{75}{section.Alph1.5}%
+\contentsline {section}{\numberline {A.6}Proxy}{76}{section.Alph1.6}%
+\contentsline {chapter}{Glosario}{80}{appendix*.53}%
+\contentsline {backmatter}{Referencias}{81}{appendix*.54}%

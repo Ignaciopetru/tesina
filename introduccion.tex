@@ -1,0 +1,24 @@
+\chapter{Introducción}
+
+Uno de los principales objetivos de la investigación realizada en \cite{laura} fue diseñar el software de control para un robot desmalezador. Este diseño consiste en construir y documentar módulos e interfaces siguiendo las metodologías de la ingeniería de software, incluyendo el uso de patrones de diseño y arquitecturas de software. En particular, se optó por emplear una arquitectura de control de procesos \cite[pág. 27]{ShawGarlan1996} y múltiples patrones de diseño clásicos descritos en \cite{Gamma:1995:DPE:186897}, como los patrones \textit{state}, \textit{command}, \textit{strategy}, entre otros.
+
+Como parte del trabajo, se formularon las siguientes preguntas: ¿existen patrones de diseño específicos para robótica, sistemas de control y/o sistemas embebidos? ¿Están debidamente documentados? Para intentar responderlas, se realizó una búsqueda exhaustiva y, entre los distintos resultados, destacaron dos libros: \cite{douglass} y \cite{elecia-embedded}.
+
+Esta tesina tenía como propósito inicial partir de los patrones de diseño descritos en los libros mencionados para analizarlos, adecuarlos a la documentación presentada por Gamma y considerar su aplicación al diseño del robot desmalezador previamente realizado. En el primer paso, al analizar los patrones, se determinó que los "patrones" descritos en dichos libros no seguían las prácticas ni los principios establecidos por la ingeniería de software.
+
+\section*{Objetivos}
+
+Al no poder utilizar estos libros como fuente de patrones, la tesina tuvo que ser reorientada. En particular, se decidió utilizarlos como fuente de problemas de diseño comunes a los que se enfrentan quienes trabajan en sistemas embebidos y de control. El nuevo objetivo fue documentar estos problemas y proponer soluciones de diseño basadas en la ingeniería de software. Además, se buscó contrastar las soluciones definidas en \cite{douglass} con las propuestas en la tesina, identificando ventajas, desventajas, puntos de interés e inconvenientes comunes de implementación, acompañados de ejemplos prácticos.
+
+El trabajo, además, pretende ser una herramienta para desarrolladores de sistemas embebidos de control. Su objetivo es facilitar la realización de buenos diseños aplicando patrones, incluso si los desarrolladores no poseen todos los conocimientos propios de un ingeniero de software. Entre los problemas comunes seleccionados se encuentran: el acceso a diferentes componentes de hardware, es decir, establecer una interfaz que permita la comunicación con sensores o actuadores; problemas relacionados con la obtención de información a partir de diversas fuentes; el manejo de estados mediante máquinas de estados; y el control de múltiples dispositivos de manera coordinada para realizar tareas complejas que requieran cooperación. Asimismo, se incluyen otros aspectos relacionados con la estructura del código, como la organización de la ejecución explotando la capa interrupciones, la verificación de precondiciones en métodos, y la integridad de la información almacenada en memoria.
+
+Las soluciones propuestas consisten en la aplicación de la metodología de Parnas \cite{parnas72}, el uso de patrones de diseño y la subdivisión de módulos. En algunos casos, también se presentan ejemplos de implementaciones que siguen el diseño propuesto, demostrando las ventajas de dichas soluciones.
+
+\section*{Estructura}
+
+A fin de brindar un conjunto de herramientas útiles y autocontenidas, se estructuró la tesina de la siguiente manera. En primer lugar, se presenta un capítulo que enumera los conceptos previos necesarios para un entendimiento completo de los problemas comunes a tratar. Además, proporciona el contexto del trabajo definiendo el tipo de sistemas abordados. En este capítulo se describen nociones generales de la ingeniería de software, tales como el diseño para el cambio, la metodología de Parnas, patrones de diseño, documentación, entre otros. También se define la arquitectura de software, que resulta clave para el tipo de software tratado en este trabajo.
+
+El capítulo clave del trabajo es Problemas comunes, donde se desarrolla el contenido mencionado anteriormente. Cada sección describe un problema o un conjunto de inconvenientes de la misma índole. En primer lugar, se ofrece una explicación general del problema; a continuación, se presenta la solución propuesta en el libro, junto con los inconvenientes que esta puede tener. Posteriormente, se propone una nueva solución y se enumeran las ventajas asociadas a la misma.
+
+
+

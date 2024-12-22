@@ -3,8 +3,6 @@
 % Documentation: https://ctan.org/pkg/mitthesis
 
 
-
-
 \lstdefinestyle{mystyle}{
     backgroundcolor=\color{CadetBlue!15!white},   
     commentstyle=\color{Red3},
@@ -428,13 +426,23 @@ Como se discutió previamente, en casos como este se puede aplicar la arquitectu
 Proponemos al creación de un \textit{subsistema de control} por cada variable a manipular\footnote{Ver tabla conceptos arquitectura Control de Procesos \ref{tab:conceptosArq}} que sea necesaria controlar por el sistema. Como se puede intuir, un subsistema de control se encarga del control de una propiedad en particular y para hacerlo lleva a cabo todas las tareas de la arquitectura a su nivel. Por lo tanto, debe proveer una interfaz que permita setear un valor al que se quiera llevar la propiedad (\textit{setPoint} (ver  \ref{tab:conceptosArq})) y que indique el comienzo de la tarea de control. Un subsistema tiene una estructura similar a la de la arquitectura \ref{fig:arqCtrlRobot}, pero su alcance estará restringido a la variable a manipular y las variables medidas relacionadas.
 
 
-Veamos ahora de manera mas concreta qué módulos forman parte de cada componente:
+Veamos ahora, en la imagen \ref{modulosSub} , de manera mas concreta qué módulos forman parte de cada componente:
 
 
-\begin{figure}[h]
+\begin{figure}[h!]
 \caption{Módulos de un subsistema}
+\label{modulosSub}
 \begin{center}
 \begin{tikzpicture}
+
+\umlclass[]{Control}
+{}
+{setPoint(i: Measure)\\
+control() \\
+connectionRead() \\
+setAlgoritmo(i: Algoritmo) \\
+setConnection(i: Pipe)
+}
 
 \umlclass[below=6cm of Control]{Sensor}
 {}
@@ -463,14 +471,7 @@ write(i: Measure)
 Por lo general se desacopla usando el patrón \textit{command} y su uso puede ser más complejo que solo ejecutar una función.
 }
 
-\umlclass[]{Control}
-{}
-{setPoint(i: Measure)\\
-control() \\
-connectionRead() \\
-setAlgoritmo(i: Algoritmo) \\
-setConnection(i: Pipe)
-}
+
 
 \umlclass[above right=-1cm and 2cm of Control]{Algoritmo}
 {}
@@ -1079,10 +1080,10 @@ Hasta la introducción de \textbf{MainController} todo lo que estábamos haciend
 \begin{center}
 \begin{tikzpicture}
 
-\umlsimpleclass[x=-2]{Waiting}
-\umlsimpleclass[x=2]{0}
-\umlsimpleclass[x=2, y=-2]{1}
-\umlsimpleclass[x=2, y=-4]{2}
+\umlsimpleclass[fill=red!20,x=-2]{Waiting}
+\umlsimpleclass[fill=red!20,x=2]{0}
+\umlsimpleclass[fill=red!20,x=2, y=-2]{1}
+\umlsimpleclass[fill=red!20,x=2, y=-4]{2}
 
 \umltrans[arg=graspAt,pos=0.5]{Waiting}{0}
 \umltrans[arg=notifyEnd,pos=0.5]{0}{1}
@@ -1122,31 +1123,31 @@ Generalmente una tarea importante que tienen los sistemas embebidos es recavar i
 %--------------------------
 
 
-\node[módulo, below =4cm of CR](Pin){Pin};
+\node[módulo, below =4cm of CR, fill=yellow!20](Pin){Pin};
 
-\node[módulo, above left=0.5cm and 2cm of Pin](CountTime){Count};
+\node[módulo, above left=0.5cm and 2cm of Pin, fill=yellow!20](CountTime){Count};
 
 \draw[flechaFisica](Pin) -| (CountTime);
 
-\node[módulo, above=1cm of CountTime](CRpinCollector){Collector};
+\node[módulo, above=1cm of CountTime, fill=yellow!20](CRpinCollector){Collector};
 
 \draw[-latex](CountTime) edge (CRpinCollector);
 
-\node[módulo, left=1cm of CRpinCollector](CRBuffer){Buffer};
+\node[módulo, left=1cm of CRpinCollector, fill=yellow!20](CRBuffer){Buffer};
 
 \draw[-latex](CRBuffer) edge (CRpinCollector);
 
-\node[módulo, below=5cm of CRBuffer](BufferReader){Cliente};
+\node[módulo, below=5cm of CRBuffer, fill=yellow!20](BufferReader){Cliente};
 
 \draw[-latex](BufferReader) edge (CRBuffer);
 
-\node[nombre, below right = 1cm and -3cm of Pin](ConnectBufferToMCU){};
+\node[nombre, below right = 1cm and -3cm of Pin, fill=yellow!20](ConnectBufferToMCU){};
 
 \node[componente, fit=(Pin)(CountTime)(CRBuffer)(ConnectBufferToMCU)]{};
 
 %%------------------------------Referencias------------
 
-\node[módulo, below left=1cm and -0.5cm of BufferReader](mod){nombre};
+\node[módulo, below left=1cm and -0.5cm of BufferReader, fill=yellow!20](mod){nombre};
 \node[right =0.5cm of mod](modDesc){módulo};
 
 \node[right=4cm of modDesc](x1){};
@@ -1194,7 +1195,7 @@ De esta forma un cliente de nuestro componente puede obtener la información rec
 Por ejemplo, si tenemos un sensor de efecto Hall que emite una interrupción en cada detección del campo magnético y lo usamos para medir la velocidad de una rueda, podemos utilizar el siguiente diseño (obviamente, aplicando lo que acabamos de ver):
 
 \begin{figure}[H]
-\caption{Ejemplo}
+\caption{Ejemplo módulos para obtener la información referida a la velocidad.}
 \begin{center}
 \scalebox{.90}{
 \begin{tikzpicture}
@@ -1408,37 +1409,37 @@ void TokenizerStateTable_eventDispatch(TokenizerStateTable* const me, Event e) {
 int takeTransition = 0;
 Mutex_lock(me->itsMutex);
 /* first ensure the entry is within the table boundaries */
-    if (me->stateID >= NULL_STATE && me->stateID <= GN_PROCESSINGFRACTIONALPART_STATE) {
-        if (e.eType >= EVDIGIT && e.eType <= EVENDOFSTRING) {
-            /* is there a valid transition for the current state and event? */
-            if (me->table[me->stateID][e.eType].newState != NULL_STATE) {
-                /* is there a guard? */
-                if (me->table[me->stateID][e.eType].guardPtr == NULL)
-                    /* is the guard TRUE? */
-                    takeTransition = TRUE; /* if no guard, then it "evaluates" to TRUE */
-                else
-                    takeTransition =(me->table[me->stateID][e.eType].guardPtr(me));
-                if (takeTransition) {
-                    if (me->table[me->stateID][e.eType].exitActionPtr != NULL)
-                        if (me->table[me->stateID][e.eType].exitActionPtr->nParams == 0)
-                            me->table[me->stateID][e.eType].exitActionPtr->aPtr.a0(me);
-                        else
-                            me->table[me->stateID][e.eType].exitActionPtr->aPtr.a1(me, e.ed.c);
-                    if (me->table[me->stateID][e.eType].transActionPtr != NULL)
-                        if (me->table[me->stateID][e.eType].transActionPtr->nParams == 0)
-                            me->table[me->stateID][e.eType].transActionPtr->aPtr.a0(me);
-                        else
-                            me->table[me->stateID][e.eType].transActionPtr->aPtr.a1(me, e.ed.c);
-                    if (me->table[me->stateID][e.eType].entryActionPtr != NULL)
-                        if (me->table[me->stateID][e.eType].entryActionPtr->nParams == 0)
-                            me->table[me->stateID][e.eType].entryActionPtr->aPtr.a0(me);
-                        else
-                            me->table[me->stateID][e.eType].entryActionPtr->aPtr.a1(me, e.ed.c);
-                    me->stateID = me->table[me->stateID][e.eType].newState;
-                }
-            }
+  if (me->stateID >= NULL_STATE && me->stateID <= GN_PROCESSINGFRACTIONALPART_STATE) {
+    if (e.eType >= EVDIGIT && e.eType <= EVENDOFSTRING) {
+      /* is there a valid transition for the current state and event? */
+      if (me->table[me->stateID][e.eType].newState != NULL_STATE) {
+        /* is there a guard? */
+        if (me->table[me->stateID][e.eType].guardPtr == NULL)
+          /* is the guard TRUE? */
+          takeTransition = TRUE; /* if no guard, then it "evaluates" to TRUE */
+        else
+          takeTransition =(me->table[me->stateID][e.eType].guardPtr(me));
+        if (takeTransition) {
+          if (me->table[me->stateID][e.eType].exitActionPtr != NULL)
+            if (me->table[me->stateID][e.eType].exitActionPtr->nParams == 0)
+              me->table[me->stateID][e.eType].exitActionPtr->aPtr.a0(me);
+            else
+              me->table[me->stateID][e.eType].exitActionPtr->aPtr.a1(me, e.ed.c);
+          if (me->table[me->stateID][e.eType].transActionPtr != NULL)
+            if (me->table[me->stateID][e.eType].transActionPtr->nParams == 0)
+              me->table[me->stateID][e.eType].transActionPtr->aPtr.a0(me);
+            else
+              me->table[me->stateID][e.eType].transActionPtr->aPtr.a1(me, e.ed.c);
+          if (me->table[me->stateID][e.eType].entryActionPtr != NULL)
+            if (me->table[me->stateID][e.eType].entryActionPtr->nParams == 0)
+              me->table[me->stateID][e.eType].entryActionPtr->aPtr.a0(me);
+            else
+              me->table[me->stateID][e.eType].entryActionPtr->aPtr.a1(me, e.ed.c);
+          me->stateID = me->table[me->stateID][e.eType].newState;
         }
+      }
     }
+  }
 
 Mutex_release(me->itsMutex);
 }

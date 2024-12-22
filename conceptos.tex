@@ -1,5 +1,8 @@
 \chapter{Conceptos previos}
 
+En este capítulo abordaremos algunos conceptos necesarios para poder abordar las soluciones a los problemas comunes que trataremos luego. Entre ellos se encuentran algunas definiciones como la de \textit{Sistemas embebidos} y otras relacionadas a la IS. También, conceptos centrales del diseño para el cambio y todo lo necesario para llevarlo a cabo.
+
+
 \section{Sistemas embebidos}
 Veamos las siguientes definiciones de sistemas embebidos extraídas de diferentes autores:
 \\\\
@@ -148,6 +151,91 @@ Cuando se diseña pensando en el cambio, una tarea que se agrega es identificar 
 \end{itemize}
 
 Es útil consultar estos items a la hora de diseñar siguiendo los criterios de modularización de \cite{Parnas1972}.
+
+\subsection{Documentación}
+
+Quienes diseñan un sistema no serán necesariamente quienes lo implementen, por lo que sus decisiones deben estar disponibles para que diversos interesados en el sistema puedan revisarlas y comprenderlas. Por ello, documentar o describir el diseño de manera adecuada es tan importante como el diseño mismo. En este sentido, Parnas introduce el concepto de ``\textit{design through documentation}'' \cite{parnasDoc}, lo que nos lleva a enunciar el siguiente principio de diseño: \textit{Un diseño sin documentación carece de utilidad práctica.}
+
+Para lograr una buena descripción del diseño se utilizan multiples documentos que aportan informacion sobre distintos aspectos a tener en cuenta, entre ellos encontramos:
+
+\begin{itemize}
+\item \textbf{Documentos de módulos}. Los elementos de estos documentos son módulos o unidades de implementación. Los módulos representan una forma basada en el código de considerar al sistema. Cada módulo tiene asignada y es responsable de llevar adelante una función.
+\item \textbf{Documentos de aspectos dinámicos}. En estos documentos los elementos son componentes presentes en tiempo de ejecución y los conectores que permiten que los componentes interactúen entre sí.
+\item \textbf{Documentos con referencias externas}. Estos documentos muestran la relación entre las partes en que fue descompuesto el sistema y elementos externos (tales como archivos, procesadores, personas, etc.).
+\item \textbf{Documentos de módulos}. Especificación de Interfaces, Estructura de Módulos, Guía de Módulos, Estructura de Herencia y Estructura de Uso.
+\item \textbf{Documentos de aspectos dinámicos}. Estructura de Procesos, Estructura de Objetos, Diagrama
+de Interacciones.
+\item \textbf{Documentos con referencias externas}. Estructura Física o de Despliegue
+\end{itemize}
+
+A fines didacticos la tesina se centrará, al igual que los patrones, en módulos, interfaces y sus relaciones. Por lo que se utilizarán diagramas de módulos a fin de documentar. Estos consiten en cajas nombradas en las cuales se definde la interfaz de un módulo. Ademas, utilizando un conjunto de flechas se determinan sus relaciones. Vease la figura \ref{figDiseño}.
+
+
+\begin{figure}[h]
+\label{figDiseño}
+\caption{Referencia gráfico de módulos}
+\begin{center}
+\begin{tikzpicture}
+
+
+\tikzstyle{módulo}=[minimum width=1cm,inner sep=2mm,above right,draw,align=center,minimum width=2cm, font=\bfseries]
+
+\tikzstyle{supest}=[rounded corners=1.5mm, minimum width=2cm,inner sep=2mm,draw,text width=2cm]
+
+\tikzstyle{componente}=[minimum width=2cm,inner sep=2mm,draw,text width=2cm]
+
+\tikzstyle{nombre}=[inner sep=0mm, font=\bfseries]
+
+\tikzstyle{pipe}=[-latex,thick,line width=4pt]
+
+\tikzstyle{modExt}=[minimum width=1cm,inner sep=2mm,above right,draw, dotted,line width=2pt,align=center,minimum width=2cm,color=gray, font=\bfseries]
+
+\tikzstyle{flechaFisica}=[-latex,snake=coil,segment aspect=0, red, thick];
+
+
+%-------------------------------------------------------
+
+\umlclass[]{NombreModulo}
+{
+NombreModulo() \\
+}
+{
+metodo1() \\
+metodo2() \\
+metodo3() \\
+}
+
+
+\node[módulo, below left=1cm and 4.3cm of NombreModulo, fill=yellow!20](mod){nombre};
+\node[right =0.5cm of mod](modDesc){módulo};
+
+
+\node[right=4cm of modDesc](x1){};
+\node[right=2cm of x1](x2){};
+\draw[-latex](x1)--(x2);
+\node[right=0.3cm of x2](llp){llamada a procedimiento};
+
+\node[below=0.5cm of mod.south west](x1a){};
+\node[below=0.5cm of mod.south east](x2a){};
+\draw[tikzuml inherit style](x2a)--(x1a);
+\node[below right=-0.4cm and 0.3cm of x2a, text width=4cm](hand){herencia};
+
+\node[below=0.7cm of x1](x1b){};
+\node[below=0.7cm of x2](x2b){};
+\draw[tikzuml unidirectional aggregation style](x1b)--(x2b);
+\node[right=0.3cm of x2b](rf){composición};
+%
+\node[supest, fit=(mod)(hand)(llp)]{};
+
+
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+
+Por otro lado, para la documentacion del uso de patrones de diseño, utilizamos el lenguaje 2MIL, en la imagen  podemos observar un ejemplo.
+
 
 
 \subsection{Patrones de Diseño}
