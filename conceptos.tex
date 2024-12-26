@@ -66,10 +66,47 @@ En resumen, el software de un sistema embebido actúa como el cerebro que dirige
 Otros autores \cite{lee2017introduction} describen sistemas \textit{ciber-físicos} (CSP\footnote{por sus siglas en inglés (cyber-physical system)}) como la integración de la computación con procesos físicos. Usualmente llevada a cabo utilizando sistemas embebidos con ciclos de retroalimentación. En los cuales la parte computacional afecta al ámbito físico y viceversa. Para realizarlo se utiliza una serie de sensores y actuadores que permiten la comunicación entre ambos mundos.
 Además, si tomamos en cuenta los ejemplos que se presentan tanto en \cite{noergaard2005embedded} como en \cite{lee2017introduction}, podemos decir que la mayoría de los sistemas embebidos realizan tareas de \textbf{control} sobre el mundo físico.
 
+Con respecto al hardware en donde corren los sistemas embebidos podemos descatar que suele consistir en una placa o chip compacto que incluye:
+\begin{itemize}
+    \item \textbf{Unidad de Microcontrolador (MCU):} Un microcontrolador que integra un procesador, memoria y perif\'ericos en un solo chip. Es el componente principal que ejecuta el software.
+    \item \textbf{Memoria Flash:} Utilizada para almacenar el programa y los datos no vol\'atiles.
+    \item \textbf{Memoria RAM:} Proporciona almacenamiento temporal para datos en tiempo de ejecuci\'on.
+    \item \textbf{Interfaces de entrada/salida:} Puertos \gls{GPIO}, \gls{ADC}, \gls{PWM} y otros para interactuar con sensores, actuadores y otros dispositivos externos.
+    \item \textbf{Fuente de Energ\'ia:} Puede provenir de bater\'ias, adaptadores de corriente o incluso energ\'ia recolectada del entorno.
+\end{itemize}
+El tama\~no compacto y la integraci\'on de componentes distinguen a los sistemas embebidos de otros sistemas m\'as grandes, como las computadoras de escritorio o los servidores. Se diferencian, ademas, en su poder de computo limitado tanto por el hardware (baja disponibilidad de memoria RAM, \gls{clock} de la CPU bajo, etc) como por la disponibilidad de energía eléctrica.
+
+Existen varios microcontroladores multipropósito de uso comercial, tales como los producidos por la empresa Arduino o los similares de la familia  Raspberry Pi. La presentación de los mismos suele ser en forma de una placa preparada para conectar los inputs y outputs, como la de la imagen \ref{arduinoUNO} y \ref{raspberry}.
+
+Por defecto, el microcontrolador ejecuta el software almacenado en su unidad flash, la cual debe ser grabada cada vez que se actualice. Dado esto y las limitaciones de hardware ya mencionadas, se deben tener ciertas consideraciones a la hora de escribir el código. Tales como, prestar atención a la performance del sistema, a la cantidad de librerías a utilizar, al uso de memoria RAM, etc.
+
+\begin{figure}[h!]
+	\label{arduinoUNO}
+	\centering
+    \includegraphics[width=0.5\linewidth]{arduinoUNO.jpeg}
+    \caption{Arduino UNO}
+\end{figure}
+
+
+\begin{figure}[h!]
+	\label{raspberry}
+	\centering
+    \includegraphics[width=0.6\linewidth]{raspberry_pico2.jpg}
+    \caption{Raspberry Pico 2}
+\end{figure}
+
+
 \subsection{Interrupciones}
 Las interrupciones en un microcontrolador son eventos que pausan la ejecución del programa principal para atender una tarea urgente. Funcionan como un mecanismo de respuesta automática que permite que el microcontrolador responda inmediatamente a eventos externos o internos sin depender de que el programa principal revise continuamente el estado de los dispositivos o variables asociadas a la generación de la interrupción.
 
-Cuando ocurre una interrupción (por ejemplo, un cambio en un sensor o una solicitud de un actuador), el microcontrolador detiene su ejecución actual y salta a una rutina de interrupción (ISR, Interrupt Service Routine). Esta rutina es un fragmento de código predefinido que realiza las tareas necesarias, como leer un sensor o activar un actuador. Después de ejecutar la ISR, el microcontrolador regresa automáticamente al punto donde fue interrumpido, reanudando el programa principal sin perder el flujo de ejecución.
+Cuando ocurre una interrupción (por ejemplo, un cambio en un sensor o una solicitud de un actuador), el microcontrolador detiene su ejecución actual y salta a una rutina de interrupción (ISR, Interrupt Service Routine). Esta rutina es un fragmento de código predefinido que realiza las tareas necesarias, como leer un sensor o activar un actuador. Después de ejecutar la ISR, el microcontrolador regresa automáticamente al punto donde fue interrumpido, reanudando el programa principal sin perder el flujo de ejecución. En la imagen \ref{interrupt} se puede apreciar este comportamiento.
+
+\begin{figure}[h!]
+	\label{interrupt}
+	\centering
+    \includegraphics[width=0.7\linewidth]{components_interrupt.png}
+    \caption{Diagrama interrupción}
+\end{figure}
 
 Este mecanismo es esencial en sistemas embebidos, especialmente en aquellos que controlan sensores y actuadores, porque permite un control eficiente de múltiples dispositivos. Por ejemplo, un microcontrolador podría usar interrupciones para:
 
@@ -238,7 +275,11 @@ Por otro lado, para la documentacion del uso de patrones de diseño, utilizamos 
 
 
 
+
+
 \subsection{Patrones de Diseño}
+
+A la hora de estructurar código podemos distinguir dos niveles, uno se tratará en esa sub-sección y el otro en \ref{secArq}. Los patrones de diseño se aplican en el nivel de diseño. En este los elementos son módulos y la comunicación se lleva a cabo mediante llamadas a procedimiento. Además de las llamadas, se aplican dos conceptos previamente mencionados en \ref{ingso}, la composición y la herencia de interfaces. Estas son las herramientas con las se cuenta en el nivel de diseño para estructurar el código.
 
 En \cite{Gamma:1995:DPE:186897}, el autor trae a colación la definición de patrón de diseño que dio Christopher Alexander:
 
@@ -264,6 +305,9 @@ Para anticiparse al cambio, los patrones aseguran que un sistema pueda cambiar d
 
 
 \subsection{Arquitectura de software}
+\label{secArq}
+
+En contraste con los patrones de diseño, la arquitectura de software no utiliza módulos e interfaces como actores principales, sino que los elementos son componentes, los cuales pueden estar formatos por múltiples módulos y tener cierta complejidad. La forma de comunicarse en este nivel se realiza mediante conectores los cuales pueden no ser necesariamente llamadas a procesos, sino otras estructuras como protocolos, pipes, etc..
 
 Según \cite{ShawGarlan1996} la arquitectura de software se define como la estructura fundamental de un sistema de software, que está compuesta por sus componentes y las relaciones entre estos. Este campo aborda la organización y los patrones utilizados para estructurar los sistemas de software de manera que sean eficientes, sostenibles y capaces de manejar cambios a lo largo del tiempo.
 
@@ -372,7 +416,17 @@ Para llevar a cabo el enfoque se fundamenta en tres componentes básicos: \textb
 
 El componente \textbf{Control} es responsable de implementar el algoritmo de control, procesar datos provenientes de los sensores y realizar ajustes al proceso para mantener las variables dentro de los valores deseados. Además, se encarga de activar y desactivar el sistema, y de configurar los rangos de operación o \textit{set-points}. Por otro lado, el \textbf{Proceso} encapsula los dispositivos que generan las salidas controladas, proporcionando interfaces para modificar sus variables según las instrucciones del \textbf{Control}. Finalmente, los \textbf{Sensores} miden las variables clave del proceso y transmiten estos datos al componente \textbf{Control}, ocultando la complejidad de los dispositivos de medición.
 
-Esta arquitectura emplea conectores como eventos, llamadas a procedimiento y tubos (pipes) para gestionar la comunicación y las acciones entre los componentes. A nivel computacional, el sistema funciona en un ciclo continuo de retroalimentación donde los sensores miden las variables, el \textbf{Control} evalúa estas mediciones y, de ser necesario, ajusta el \textbf{Proceso} para garantizar el cumplimiento de los objetivos definidos. Este enfoque modular facilita la incorporación de nuevos sensores, actualizaciones en el algoritmo de control y cambios en el hardware, promoviendo flexibilidad y escalabilidad.
+La arquitectura provee una serie de pasos para realizar el control, estos se ejecutan de manera cíclica. Muchas veces se hace uso de temporizadores para limitar la cantidad de ciclos por unidad de tiempo. De esta manera se evita saturar al procesador y a su vez se le da tiempo a los actuadores a realizar su trabajo. Cuando, por ejemplo, se le indica a un motor aumentar las \gls{RPM} la inercia provoca que el aumento no sea instantáneo, sino que lleve un tiempo llegar al valor indicado. En caso de no esperar, el sistema realizaría otro ciclo de control sin utilidad, desperdiciando tiempo de \gls{CPU} que puede ser aprovechado para otras tareas.
+
+\begin{itemize}
+\item El sistema recibe valores de referencia llamados \textit{set-points}.
+\item Se leen los valores actuales a través de los sensores.
+\item Con los nuevos valores, se realizan los calculos a fin de modificar mediante actuadores las propiedades e intentar acerlarlas a los valores de referencia.
+\item Una vez, decidida la accion se aplica el cambio.
+\end{itemize}
+
+
+Para llevar a cabo los pasos, esta arquitectura emplea conectores como eventos, llamadas a procedimiento y tubos (pipes) para gestionar la comunicación y las acciones entre los componentes. A nivel computacional, el sistema funciona en un ciclo continuo de retroalimentación donde los sensores miden las variables, el \textbf{Control} evalúa estas mediciones y, de ser necesario, ajusta el \textbf{Proceso} para garantizar el cumplimiento de los objetivos definidos. Este enfoque modular facilita la incorporación de nuevos sensores, actualizaciones en el algoritmo de control y cambios en el hardware, promoviendo flexibilidad y escalabilidad.
 
 \begin{table}[h!]
 \label{tab:conceptosArq}
