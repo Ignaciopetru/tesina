@@ -357,7 +357,7 @@ limpiar()
 \end{figure}
 
 
-Para permitir el cambio propuesto sin tener que realizar todas las modificaciones mencionadas, podemos aplicar el patrón \textit{Adapter}, creando un módulo intermedio con la misma interfaz que \textbf{DisplayLib}. El cual utilice los métodos provistos por la librería que encapsula el display con el objetivo de proveer la misma interfaz que la librería original. Podemos ver la nueva estructura en \ref{configNueva}.
+Para permitir el cambio propuesto sin tener que realizar todas las modificaciones mencionadas, podemos aplicar el patrón \textit{Adapter}, creando un módulo intermedio con la misma interfaz que \textbf{DisplayLib}. El cual utilice los métodos provistos por la librería que encapsula el display con el objetivo de proveer la misma interfaz que la librería original. Podemos ver la nueva estructura en \ref{configNueva} y su debida documentación de aplicación del patrón en \ref{docAdapter}.
 
 \begin{figure}[h]
 \caption{Configuración nueva}
@@ -401,6 +401,22 @@ umluniassoc
 
 Por lo tanto el cliente sigue utilizando la misma interfaz para utilizar el display, reduciendo la cantidad y complejidad de los cambios necesarios para utilizar el nuevo display.
 
+\begin{figure}
+\caption{Documentacion de la aplicación del patrón Adapter al ejemplo del display.}
+\label{docAdapter}
+\begin{pattern}[]{Adaptar nuevo controlador de display}{Algorithm}{idFigAlg}
+\based{Adaptador (Adapter)}
+\why{\textbf{Cambios previstos}: Se pueden agregar diferentes displays pero manteniendo una interfaz común.
+
+\textbf{Funcionalidad}: En caso de agregar un nuevo display que provee una intefaz diferente a la utilizada en el sistema, se crea un módulo que la adapta para que corresponda a la usada.
+}
+\assigns
+\is{ControlDisplay}{Target}
+\is{LibEmca}{Adaptee}
+\is{ControlEmca}{Adapter}
+\end{pattern}
+\end{figure}
+
 Una posible implementación para las funciones \verb|escribir(i: str): bool| y \verb|limpiar()| del módulo \textbf{ControlEmca} es la del código \ref{codigoAdapter}.
 
 \begin{lstlisting}[label={codigoAdapter}, caption=Ejemplo implementación módulo Adapter.]
@@ -420,7 +436,47 @@ void limpiar() {
 \section{Control en conjunto de dispositivos}
 Muchas aplicaciones embebidas robóticas controlan \gls{actuadores} que deben trabajar en conjunto para lograr el efecto deseado. Por ejemplo, para lograr el movimiento coordinado de un brazo robótico con múltiples articulaciones, todos los motores deben trabajar a la par. De manera similar, el uso de propulsores en una nave espacial en tres dimensiones requiere que muchos de estos dispositivos actúen en el momento preciso y con la cantidad correcta de fuerza para lograr la estabilización de la actitud. En ambos casos existe comunicación entre todos los componentes, ya sea para encadenar la ejecución de ciertos movimientos o para avisar de restricciones. Esto no es tarea simple y requiere de muchas lineas de código, por lo que un diseño orientado al cambio resulta clave.
 
-Como se discutió previamente, en casos como este se puede aplicar la arquitectura de \textit{Control de procesos}. Este hecho no resuelve todos nuestros problemas de diseño, solo nos brinda una guía y un mecanismo de funcionamiento para el sistema. Veamos que estructuras podemos usar para llevar a cabo esta arquitectura de una manera simple y probada (por ejemplo, en el robot desmalezador).
+Como se discutió previamente, en casos como este se puede aplicar la arquitectura de \textit{Control de procesos}. Este hecho no resuelve todos nuestros problemas de diseño, solo nos brinda una guía y un mecanismo de funcionamiento para el sistema. De todas formas, su uso no es la solución elegida normalmente, es por eso que en la sección se describen ciertas características de las soluciones tradicionales y luego también se trataran que estructuras se pueden usar para llevar a cabo esta arquitectura de una manera simple y probada (por ejemplo, en el robot desmalezador).
+
+\subsection*{Solución tradicional}
+
+Antes de pasar a explicar la solución propuesta y analizar cómo aplicarla al ejemplo presentado por Douglass en su libro \cite{douglass}, se describirá cómo se aborda tradicionalmente esta problemática. Para ello, se tomará como ejemplo el software desarrollado para el robot desmalezador antes de la propuesta del nuevo diseño \cite{paperPomponio}. Este software fue creado en conjunto por ingenieros electrónicos como parte de un trabajo final. Los requerimientos son similares a los que se consideraron para el desarrollo del nuevo diseño.
+
+\subsubsection*{Estructura y funcionamiento general}
+
+El código se encuentra dividido en unos pocos archivos, concentrando todo el flujo de control en \verb|main.c|, el resto de archivos contienen métodos que son invocados desde este último. No se utiliza programación orientada a objetos, en cambio, como estructura de subdivisión se utilizan las funciones clásicas de C. Estas parece que encapsulan operaciones específicas como:
+\begin{itemize}
+\item Configuración de hardware.
+\item Lectura de entradas (sensores, botones, etc.).
+\item Control de salidas (motores, luces, etc.).
+\end{itemize}
+
+La información común entre muchas funciones se almacena en variables globales definidas en el mismo archivo. Entre las variables, encontramos algunas que se encargan de almacenar información referida al estado de operacion del sistema. Es decir, que los estados se manejan con sentencias \verb|if| o \verb|switch case| (se comenta sobre esta solución en la sección \nameref{cap:state}).
+
+La función principal del sistema es \verb|main|, la misma se encarga de inicializar y calibrar los sensores y actuadores, de realizar el ciclo de control y terminar la ejecución. Para las primeras dos tareas llama a dos funciones que realizan el trabajo. El ciclo de control se ve representado por un bucle infinito en el cual se realizan las siguientes tareas principales:
+\begin{itemize}
+\item Lectura de información de los sensores, dirección, velocidad y corriente.
+\item En base al estado de ejecución actual, se realizan ciertas tareas.
+\item Se aplican cambios a los actuadores, el ciclo de trabajo (\gls{PWM}) de los motores y la dirección.
+\end{itemize}
+
+\subsubsection*{Observaciones}
+A lo largo del código se utilizan estructuras condicionales (if, switch, etc.) para determinar el flujo de ejecución. A su vez, las funciones de hardware están directamente integradas en la lógica del control, lo que indica una baja separación entre la capa de abstracción del hardware y la lógica de ``alto'' nivel. Esto es acompañado con un diseño procedimental, con una serie de pasos secuenciales y un control centralizado en el flujo principal. Ademas, el hardware se encuentra integrado a la lógica, se aplican estructuras condicionales directamente a este.
+
+Otros inconvenientes referidos al cambio que están presentes en el código:
+\begin{itemize}
+\item El código parece estar compuesto por funciones largas y bloques monolíticos sin modularidad clara. Esto dificulta la localización y modificación de funcionalidades específicas, ya que los cambios pueden propagarse a otras partes del sistema.
+\item Hay valores "hardcodeados" (constantes definidas directamente en el código). Si estos valores cambian, es necesario modificar el código fuente, aumentando el riesgo de introducir errores.
+\item Las dependencias entre funciones y módulos están estrechamente acopladas. Lo que provoca que cambiar un módulo pueda requerir modificaciones significativas en otros.
+\item El manejo de errores parece ser inconsistente o inexistente en varias secciones. Esto puede llevar a comportamientos impredecibles y dificultar el diagnóstico de problemas.
+\end{itemize}
+
+\subsubsection*{Conclusión}
+
+El diseño del código parece estar orientado a cumplir con un objetivo específico mediante un flujo procedimental y un control directo de los periféricos del hardware. Este enfoque es funcional, pero carece de modularidad y abstracción, lo que lo hace menos flexible y más difícil de mantener. La estructura actual no parece diseñada para escalar con nuevas funcionalidades. Lo que tiene sentido, si se tiene en cuenta el contexto del desarrollo.
+
+
+
 
 \subsection{Subsistemas de control}
 
@@ -504,10 +560,11 @@ control.control()
 
 Notar que aparecen un par de módulos que no mencionamos anteriormente, por un lado tenemos \textbf{Algoritmo} el cual se encarga de el calculo necesario para determinar de que manera llamar aplicar un cambio con el/los actuadores. Por ejemplo, determina si se llego o no al \textit{set-point}. Por otro lado, tenemos \textbf{Data} que desacopla el almacenamiento de información relacionada al subsistema. En el caso mas básico solo tenemos el \textit{set-point}, pero puede agregarse todo lo necesario, incluso llevar registro de los valores actuales y pasados.
 
-Ahora, para brindar un comportamiento más complejo, es posible que el control necesite realizar múltiples ciclos para ajustar la variable al valor deseador, como pasa cuando trabajamos con motores paso a paso (luego veremos un ejemplo). ¿Cómo podemos hacer esto usando nuestra estructura? Necesitamos dos modificaciones/adiciones, por un lado, una interrupción de control que llame a cierto método del módulo \textbf{Control} cada determinado tiempo (tiempo del ciclo), generalmente resuelto con una interrupción \textit{temporizada} y por el otro, necesitamos crear la noción de estado a nuestro módulo de control. Tendremos dos estados básico, en espera, cuando no se esta realizando un ciclo de control y trabajando, cuando se haya establecido un \textit{set-point} y se este trabajando para llegar. Para hacerlo utilizamos un nuevo método y el patrón \textit{state} \footnote{La aplicación de este patrón está explicada en la sección \ref{cap:state} Máquinas de estado}.
+Ahora, para brindar un comportamiento más complejo, es posible que el control necesite realizar múltiples ciclos para ajustar la variable al valor deseador, como pasa cuando trabajamos con motores paso a paso (luego veremos un ejemplo). ¿Cómo podemos hacer esto usando nuestra estructura? Necesitamos dos modificaciones/adiciones, por un lado, una interrupción de control que llame a cierto método del módulo \textbf{Control} cada determinado tiempo (tiempo del ciclo), generalmente resuelto con una interrupción \textit{temporizada} y por el otro, necesitamos crear la noción de estado a nuestro módulo de control. Tendremos dos estados básico, en espera, cuando no se esta realizando un ciclo de control y trabajando, cuando se haya establecido un \textit{set-point} y se este trabajando para llegar. Para hacerlo utilizamos un nuevo método y el patrón \textit{state}\footnote{El uso de este patrón está explicada en la sección \nameref{cap:state}.} y se obtiene el esquema \ref{controlState} (en \ref{docStateControl} se encuentra la documentación de la aplicación del patrón).
 
 \begin{figure}[h]
 \caption{Estructura módulo \textbf{Control} extendida con estado.}
+\label{controlState}
 \begin{center}
 \begin{tikzpicture}
 \umlclass[x=-4]{Control}
@@ -552,6 +609,24 @@ cicle() \\
 \end{tikzpicture}
 \end{center}
 \end{figure}
+
+\begin{figure}
+\caption{Documentacion de la aplicación del patrón State en el módulo Control.}
+\label{docStateControl}
+\begin{pattern}[]{Estados de operación del controlador}{Algorithm}{idFigAlg}
+\based{Estado (State)}
+\why{\textbf{Cambios previstos}: El controlador lleva a cabo el control dependiendo del estado en el que se encuentre. Podrían cambiar el comportamiento requerido de algunos de los estados definidos o bien podría ser necesario agregar nuevos estados con sus correspondientes comportamientos.
+
+\textbf{Funcionalidad}: Dependiendo del estado, los métodos control y cicle deben comportarse de manera diferente. A su vez, pueden cambiar de manera dinámica. En caso de que no se esté realizando una accion sobre alguno de los actuadores que 
+}
+\assigns
+\is{Control}{Contexto}
+\is{State}{Estado}
+\is{Waiting}{EstadoConcreto}
+\is{Working}{EstadoConcreto}
+\end{pattern}
+\end{figure}
+
 
 El cliente ejecuta \verb|control()| y la interrupción que marca el ciclo de trabajo ejecuta \verb|cicle()|. De esta manera, cuando el estado es \textit{waiting}, \verb|cicle()| no hace nada y cuando está en \textit{working} \verb|control()| no hace nada y la otra función se encarga de realizar el ciclo de control.
 Por supuesto, estas dos funciones son las encargadas de llamar a \verb|changeState()| cuando sea necesario. \verb|control()| cambia a \textit{working} y cuando se alcanza el \textit{set-point}, \verb|cicle()| cambia el estado a \textit{waiting}.
@@ -773,7 +848,25 @@ subsistemControlTimeout.execute() \\
 \end{center}
 \end{figure}
 
-El método \verb|tickHandler()| ejecutará \textit{Commands} por cada subsistema que lo necesite, por lo tanto se iniciará en cada uno el ciclo de control. En particular, la orden la usamos para desacoplar como es invocado el inicio del \textbf{Timer}.
+El método \verb|tickHandler()| ejecutará comandos siguiendo patrón \textit{Command} por cada subsistema que lo necesite, por lo tanto se iniciará en cada uno el ciclo de control. En particular, la orden es utilizada para desacoplar como es invocado el inicio del \textbf{Timer}. En la figura \ref{docCommandTimer} se puede observar la documentación de la aplicación del patrón \textit{Command} para este caso.
+
+\begin{figure}
+\caption{Documentacion de la aplicación del patrón Command para el desacople de ejecuciones que invoca el Timer.}
+\label{docCommandTimer}
+\begin{pattern}[]{Comando para manejar interrupciones generadas por el Timer.
+Sustitución de callback}{Algorithm}{idFigAlg}
+\based{Orden (Command)}
+\why{\textbf{Cambios previstos}: Las acciones a llevar a cabo ante una interrupcion provocada por el Timer podrían cambiar; o incluso podría cambiar el receptor de dichas acciones, que actualmente es Controller.
+
+\textbf{Funcionalidad}: Se mantienen los niveles de abstracción. El módulo Timer, desconoce la existencia de módulos de niveles superiores como el Controller.
+}
+\assigns
+\is{Command}{OrdenConcreta}
+\is{Timer}{Invocador}
+\is{Controller}{Receptor}
+\end{pattern}
+\end{figure}
+
 
 Una vez solucionada la invocación, tenemos que introducir un nuevo módulo que será usado en el \textbf{Controller}. Ahora, tenemos dos modos de operación de este ultimo, cuando no se está trabajando y cuando si. Dependiendo de cual de los dos esté activo el comportamiento será diferente, ya que por ejemplo, no apagamos el \textbf{Timer} cuando no se está haciendo un movimiento, sino que cuando este desencadene la ejecución del ciclo el \textbf{Controller} ignorará la orden. Para esto hacemos uso del patrón \textit{State} de Gamma\cite{Gamma:1995:DPE:186897}, el cual está explicado en la sección \ref{cap:state}. En particular, el \textbf{Controller} delegará dos funciones de su interfaz al \textit{state}, \verb|control()| y \verb|move()| (luego lo veremos en más detalle).
 
@@ -903,8 +996,7 @@ Imaginemos que un cliente quiere utilizar el subsistema, qué métodos tiene que
 
 El método \verb|move| tendrá un comportamiento similar pero en el aso de cambiar de estado lo hará a \textit{Waiting}. Para el caso de la \textbf{Pinza}, el \textbf{Controller} es más simple ya que no necesitamos los estados, pero el uso y comportamiento es similar. Por lo que para este ejemplo, vamos a necesitar crear dos subsistemas con estados y uno sin.
 
-Ya tenemos los subsistemas, por lo que siguiendo con nuestro diagrama, nos falta la parte del \textbf{MainController}. El cual sera el encargado de brindar una interfaz al cliente y a su vez coordinar cada subsistema. Recordando los requerimientos, sabemos que tenemos una función que generar una secuencia de pasos donde cada uno implica una acción sobre los tres actuadores. ¿Cómo podemos diseñar este comportamiento? Se me ocurre usar un \textit{iterator} para recorrer los pasos y usar el patrón \textit{command} para cada uno. En particular, aplicaremos una de las modificaciones del patrón mencionada por Gamma\cite{Gamma:1995:DPE:186897}, en donde una orden al ser ejecutada desencadena una ejecución del resto de las ordenes. Veamoslo en los gráficos \ref{iterator} y \ref{orden}.
-
+Ya tenemos los subsistemas, por lo que siguiendo con nuestro diagrama, nos falta la parte del \textbf{MainController}. El cual sera el encargado de brindar una interfaz al cliente y a su vez coordinar cada subsistema. Recordando los requerimientos, sabemos que tenemos una función que generar una secuencia de pasos donde cada uno implica una acción sobre los tres actuadores. ¿Cómo se puede diseñar este comportamiento? Una opción es usar un \textit{iterator} para recorrer los pasos y aplicar el patrón \textit{command} para cada uno. En particular, se aplica una de las modificaciones del patrón mencionada por Gamma\cite{Gamma:1995:DPE:186897}, en donde una orden al ser ejecutada desencadena una ejecución del resto de las ordenes. Esto se puede ver en los gráficos \ref{iterator}, \ref{orden} y \ref{docCommandSteps}.
 
 \begin{figure}[h]
 \caption{Iterator}
@@ -998,7 +1090,32 @@ void ejecutar {
 \end{lstlisting}
 \end{figure}
 
-Tenemos un iterado de ordenes, en particular múltiples, que almacena todos los pasos de ejecución que la función provista generará. Por lo que el \textit{MainController} podrá recorrerlos ejecutando cada orden de manera sencilla. Logramos, almacenar el procedimiento a realizar y desacoplar como se pone en marcha el ciclo de control en cada subsistema.
+
+\begin{figure}[h]
+\caption{Documentación de la aplicación del patrón Command para el desacople de ordenes a ejecutar en cada actuador del brazo en un paso.}
+\label{docCommandSteps}
+\begin{pattern}[]{Comando para manejar las acciones que deben ser ejecutadas en un paso en cada actuador.}{Algorithm}{idFigAlg}
+\based{Orden (Command)}
+\why{\textbf{Cambios previstos}: Las acciones a llevar a cabo para cada actuador pueden cambiar, se pueden agregar o quitar actuadores.
+
+\textbf{Funcionalidad}: Se logra ejecutar una acción sobre todos los actuadores configurados con una sola acción del invocador.
+}
+\assigns
+\is{Orden}{Orden}
+\is{OrdenRotor}{OrdenConcreta}
+\is{OrdenExtensor}{OrdenConcreta}
+\is{OrdenPinza}{OrdenConcreta}
+\is{OrdenMultiple}{OrdenConcreta}
+\is{MainController}{Invocador}
+\is{RotorController}{Receptor}
+\is{ExtensorController}{Receptor}
+\is{PinzaController}{Receptor}
+
+\end{pattern}
+\end{figure}
+
+
+Se tiene un iterado de ordenes, en particular múltiples, que almacena todos los pasos de ejecución que la función provista generará. Por lo que el \textit{MainController} podrá recorrerlos ejecutando cada orden de manera sencilla. Logramos, almacenar el procedimiento a realizar y desacoplar como se pone en marcha el ciclo de control en cada subsistema.
 
 \begin{figure}[h]
 \caption{MainController}
@@ -1071,7 +1188,25 @@ void notifyReady() \{ \\
 \end{tikzpicture}
 }
 \end{center}
+
+
 \end{figure}
+
+\begin{pattern}[]{Estados de operación del controlador principal}{Algorithm}{idFigAlg}
+\based{Estado (State)}
+\why{\textbf{Cambios previstos}: El controlador principal llevará a cabo el control de los subsistemas de control, dependiendo del estado en el que se encuentre. Podrían cambiar el comportamiento requerido de algunos de los estados definidos o bien podría ser necesario agregar nuevos estados con sus correspondientes comportamientos.
+
+\textbf{Funcionalidad}: Teniendo en cuenta que para poder ejecutar un nuevo paso se deben haber finalizado con éxito todas las operaciones sobre actuadores, se introducen estados por cada orden terminada, a fin de que solo al hacer una transición completa se puede ejecutar un nuevo paso.
+}
+\assigns
+\is{MainController}{Contexto}
+\is{MainControllerState}{Estado}
+\is{MainWaiting}{EstadoConcreta}
+\is{Main1}{EstadoConcreta}
+\is{Main2}{EstadoConcreta}
+\is{Main3}{EstadoConcreta}
+
+\end{pattern}
 
 Hasta la introducción de \textbf{MainController} todo lo que estábamos haciendo era solo seguir con el concepto de subsistemas. Pero para poder cumplir los requerimientos particulares del ejemplo, necesitamos introducir ciertos cambios. Como necesitamos ejecutar un paso a la vez, tenemos que esperar que todas las ordenes que enviamos en el paso anterior a los subsistemas. Para ello hacemos uso del patrón \textit{state}, al cual delegaremos las funciones \verb|graspAt| y \verb|notifyReady|. La idea es cambiar el comportamiento de estas dependiendo de en qué estadio estamos, seguiremos el siguiente gráfico \ref{statesMainController}.
 
@@ -1364,9 +1499,54 @@ calentar() {
         magnetron.encender()
     }
 }
+
+// otra opción
+
+calentar() {
+    switch (estado) {
+    	case PuertaAbierta {
+        	return
+        }
+    	case otherwise {
+    	    magnetron.encender()
+	    }
+	}
+}
+
 \end{lstlisting}
 
 Este enfoque de es una solución directa. Sin embargo, presenta algunas desventajas cuando se desea modificar o extender el código. Por ejemplo, si se necesita agregar nuevos estados o cambiar el comportamiento del sistema, este método puede volverse rápidamente difícil de gestionar. Una de las principales desventajas es la complejidad creciente. A medida que se agregan más estados, cada función requerirá más verificaciones de estado, lo que llevará a una proliferación de estructuras \textit{if-else} o \textit{switch-case}. Esto no solo hace que el código sea más difícil de leer, sino que también aumenta la probabilidad de errores, ya que cada nuevo estado debe ser cuidadosamente incorporado en todas las partes relevantes del sistema. Además, este enfoque dificulta la sostenibilidad, cuando el comportamiento de un estado debe cambiar, es posible que se necesiten modificaciones en varias funciones. Esto puede resultar en código duplicado, o incluso puede ser difícil saber que modificar, lo que complica el proceso de realizar cambios sin introducir errores. Otra desventaja es la poca modularidad, no es claro el comportamiento asociado a cada estado. Si cada uno requiere comportamientos más complejos, el código se vuelve monolítico y difícil de extender sin alterar funciones existentes. Por ejemplo, si se agregara un estado ``EnPausa'', se tendría que modificar la lógica de muchas funciones para verificar este nuevo estado y ajustar el comportamiento de manera adecuada. Todas estas desventajas evidentemente conllevan a que reutilizar el código sea difícil.
+
+Este tipo de soluciones es ampliamente utilizado, incluso en el software del robot desmalezar previo al trabajo realizado en \cite{paperPomponio}. En particular, se definen diferentes estados de operacion del robot, y se utiliza un gran \textit{switch-case} que es llamado en loop. En este se decide que hacer en base al estado actual. En el codigo \ref{codigoLoopMain}, podemos ver en detalle la estrategia utilizada.
+
+\begin{lstlisting}[caption=Main loop del previo firmware del robot desmalezador, label={codigoLoopMain}]
+switch (ESTADO) {
+	case DUTY_REMOTO:
+		duty_remoto();
+		break;
+	case RPM_REMOTO:
+		rpm_remoto();
+		break;
+	case DUTY_PC:
+		duty_pc();
+		break;
+	case RPM_PC:
+		rpm_pc();
+		break;	
+	case CALIBRACION:
+		calibracion();
+		break;
+	case PERDIDA_SENAL:
+		perdida_senal();
+		break;
+	case EMERGENCIA:
+		EMERGENCY();
+		break;
+	default:
+		ESTADO = PERDIDA_SENAL;
+		break;
+}
+\end{lstlisting}
 
 Antes de ver un enfoque desde el punto de vista del diseño orientado al cambio, un poco mas en profundidad el ejemplo planteado en el libro y como se aplica una solución similar a la nombrada.
 
@@ -1481,7 +1661,7 @@ Este uso del patrón \textit{State} también es propuesto en \cite[\textit{Chapt
 
 Volviendo al ejemplo del microondas, aplicando este enfoque de diseño, tendremos un módulo que provee un método que maneja cada evento y otro que delega al estado cada manejo de evento.
 
-\begin{figure}[h]
+\begin{figure}[h!]
 \caption{Módulos participantes del patrón state en el ejemplo del horno microondas.}
 \begin{center}
 \scalebox{0.7}{
@@ -1596,7 +1776,25 @@ pausar() \\
 \end{tikzpicture}
 }
 \end{center}
+
 \end{figure}
+
+\begin{pattern}[]{Estados del microondas}{Algorithm}{idFigAlg}
+\based{Estado (State)}
+\why{\textbf{Cambios previstos}: En base al estado el microondas responde a diferentes eventos de múltiples maneras. Estos estados pueden modificarse, agregar nuevos o quitar otros.
+
+\textbf{Funcionalidad}: Cada método del módulo Microondas es un handler para un evento particular. La respuesta del sistema ante los eventos cambia en base al estado actual del mismo. Ademas, los eventos pueden desencadenar cambios de estado durante la ejecución de su handler.
+}
+\assigns
+\is{Microondas}{Contexto}
+\is{EstadoMicroondas}{Estado}
+\is{Preparado}{EstadoConcreto}
+\is{PuertaAbierta}{EstadoConcreto}
+\is{Calentando}{EstadoConcreto}
+\is{Pausa}{EstadoConcreto}
+\is{Apagado}{EstadoConcreto}
+
+\end{pattern}
 
 Por lo tanto el módulo \textbf{PuertaAbierta} implementará el método \verb|puertaAbierta()|, completando en ella el comportamiento definido para la transición PuertaAbierta $\xrightarrow{}$ Calentando.
 
@@ -1618,7 +1816,7 @@ Existen otros casos de usos del patrón, como en los ejemplos que se nombraron a
 \section{Integridad de la información}
 Un pulso electromagnético o fallas en el hardware pueden causar daños información dejándola comprometida, por ejemplo un \textit{bit flip}. Si los datos afectados son críticos el problema puede derivar en un error grave del sistema. Para hacer frente a esto existen diferentes técnicas, desde calcular \textit{checksums} con la intención de verificar integridad hasta almacenar la información múltiples veces. En el libro Douglass propone el uso de dos estrategias, una para datos que ocupan mucha memoria y otra para pequeños valores.
 
-Dejando de lado como exactamente funcionan, la forma en la que son agregados a la estructura que almacena los datos es similar. Esta es, agregando funcionalidad extra a este ultimo, de manera se añade la capacidad de realizar ciertos cómputos de verificación.
+Estas estrategias suelen ser agregadas al código modificando la implementación de los métodos de la estructura de datos, o agregando verificaciones en las partes del código que utilizan la información. Es decir, se realiza por ejemplo \verb|data = data.getData()| y luego se aplican las estrategias. Lo que provoca código repetido si se llama al método \verb|getData| múltiples veces y a su vez si el dato cambia, la estrategia puede no ser mas aplicable, haciendo que se deban modificar múltiples porciones de código.
 
 \begin{figure}[h]
 \begin{center}
@@ -1638,10 +1836,11 @@ invertedValue: dato
 \end{center}
 \end{figure}
 
-Desde el punto de vista del diseño de software podemos aportar una mirada critica hacia las propuestas el libro, dado que proponen modificar la interfaz e implementación de los módulos encargados de almacenar la información con el objetivo de añadir esta ``capa'' de verificación. Es decir que los módulos no solo ocultan como se almacena la información sino que se encargan de verificar su integridad. Se me ocurre que una posible forma de solucionar esto desde el diseño orientado al cambio es utilizar el patrón \textit{Decorator} que nos permite añadir de manera dinámica funcionalidades. En este caso, la capacidad de verificar la información. Otra ventaja, ademas de poder hacerlo de manera dinámica, es que mantenemos separadas las responsabilidades de cada módulo. A diferencia de los propuesto en el libro, no juntos el almacenaje de la información con su verificación, de manera que cada porción puede ser implementada de manera independiente.
+Desde el punto de vista del diseño de software se puede aportar una mirada crítica hacia las propuestas el libro, dado que proponen modificar la interfaz e implementación de los módulos encargados de almacenar la información con el objetivo de añadir esta ``capa'' de verificación. Es decir que los módulos no solo ocultan como se almacena la información sino que se encargan de verificar su integridad. Se propone que una posible forma de solucionar esto desde el diseño orientado al cambio es utilizar el patrón \textit{Decorator} que nos permite añadir de manera dinámica funcionalidades. En este caso, la capacidad de verificar la información. Otra ventaja, ademas de poder hacerlo de manera dinámica, es que mantenemos separadas las responsabilidades de cada módulo. A diferencia de los propuesto en el libro, no juntos el almacenaje de la información con su verificación, de manera que cada porción puede ser implementada de manera independiente. La solución se muestra en el gráfico \ref{decorator} con su correspondiente documentación en \ref{docDecorator}.
 
 \begin{figure}[h]
 \caption{Ejemplo \textit{Decorator} integridad de la información}
+\label{decorator}
 \begin{center}
 \begin{tikzpicture}
 \umlclass[]{Data}
@@ -1669,7 +1868,24 @@ Desde el punto de vista del diseño de software podemos aportar una mirada criti
 \end{center}
 \end{figure}
 
-\begin{lstlisting}[caption=Implementación métodos setData y getData]
+\begin{figure}[]
+\caption{Documentación de la aplicación del patrón Decorator al caso de verificación de la integridad de la información.}
+\label{docDecorator}
+\begin{pattern}[]{Modulo decorador que extiende dinámicamente las funcionalidades de otro módulo sin cambiar la implementación.}{Algorithm}{idFigAlg}
+\based{Decorador (Decorator)}
+\why{\textbf{Cambios previstos}: Pueden agregarse y quitarse métodos de verificación.
+
+\textbf{Funcionalidad}: Antes de devolver la información se realiza una verificación de la integridad de la información almacenada.
+}
+\assigns
+\is{Data}{ComponenteConcreto}
+\is{CRCData}{DecoradorConcreto}
+
+\end{pattern}
+\end{figure}
+
+
+\begin{lstlisting}[caption=Implementación métodos setData y getData,label={codDeco}]
 CRCData:setData(i: dato){
     calculatedCrc = calcularCrc(i)
     data.setData(dato)
@@ -1684,7 +1900,7 @@ CRCData:getData() {
 }
 \end{lstlisting}
 
-De esta forma logramos añadir una capa de protección a la integridad de la información, a su vez permitimos combinar diferentes técnicas usando este patrón.
+De esta forma logramos añadir una capa de protección a la integridad de la información, a su vez permitimos combinar diferentes técnicas usando este patrón. Un ejemplo de la implementación de los métodos del modulo decorador se puede observar en \ref{codDeco}.
 
 \section{Verificación de precondiciones.}
 El autor del libro comenta que uno de los problemas más grandes que ve en el desarrollo de sistemas embebidos es que prácticamente todas las funciones tiene precondiciones para ejecutarse correctamente pero que casi nunca se verifica si todas estas se cumplen. Además, la manera común de informar precondiciones inadecuadas en una función en \textbf{C} es utilizando el valor de retorno (-1 en caso de errores, 0 en el contrario). Por lo tanto el encargado de manejar el error es la función o método que llamó en primer lugar a la función, generando así un acoplamiento extra entre módulos. Esto provoca una complicación derivando en muchas veces no manejarlo de la manera más adecuada. Por ejemplo, supongamos que tenemos un módulo que exporta una función que permite guardar un valor, \verb|setValor(i: Valor)|. Existen múltiples posibles implementaciones, pero veamos algunas:

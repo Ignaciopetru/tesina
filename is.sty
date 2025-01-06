@@ -1,0 +1,986 @@
+%Laura Pomponio - 2024----
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{is}[2024/12/18 is-v0.2]
+
+%------------------------------------------------------
+%--------------------------------------------------
+%-------------PAQUETES REQUERIDOS------------------
+%--------------------------------------------------
+
+%-----------------------------------------------
+%-------Manejo de DOCUMENTOS EXTERNOS-----------
+%%Definir enlaces
+
+\RequirePackage{xr}
+\RequirePackage{xr-hyper}
+%---Usado en el mapeo de req con diseÃ±o
+\RequirePackage{amssymb} 
+%----------------------------------------
+%Usado para los enlaces en los requerimientos.
+\RequirePackage{enumitem}
+%Construir comandos y manipular tokens
+%Se utiliza para definir los nombres de mÃ³dulos como comandos que 
+%escriben el nombre con el formato adecuado de acuerdo al tipo de mÃ³dulo.
+\RequirePackage{etoolbox} %Para definir comandos y condicionales 
+
+%Definir enlaces
+\RequirePackage[colorlinks=true,filecolor=red, linkcolor=blue, pdfnewwindow=true, urlcolor=blue]{hyperref}
+
+%Dar formato en la guÃ­a de mÃ³dulos al nivel de profundidad
+%donde se ubica el mÃ³dulo en la estructura de mÃ³dulos.
+\RequirePackage{titlesec}
+\setcounter{secnumdepth}{6}
+
+%Graficar como un Ã¡rbol las estructuras de Herencia y de MÃ³dulos
+\RequirePackage[linguistics, edges]{forest} %incluye tikz
+\usetikzlibrary{trees,arrows,arrows.meta}
+\usetikzlibrary{automata, positioning, matrix, fit}
+
+
+\RequirePackage{sansmathfonts} %incluido para combinar \sc y \sf
+\usepackage{xspace}
+
+%----Cajas con botones en pestaÃ±a------------------------
+\RequirePackage{tcolorbox}
+\tcbuselibrary{skins}
+\tcbset{colback=blue!5!white,colframe=cyan!65!black, colbacktitle=blue!5!white,boxsep=0mm, left=1mm,right=1mm,top=1mm,bottom=1mm, enhanced, attach boxed title to top right}
+%------------------------------------------------------
+%------------------------------------------------------
+
+%------------------------------------------------------
+%------------------------------------------------------
+%-----------DOCUMENTAR REQUERIMIENTOS------------------
+%------------------------------------------------------
+%------------------------------------------------------
+%Color requerimiento Validado
+\newcommand{\VColor}{green!50!black}
+%Color requerimiento NO Validado
+\newcommand{\NVColor}{orange}
+%Color requerimiento a Corregir
+\newcommand{\CColor}{red!60!black}
+%Color de personas que validan el requerimiento.
+\newcommand{\PColor}{gray}
+%------------------Etiquetas----------------------------
+%RF: Requerimiento Funcional
+%RNF: Requerimiento NO Funcional
+\newcommand{\EtiquetaRF}{RF}
+\newcommand{\EtiquetaRNF}{RNF}
+%Etiqueta: "Requerimientos relacionados:"
+\newcommand{\labelReqRel}{Requerimientos relacionados:}
+%Etiqueta: "Estado:"
+\newcommand{\labelEstado}{Estado:}
+
+%-----Estado de un Requerimiento-----------------------
+%Validado. #1: fecha de validaciÃ³n
+\newcommand{\si}[1]{Estado: \textcolor{\VColor}{Validado - #1}}
+%Validado. #1: fecha de validaciÃ³n #2: personas
+\newcommand{\sip}[2]{\si{#1} \  \textcolor{\PColor}{Por: #2}}
+%No Validado
+\newcommand{\nose}{Estado: \textcolor{\NVColor}{\textbf{Sin validar}}}
+%Incorrecto. #1:fecha
+\newcommand{\no}[1]{Estado: \textcolor{\CColor}{Requiere cambio o eliminaciÃ³n - #1}}
+%---------------------------------------------------
+%-----Entorno Requerimientos funcionales----------
+%Entorno enumerado req
+\newlist{req}{enumerate}{4}
+\setlist[req,1]{label=\EtiquetaRF-\arabic*.}
+\setlist[req, 2]{label*=\arabic*. , leftmargin=1.5cm}
+\setlist[req,3,4]{label*=\arabic*.}
+%---------------------------------------------------
+%-------------Entorno Requerimientos NO funcionales----------
+%Entorno reqNF
+\newlist{reqNF}{enumerate}{4}
+\setlist[reqNF,1]{label=\EtiquetaRNF-\arabic*.}
+\setlist[reqNF, 2]{label*=\arabic*. , leftmargin=1.5cm}
+\setlist[reqNF,3,4]{label*=\arabic*.}
+%---------------------------------------------------------
+%-----Items dentro de los entornos req y reqNF------------
+%---------------------------------------------------------
+
+
+%-----\itemr{} o bien \itemr{id}
+\newcommand{\itemr}[1]{\item\label{reqLabel:#1}\hypertarget{req:#1}{}}
+
+
+%----- Enlace a un requerimiento---------------
+%----- \reqlink{<id>}
+\newcommand{\reqlink}[1]{\ref{reqLabel:#1}}
+%------Requerimientos relacionados. \reqRel{<id1>[, id2, id3]}
+\newcommand{\reqRel}[1]{
+\labelReqRel \foreach \l in {#1}{
+\reqlink{\l} 
+}
+}
+%--------------------------------------------------------------------
+
+%------------------------------------------------------
+%------------------------------------------------------
+%-----------DOCUMENTAR DISEÃ‘O------------------
+%------------------------------------------------------
+%------------------------------------------------------
+
+%--------------------------------------------------------------
+%-----------------TIPO DE LETRA PARA MÃ“DULOS-------------------
+%--------------------------------------------------------------
+%Para que \ttfamily combine bold y scshape, si se quiere.
+\renewcommand{\ttdefault}{pcr}
+%------------------------------------
+%Tipo de letra para nombre de mÃ³dulos y mÃ©todos. Por defecto, sans serif.
+\newcommand{\moduleFontFamily}{\sffamily}
+%Cambiar el tipo de letra. Cambiar de familia de letra.
+%\sffamily (por defecto), \rmfamily, \ttfamily (con esta familia no funciona bold)
+\newcommand{\setModFontFamily}[1]{\renewcommand{\moduleFontFamily}{#1}}
+%-----------------------------------------------------
+%Letra para mÃ³dulo FÃ­sico-Concreto
+%(Comando tambiÃ©n definido en map-req-dsn.sty)
+\providecommand{\modFCFont}{\moduleFontFamily}
+%Letra para mÃ³dulo FÃ­sico-Abstracto
+\newcommand{\modFAFont}{\itshape\moduleFontFamily}
+%Letra para mÃ³dulo LÃ³gico
+\newcommand{\modLFont}{\moduleFontFamily\scshape}
+%---------------------------------------------------------
+%--------DECLARACIÃ“N DE MÃ“DULOS --------------------------
+%---------------------------------------------------------
+%----------Tipos de datos bÃ¡sicos-------------------------
+\newcommand{\Real}{{\modFCFont Real}}
+\newcommand{\Integer}{{\modFCFont Integer}}
+\newcommand{\Number}{{\modFCFont Number}}
+\newcommand{\Boolean}{{\modFCFont Boolean}}
+\newcommand{\String}{{\modFCFont String}}
+%---------------------------------------------------------
+%Error para el caso en que se declara mÃ¡s de una vez un mÃ³dulo.
+\newcommand{\errorDeclareMod}[1]{\errmessage{MÃ³dulo #1 ya declarado.}}
+%---------------------------------------------------------
+%Error para el caso en que no se declaran argumentos (mÃ³dulo genÃ©rico).
+\newcommand{\errorDeclareArgs}[1]{\errmessage{#1: Faltan argumentos.}}
+%---------------------------------------------------------
+%Define 2 comandos que son el nombre del mÃ³dulo siendo un enlaces a la interfaz  y el otro su descripciÃ³n
+%#1: nombre mÃ³dulo
+%Comando auxiliar usado en las declaraciones de mÃ³dulos.
+% Crea el comando \<nombreModulo>I que serÃ¡ un enlace a la interfaz y
+% \<nombreModulo>D que serÃ¡ un enlace a su descripciÃ³n. Crea ademÃ¡s 
+% las etiquetas \labelmi<nombre> y \labelmg<nombre> para uso interno.
+%\newcommand{\defModNameLink}[1]{\csdef{#1I}{\mdr{#1}}\csdef{#1D}{\rmg{#1}}\csdef{labelmi#1}{mi:#1}\csdef{labelmg#1}{mg:#1}}
+\newcommand{\defModNameLink}[1]{\csdef{#1I}{\mdr{#1}\xspace}\csdef{#1D}{\rmg{#1}\xspace}\csdef{labelmi#1}{mi:#1}\csdef{labelmg#1}{mg:#1}}
+
+%---------------------------------------------------------
+%Declara mÃ³dulo Concreto
+\newcommand{\declareCMod}[1]{\ifcsundef{#1}{\csdef{#1}{\mbox{\modFCFont #1}\xspace}\defModNameLink{#1}}{\errorDeclareMod{#1}}}
+%---------------------------------------------------------
+%Declara mÃ³dulo Abstracto
+\newcommand{\declareAMod}[1]{\ifcsundef{#1}{\csdef{#1}{\mbox{\modFAFont #1}\xspace}\defModNameLink{#1}}{\errorDeclareMod{#1}}} 
+%---------------------------------------------------------
+%Declara mÃ³dulo LÃ³gico
+\newcommand{\declareLMod}[1]{\ifcsundef{#1}{\csdef{#1}{\mbox{\modLFont #1}\xspace}\defModNameLink{#1}}{\errorDeclareMod{#1}}} 
+%---------------------------------------------------------
+%------Declara mÃ³dulo GenÃ©rico-----
+%Comando auxiliar para tomar el nombre del mÃ³dulo genÃ©rico y
+% consumir sus argumentos (a lo sumo 8 argumentos).
+%#1:nombre del mÃ³dulo , #2-#9 argumentos del mÃ³dulo
+\newcommand{\modArg}[9]{\mbox{ #1(#2\ifstrempty{#3}{}{,#3\ifstrempty{#4}{}{,#4\ifstrempty{#5}{}{,#5\ifstrempty{#6}{}{,#6\ifstrempty{#7}{}{,#7\ifstrempty{#8}{}{,#8\ifstrempty{#9}{}{,#9}}}}}}})}}
+%-------------------------
+%Declara el mÃ³dulo genÃ©rico.
+\newcommand{\declareGMod}[2]{
+\ifcsundef{#1}{\ifstrempty{#2}{\errorDeclareArgs{#1}}{
+               \csdef{#1}{\mbox{\modFAFont #1}}  %comando \NombreModulo
+               \defModNameLink{#1} %comandos \NombreModuloD y \NombreModuloI
+               \ifcsundef{#1args}{\csdef{#1args}{
+               {\modFAFont \modArg {#1}#2{}{}{}{}{}{}{}{}{}}} %comando \NombreModuloargs
+               \csdef{#1argsI}{\modArg {{\mdr{#1}}}#2{}{}{}{}{}{}{}{}{}}%\NombreModuloargsI
+               \csdef{#1argsD}{\modArg {{\rmg{#1}}}#2{}{}{}{}{}{}{}{}{}}%\NombreModuloargsD
+               }{\errorDeclareMod{#1args}}
+               }}
+{\errorDeclareMod{#1}}
+}
+
+%-----------------------------------------------------
+%Letra para mÃ©todos
+%(Comando tambiÃ©n definido en map-req-dsn.sty)
+\providecommand{\methodFont}{\moduleFontFamily}
+%------------TIPO LETRA PALABRAS RESERVADAS-- (Module, is, Generic Module,..) 
+%Palabra reservada para las intercaces de mÃ³dulos simples
+\newcommand{\reservedWFont}{\bf\sffamily}
+%-------------PÃRRAFOS------------------------------
+%Formato de pÃ¡rrafos para utilizar en la estructura de la 
+%GuÃ­a de MÃ³dulos
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+\titleformat{\subparagraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\subparagraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+%-----------DIBUJO-------------------------
+%------------BotÃ³n-------------------
+%-------------------------------------------
+%Dibuja un botÃ³n. #1: color , #2:texto (MI, MG, DP)
+\newcommand{\boton}[2]{
+\begin{tikzpicture}
+\sf
+\tikzstyle{boton}=[shading=ball,  rectangle, rounded corners=2, font=\small,inner sep=1.5mm, ball color=#1]
+\draw node[boton]{{\small\textbf{#2}}};
+\end{tikzpicture}
+}
+%-------------------------------------------------------
+%---------BotÃ³n sin enlace No Link (NL)-----------------
+\newcommand{\colorBaseNL}{white}
+\newcommand{\colorNL}{\colorBaseNL!50!black} 
+\newcommand{\colorNLball}{\colorBaseNL} %color botÃ³n NL
+%Permite cambiar el color base los botones sin enclace.
+\newcommand{\setColorBaseNL}[1]{\renewcommand{\colorBaseNL}{#1}}
+
+%------botones NL con volumen (sin enlace)--------
+%Opcionalmente cambiar el color: \bLN[blue]
+\newcommand{\bNL}[2][\colorNLball]{ \textcolor{\colorNL}{\boton{#1}{#2}} }
+%Define un botÃ³n sin enlace (con la opciÃ³n 'plain' es redefinido)
+%\boxNL{DP}, \boxNL{MI} \boxNL{MG},\boxNL{F}
+\newcommand{\boxNL}[1]{\bNL{#1}}
+%BotÃ³n DP sin enlace
+\newcommand{\boxNLDP}{\boxNL{DP}}
+%BotÃ³n F sin enlace
+\newcommand{\boxNLF}{\boxNL{ F\;}}
+
+%-------------------------------------------------------------
+%----Enlaces a la Interfaz del MÃ³dulo---------
+%-------------------------------------------------------------
+%--------------------------------------------------
+%Color para los enlaces a la interfaz de un mÃ³dulo
+\newcommand{\colorBaseMI}{green}
+\newcommand{\colorMI}{\colorBaseMI!60!black} 
+\newcommand{\colorMIball}{\colorBaseMI!30!white} %color botÃ³n MI
+
+%Permite cambiar el color base de los enlaces a la interfaz de mÃ³dulo
+\newcommand{\setColorBaseMI}[1]{\renewcommand{\colorBaseMI}{#1}}
+
+%------botÃ³n MI con volumen--------
+%Opcionalmente cambiar el color: \bMI[blue]
+\newcommand{\bMI}[1][\colorMIball]{\textcolor{black}{\boton{#1}{MI}}}
+%Define el botÃ³n MI (con la opciÃ³n 'plain' es redefinido)
+\newcommand{\boxMI}{\bMI}
+
+%BotÃ³n o caja MI, con enlace a la interfaz de un mÃ³dulo.
+\newcommand{\linkBoxMI}[1]{\hyperlink{\csuse{labelmi#1}}{\boxMI}}
+%-------------------------------------
+%Enlace a la interfaz de mÃ³dulo simple
+% #1:nombre del mÃ³dulo
+\newcommand{\mdr}[1]{\hyperlink{\csuse{labelmi#1}}{\color{\colorMI}{\csuse{#1}}}}
+%-------------------------------------
+%-------------------------------------------------------------
+%-------------------------------------------------------------
+%%-------------Enlaces a la GuÃ­a de MÃ³dulos ---------
+%-------------------------------------------------------------
+%Color para los enlaces a la guÃ­a de un mÃ³dulo
+\newcommand{\colorBaseMG}{magenta}
+\newcommand{\colorMG}{\colorBaseMG!60!blue}
+\newcommand{\colorMGball}{\colorBaseMG!30!white}
+%Cambia la base de color para los enlaces a la guÃ­a de mÃ³dulos
+\newcommand{\setColorBaseMG}[1]{\renewcommand{\colorBaseMG}{#1}}
+%------botÃ³n MG con volumen--------
+%Opcionalmente cambiar el color: \bMG[blue]
+\newcommand{\bMG}[1][\colorMGball]{\textcolor{black}{\boton{#1}{MG}}}
+%Define el botÃ³n MG (con la opciÃ³n 'plain' es redefinido)
+\newcommand{\boxMG}{\bMG}
+
+%BotÃ³n o caja MG, con enlace a la guÃ­a de un mÃ³dulo.
+\newcommand{\linkBoxMG}[1]{\hyperlink{\csuse{labelmg#1}}{\boxMG}}
+
+%Referencia a la guÃ­a de mÃ³dulos
+\newcommand{\rmg}[1]{\hyperlink{\csuse{labelmg#1}}{\color{\colorMG}{\csuse{#1}}}}
+
+%%----Enlaces a los Patrones de DiseÃ±o ---------
+%-----------------------------------
+%Color para los enlaces a un patrÃ³n de diseÃ±o.
+\newcommand{\colorBaseDP}{cyan}
+\newcommand{\colorDP}{\colorBaseDP}
+\newcommand{\colorDPball}{\colorBaseDP!50}
+%Cambia el color base de los enlaces al patrÃ³n de diseÃ±o
+\newcommand{\setColorBaseDP}[1]{\renewcommand{\colorBaseDP}{#1}}
+
+%Opcionalmente cambiar el color: \bDP[blue]{<identificador>}
+\newcommand{\bDP}[2][\colorDPball]{\textcolor{black}{\boton{#1}{DP#2}}}
+%Define el botÃ³n DP (con la opciÃ³n 'plain' es redefinido)
+\newcommand{\boxDP}[2][\colorDPball]{\bDP[#1]{#2}}
+
+%Caja-enlace a un patrÃ³n de diseÃ±o donde aparece el mÃ³dulo.
+\newcommand{\linkBoxDP}[2]{\protect\hyperlink{dp:#1}{\boxDP{#2}}}
+%-------------------------------------------------------------
+%-------------------------------------------------------------
+%------
+%Comando auxiliar para consumir (a lo sumo 9 argumentos) una secuencia de identificadores de patrones. Por cada identificador crea un botÃ³n \linkBoxDP.- Si un identificador tiene mÃ¡s de un caracter debe ir
+%entre llaves.Ej:
+% \pattArg {idPatron1} {idPatron2} X R {U1} ... {idPatron9}
+%Este comando se usa en combinaciÃ³n con createListOfBoxDP.
+
+\newcommand{\pattArg}[9]{\ifstrempty{#1}{}
+                                    {\ifstrempty{#2}{\linkBoxDP{#1}{}}{\linkBoxDP{#1}{1} \linkBoxDP{#2}{2}\ifstrempty{#3}{}{\linkBoxDP{#3}{3}\ifstrempty{#4}{}{\linkBoxDP{#4}{4}\ifstrempty{#5}{}{\linkBoxDP{#5}{5}\ifstrempty{#6}{}{\linkBoxDP{#6}{6}\ifstrempty{#7}{}{\linkBoxDP{#7}{7}\ifstrempty{#8}{}{\linkBoxDP{#8}{8}\ifstrempty{#9}{}{\linkBoxDP{#9}{9}}}}}}}}}}}
+%-------------------------------------------------------------
+%-------------------------------------------------------------                
+%Recibe una lista de identificadores de patrÃ³n de diseÃ±o y crea la lista de botones \linkBoxDP correpondiente.
+%Ej \createListOfBoxDP{{idPa} {idPb} Q } crearÃ¡ tres botones DP que son enlaces a los identificadores.
+\newcommand{\createListOfBoxDP}[1]{{\pattArg #1 {}{}{}{}{}{}{}{}{}}}
+
+
+%-------------------------------------------------------------
+%%----Enlaces a una figura/diagrama ---------
+%-----------------------------------
+%Color para los enlaces a una figura (o diagrama).
+\newcommand{\colorBaseF}{blue}
+\newcommand{\colorF}{\colorBaseF}
+\newcommand{\colorFball}{\colorBaseF!30}
+%Cambia el color base de los enlaces al patrÃ³n de diseÃ±o
+\newcommand{\setColorBaseF}[1]{\renewcommand{\colorBaseF}{#1}}
+
+%------botÃ³n F con volumen--------
+%Opcionalmente cambiar el color: \bF[blue]
+\newcommand{\bF}[1][\colorFball]{ \textcolor{black}{\boton{#1}{ F\;}} }
+%Define el botÃ³n F (con la opciÃ³n 'plain' es redefinido)
+\newcommand{\boxF}{\bF}
+%Encabezado de etiquetas de figuras
+\newcommand{\labelfig}{fig:}
+%Caja-enlace a la figura (o diagrama) donde estÃ¡ el mÃ³dulo.
+\newcommand{\linkBoxF}[1]{\hyperlink{\csuse{labelfig}#1}{\boxF}}
+%-----Figuras---------------------
+%Etiqueta para las figuras como comandos.
+%Error si el nombre de la figura ya existe.
+\newcommand{\errorLabelFig}[1]{\errmessage{Identificador de figura #1 ya existente.}}
+% Usar dentro  del entorno "figura"
+% #1: nombre de la figura (SOLO CARACTERES ALFABÃ‰TICOS)
+%Define el comando \fig<nombre> que al usarse devuelve fig:<nombre>; y ademÃ¡s,
+%declara las etiquetas-destino \label{fig:<nombre>} (para enlace interno) y
+% \hypertarget{fig:<nombre>}{} (para enlace externo) 
+
+\newcommand{\labelF}[1]{\ifcsundef{fig#1}{\csgdef{fig#1}{\csuse{labelfig}#1}\label{\csuse{fig#1}}\hypertarget{\csuse{fig#1}}{}}{\errorLabelFig{#1}}}
+
+%------------------------------------------
+%Enlace desde el nombre de un mÃ³dulo a una figura
+%#1:nombre modulo, #2:nombre figura
+\newcommand{\mdf}[2]{\hyperlink{\csuse{labelfig}#2}{\csuse{#1}}}
+%-----------------------------------
+%Color para los enlaces a la estructura de mÃ³dulos.
+\newcommand{\colorMS}{violet!70!blue}
+%Color para los enlaces a la estructura de herencia de mÃ³dulos.
+\newcommand{\colorHS}{green!30!black}
+%------------------------------------
+%Referencia a la estructura de mÃ³dulos
+\newcommand{\rms}[1]{\hyperlink{ms:#1}{\color{\colorMS}{\csuse{#1}}}}
+
+%Referencia a la estructura de herencia de mÃ³dulos
+\newcommand{\rhs}[1]{\hyperlink{hs:#1}{\color{\colorHS}{\csuse{#1}}}}
+%-------------------------------------------
+\newcommand{\modulo}{{\reservedWFont Module }}
+\newcommand{\modIs}{{\reservedWFont is }}
+\newcommand{\inheritsFrom}{{\reservedWFont inherits from} }
+%Palabra reservada para las intercaces de mÃ³dulos genÃ©ricos
+\newcommand{\gmodulo}{{\reservedWFont Generic Module }}
+%-----------------------------------------------------------
+%---------------Interfaz de MÃ³dulo--------------------------
+%-----------------------------------------------------------
+%---------Entornos definidos en este paquete----------------
+%-----------------------------------------------------------
+%-----------------------------------------------------------
+%-------Comandos dentro de los entornos de definiciÃ³n de interfaces-------
+%Encabeza lo que exporta el mÃ³dulo
+\newcommand{\exports}{&\\[-0.2cm]{\reservedWFont exports}}
+%Declara un mÃ©todo o mÃ³dulo que exporta el mÃ³dulo.
+\newcommand{\proc}[1]{& {\methodFont #1} \\}
+%Declara lo que importa el mÃ³dulo
+\newcommand{\imp}[1]{&\\[-0.2cm]{\reservedWFont imports} & #1 \\}
+%Encabeza la declaraciÃ³n de lo que es privado del mÃ³dulo
+\newcommand{\priv}{&\\[-0.2cm]{\reservedWFont private}}
+%Documenta un protocolo
+\newcommand{\proto}[1]{&\\[-0.2cm]{\reservedWFont protocol} & #1 \\}
+%Documenta comentarios
+\newcommand{\comm}[1]{&\\[-0.2cm]{\reservedWFont comments} & #1 \\}
+%------------------------------------------------------------
+%ParÃ¡metro de entrada del tipo dado por el nombre del mÃ³dulo.
+% #1: nombre del mÃ³dulo
+\newcommand{\inpt}[1]{{\reservedWFont i} \csuse{#1}}
+%ParÃ¡metro de entrada del tipo dado por el nombre del mÃ³dulo.El nombre serÃ¡ un enlace a la Interfaz
+% #1: nombre del mÃ³dulo
+\newcommand{\iI}[1]{{\reservedWFont i} \csuse{#1I}}
+%ParÃ¡metro de salida del tipo dado por el nombre del mÃ³dulo.
+% #1: nombre del mÃ³dulo
+\newcommand{\out}[1]{{\reservedWFont o} \csuse{#1}}
+%ParÃ¡metro de salida del tipo dado por el nombre del mÃ³dulo.El nombre serÃ¡ un enlace a la Interfaz
+% #1: nombre del mÃ³dulo
+\newcommand{\oI}[1]{{\reservedWFont o} \csuse{#1I}}
+%ParÃ¡metro de entrada y salida del tipo dado por el nombre del mÃ³dulo.
+% #1: nombre del mÃ³dulo
+\newcommand{\io}[1]{{\reservedWFont io} \csuse{#1}}
+%ParÃ¡metro de entrada y salida del tipo dado por el nombre del mÃ³dulo.El nombre serÃ¡ un enlace a la Interfaz
+% #1: nombre del mÃ³dulo
+\newcommand{\ioI}[1]{{\reservedWFont io} \csuse{#1I}}
+%----------------------------------------------------------------------------
+%------------------------------------------------------------------------------
+%------Comandos para los entornos de interfaz de mÃ³dulos-------------------
+%------que permiten definir la Estructura de MÃ³dulos ----------------
+%------------------------------------------------------------------------------
+\newcommand{\compr}{&\\[-0.2cm]{\reservedWFont comprises}}
+\newcommand{\subm}[1]{& \csuse{#1I} \\}
+%------------------------------------------------------------------------
+%------------------------------------------------------------------------
+%---------DefiniciÃ³n de entornos para Interfaces de MÃ³dulos - Cajas -----
+%------------------------------------------------------------------------
+%------------------------------------------------------------------------
+%--------CAJAS y Encabezados con BOTONES ------
+%---Tabulaciones de los mÃ³dulos-------
+%---TabulaciÃ³n mÃ³dulo simple (no genÃ©rico)----
+\newcommand{\tabSimpleMod}{\noindent\begin{tabular}{p{0.2\linewidth} p{0.7\linewidth}}}
+%-----------------------------------------------------------------------
+%------------ENCABEZADOS MÃ“DULOS CON/SIN BOTONES------------------------
+%Dibuja encabezdo de mÃ³dulo con botonnes MG, DPs, F
+\newcommand{\mheadBT}[3]{   
+\begin{tcolorbox}
+[title=\titleBox{#1}{#2}{#3}]
+\tabSimpleMod}
+%-------------------------------------------------------
+%Dibuja encabezdo de mÃ³dulo SIN botonnes MG, DPs, F
+%\newcommand{\mheadNBT}{   
+\newcommand{\headNBT}{   
+\begin{tcolorbox}
+\tabSimpleMod}
+%-------------------------------------------------------
+%Recibe la configuraciÃ³n para construir o no los botones del encabezdo de un mÃ³dulo. 
+%[#1]: determina si se incluyen o no botones en el encabezado del mÃ³dulo. Si tiene un valor distinto de 'bt', no se incluyen botones. Si '[]' estÃ¡ ausente o es [bt] se incluyen los botones.
+%#2: nombre mÃ³dulo, #3: lista de id patrones separados por espacio '{id1 id2}', #4: id figura
+\newcommand{\mheadAux}[4]{\ifstrequal{#1}{bt}{\mheadBT{#2}{#3}{#4}}
+{\headNBT}}
+%-----------------------------------------------------------------
+%-----------------------------------------------------------------
+%--------FunciÃ³n auxiliar para definir encabezados de cajas--------
+%#1: lista de identificadores de patrones; #2:identificador de figura
+%construye los botones patrones DP y de figura F que luego van en el
+%encabezado de las cajas o en la guÃ­a de mÃ³dulos.
+\newcommand{\botonLinkDPF}[2]{
+\ifstrempty{#1}
+               {\hspace{0.1cm}\boxNLDP\hspace*{-0.2cm}
+               \ifstrempty{#2}
+                  {\boxNLF}  
+                  {\linkBoxF{#2}}
+               }
+               {\createListOfBoxDP{#1}\hspace*{-0.2cm}
+                  \ifstrempty{#2}
+                  {\boxNLF}  
+                  {\linkBoxF{#2}}
+               }
+}
+%------------------------
+%Construye la lista de botones MG DP y F para todas las cajas de mÃ³dulos.
+%#1:nombre del mÃ³dulo, #2: lista identificadores de patrones, #3:identificador figura
+\newcommand{\titleBox}[3]{
+\ifstrempty{#1}
+{}
+{\linkBoxMG{#1}\botonLinkDPF{#2}{#3}
+\hspace*{-0.6cm}}
+}
+
+%---- cierra caja----
+\newcommand{\boxFoot}{\end{tabular}\end{tcolorbox}}
+%---------------------------------------------------
+%---------------------------------------------------
+
+%---------------------MÃ“DULOS----------------------------
+%Entorno para escribir mÃ³dulos fÃ­sicos (abstractos/concretos) o lÃ³gicos, con o sin botones.
+%\begin{module}[#1]{#2}{#3}{#4} o \begin{module}{#2}{#3}{#4}
+%[#1]: determina si se incluyen o no botones en el encabezado del mÃ³dulo. Si tiene un valor distinto de 'bt', no se incluyen botones. Si '[]' NO estÃ¡ o es '[bt]' se incluyen los botones.
+%#2: nombre mÃ³dulo, #3: lista de id patrones separados por espacio '{id1 id2}', #4: id figura
+\newenvironment{module}[4][bt]{\hypertarget{\csuse{labelmi#2}}{}
+\mheadAux{#1}{#2}{#3}{#4}
+\modulo &\csuse{#2}\\ }
+{\boxFoot}
+
+
+%---------------MÃ“DULOS HEREDEROS------------------------
+%\begin{hmodule}[#1]{#2}{#3}{#4}{#5} o \begin{module}{#2}{#3}{#4}{#5}
+%[#1]: determina si se incluyen o no botones en el encabezado del mÃ³dulo. Si tiene un valor distinto de 'bt', no se incluyen botones. Si '[]' NO estÃ¡ o es '[bt]' se incluyen los botones.
+%#2: nombre mÃ³dulo, #3: mÃ³dulo padre, #4: lista de id patrones separados por espacio '{id1 id2}', #5: id figura
+\newenvironment{hmodule}[5][bt]{\hypertarget{\csuse{labelmi#2}}{}
+\mheadAux{#1}{#2}{#4}{#5}
+\modulo &\csuse{#2} \inheritsFrom  \mdr{#3} \\}
+{\boxFoot}
+
+%---------------MÃ“DULOS GENÃ‰RICOS------------------------- 
+%\begin{hmodule}[#1]{#2}{#3}{#4}{#5} o \begin{module}{#2}{#3}{#4}{#5}
+%[#1]: determina si se incluyen o no botones en el encabezado del mÃ³dulo. Si tiene un valor distinto de 'bt', no se incluyen botones. Si '[]' NO estÃ¡ o es '[bt]' se incluyen los botones.
+%#2: nombre mÃ³dulo, #3: lista de id patrones separados por espacio '{id1 id2}', #4: id figura
+\newenvironment{gmodule}[4][bt]{\hypertarget{\csuse{labelmi#1}}{}
+\mheadAux{#1}{#2}{#3}{#4}
+\gmodulo & \csuse{#2args} \\}
+{\boxFoot}
+
+%--------------INSTANCIAS DE MÃ“DULOS GENÃ‰RICOS--------------------------
+
+%\begin{ismodule}[#1]{#2}{#3}{#4}{#5} o \begin{ismodule}{#2}{#3}{#4}{#5}
+%[#1]: determina si se incluyen o no botones en el encabezado del mÃ³dulo. Si tiene un valor distinto de 'bt', no se incluyen botones. Si '[]' NO estÃ¡ o es '[bt]' se incluyen los botones.
+%#2: nombre mÃ³dulo, #3: mÃ³dulo genÃ©rico, #4:lista de tipos genÃ©ricos, #5:lista de id patrones separados por espacio '{id1 id2}', #6: id figura
+%#1: modulo, #2:modulo genÃ©rico, #3:tipo genÃ©rico, 
+\newenvironment{ismodule}[6][bt]{\hypertarget{\csuse{labelmi#1}}{}
+\mheadAux{#1}{#2}{#5}{#6}
+\modulo & \csuse{#2} \modIs {\modArg {{\mdr{#3}}}#4{}{}{}{}{}{}{}{}{}}\\}
+{\boxFoot}
+%------------------------------------------------------------------
+%------------------------------------------------------------------
+%------------------GUÃA DE MÃ“DULOS---------------------------------
+%------------------------------------------------------------------
+%Construye botones con enlaces MI DP1,...DPn y F. Esto es:
+%Enlace a la interfaz del mÃ³dulo, enlaces a los patrones, enlace a una figura.
+%Estos botonoes en el encabezado de la descripciÃ³n de cada mÃ³dulo.
+%#1:nombre de mÃ³dulo, #2:lista de identificadores de patrones separados por 
+%espacio, #3:identificador de figura
+%
+\newcommand{\titleBoxI}[3]{
+\ifstrempty{#1}
+{}
+{\linkBoxMI{#1}\botonLinkDPF{#2}{#3}
+\hspace*{-0.6cm}
+}
+}
+%------------------
+%Define la secciÃ³n correspondiente a un mÃ³dulo en la guÃ­a de mÃ³dulos.
+%#1:por defecto es [bt] que incluye botones. [] o [<cualquierString>] 
+%elimina los botones.
+%#2:nivel se secciÃ³n (section, subsection, subsubsection,..., paragraph)
+%#3: nombre del mÃ³dulo (debe haber sido declarado previamente)
+%#4:lista de identificadores de patrones: {P {idP1}...{idP1}}
+%#5: identificador de figura
+
+%\newenvironment{mguide}[5][bt]{\small \hypertarget{\csuse{labelmg#3}}{} #2 {\csuse{#3} \color{gray!60!white}{\hrulefill} \ifstrequal{#1}{bt} {\protect\titleBoxI{#3}{#4}{#5}}{}}}{\\}
+\newenvironment{mguide}[5][bt]{\small \hypertarget{\csuse{labelmg#3}}{} #2 {\csuse{#3} \ifstrequal{#1}{bt}{\normalsize \hfill\protect\titleBoxI{#3}{#4}{#5}}{\color{gray!60!white}{\hrulefill}}}}{\\}
+
+%------------------------------------------------------------------------------
+%--COMANDOS a utilizar dentro de GUÃA DE MÃ“DULOS------------------
+%------------------------------------------------------------------------------
+\newcommand{\function}{\noindent{\it FunciÃ³n}\\}
+\newcommand{\secret}{\\ \noindent{\it Secreto}\\}
+%----------------------------------------------------------------------------
+%--------------------------------------------------
+%----------------PATRONES--------------------------
+%---Comandos para usar dentro de los entornos------
+\newcommand{\patternApp}{\reservedWFont PatternApp}
+\newcommand{\based}[1]{{\reservedWFont based on} & #1 \\ &\\[-0.2cm]}
+\newcommand{\assigns}{{\reservedWFont where}}
+% #1:rol en el patrÃ³n, #2:mÃ³dulo
+\newcommand{\is}[2]{& {\moduleFontFamily #1} {\reservedWFont is}  #2\\}
+\newcommand{\why}[1]{{\reservedWFont why} &#1\\&\\[-0.3cm]}
+%-------------------------
+%---------------------------------------------
+%Define un encabezado para la/el caja/cuadro de patrones con o sin botÃ³n a una figura (y botÃ³n sin enlace o con enlace)
+%#1:'bt' o distinto, definirÃ¡ si el encabezado agrega o no botones
+%#2:idFigura
+\newcommand{\phead}[2]{\ifstrequal{#1}{bt}{
+\begin{tcolorbox}
+[title=\ifstrempty{#2}{\boxNLF}{\linkBoxF{#2}}]
+\tabSimpleMod}
+{\headNBT}}
+
+%---------------------------------------------
+%Define el entorno para documentar el uso de un patrÃ³n.
+%#1:[] o nada para determinar si se agrega o no un botÃ³n, con o sin enlace a una figura ([] o [<distinto a bt>] es encabezado sin botÃ³n, no poner [] dibuja un botÃ³n con enlace si idFigura no es vacÃ­o y sin enlace en caso contrario)
+%#2:nombre patrÃ³n, #3:id patrÃ³n , #4:idfigura
+\newenvironment{pattern}[4][bt]{\hypertarget{dp:#3}{} \vspace{0.5cm}
+\phead{#1}{#4}
+\patternApp & {\bf #2}\\
+& \\}
+{\boxFoot}
+
+
+%-------------------------------------------------------------------
+%---Comandos definidos en este paquete -----------------------------
+%--para utilizar dentro del 'caption' de una figura-----------------
+%-------------------------------------------------------------------
+%Agrega cajas de links a MI, GM, DPs. Lo defino para usarlo dentro de una figura (sobre el \caption).
+
+%Cajas de enlaces MI, MG y <n cajas DP>
+%Argumentos. #1:nombre mÃ³dulo, #2:<n cajas DP>
+\newcommand{\linkMIMGDP}[2]{\vspace{1cm}\linkBoxMI{#1}\hspace{0.1cm}\protect\linkBoxMG{#1}\hspace{0.1cm}#2}
+
+%Cajas de enlaces MI, MG 
+%Argumentos. #1:nombre mÃ³dulo
+\newcommand{\linkMIMG}[1]{\vspace{1cm}\linkBoxMI{#1}\hspace{0.1cm}\protect\linkBoxMG{#1}\hspace{0.1cm}\boxNLDP}
+
+%------------------------------------------------------
+%------------------------------------------------------
+%-----------DOCUMENTAR MAPEO REQ <---> DISEÃ‘O ---------
+%------------------------------------------------------
+%------------------------------------------------------
+%valor por defecto de documento externo
+\newcommand{\noFile}{noFile}
+\newcommand{\reqFile}{\noFile}
+\newcommand{\designFile}{\noFile}
+%------------------------------------------------------
+%setReqFile: setea el nombre del archivo que define los requerimientos, sin la extensiÃ³n del tipo de archivo. Se utiliza para hacer links entre el documento de mapeo y el de requerimientos
+%Ej: \setReqFile{../requerimientos/reqMCURobot} (sin el ".pdf").
+\newcommand{\setReqFile}[1]{
+\renewcommand{\reqFile}{#1}
+\externaldocument{\reqFile}
+}
+%---------------------------------------------------------------------
+%-----Comando para introducir links al documento de requerimientos----
+%El argumento es el nombre del requerimiento utilizado en el documento seteado (\itemr{<nombreReq>}). Ej: \extRLink{<nombreReq>}.
+\newcommand{\extRLink}[1]{\href{\reqFile .pdf\#req:#1}{\ref*{reqLabel:#1}}}
+%--------------------------------------------------------------------------
+%--------------------------------------------------------------------------
+%setDesignFile: setea el nombre del archivo diseÃ±o, sin la extensiÃ³n del tipo de archivo. Se utiliza para hacer links entre el documento de mapeo y el de diseÃ±o
+%Ej: \setReqFile{../requerimientos/reqMCURobot} (sin el ".pdf").
+\newcommand{\setDesignFile}[1]{
+\renewcommand{\designFile}{#1}
+\externaldocument{\designFile}
+}
+%---------------------------------------------------------------------
+%-----Comando para introducir LINKS EXTERNOS al documento de diseÃ±o------------
+%Enlace externo a la definiciÃ³n de interfaz en el doc de diseÃ±o
+% #1:nombre del mÃ³dulo 
+\newcommand{\extDLinkI}[1]{\href{\designFile .pdf\#\csuse{labelmi#1}}{\color{blue}{\csuse{#1}}}}
+%---------------
+%Enlace externo a la definiciÃ³n de interfaz en el doc de diseÃ±o
+% #1:nombre del mÃ³dulo , #2: mÃ©todo
+\newcommand{\mextDLinkI}[2]{\href{\designFile .pdf\#\csuse{labelmi#1}}{\color{blue}{\csuse{#1}{\methodFont::#2}}}}
+%---------------
+%Enlace externo a la estructura de mÃ³dulos en el doc de diseÃ±o
+% #1:nombre del mÃ³dulo 
+\newcommand{\extDLinkD}[1]{\href{\designFile .pdf\#\csuse{labelmg#1}}{\color{blue}{\csuse{#1}}}}
+%----------------
+%Enlace externo a la estructura de mÃ³dulos en el doc de diseÃ±o
+% #1:nombre del mÃ³dulo ; #2: mÃ©todo
+\newcommand{\mextDLinkD}[2]{\href{\designFile .pdf\#\csuse{labelmg#1}}{\color{blue}{\csuse{#1}{\methodFont::#2}}}}
+%--------------------
+%Enlace externo a una figura en el doc de diseÃ±o
+% #1 : nombre de la figura (definido con labelF); #2: etiquete a visualizar
+\newcommand{\extDLinkF}[2]{\href{\designFile .pdf\#\csuse{labelfig}#1}{\color{blue}{#2}}}
+%Enlace externo a cualquier punto del doc de diseÃ±o
+%%#1:identificador de etiqueta, #2:texto de etiqueta.
+\newcommand{\extDLinkO}[2]{\href{\designFile .pdf\##1}{\color{blue}{#2}}}
+%El argumento es el nombre del la figura en el documento seteado 
+%#1:etiqueta, #2:identificador de enlace.
+%tal vez borrar
+%\newcommand{\extDLink}[2]{\href{\designFile .pdf\#fig:#2}{\color{blue}{#1}}}
+%---------------------------------------------------------------
+%---------------------------------------------------------------
+%---------------------------------------------------------------
+%-----ÃRBOLES DE HERENCIA, COMPOSICIÃ“N Y COMPORTAMIENTO---------
+%---------------------------------------------------------------
+%------------- Entorno 'treeS'----------------------------------
+%---------------------------------------------------------------
+%El entorno treeS puede ser definido con las siguientes configuraciones
+% hsconf : Estructura de Herencia (los enlaces definidos son internos)
+% msconf : Estructura de MÃ³dulos (los enlaces definidos son internos)  o
+% usconf : Ãrboles de InvocaciÃ³n/UtilizaciÃ³n (los enlaces definidos son externos)
+% Dependiendo de la configuraciÃ³n los siguientes comandos serÃ¡ usados internamente por el entorno.
+%------------------------------------------------------------------------------
+%Color de base para los cajas de Ã¡rboles (borde y fondo)
+%RepresentaciÃ³n en arbol de Estructura deHerencia y Estructura de MÃ³dulos 
+\newcommand{\treeBaseColor}{white}
+\newcommand{\setTreeColorBase}[1]{\renewcommand{\treeBaseColor}{#1}}
+%----------------------------------------------
+%Color de fondo de la caja
+\newcommand{\treeColBack}{\treeBaseColor!3}
+\newcommand{\setTreeColBack}[1]{\renewcommand{\treeColBack}{#1}}
+%----------------------------------------------
+%Color del borde de la caja
+\newcommand{\treeColFrame}{\treeBaseColor!75!black}
+\newcommand{\setTreeColFrame}[1]{\renewcommand{\treeColFrame}{#1}}
+%----------------------------------------------
+%Encabezado de caja de Ã¡rboles
+\newcommand{\treeShead}{\ifbool{nullConf}{}{\begin{tcolorbox}[colback=\treeColBack,colframe=\treeColFrame]}}
+%pie de caja de Ã¡rboles
+\newcommand{\treeSfoot}{\ifbool{nullConf}{}{\end{tcolorbox}}}
+%---------------------------------------------------------
+%----RELACIONES entre elementos de un Ã¡rbol---------------
+%-------------------------------------------------------------
+\newcommand{\inherits}{triangle 90-} %relaciÃ³n de HERENCIA
+%\newcommand{\comprises}{diamond-} %relaciÃ³n de COMPOSICIÃ“N (o comprende)
+\newcommand{\comprises}{{Triangle[black]Triangle}-} %relaciÃ³n de COMPOSICIÃ“N (o comprende)
+\newcommand{\utilises}{-stealth} %relaciÃ³n de UITLIZA/INVOCA
+\newcommand{\treeRelation}{} 
+\newcommand{\setRelation}[1]{\renewcommand{\treeRelation}{#1}}
+%-------------------------------------------------------------
+%--- NODO RAÃZ con nombre de MÃ“DULO---Comando \troot ------------
+%Para que un nodo raÃ­z sea un nombre de mÃ³dulo, se usarÃ¡ \troot definido mÃ¡s adelante, pasÃ¡ndole dicho nombre.
+% Los comandos \hroot, \mroot, \defaultRoot o \extModule darÃ¡n configuraciÃ³n para que tal nombre sea un enlace (o no) a distintos destinos. Es decir, definen el tipo de enalce afectando el comando \troot.
+%-------------------------------------------------------
+%RaÃ­z tipo de enlace(interno) hacia HERENCIA- 
+\newcommand{\hroot}[1]{\csuse{#1I}\hypertarget{hs:#1}{}}
+%RaÃ­z tipo de enlace(interno) hacia COMPOSICIÃ“N (estructura mÃ³dulos)
+\newcommand{\mroot}[1]{\csuse{#1D}\hypertarget{ms:#1}{}}
+%Raiz SIN enlace (valor por defecto)
+\newcommand{\defaultRoot}[1]{\csuse{#1}}
+%RaÃ­z tipo de enlace hacia EXTERIOR (UTILIZA/INVOCA)
+% \extModule  definido mÃ¡s adelante
+%---------------------------
+%RaÃz definida por defecto para cualquier Ã¡rbol.
+\newcommand{\definedRoot}{\defaultRoot}
+%Setear el tipo de raÃ­z que se utilizarÃ¡ (\hroot, \mroot o \extModule)
+\newcommand{\setDefinedRoot}[1]{\renewcommand{\definedRoot}{#1}}
+%-------------------------------------------
+%NODO RAÃZ DE ÃRBOL: MÃ“DULO - #1: mÃ³dulo
+\newcommand{\troot}[1]{\node(#1){\definedRoot{#1}}}
+%----------------------------------------------
+%-------------------------------------------------------------
+%---- NODO HOJA con nombre de MÃ“DULO--Comandos \tnode y tnodeBR
+%-------------------------------------------------------------
+%Para que un nodo hoja sea un nombre de mÃ³dulo, se usarÃ¡ \tnode o \tnodeBR definidos mÃ¡s adelante.
+% Los comandos \hnode, \mnode, \defaultNode o \extModule darÃ¡n configuraciÃ³n para que tal nombre sea un enlace (o no) a distintos destinos. Es decir, definen el tipo de enalce afectando los comandos \tnode y \tnodeBR.
+%-----------------------------------
+%Hoja tipo de enlace (interno) hacia HERENCIA -  #1: mÃ³dulo
+\newcommand{\hnode}[1]{\csuse{#1I}\hypertarget{hs:#1}{}}
+%Hoja tipo de enlace(interno) hacia COMPOSICIÃ“N (estructura de mÃ³dulos)
+\newcommand{\mnode}[1]{\csuse{#1D}\hypertarget{ms:#1}{}}
+%Hoja SIN enlace (por defecto)
+\newcommand{\defaultNode}[1]{\csuse{#1}}
+%----------------------------------------
+%Raiz definida por defecto para cualquier Ã¡rbol.
+\newcommand{\definedNode}{\defaultNode}
+%Setear el tipo de raÃ­z que se utilizarÃ¡ (\hnode o \mnode)
+\newcommand{\setDefinedNode}[1]{\renewcommand{\definedNode}{#1}}
+%-------------------------------------------
+%NODO HOJA DE ÃRBOL: MÃ“DULO (sin ubicaciÃ³n)
+\newcommand{\tnode}[1]{node(#1){\definedNode{#1}}}
+%-------------------------------------------------
+%NODO HOJA DE ÃRBOL: MÃ“DULO (ubicaciÃ³n ABAJO A LA DERECHA)
+%#1:mÃ³dulo heredero , #2:cm abajo, #3:cm a la derecha, #4:mÃ³dulo de referencia
+\newcommand{\tnodeBR}[4]{node[below right=#2cm and #3cm of #4](#1){\definedNode{#1}}}
+%-------------------------------------------------------------
+%-------------------------------------------------------------
+%--------NODOS INVOCACIÃ“N/UTILIZACIÃ“N (ENLACES EXTERNOS)------
+%--------ConfiguraciÃ³n 'usconfig' del entorno 'treeS'---------
+% Los siguentes comando definen nodos para graficar Ã¡rboles de UTILIZACIÃ“N/INVOCACIÃ“N cuyos enlaces externos pueden ser hacia la definiciÃ³n de herencia, hacia la guÃ­a de mÃ³dulos o hacia otro tipo de destino. 
+%-----------------------------------------------------------
+%Tipo de enlaces invocaciÃ³n/uitlizaciÃ³n
+% Por defecto los enlace son a la GuÃ­a de MÃ³dulos. Para modificar esto se puede anteceder con alguno de los siguientes comandos el entorno \treeS.
+\newcommand{\uslink}{D}%por defecto los enlaces son a la guÃ­a de mÃ³dulos
+\newcommand{\uslinkI}{\renewcommand{\uslink}{I}}%enlaces a las interfaces
+\newcommand{\uslinkD}{\renewcommand{\uslink}{D}}%enlaces a la guÃ­a de mÃ³dulos
+%Enlaces a figuras u otros puntos - usarÃ¡ nombre de identificador
+\newcommand{\uslinkG}{F} %por defecto a figuras (nombre usado en \labelF)
+\newcommand{\uslinkF}{\renewcommand{\uslinkG}{F}}%enlaces a figuras
+\newcommand{\uslinkO}{\renewcommand{\uslinkG}{O}}%otros enlaces 
+%-------------------------------------------------------------
+%----NODO RAÃZ Y NODO HOJA ambos como MÃ³dulo/MÃ³dulo::MÃ©todo---
+%----CONFIGURACIÃ“N DE ENLACE----------------------------------
+%Se usan con \setDefinedRoot y \setDefinedNode en el seteo \treeS
+%Define el tipo de enlace externo, para eso se combina con los comandos \uselink . 
+%RAÃZ y HOJA tipo de enlace externo (por defecto GuÃ­a de MÃ³dulos). 
+%-----------------------------------------------------------------
+% RAÃZ y HOJA como MÃ“DULO - #1: mÃ³dulo
+\newcommand{\extModule}[1]{\csuse{extDLink\uslink}{#1}}
+%-----------------------------------------------------------------
+% RAÃZ y HOJA como MÃ“DULO::MÃ‰TODO - #1: mÃ³dulo , #2: mÃ©todo
+\newcommand{\extModMethod}[2]{\csuse{mextDLink\uslink}{#1}{#2}}
+%-----------------------------------------------------
+%-----------------------------------------------------
+%--RAÃZ como MÃ“DULO usa \troot------------------------
+%-----------------------------------------------------
+%--HOJA como MÃ‰TODO usa \tnode------------------------
+%-----------------------------------------------------
+%--HOJA como MÃ‰TODO ABAJO A LA DERECH usa \tnodeBR----
+%-----------------------------------------------------
+%--RAÃZ como MÃ“DULO::MÃ‰TODO---------------------------
+% #1: mÃ³dulo ; #2: mÃ©todo
+\newcommand{\tmroot}[2]{\node(#1-#2){\csuse{extModMethod}{#1}{#2}}}
+%-----------------------------------------------------
+%--HOJA como MÃ“DULO::MÃ‰TODO (sin ubicaciÃ³n)-----------
+% #1: mÃ³dulo ; #2: mÃ©todo
+\newcommand{\tmnode}[2]{node(#1-#2){\csuse{extModMethod}{#1}{#2}}}
+%-----------------------------------------------------
+%--HOJA como MÃ“DULO::MÃ‰TODO (ubicaciÃ³n ABAJO A LA DERECHA)--------
+%#1: mÃ³dulo ; #2: mÃ©todo; #3 cm abajo; #4 cm a la derecha de #5
+\newcommand{\tmnodeBR}[5]{node(#1-#2)[below right=#3cm and #4cm of #5]{\csuse{extModMethod}{#1}{#2}}}
+%-----------------------------------------------------
+%----RAÃZ Y HOJA con enlaces a FIGURAS U OTROS--------
+%--Enlace GenÃ©rico, por defecto a figura habiendo usado \labelF--
+%--Para que los enlaces sean otro tipo, se debe anteponer \uslinkO al entorno \treeS. 
+%-----------------------------------------------------
+%--RAÃZ como MÃ“DULO con enlace a FIGURAS U OTROS------
+% #1: mÃ³dulo - #2 : id enlace (nombre de figura u otro)
+\newcommand{\trootG}[2]{\node(#1){\csuse{extDLink\uslinkG}{#2}{\csuse{#1}}}}
+%-----------------------------------------------------
+%-RAÃZ como MÃ“DULO::MÃ‰TODO con enlace a FIGURAS U OTROS--
+% #1: mÃ³dulo ; #2: mÃ©todo ; #3: id enlace
+\newcommand{\tmrootG}[3]{\node(#1-#2){\csuse{extDLink\uslinkG}{#3}{\csuse{#1}\methodFont::#2}}}
+%-------------------------------------------------
+%--HOJA como MÃ“DULO con enlace a FIGURAS U OTROS--
+% #1: mÃ³dulo - #2 : id enlace
+\newcommand{\tnodeG}[2]{node(#1){\csuse{extDLink\uslinkG}{#2}{\csuse{#1}}}}
+%-------------------------------------------------
+%--HOJA como MÃ“DULO::MÃ‰TODO con enlace a FIGURAS U OTROS--
+% #1: mÃ³dulo ; #2: mÃ©todo ; #3: id enlace
+\newcommand{\tmnodeG}[3]{node(#1-#2){\csuse{extDLink\uslinkG}{#3}{\csuse{#1}\methodFont::#2}}}
+%-------------------------------------------------
+%--HOJA como MÃ“DULO ABAJO A LA DERECHA con enlace a FIGURAS U OTROS--
+%#1:mÃ³dulo  , #2:cm abajo, #3:cm a la derecha, #4:mÃ³dulo de referencia; #5:id link
+\newcommand{\tnodeBRG}[5]{node[below right=#2cm and #3cm of #4](#1){\csuse{extDLink\uslinkG}{#5}{\csuse{#1}}}}
+%-------------------------------------------------
+%--HOJA como MÃ“DULO::MÃ‰TODO ABAJO A LA DERECHA 
+%--con enlace a FIGURAS U OTROS--
+% #1: mÃ³dulo ; #2: mÃ©todo; #3 cm abajo; #4 cm a la derecha de #5 ; #6:id enlace
+\newcommand{\tmnodeBRG}[6]{node(#1-#2)[below right=#3cm and #4cm of #5]{\csuse{extDLink\uslinkG}{#6}{\csuse{#1}\methodFont::#2}}}
+%-------------------------------------------------
+%-------------------------------------------------
+%----------RAÃZ con SÃMBOLO (sin enlace)----------
+%-------------------------------------------------
+%--Hilos de control paralelos---------------------
+\newcommand{\parallelRoot}{\node(parallelRoot){$\diagup\diagup$}}
+%--Hilos de control secuenciales------------------
+\newcommand{\seqRoot}{\node(seqRoot){$\bullet\; \bullet$}}
+%-------------------------------------------------
+%EscribirÃ¡ el sÃ­mbolo Join seguido de un nÃºmero
+%SÃ­mbolo usado para definir un nodo raÃ­z u hoja como continuaciÃ³n del Ã¡rbol
+\newcommand{\conector}[1]{$\Join$ \texttt{#1}}
+%-------------------------------------------------
+%--RAÃZ con el sÃ­mbolo Join (\conector)-----------
+% #1: nÃºmero identificador------------------------
+\newcommand{\contRoot}[1]{\node(contRoot){\conector{#1}}}
+%\newcommand{\contRoot}[1]{\node(contRoot){$\Join$ \texttt{#1}}}
+%-------------------------------------------------
+%--HOJA con el sÃ­mbolo Join (\conector)-----------
+% #1: nÃºmero identificador------------------------
+\newcommand{\cont}[1]{node(cont#1){\conector{#1}}}
+%-------------------------------------------------
+%--HOJA con el sÃ­mbolo Join (\conector) ABAJO A LA DERECHA--------
+% #1: nÃºmero identificador, #2: cm abajo, #3: cm a la derecha, #4: nodo de referencia para la ubicaciÃ³n
+\newcommand{\contBR}[4]{node[below right=#2cm and #3cm of #4](cont #1){$\Join$ \texttt{#1}}}
+%-------------------------------------------------
+%----------------DEFINIR ÃRBOL--------------------
+%-------------------------------------------------
+%flag booleana para determinar si se elimina la caja del Ã¡rbol.
+% Por defecto su valor es false.
+\newbool{nullConf}
+%-------------------------------------------------
+%------ENTORNO ESTRUCTURA DE ÃRBOL----------------
+%\begin{treeS}[<configuraciÃ³n>]
+% #1:  <vacÃ­o>| box | hsconf | msconf | usconf (<configuraciÃ³n> de la estructura)
+% <vacÃ­o>: si no hay configuraciÃ³n, la relaciÃ³n entre los nodos es indefinida 
+% (es una lÃ­nea)
+% box: la relaciÃ³n entre los nodos es indefinida y el Ã¡rbol queda enmarcado en una caja
+% hsfconf: configuraciÃ³n para la Estructura de Herencia
+% msconf: configuraciÃ³n para la Estructura de MÃ³dulos
+% usconf: configuraciÃ³n para la Estructura Utiliza/Invoca
+\newenvironment{treeS}[1][]{
+   \ifblank{#1}{\booltrue{nullConf}}
+               {\ifstrequal{#1}{box}{}
+                  {\ifstrequal{#1}{hsconf}
+                     {\setTreeColorBase{\colorHS}\setRelation{\inherits}\setDefinedRoot{\hroot}\setDefinedNode{\hnode}}
+                     {\ifstrequal{#1}{msconf}
+                               {\setTreeColorBase{\colorMS}\setRelation{\comprises}\setDefinedRoot{\mroot}\setDefinedNode{\mnode}}
+                               {\booltrue{nullConf}
+                                \ifstrequal{#1}{usconf}
+                                     {\setRelation{\utilises}\setDefinedRoot{\extModule}\setDefinedNode{\extModule}}
+                                     {}}}}
+                                          }\treeShead
+\begin{tikzpicture}[ grow via three points={one child at (0.5,-0.7) and
+two children at (0.5,-0.7) and (0.5,-1.4)}, edge from parent path={(\tikzparentnode.south) |- (\tikzchildnode.west)},\treeRelation]
+\tikzstyle{every node}=[anchor=west]
+}
+{;\end{tikzpicture}\treeSfoot}
+
+%----------------------------------
+%---Enlaces INTERNOS---------------
+%----------------------------------
+%----Nodos raÃ­z----
+%----------------------------------
+%%#1:mÃ³dulo concreto, #2:figura
+\newcommand{\imRoot}[2]{
+\node[concrete](#1){\hyperlink{fig:#2}{#1}}}
+%----------------------------------
+%%#1:mÃ³dulo concreto, #2:figura
+\newcommand{\immRoot}[3]{
+\node[concrete](#1-#2){\hyperlink{fig:#2}{#1::#2}}}
+%----------------------------------
+%---Nodos del Ã¡rbol---
+%#1:mÃ³dulo concreto, #2:figura
+\newcommand{\imC}[2]{node(#1){\hyperlink{fig:#2}{#1}}}
+%----------------------------------
+%#1:mÃ³dulo concreto, #2:mÃ©todo, #3:figura
+\newcommand{\immC}[3]{node[concrete](#1-#2){\hyperlink{fig:#3}{#1::#2}}}
+%----------------------------------
+%#1:mÃ³dulo concreto, #2:figura, #3:cm abajo, #3:cm a la derecha, #3:mÃ³dulo de referencia,
+\newcommand{\imCBR}[5]{node[concrete,below right=#3cm and #4cm of #5](#1){\hyperlink{fig:#2}{#1}}}
+%----------------------------------
+%#1:mÃ³dulo concreto, #2: mÃ©todo, #3:figura, #4:cm abajo, #5:cm a la derecha, #6:mÃ³dulo de referencia,
+\newcommand{\immCBR}[6]{node[concrete,below right=#4cm and #5cm of #6](#1-#2){\hyperlink{fig:#3}{#1::#2}}}
+
+
+%---------------OPCIONES DEL PAQUETE-------------------
+%-------------- [en] ---- [plain] ---------------------
+%------------------------------------------------------
+%------------------------------------------------------
+%------------OpciÃ³n 'en' del paquete-------------------
+%----------------(requerimientos)----------------------
+%------------------------------------------------------
+%English Options
+%FR: Funcional Requirement
+\DeclareOption{en}{\AtEndOfPackage{\renewcommand{\EtiquetaRF}{FR}
+\renewcommand{\EtiquetaRNF}{NFR}
+\renewcommand{\si}[1]{\textcolor{\VColor}{State: Validated - #1}}
+\renewcommand{\nose}{\textcolor{\NVColor}{State: Not Validated}}
+\renewcommand{\no}[1]{\textcolor{\CColor}{State: Removal or modification required - #1}}
+\renewcommand{\labelReqRel}{Related requirements:}
+}}
+%------------------------------------------------------
+%------------------------------------------------------
+%------------FIN OpciÃ³n 'en' del paquete----------------
+%------------------------------------------------------
+
+%------------------------------------------------------
+%------------------------------------------------------
+%------------OpciÃ³n 'plain' del paquete----------------
+%---------------(diseÃ±o de software)----------------------
+%Usar como \usepackage[plain]{is}
+%Esta opciÃ³n del paquete utiliza el estilo visual de las versiones anteriores.
+\DeclareOption{plain}{\AtEndOfPackage{
+%------------------------------------
+%-------Botones planos---------------
+
+\renewcommand{\boton}[2]{
+\begin{tikzpicture}
+\sf
+\tikzstyle{boton}=[draw, rectangle, color = #1, rounded corners=2, font=\small,inner sep=1.5mm]
+\draw node[boton]{{\small\textbf{#2}}};
+\end{tikzpicture}
+}
+%------------------------------------
+%-------botÃ³n MI plano---------------
+%Usado con la opciÃ³n del paquete 'plain'
+%Opcionalmente cambiar el color: \boxMI[red]
+%\newcommand{\boxMIPlain}[1][\colorMI]{{\color{#1}{\fbox{MI}}}}
+\newcommand{\boxMIPlain}[1][\colorMI]{\boton{#1}{MI}}
+\renewcommand{\boxMI}{\boxMIPlain}
+%------- botÃ³n MG plano----------------
+%\newcommand{\boxMGPlain}[1][\colorMG]{{\color{#1}{\fbox{MG}}}}
+\newcommand{\boxMGPlain}[1][\colorMG]{\boton{#1}{MG}}
+\renewcommand{\boxMG}{\boxMGPlain}
+%------- botÃ³n PD plano----------------
+% #2 es el identificador: 1, 2,... Es decir: DP1, DP2,...
+%\newcommand{\boxDPPlain}[2][\colorDP]{{\color{#1}{\fbox{DP#2}}}}
+\newcommand{\boxDPPlain}[2][\colorDP]{\boton{#1}{DP#2}}
+\renewcommand{\boxDP}[2][\colorDP]{\boxDPPlain[#1]{#2}}
+%------- botÃ³n F plano----------------
+%\newcommand{\boxFPlain}{{\color{\colorF}{\fbox{F}}}}
+\newcommand{\boxFPlain}[1][\colorF]{\boton{#1}{F}}
+\renewcommand{\boxF}{\boxFPlain}
+%-----------botÃ³n sin enlace------------
+%Opcionalmente cambiar el color: \bLN[blue]
+%\newcommand{\boxNLPlain}[1]{{\color{\colorNL}{\fbox{#1}}}}
+\newcommand{\boxNLPlain}[1]{\boton{\colorNL}{#1}}
+\renewcommand{\bNL}[2][\colorNL]{\boxNLPlain{#2}}
+%------------------------------------------------------
+%Encabezado y pie de cajas planas de entorno Interfaces de MÃ³dulos
+%---Fin de entorno tabular para todos los entornos
+\newcommand{\finTabular}{\hline\end{tabular}\vspace{0.5cm}}
+%------------------------------------------------------
+%Cambia color de fondo y de bordes de los mÃ³dulos en MI.
+\tcbset{colback=white,colframe=gray, colbacktitle=white,boxsep=0mm, left=1mm,right=1mm,top=1mm,bottom=1mm, enhanced, attach boxed title to top right}
+%------------------------------------------------------
+%Cambia color de fondo y de borde de las cajas de los Ã¡rboles
+\renewcommand{\treeColBack}{white}
+\renewcommand{\treeColFrame}{gray}
+}
+}
+\ProcessOptions\relax
+%------------------------------------------------------
+%------------------------------------------------------
+%------------FIN OpciÃ³n 'plain' del paquete----------------
+%------------------------------------------------------

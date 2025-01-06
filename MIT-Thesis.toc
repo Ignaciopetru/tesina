@@ -19,20 +19,20 @@
 \contentsline {section}{\numberline {5.1}Acceso al hardware}{33}{section.5.1}%
 \contentsline {section}{\numberline {5.2}Interfaces que no se ajustan perfectamente}{39}{section.5.2}%
 \contentsline {section}{\numberline {5.3}Control en conjunto de dispositivos}{42}{section.5.3}%
-\contentsline {subsection}{\numberline {5.3.1}Subsistemas de control}{43}{subsection.5.3.1}%
-\contentsline {subsection}{\numberline {5.3.2}Ejemplo}{46}{subsection.5.3.2}%
-\contentsline {section}{\numberline {5.4}Obtención de información}{56}{section.5.4}%
-\contentsline {section}{\numberline {5.5}Control anti-rebote}{59}{section.5.5}%
-\contentsline {section}{\numberline {5.6}Máquinas de estado}{60}{section.5.6}%
-\contentsline {section}{\numberline {5.7}Integridad de la información}{66}{section.5.7}%
-\contentsline {section}{\numberline {5.8}Verificación de precondiciones.}{67}{section.5.8}%
-\contentsline {section}{\numberline {5.9}Organización de la ejecución}{69}{section.5.9}%
-\contentsline {chapter}{\numberline {A}Patrones de diseño de Gamma}{73}{appendix.Alph1}%
-\contentsline {section}{\numberline {A.1}Adapter}{73}{section.Alph1.1}%
-\contentsline {section}{\numberline {A.2}Command}{74}{section.Alph1.2}%
-\contentsline {section}{\numberline {A.3}State}{76}{section.Alph1.3}%
-\contentsline {section}{\numberline {A.4}Mediator}{77}{section.Alph1.4}%
-\contentsline {section}{\numberline {A.5}Decorator}{77}{section.Alph1.5}%
-\contentsline {section}{\numberline {A.6}Proxy}{78}{section.Alph1.6}%
-\contentsline {chapter}{Glosario}{82}{appendix*.56}%
-\contentsline {backmatter}{Referencias}{83}{appendix*.57}%
+\contentsline {subsection}{\numberline {5.3.1}Subsistemas de control}{45}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Ejemplo}{47}{subsection.5.3.2}%
+\contentsline {section}{\numberline {5.4}Obtención de información}{59}{section.5.4}%
+\contentsline {section}{\numberline {5.5}Control anti-rebote}{63}{section.5.5}%
+\contentsline {section}{\numberline {5.6}Máquinas de estado}{64}{section.5.6}%
+\contentsline {section}{\numberline {5.7}Integridad de la información}{71}{section.5.7}%
+\contentsline {section}{\numberline {5.8}Verificación de precondiciones.}{73}{section.5.8}%
+\contentsline {section}{\numberline {5.9}Organización de la ejecución}{76}{section.5.9}%
+\contentsline {chapter}{\numberline {A}Patrones de diseño de Gamma}{79}{appendix.Alph1}%
+\contentsline {section}{\numberline {A.1}Adapter}{79}{section.Alph1.1}%
+\contentsline {section}{\numberline {A.2}Command}{80}{section.Alph1.2}%
+\contentsline {section}{\numberline {A.3}State}{82}{section.Alph1.3}%
+\contentsline {section}{\numberline {A.4}Mediator}{83}{section.Alph1.4}%
+\contentsline {section}{\numberline {A.5}Decorator}{83}{section.Alph1.5}%
+\contentsline {section}{\numberline {A.6}Proxy}{84}{section.Alph1.6}%
+\contentsline {chapter}{Glosario}{88}{appendix*.61}%
+\contentsline {backmatter}{Referencias}{89}{appendix*.62}%
