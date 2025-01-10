@@ -11,7 +11,7 @@
 \contentsline {subsection}{\numberline {3.2.2}Items de cambio comunes}{23}{subsection.3.2.2}%
 \contentsline {subsection}{\numberline {3.2.3}Documentación}{24}{subsection.3.2.3}%
 \contentsline {subsection}{\numberline {3.2.4}Patrones de Diseño}{25}{subsection.3.2.4}%
-\contentsline {subsection}{\numberline {3.2.5}Arquitectura de software}{26}{subsection.3.2.5}%
+\contentsline {subsection}{\numberline {3.2.5}Arquitectura de software}{27}{subsection.3.2.5}%
 \contentsline {section}{\numberline {3.3}Arquitectura Control de Procesos}{27}{section.3.3}%
 \contentsline {chapter}{\numberline {4}Técnicas útiles}{31}{chapter.4}%
 \contentsline {section}{\numberline {4.1}Desacople de módulos}{31}{section.4.1}%
@@ -34,5 +34,5 @@
 \contentsline {section}{\numberline {A.4}Mediator}{85}{section.Alph1.4}%
 \contentsline {section}{\numberline {A.5}Decorator}{85}{section.Alph1.5}%
 \contentsline {section}{\numberline {A.6}Proxy}{86}{section.Alph1.6}%
-\contentsline {chapter}{Glosario}{90}{appendix*.60}%
-\contentsline {backmatter}{Referencias}{91}{appendix*.61}%
+\contentsline {chapter}{Glosario}{90}{appendix*.61}%
+\contentsline {backmatter}{Referencias}{91}{appendix*.62}%
