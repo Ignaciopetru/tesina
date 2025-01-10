@@ -204,70 +204,53 @@ de Interacciones.
 \item \textbf{Documentos con referencias externas}. Estructura Física o de Despliegue
 \end{itemize}
 
-A fines didacticos la tesina se centrará, al igual que los patrones, en módulos, interfaces y sus relaciones. Por lo que se utilizarán diagramas de módulos a fin de documentar. Estos consiten en cajas nombradas en las cuales se definde la interfaz de un módulo. Ademas, utilizando un conjunto de flechas se determinan sus relaciones. Vease la figura \ref{figDiseño}.
+A fines didácticos la tesina se centrará, al igual que los patrones, en módulos, interfaces y sus relaciones. Por lo que se utilizarán diagramas de módulos a fin de documentar. Estos consisten en cajas nombradas en las cuales se define la interfaz de un módulo. Ademas, utilizando un conjunto de flechas se determinan sus relaciones.
 
+En los diagramas (o figuras) se utilizan los siguientes símbolos. 
 
-\begin{figure}[h]
-\label{figDiseño}
-\caption{Referencia gráfico de módulos}
-\begin{center}
-\begin{tikzpicture}
+\begin{tabular}{m{0.3\linewidth} p{0.6\linewidth}}
+\hline
+&\\[-0.2cm]
+& \textbf{Significado de los símbolos}\\
+\hline
+&\\
+\begin{tikzpicture}\sf
+\umlsimpleclass{A}
+\umlsimpleclass[below=0.5cm of A]{B}
+\umlVHVinherit{B}{A}
+\end{tikzpicture} & {\modFCFont B} hereda de {\modFCFont A} (herencia de interfaces)\\\hline
+&\\
+\begin{tikzpicture}\sf
+\umlsimpleclass{A}
+\umlsimpleclass[right=1cm of A]{B}
+\umluniaggreg{A}{B}
+\end{tikzpicture} & {\modFCFont A} está compuesto por {\modFCFont B}. En el extremo de la flecha pueden  aparecer los siguientes símbolos: *, \textit{n}; o ninguno. En el primer caso indica que en la composición hay \textbf{0 o más elementos}, el segundo caso significa que hay \textbf{al menos un elemento} y en el último caso, la flecha sin símbolos adicionales indica que la composición tiene \textbf{exactamente un elemento}.\\\hline
+&\\
+\begin{tikzpicture}\sf
+\umlsimpleclass{A}
+\umlsimpleclass[right=1cm of A]{B}
+\umldep{A}{B}
+\end{tikzpicture} & {\modFCFont A} crea uno o más elemento de tipo {\modFCFont B}.\\\hline
+&\\
+\begin{tikzpicture}\sf
+\umlsimpleclass{A}
+\umlnote[right= 1cm of A, width=1cm]{A}{ B}
+\end{tikzpicture} & {\modFCFont B} es una nota o descripción acerca de {\modFCFont  A}.\\\hline
+&\\
+\begin{tikzpicture}\sf
+\umlclass[type=abstract]{ModuloAbstracto}{}
+{metodo1()\\
+\umlvirt{metodo2()}\\
+\umlvirt{metodo3()}\\}
 
-
-\tikzstyle{módulo}=[minimum width=1cm,inner sep=2mm,above right,draw,align=center,minimum width=2cm, font=\bfseries]
-
-\tikzstyle{supest}=[rounded corners=1.5mm, minimum width=2cm,inner sep=2mm,draw,text width=2cm]
-
-\tikzstyle{componente}=[minimum width=2cm,inner sep=2mm,draw,text width=2cm]
-
-\tikzstyle{nombre}=[inner sep=0mm, font=\bfseries]
-
-\tikzstyle{pipe}=[-latex,thick,line width=4pt]
-
-\tikzstyle{modExt}=[minimum width=1cm,inner sep=2mm,above right,draw, dotted,line width=2pt,align=center,minimum width=2cm,color=gray, font=\bfseries]
-
-\tikzstyle{flechaFisica}=[-latex,snake=coil,segment aspect=0, red, thick];
-
-
-%-------------------------------------------------------
-
-\umlclass[]{NombreModulo}
-{
-NombreModulo() \\
-}
-{
-metodo1() \\
-metodo2() \\
-metodo3() \\
-}
-
-
-\node[módulo, below left=1cm and 4.3cm of NombreModulo, fill=yellow!20](mod){nombre};
-\node[right =0.5cm of mod](modDesc){módulo};
-
-
-\node[right=4cm of modDesc](x1){};
-\node[right=2cm of x1](x2){};
-\draw[-latex](x1)--(x2);
-\node[right=0.3cm of x2](llp){llamada a procedimiento};
-
-\node[below=0.5cm of mod.south west](x1a){};
-\node[below=0.5cm of mod.south east](x2a){};
-\draw[tikzuml inherit style](x2a)--(x1a);
-\node[below right=-0.4cm and 0.3cm of x2a, text width=4cm](hand){herencia};
-
-\node[below=0.7cm of x1](x1b){};
-\node[below=0.7cm of x2](x2b){};
-\draw[tikzuml unidirectional aggregation style](x1b)--(x2b);
-\node[right=0.3cm of x2b](rf){composición};
-%
-\node[supest, fit=(mod)(hand)(llp)]{};
+\umlclass[below=0.5cm of ModuloAbstracto]{ModuloConcreto}{}
+{metodo2()\\}
+\umlVHVinherit{ModuloConcreto}{ModuloAbstracto}
+\end{tikzpicture} & \vspace{-2cm}Los módulos \textit{abstractos} presentan sus nombres en letra \textit{itálica}, como así también los nombres de los métodos que no implementan. Aquellos métodos que son implementados, se presentan en letra \textbf{normal}. Por ejemplo, \ModuloAbstracto no implementa {\modFAFont metodo2()} ni {\modFAFont metodo3()} pero sí implementa  ~\mbox{{\modFCFont metodo1()}}. Los módulos \textbf{concretos} que hereden métodos de un padre, solo presentarán los métodos que implementen y estos serán mostrados en letra \textbf{normal}. Por ej, \ModuloConcreto hereda toda la interfaz del padre pero solo implementa {\modFCFont metodo2()}.\\\hline
+\end{tabular}\\\vspace{0.5cm}
 
 
 
-\end{tikzpicture}
-\end{center}
-\end{figure}
 
 
 Por otro lado, para la documentacion del uso de patrones de diseño, utilizamos el lenguaje 2MIL, en la imagen  podemos observar un ejemplo.

@@ -12,27 +12,27 @@
 \contentsline {subsection}{\numberline {3.2.3}Documentación}{24}{subsection.3.2.3}%
 \contentsline {subsection}{\numberline {3.2.4}Patrones de Diseño}{25}{subsection.3.2.4}%
 \contentsline {subsection}{\numberline {3.2.5}Arquitectura de software}{26}{subsection.3.2.5}%
-\contentsline {section}{\numberline {3.3}Arquitectura Control de Procesos}{26}{section.3.3}%
-\contentsline {chapter}{\numberline {4}Técnicas útiles}{29}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Desacople de módulos}{29}{section.4.1}%
-\contentsline {chapter}{\numberline {5}Problemas comunes}{33}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Acceso al hardware}{33}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Interfaces que no se ajustan perfectamente}{39}{section.5.2}%
-\contentsline {section}{\numberline {5.3}Control en conjunto de dispositivos}{42}{section.5.3}%
-\contentsline {subsection}{\numberline {5.3.1}Subsistemas de control}{45}{subsection.5.3.1}%
-\contentsline {subsection}{\numberline {5.3.2}Ejemplo}{47}{subsection.5.3.2}%
-\contentsline {section}{\numberline {5.4}Obtención de información}{59}{section.5.4}%
-\contentsline {section}{\numberline {5.5}Control anti-rebote}{63}{section.5.5}%
-\contentsline {section}{\numberline {5.6}Máquinas de estado}{64}{section.5.6}%
-\contentsline {section}{\numberline {5.7}Integridad de la información}{71}{section.5.7}%
-\contentsline {section}{\numberline {5.8}Verificación de precondiciones.}{73}{section.5.8}%
-\contentsline {section}{\numberline {5.9}Organización de la ejecución}{76}{section.5.9}%
-\contentsline {chapter}{\numberline {A}Patrones de diseño de Gamma}{79}{appendix.Alph1}%
-\contentsline {section}{\numberline {A.1}Adapter}{79}{section.Alph1.1}%
-\contentsline {section}{\numberline {A.2}Command}{80}{section.Alph1.2}%
-\contentsline {section}{\numberline {A.3}State}{82}{section.Alph1.3}%
-\contentsline {section}{\numberline {A.4}Mediator}{83}{section.Alph1.4}%
-\contentsline {section}{\numberline {A.5}Decorator}{83}{section.Alph1.5}%
-\contentsline {section}{\numberline {A.6}Proxy}{84}{section.Alph1.6}%
-\contentsline {chapter}{Glosario}{88}{appendix*.61}%
-\contentsline {backmatter}{Referencias}{89}{appendix*.62}%
+\contentsline {section}{\numberline {3.3}Arquitectura Control de Procesos}{27}{section.3.3}%
+\contentsline {chapter}{\numberline {4}Técnicas útiles}{31}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Desacople de módulos}{31}{section.4.1}%
+\contentsline {chapter}{\numberline {5}Problemas comunes}{35}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Acceso al hardware}{35}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Interfaces que no se ajustan perfectamente}{41}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Control en conjunto de dispositivos}{44}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Subsistemas de control}{47}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Ejemplo}{49}{subsection.5.3.2}%
+\contentsline {section}{\numberline {5.4}Obtención de información}{61}{section.5.4}%
+\contentsline {section}{\numberline {5.5}Control anti-rebote}{65}{section.5.5}%
+\contentsline {section}{\numberline {5.6}Máquinas de estado}{66}{section.5.6}%
+\contentsline {section}{\numberline {5.7}Integridad de la información}{73}{section.5.7}%
+\contentsline {section}{\numberline {5.8}Verificación de precondiciones.}{75}{section.5.8}%
+\contentsline {section}{\numberline {5.9}Organización de la ejecución}{78}{section.5.9}%
+\contentsline {chapter}{\numberline {A}Patrones de diseño de Gamma}{81}{appendix.Alph1}%
+\contentsline {section}{\numberline {A.1}Adapter}{81}{section.Alph1.1}%
+\contentsline {section}{\numberline {A.2}Command}{82}{section.Alph1.2}%
+\contentsline {section}{\numberline {A.3}State}{84}{section.Alph1.3}%
+\contentsline {section}{\numberline {A.4}Mediator}{85}{section.Alph1.4}%
+\contentsline {section}{\numberline {A.5}Decorator}{85}{section.Alph1.5}%
+\contentsline {section}{\numberline {A.6}Proxy}{86}{section.Alph1.6}%
+\contentsline {chapter}{Glosario}{90}{appendix*.60}%
+\contentsline {backmatter}{Referencias}{91}{appendix*.61}%

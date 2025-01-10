@@ -149,7 +149,7 @@ Un motor DC siempre recibirá ordenes para definir su sentido y velocidad de rot
 \caption{Interfaz MotorDC}
 \label{interfazMotor}
 \begin{center}
-\begin{tikzpicture}
+\begin{tikzpicture}\sf
 \umlclass[x=-3]{MotorDC}
 {
 MotorDC(i: int, i: int)
@@ -224,12 +224,12 @@ Aún podemos mejorar el diseño haciendo uso del concepto de herencia de interfa
 \caption{Módulo MotorDC abstracto y estructura de herencia.}
 \label{estructuraHerencia}
 \begin{center}
-\begin{tikzpicture}
-\umlclass[x=0]{MotorDC}
+\begin{tikzpicture}\sf
+\umlclass[x=0,type=abstract]{MotorDC}
 {}
 {
-    set\_dir(i: Dir) \\ 
-    set\_vel(i: int) \\
+    \umlvirt{set\_dir(i: Dir)} \\ 
+    \umlvirt{set\_vel(i: int)} \\
 }
 
 \umlclass[x=-3, y=-4]{MotorDCDVR8838}
@@ -312,7 +312,7 @@ if libEmca.get_current() == "" {
 \begin{figure}[!h]
 \caption{Configuración original}
 \begin{center}
-\begin{tikzpicture}
+\begin{tikzpicture}\sf
 \umlsimpleclass[]{Cliente}
 
 \umlclass[right=1.5cm of Cliente]{ControlAcme}
@@ -331,14 +331,14 @@ limpiar()
 \begin{figure}[!h]
 \caption{Configuración utilizando la solución de la sección anterior \ref{Accesoalhardware}.}
 \begin{center}
-\begin{tikzpicture}
+\begin{tikzpicture}\sf
 \umlsimpleclass[]{Cliente}
 
-\umlclass[right=1.5cm of Cliente]{ControlDisplay}
+\umlclass[right=1.5cm of Cliente,type=abstract]{ControlDisplay}
 {}
 {
-escribir(i: str): bool  \\
-limpiar()
+\umlvirt{escribir(i: str): bool}  \\
+\umlvirt{limpiar()}
 }
 
 \umlclass[right=0.5cm of Cliente,below=2cm of Cliente]{ControlAcme}
@@ -363,14 +363,14 @@ Para permitir el cambio propuesto sin tener que realizar todas las modificacione
 \caption{Configuración nueva}
 \label{configNueva}
 \begin{center}
-\begin{tikzpicture}
+\begin{tikzpicture}\sf
 \umlsimpleclass[x=-4.5,y=1]{Cliente}
 
-\umlclass[x=0,y=1]{ControlDisplay}
+\umlclass[x=0,y=1,type=abstract]{ControlDisplay}
 {}
 {
-escribir(i: str): bool  \\
-limpiar()
+\umlvirt{escribir(i: str): bool}  \\
+\umlvirt{limpiar()}
 }
 \umlclass[x=-2.5,y=-3]{ControlAcme}
 {}
@@ -490,7 +490,7 @@ Veamos ahora, en la imagen \ref{modulosSub} , de manera mas concreta qué módul
 \caption{Módulos de un subsistema}
 \label{modulosSub}
 \begin{center}
-\begin{tikzpicture}
+\begin{tikzpicture}\sf
 
 \umlclass[]{Control}
 {}
@@ -566,7 +566,7 @@ Ahora, para brindar un comportamiento más complejo, es posible que el control n
 \caption{Estructura módulo \textbf{Control} extendida con estado.}
 \label{controlState}
 \begin{center}
-\begin{tikzpicture}
+\begin{tikzpicture}\sf
 \umlclass[x=-4]{Control}
 {}
 {setPoint()\\
@@ -580,11 +580,11 @@ changeState(i: State)
 Delega al estado interno tanto control() como cicle()
 }
 
-\umlclass[x=4, y=3]{State}
+\umlclass[x=4, y=3,type=abstract]{State}
 {}
 {
-control() \\
-cicle() \\
+\umlvirt{control()} \\
+\umlvirt{cicle()} \\
 }
 
 \umlclass[x=2,y=-2]{Waiting}
@@ -720,15 +720,15 @@ Veamos en detalle los módulos conforman cada componente comenzando por los mód
 \label{estructuraActuadores}
 \caption{Actuadores paso a paso.}
 \begin{center}
-\begin{tikzpicture}
-\umlclass[]{StepDevice}
+\begin{tikzpicture}\sf
+\umlclass[type=abstract]{StepDevice}
 {}
 {
-right() \\
-left() \\
-disable()\\
-enable() \\
-pulse()
+\umlvirt{right()} \\
+\umlvirt{left()} \\
+\umlvirt{disable()}\\
+\umlvirt{enable()} \\
+\umlvirt{pulse()}
 }
 
 \umlclass[below left=1cm and -0.3cm of StepDevice]{Rotor}
@@ -765,7 +765,7 @@ En cambio, en el caso de la pinza se utiliza un dispositivo que tiene dos estado
 \begin{figure}[h]
 \caption{Interfaz módulo Pinza.}
 \begin{center}
-\begin{tikzpicture}
+\begin{tikzpicture}\sf
 \umlclass[]{Pinza}
 {}
 {
@@ -782,12 +782,12 @@ Vemos ahora los sensores asociados a cada actuador, estos heredaran del módulo 
 \begin{figure}[h]
 \caption{Sensores}
 \begin{center}
-\begin{tikzpicture}
-\umlclass[]{PasiveSensor}
+\begin{tikzpicture}\sf
+\umlclass[type=abstract]{PasiveSensor}
 {}
 {
-setConnection(i: Pipe) \\
-signal() \\
+\umlvirt{setConnection(i: Pipe)} \\
+\umlvirt{signal()} \\
 }
 
 \umlclass[x=-5,y=-4]{SensorEstadoPinza}
@@ -826,7 +826,7 @@ Para completar los módulos que conforman a un subsistema de control nos falta m
 \begin{figure}[h]
 \caption{Timer}
 \begin{center}
-\begin{tikzpicture}
+\begin{tikzpicture}\sf
 \umlclass[]{Timer}
 {}
 {
@@ -873,12 +873,12 @@ Una vez solucionada la invocación, tenemos que introducir un nuevo módulo que 
 \begin{figure}[h]
 \caption{Módulos necesarios para complementar el Controller}
 \begin{center}
-\begin{tikzpicture}
-\umlclass[]{OperationState}
+\begin{tikzpicture}\sf
+\umlclass[type=abstract]{OperationState}
 {}
 {
-control(i: Controller) \\
-move(i: Controller) \\
+\umlvirt{control(i: Controller)} \\
+\umlvirt{move(i: Controller)} \\
 }
 
 \umlclass[x=-3,y=-4]{Moving}
@@ -907,7 +907,7 @@ Siguiendo con la guía de creación de subsistemas, también debemos definir el 
 \begin{figure}[h]
 \caption{Módulos complementarios a Controller.}
 \begin{center}
-\begin{tikzpicture}
+\begin{tikzpicture}\sf
 \umlclass[x=-3]{Data}
 {}
 {
@@ -932,7 +932,7 @@ Ahora si tenemos todos los módulos necesarios para mostrar nuestro \textbf{Cont
 \begin{figure}[h]
 \caption{Controller}
 \begin{center}
-\begin{tikzpicture}
+\begin{tikzpicture}\sf
 \umlclass[]{Controller}
 {}
 {
@@ -1002,7 +1002,7 @@ Ya tenemos los subsistemas, por lo que siguiendo con nuestro diagrama, nos falta
 \caption{Iterator}
 \label{iterator}
 \begin{center}
-\begin{tikzpicture}
+\begin{tikzpicture}\sf
 \umlclass[]{Steps}
 {}
 {
@@ -1022,12 +1022,12 @@ haTerminado(): Bool\\
 \label{orden}
 \begin{center}
 \scalebox{.75}{
-\begin{tikzpicture}
+\begin{tikzpicture}\sf
 
-\umlclass[]{Orden}
+\umlclass[type=abstract]{Orden}
 {}
 {
-ejecutar()
+\umlvirt{ejecutar()}
 }
 
 \umlclass[below left=2cm and 4.5cm of Orden]{OrdenRotor}
@@ -1121,7 +1121,7 @@ Se tiene un iterado de ordenes, en particular múltiples, que almacena todos los
 \caption{MainController}
 \begin{center}
 \scalebox{.75}{
-\begin{tikzpicture}
+\begin{tikzpicture}\sf
 \umlclass[x=-5,y=0]{MainController}
 {
 MainContoller(i: StepsComputator)
@@ -1132,11 +1132,11 @@ notifyReady() \\
 notifyError() \\
 changeState()
 }
-\umlclass[x=0,y=-4]{MainControllerState}
+\umlclass[x=0,y=-4,type=abstract]{MainControllerState}
 {}
 {
-graspAt(i: Coordenadas) \\
-notifyReady(i: MainCtrl) \\
+\umlvirt{graspAt(i: Coordenadas)} \\
+\umlvirt{notifyReady(i: MainCtrl)} \\
 }
 \umlclass[x=-10,y=-8]{MainWaiting}
 {}
@@ -1334,7 +1334,7 @@ Por ejemplo, si tenemos un sensor de efecto Hall que emite una interrupción en 
 \caption{Ejemplo módulos para obtener la información referida a la velocidad.}
 \begin{center}
 \scalebox{.90}{
-\begin{tikzpicture}
+\begin{tikzpicture}\sf
 
 \umlclass[]{HallSensor}
 {}
@@ -1665,7 +1665,7 @@ Volviendo al ejemplo del microondas, aplicando este enfoque de diseño, tendremo
 \caption{Módulos participantes del patrón state en el ejemplo del horno microondas.}
 \begin{center}
 \scalebox{0.7}{
-\begin{tikzpicture}
+\begin{tikzpicture}\sf
 \umlclass[]{Microondas}
 {}
 {
@@ -1679,17 +1679,17 @@ tempListo() \\
 pausar() \\
 }
 
-\umlclass[right=4cm of Microondas]{EstadoMicroondas}
+\umlclass[right=4cm of Microondas,type=abstract]{EstadoMicroondas}
 {}
 {
-prender() \\
-cancelar() \\
-puertaCerrada() \\
-puertaAbierta() \\
-reanudar() \\
-calentarTemp() \\
-tempListo() \\
-pausar() \\
+\umlvirt{prender()} \\
+\umlvirt{cancelar()} \\
+\umlvirt{puertaCerrada()} \\
+\umlvirt{puertaAbierta()} \\
+\umlvirt{reanudar()} \\
+\umlvirt{calentarTemp()} \\
+\umlvirt{tempListo()} \\
+\umlvirt{pausar()} \\
 }
 
 \umlclass[below right=2cm and 4cm of EstadoMicroondas]{Apagado}
@@ -1737,7 +1737,7 @@ tempListo() \\
 pausar() \\
 }
 
-\umlclass[below left=2cm and -4cm of EstadoMicroondas]{Calentando}
+\umlclass[below left=2cm and -3.65cm of EstadoMicroondas]{Calentando}
 {
 Calentando(i: Estado,\\ i: Estado)
 }
@@ -1820,7 +1820,7 @@ Estas estrategias suelen ser agregadas al código modificando la implementación
 
 \begin{figure}[h]
 \begin{center}
-\begin{tikzpicture}
+\begin{tikzpicture}\sf
 \umlclass[]{Data}
 {
 value: dato \\
@@ -1842,7 +1842,7 @@ Desde el punto de vista del diseño de software se puede aportar una mirada crí
 \caption{Ejemplo \textit{Decorator} integridad de la información}
 \label{decorator}
 \begin{center}
-\begin{tikzpicture}
+\begin{tikzpicture}\sf
 \umlclass[]{Data}
 {}
 {
@@ -1924,15 +1924,15 @@ De esa manera se estaría separando la responsabilidad de verificar precondicion
 Veamos el siguiente ejemplo, se tiene un módulo \textit{StockProducto} el cual almacena información relacionada al \textit{stock} de los productos, como es información importante se quiere añadir validaciones al momento de guardar como de extraer. Al guardar se quiere ver que la cantidad ingresada no sea negativa y al consultar se quiere estar seguro de que el usuario tiene los permisos requeridos.
 
 \begin{figure}[h]
-\caption{Uso de patron Proxy al ejemplo del módulo stock}
+\caption{Uso del patrón Proxy al ejemplo del módulo stock}
 \begin{center}
-\begin{tikzpicture}
-\umlclass[]{StockAbstracto}
+\begin{tikzpicture}\sf
+\umlclass[type=abstract]{StockAbstracto}
 {
 }
 {
-    getStock(): int \\
-    setStock(i: int)
+    \umlvirt{getStock(): int} \\
+    \umlvirt{setStock(i: int)}
 }
 
 \umlclass[below left=2cm and -0.5cm of StockAbstracto]{StockProducto}
@@ -1952,7 +1952,7 @@ Veamos el siguiente ejemplo, se tiene un módulo \textit{StockProducto} el cual 
 }
 
 
-\umlclass[right=2cm of StockProxy]{ErrorHandler}
+\umlclass[above right=1cm and 1.5cm of StockProxy]{ErrorHandler}
 {
 }
 {
@@ -1963,10 +1963,24 @@ Veamos el siguiente ejemplo, se tiene un módulo \textit{StockProducto} el cual 
 \umluniassoc{StockProxy}{StockProducto}
 \umlinherit[geometry=|-|]{StockProxy}{StockAbstracto}
 \umlinherit[geometry=|-|]{StockProducto}{StockAbstracto}
-\umluniassoc{StockProxy}{ErrorHandler}
+\umluniassoc[geometry=-|-]{StockProxy}{ErrorHandler}
 
 \end{tikzpicture}
 \end{center}
+
+\begin{pattern}[]{Acceso seguro stock de productos}{Algorithm}{idFigAlg}
+\based{Proxy (Apoderado)}
+\why{\textbf{Cambios previstos}: Las diferentes precondiciones a cumplir pueden variar con el tiempo.
+
+\textbf{Funcionalidad}: Controlar el acceso al stock, en particular con el fin de preservar la integridad.
+}
+\assigns
+\is{StockAbstracto}{Sujeto}
+\is{StockProducto}{SujetoReal}
+\is{StockProxy}{Proxy}
+
+\end{pattern}
+
 \end{figure}
 ErrorHandler decide como manejar el error, esto puede ser desde loggearlo, terminar la ejecución del sistema, ignorarlo, etc. Dos tipos de estrategias comunes al tratar con errores son:
 \begin{itemize}
@@ -2004,14 +2018,14 @@ Tener interrupciones periódicas puede general una bola de nieve de ejecución s
 \begin{figure}[h]
 \caption{Ejemplo de handler usando \textit{State}.}
 \begin{center}
-\begin{tikzpicture}
+\begin{tikzpicture}\sf
 
 
-\umlclass[]{State}
+\umlclass[type=abstract]{State}
 {
 }
 {
-    handInterruption() \\
+    \umlvirt{handInterruption()} \\
 }
 
 \umlclass[left=2cm of State]{InterruptionHandler}

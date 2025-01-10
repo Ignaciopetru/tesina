@@ -30,12 +30,12 @@ La función principal que cumple este patrón es la de desacoplar el objeto que 
 \begin{figure}
 \caption{Estructura patrón \textit{Command}}
 \begin{center}
-\begin{tikzpicture}
+\begin{tikzpicture}\sf
 \umlsimpleclass[]{Invocador}
-\umlclass[right=2cm of Invocador]{Orden}
+\umlclass[right=2cm of Invocador,type=abstract]{Orden}
 {}
 {
-ejecutar()
+\umlvirt{ejecutar()}
 }
 \umlclass[below=2cm of Invocador]{Receptor}
 {}
@@ -69,7 +69,7 @@ El patrón \textit{Command} es una herramienta efectiva para lograr el desacopla
 \begin{figure}[h]
 \caption{Ejemplo de aplicación básica del patrón \textit{Command}}
 \begin{center}
-\begin{tikzpicture}
+\begin{tikzpicture}\sf
 \umlsimpleclass[]{Controller}
 \umlclass[right=2cm of Controller]{MotorGirarIzq}
 {}

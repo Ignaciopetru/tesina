@@ -38,13 +38,13 @@ Adapta la interfaz del \textbf{Adaptable} para que cumpla con la interfaz del \t
 \begin{figure}[h]
 \caption{Estructura patrón \textbf{Adapter}}
 \begin{center}
-\begin{tikzpicture}
+\begin{tikzpicture}\sf
 \umlsimpleclass[x=-4.5,y=1]{Cliente}
 
-\umlclass[x=0,y=1]{Objetivo}
+\umlclass[x=0,y=1,type=abstract]{Objetivo}
 {}
 {
-peticion()
+\umlvirt{peticion()}
 }
 \umlclass[below=1.5cm of Objetivo]{Adaptador}
 {}
@@ -113,12 +113,12 @@ Conoce cómo realizar las operaciones asociadas con la ejecución de una solicit
 \begin{figure}[h]
 \caption{Estructura patrón \textbf{Command}}
 \begin{center}
-\begin{tikzpicture}
+\begin{tikzpicture}\sf
 \umlsimpleclass[]{Invocador}
-\umlclass[right=2cm of Invocador]{Orden}
+\umlclass[right=2cm of Invocador,type=abstract]{Orden}
 {}
 {
-ejecutar()
+\umlvirt{ejecutar()}
 }
 \umlclass[below=2cm of Invocador]{Receptor}
 {}
@@ -174,7 +174,7 @@ Cada subclase implementa un comportamiento asociado con un estado del contexto.
 \begin{figure}[h]
 \caption{Estructura patrón \textbf{State}}
 \begin{center}
-\begin{tikzpicture}
+\begin{tikzpicture}\sf
 \umlclass[]{Contexto}
 {}
 {
@@ -185,10 +185,10 @@ peticion()
 estado.manejar()
 }
 
-\umlclass[right=7cm of Context]{Estado}
+\umlclass[right=7cm of Context,type=abstract]{Estado}
 {}
 {
-manejar()
+\umlvirt{manejar()}
 }
 \umlclass[below left=1.5cm and -0.5cm of Estado]{EstadoConcretoA}
 {}
@@ -236,12 +236,12 @@ Define un modulo que encapsula cómo interactúa un conjunto de módulos. Foment
 \begin{figure}[h]
 \caption{Estructura patrón \textbf{Mediator}}
 \begin{center}
-\begin{tikzpicture}
-\umlsimpleclass[]{Mediador}
+\begin{tikzpicture}\sf
+\umlsimpleclass[type=abstract]{Mediador}
 
 \umlsimpleclass[below=1.5cm of Mediador]{MediadorConcreto}
 
-\umlsimpleclass[right=7cm of Mediador]{Colega}
+\umlsimpleclass[right=7cm of Mediador,type=abstract]{Colega}
 
 \umlsimpleclass[below left=1.5cm and -0.5cm of Colega]{ColegaConcretoA}
 
@@ -286,10 +286,10 @@ Agregar responsabilidades adicionales a un objeto de manera dinámica. Los decor
 \begin{figure}[h]
 \caption{Estructura patrón \textbf{Decorator}}
 \begin{center}
-\begin{tikzpicture}
-\umlclass[]{Componente}{}
+\begin{tikzpicture}\sf
+\umlclass[type=abstract]{Componente}{}
 {
-operacion()
+\umlvirt{operacion()}
 }
 
 \umlclass[below left=2cm and -1cm of Componente]{ComponenteConcreto}{}
@@ -297,9 +297,9 @@ operacion()
 operacion()
 }
 
-\umlclass[below right=2cm and -1cm of Componente]{Decorador}{}
+\umlclass[below right=2cm and -1cm of Componente,type=abstract]{Decorador}{}
 {
-operacion()
+\umlvirt{operacion()}
 }
 
 \umlclass[below right=2cm and -1cm of Decorador]{DecoradorConcretoA}{}
@@ -396,10 +396,10 @@ Controla el acceso al sujeto real y puede ser responsable de crearlo y eliminarl
 \begin{figure}[h]
 \caption{Estructura patrón \textbf{Proxy}}
 \begin{center}
-\begin{tikzpicture}
-\umlclass[]{Sujeto}{}
+\begin{tikzpicture}\sf
+\umlclass[type=abstract]{Sujeto}{}
 {
-peticion()
+\umlvirt{peticion()}
 }
 
 \umlclass[below left=1.5cm and -0.5cm of Sujeto]{SujetoReal}{}
