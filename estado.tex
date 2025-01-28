@@ -5,12 +5,12 @@ Para lograr atributos de calidad en el software, tales como modificabilidad, reu
 
 Los sistemas de software para robots por lo general poseen alguna de las siguientes características: son distribuidos, embebidos, en tiempo real o manejan muchos datos. Su complejidad no termina ahí, deben encargarse del acceso al hardware, los algoritmos de navegación y decisión, entre otras responsabilidades, por lo tanto, muchas veces el diseño parece ser menos prioritario. Esto provoca que el esfuerzo se concentre en solucionar inconvenientes de implementación y no en diseñar cumpliendo los principios de la \textit{IS}.
 
-En los trabajos que incluyen información relacionada al diseño \cite{bad-desing-auto,bad-desing-implantable,code-1,code-2,Zhang2009,bad-design-uml,bad-design-robot} encontramos que suele ser escasa y mostrarse como diagramas de flujo (ejemplo en \ref{fig:flujo}), lo que deja en evidencia que el software esté implementado con un criterio de división funcional del código, con prácticas poco adecuadas (\textit{ifs} anidados (ejemplo en \ref{ifsanidados})) o con escasas funciones, es decir, con deficiencia de modularidad. Este tipo de división da como resultado que el código sea menos modificable, reusable y mantenible \cite{parnas72}. Por otro lado, como luego se verá, en algunos libros que intentan abordar este tema \cite{douglass} el resultado es similar.
+En los trabajos que incluyen información relacionada al diseño \cite{bad-desing-auto,bad-desing-implantable,code-1,code-2,Zhang2009,bad-design-uml,bad-design-robot} encontramos que suele ser escasa y mostrarse como diagramas de flujo (ejemplo en \ref{flujo}), lo que deja en evidencia que el software esté implementado con un criterio de división funcional del código, con prácticas poco adecuadas (\textit{ifs} anidados (ejemplo en )) o con escasas funciones, es decir, con deficiencia de modularidad. Este tipo de división da como resultado que el código sea menos modificable, reusable y mantenible \cite{parnas72}. Por otro lado, como luego se verá, en algunos libros que intentan abordar este tema \cite{douglass} el resultado es similar.
 
 \begin{figure}[h]
-	\label{fig:flujo}
 	\centering
-    \caption{Diagrama de flujo que describe el comportamiento del programa principal de control en \cite{bad-desing-auto}}
+	\caption{Diagrama de flujo que describe el comportamiento del programa principal de control en \cite{bad-desing-auto}}
+	\label{flujo}
     \includegraphics[width=0.5\linewidth]{main_flujo.png}
 \end{figure}
 

@@ -9,7 +9,8 @@
 \contentsline {figure}{\numberline {3.1}{\ignorespaces Arduino UNO}}{22}{figure.caption.9}%
 \contentsline {figure}{\numberline {3.2}{\ignorespaces Raspberry Pico 2}}{22}{figure.caption.10}%
 \contentsline {figure}{\numberline {3.3}{\ignorespaces Diagrama interrupción}}{23}{figure.caption.11}%
-\contentsline {figure}{\numberline {3.4}{\ignorespaces Diagrama de la arquitectura control de procesos}}{30}{figure.caption.13}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Documentación aplicación de patrón.}}{28}{figure.caption.12}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Diagrama de la arquitectura control de procesos}}{30}{figure.caption.13}%
 \addvspace {10\p@ }
 \contentsline {xchapter}{Técnicas útiles}{33}{chapter.4}%
 \contentsline {figure}{\numberline {4.1}{\ignorespaces Estructura patrón \textit {Command}}}{34}{figure.caption.15}%
@@ -28,7 +29,7 @@
 \contentsline {figure}{\numberline {5.10}{\ignorespaces Estructura módulo \textbf {Control} extendida con estado.}}{51}{figure.caption.27}%
 \contentsline {figure}{\numberline {5.11}{\ignorespaces Documentacion de la aplicación del patrón State en el módulo Control.}}{52}{figure.caption.28}%
 \contentsline {figure}{\numberline {5.12}{\ignorespaces Brazo robótico.}}{53}{figure.caption.29}%
-\contentsline {figure}{\numberline {5.13}{\ignorespaces Diagrama componentes sistema brazo}}{54}{figure.caption.30}%
+\contentsline {figure}{\numberline {5.13}{\ignorespaces Diagrama de los componentes del sistema brazo robótico.}}{54}{figure.caption.30}%
 \contentsline {figure}{\numberline {5.14}{\ignorespaces Actuadores paso a paso.}}{55}{figure.caption.31}%
 \contentsline {figure}{\numberline {5.15}{\ignorespaces Interfaz módulo Pinza.}}{55}{figure.caption.32}%
 \contentsline {figure}{\numberline {5.16}{\ignorespaces Sensores}}{56}{figure.caption.33}%

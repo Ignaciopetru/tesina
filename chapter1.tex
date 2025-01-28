@@ -687,38 +687,25 @@ La idea es utilizar el concepto de subsistemas que se introdujo previamente, par
 
 
 \begin{figure}[h]
-\caption{Diagrama componentes sistema brazo}
+\caption{Diagrama de los componentes del sistema brazo robótico.}
 \begin{center}
-\begin{tikzpicture}
-\umlsimpleclass[]{MainController}
-
-\umlsimpleclass[x=-5]{Cliente}
-
-\umlsimpleclass[x=-5, y=-3]{SubSistemaRotor}
-
-\umlsimpleclass[x=0, y=-3]{SubSistemaExtensor}
-
-\umlsimpleclass[x=5, y=-3]{SubSistemaPinza}
-
-\umluniassoc{Cliente}{MainController}
-\umluniassoc[anchor1=-160, anchor2=60]{MainController}{SubSistemaRotor}
-\umluniassoc[anchor1=-80, anchor2=70]{MainController}{SubSistemaExtensor}
-\umluniassoc[anchor1=-10, anchor2=70]{MainController}{SubSistemaPinza}
-\umluniassoc[anchor1=110, anchor2=-170]{SubSistemaRotor}{MainController}
-\umluniassoc[anchor1=110, anchor2=-100]{SubSistemaExtensor}{MainController}
-\umluniassoc[anchor1=110, anchor2=-20]{SubSistemaPinza}{MainController}
-\end{tikzpicture}
+\includegraphics[scale=0.6]{componentes.png}
 \end{center}
 \end{figure}
-(Añadir al gráfico que significa cada flecha, control(), notifyEnd() y onError())
+
+
+
+
+
+
 
 Podemos pensar que el gráfico tiene cierta similaridad conceptual con el patrón \textit{mediator}, donde tenemos un módulo \textbf{Mediator} que coordina el trabajo de los \textbf{College} en este caso los subsistemas. Gamma indica que el patrón suele ser apropiado para casos en lo que se tiene un conjunto de objetos que se comunican de manera compleja pero fija. En este caso la comunicación no es tan compleja, pero puede considerarse lo suficiente como para implementar el patrón. En particular, el \textbf{MainController} indica los \textit{set-point} de cada subsistema y desencadena el proceso de control en cada uno. Y viceversa, los subsistemas indican cuando llegan al \textit{set-point} o cuando se encuentran un error. A su vez, los subsistemas no se comunican de manera directa entre si, todo pasa por el \textbf{MainController}.
 
-Veamos en detalle los módulos conforman cada componente comenzando por los módulos básicos que debemos crear para representar el hardware dado (ver grafico \ref{estructuraActuadores}):
+Veamos en detalle los módulos conforman cada componente comenzando por los módulos básicos que debemos crear para representar el hardware dado (ver gráfico \ref{estructuraActuadores}):
 
 \begin{figure}[h]
-\label{estructuraActuadores}
 \caption{Actuadores paso a paso.}
+\label{estructuraActuadores}
 \begin{center}
 \begin{tikzpicture}\sf
 \umlclass[type=abstract]{StepDevice}
@@ -1211,8 +1198,8 @@ void notifyReady() \{ \\
 Hasta la introducción de \textbf{MainController} todo lo que estábamos haciendo era solo seguir con el concepto de subsistemas. Pero para poder cumplir los requerimientos particulares del ejemplo, necesitamos introducir ciertos cambios. Como necesitamos ejecutar un paso a la vez, tenemos que esperar que todas las ordenes que enviamos en el paso anterior a los subsistemas. Para ello hacemos uso del patrón \textit{state}, al cual delegaremos las funciones \verb|graspAt| y \verb|notifyReady|. La idea es cambiar el comportamiento de estas dependiendo de en qué estadio estamos, seguiremos el siguiente gráfico \ref{statesMainController}.
 
 \begin{figure}[h]
-\label{statesMainController}
 \caption{Transiciones de estados del MainController}
+\label{statesMainController}
 \begin{center}
 \begin{tikzpicture}
 
