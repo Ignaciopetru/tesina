@@ -5,7 +5,7 @@ Para lograr atributos de calidad en el software, tales como modificabilidad, reu
 
 Los sistemas de software para robots por lo general poseen alguna de las siguientes características: son distribuidos, embebidos, en tiempo real o manejan muchos datos. Su complejidad no termina ahí, deben encargarse del acceso al hardware, los algoritmos de navegación y decisión, entre otras responsabilidades, por lo tanto, muchas veces el diseño parece ser menos prioritario. Esto provoca que el esfuerzo se concentre en solucionar inconvenientes de implementación y no en diseñar cumpliendo los principios de la \textit{IS}.
 
-En los trabajos que incluyen información relacionada al diseño \cite{bad-desing-auto,bad-desing-implantable,code-1,code-2,Zhang2009,bad-design-uml,bad-design-robot} encontramos que suele ser escasa y mostrarse como diagramas de flujo (ejemplo en \ref{fig:flujo}), lo que deja en evidencia que el software esté implementado con un criterio de división funcional del código, con prácticas poco adecuadas (\textit{ifs} anidados (ejemplo en \ref{ifsanidados})) o con escasas funciones, es decir, con deficiencia de modularidad. Este tipo de división da como resultado que el código sea menos modificable, reusable y mantenible \cite{parnas72}. Por otro lado, como luego veremos, en algunos libros que intentan abordar este tema \cite{douglass} el resultado es similar.
+En los trabajos que incluyen información relacionada al diseño \cite{bad-desing-auto,bad-desing-implantable,code-1,code-2,Zhang2009,bad-design-uml,bad-design-robot} encontramos que suele ser escasa y mostrarse como diagramas de flujo (ejemplo en \ref{fig:flujo}), lo que deja en evidencia que el software esté implementado con un criterio de división funcional del código, con prácticas poco adecuadas (\textit{ifs} anidados (ejemplo en \ref{ifsanidados})) o con escasas funciones, es decir, con deficiencia de modularidad. Este tipo de división da como resultado que el código sea menos modificable, reusable y mantenible \cite{parnas72}. Por otro lado, como luego se verá, en algunos libros que intentan abordar este tema \cite{douglass} el resultado es similar.
 
 \begin{figure}[h]
 	\label{fig:flujo}
@@ -14,9 +14,9 @@ En los trabajos que incluyen información relacionada al diseño \cite{bad-desin
     \includegraphics[width=0.5\linewidth]{main_flujo.png}
 \end{figure}
 
-En contraposición a estos utilizamos trabajos, existen otros \cite{good-desing-agrobot,good-desing-street} que tienen en cuenta algunos principios fundamentales de la \textit{IS} a la hora de diseñar y destinan esfuerzo en crear software de cierta calidad. Esto no significa que el uso de patrones de diseño esté generalizado.
+En contraposición a estos trabajos, existen otros \cite{good-desing-agrobot,good-desing-street} que tienen en cuenta algunos principios fundamentales de la \textit{IS} a la hora de diseñar y destinan esfuerzo en crear software de cierta calidad. Esto no significa que el uso de patrones de diseño esté generalizado.
 
-Por otro lado, existen múltiples trabajos que abordan ``patrones de diseño'',  inspirándose en la manera de documentar de Gamma \cite{Gamma:1995:DPE:186897}, aplicados a ámbitos en particular. Entre ellos podemos encontrar los siguientes:
+Por otro lado, existen múltiples trabajos que abordan ``patrones de diseño'',  inspirándose en la manera de documentar de Gamma \cite{Gamma:1995:DPE:186897}, aplicados a ámbitos particulares. Entre ellos podemos encontrar los siguientes:
 
 \begin{itemize}
 \item \cite{enjambre}, se definen patrones de diseño para \gls{enjambresroboticos} en conjunto a un formato de documentación particular. Los patrones se centran en diferentes comportamientos comunes que deben realizar los robots en este tipo de sistemas, como intercambiar información u llevar a cabo cierta acción.

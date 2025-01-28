@@ -1,10 +1,10 @@
 \chapter{Conceptos previos}
 
-En este capítulo se abordaran algunos conceptos necesarios para poder comprender las soluciones a los problemas comunes que se trataran luego. Entre ellos se encuentran algunas definiciones como la de \textit{Sistemas embebidos} y otras relacionadas a la IS. También, conceptos centrales del diseño para el cambio y todo lo necesario para llevarlo a cabo.
+En este capítulo se abordan conceptos necesarios para poder comprender las soluciones a los problemas comunes que se trataran luego. Entre ellos se encuentran algunas definiciones como la de \textit{Sistemas embebidos} y otras relacionadas a la IS. También, conceptos centrales del diseño para el cambio y todo lo necesario para llevarlo a cabo.
 
 
 \section{Sistemas embebidos}
-Veamos las siguientes definiciones de sistemas embebidos extraídas de diferentes autores:
+Distintos autores proponen diferentes definiciones de sistemas embebidos:
 \\\\
 \noindent
 ``\textit{Un sistema computarizado dedicado a realizar un conjunto específico de funciones del mundo real, en lugar de proporcionar un entorno de computación generalizado.}''~\cite{douglass}
@@ -24,7 +24,7 @@ El último autor comenta que los sistemas embebidos cumplen las siguientes afirm
 	\item Algunos dispositivos que se denominan sistemas embebidos, como los PDA\footnote{Asistentes Personales Digitales} o las tabletas web, no son realmente sistemas embebidos.
 \end{itemize}
 
-De las definiciones podemos concluir que un sistema embebido es una pieza clave que permite que el hardware especializado cumpla con su propósito específico. A diferencia de los sistemas de propósito general, el software en un sistema embebido está diseñado para interactuar estrechamente con los componentes de hardware, respondiendo en tiempo real a eventos del entorno, ya sea para controlar actuadores, monitorear sensores o gestionar comunicaciones. Este software está optimizado para requisitos específicos como velocidad, consumo energético, y confiabilidad, lo que lo hace esencial en aplicaciones críticas como dispositivos médicos, sistemas automotrices y controles industriales.
+De las definiciones se puede concluir que un sistema embebido es una pieza clave que permite que hardware especializado cumpla con su propósito específico. A diferencia de los sistemas de propósito general, el software en un sistema embebido está diseñado para interactuar estrechamente con los componentes de hardware, respondiendo en tiempo real a eventos del entorno, ya sea para controlar actuadores, monitorear sensores o gestionar comunicaciones. Este software está optimizado para requisitos específicos como velocidad, consumo energético, y confiabilidad, lo que lo hace esencial en aplicaciones críticas como dispositivos médicos, sistemas automotrices y controles industriales.
 	
 En resumen, el software de un sistema embebido actúa como el cerebro que dirige y coordina los recursos del hardware para realizar funciones concretas. En la tabla~\ref{tab:ejSistEmbebidos} encontramos ejemplos de dispositivos en los que se utilizan sistemas embebidos extraída de \cite{noergaard2005embedded}.
 
@@ -73,7 +73,7 @@ Con respecto al hardware en donde corren los sistemas embebidos podemos descatar
     \item \textbf{Interfaces de entrada/salida:} Puertos \gls{GPIO}, \gls{ADC}, \gls{PWM} y otros para interactuar con sensores, actuadores y otros dispositivos externos.
     \item \textbf{Fuente de Energ\'ia:} Puede provenir de bater\'ias, adaptadores de corriente o incluso energ\'ia recolectada del entorno.
 \end{itemize}
-El tama\~no compacto y la integraci\'on de componentes distinguen a los sistemas embebidos de otros sistemas m\'as grandes, como las computadoras de escritorio o los servidores. Se diferencian, ademas, en su poder de computo limitado tanto por el hardware (baja disponibilidad de memoria RAM, \gls{clock} de la CPU bajo, etc) como por la disponibilidad de energía eléctrica.
+El tama\~no compacto y la integraci\'on de componentes distinguen a los sistemas embebidos de otros sistemas m\'as grandes como las computadoras de escritorio o los servidores. Se diferencian, además, en su poder de computo limitado tanto por el hardware (baja disponibilidad de memoria RAM, \gls{clock} de la CPU bajo, etc) como por la disponibilidad de energía eléctrica.
 
 Existen varios microcontroladores multipropósito de uso comercial, tales como los producidos por la empresa Arduino o los similares de la familia  Raspberry Pi. La presentación de los mismos suele ser en forma de una placa preparada para conectar los inputs y outputs, como la de la imagen \ref{arduinoUNO} y \ref{raspberry}.
 

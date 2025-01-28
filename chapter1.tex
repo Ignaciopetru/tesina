@@ -28,7 +28,7 @@
 \chapter{Problemas comunes}
 \label{problemasComunes}
 
-En este capítulo se enumeran problemas comunes en el desarrollo de software embebido de control, extraídos principalmente del libro \textit{Design Patterns for Embedded Systems in C: An Embedded Software Engineering Toolkit} \cite{douglass}. Además, se analiza la solución de diseño propuesta en este y, a su vez, se intenta aportar otra desde la ingeniería de software, enfocada en el diseño para el cambio. En muchos casos, se identifica la posibilidad de aplicar ciertos patrones de diseño de \cite{Gamma:1995:DPE:186897}, mientras que en otros se utilizan conceptos y metodologías clave del diseño para el cambio propuestos por David L. Parnas \cite{Parnas02,Parnas1972,parnas1977abstract}.
+En este capítulo se enumeran problemas comunes en el desarrollo de software embebido de control, extraídos principalmente del libro Design Patterns for Embedded Systems in C: An Embedded Software Engineering Toolkit \cite{douglass}. Además, se analiza la solución de diseño propuesta en esta obra y, a su vez, se intenta aportar otra desde la perspectiva de la IS), enfocada en el diseño para el cambio. En muchos casos, se identifica la posibilidad de aplicar ciertos patrones de diseño de \cite{Gamma:1995:DPE:186897}, mientras que en otros se utilizan conceptos y metodologías clave del diseño para el cambio, propuestos por David L. Parnas \cite{Parnas02, Parnas1972, parnas1977abstract}.
 
 
 \minitoc
@@ -2071,6 +2071,21 @@ handInterruption() \{ \\
 
 \end{tikzpicture}
 \end{center}
+
+\begin{pattern}[]{Control de manejo de interrupciones}{Algorithm}{idFigAlg}
+\based{State (Estado)}
+\why{\textbf{Cambios previstos}: Agregar, quitar o editar estados de manejo de la interrupción.
+
+\textbf{Funcionalidad}: Configura el estado actual de manejo de una interrupcion a fin de que una interrupción corte la ejecución de otra.
+}
+\assigns
+\is{InterruptionHandler}{Contexto}
+\is{State}{Estado}
+\is{Working}{EstadoConcreto}
+\is{Waiting}{EstadoConcreto}
+
+\end{pattern}
+
 \end{figure}
 
 Notar que esta estrategia explota la capacidad de manejar interrupciones del microcontrolador, por lo tanto es necesario que este las soporte para llevarla a cabo.
