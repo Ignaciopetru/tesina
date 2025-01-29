@@ -5,13 +5,15 @@
 
 \chapter{Patrones de diseño de Gamma}
 
+En este apéndice se resumen los patrones de diseño de Gamma \cite{Gamma:1995:DPE:186897} utilizados en las soluciones a los problemas comunes. En el libro se encuentra una descripción completa de los mismos. Aquí solo se menciona la intención, aplicabilidad, participantes y estructura de cada patrón. El propósito es utilizar este apéndice a manera de complemento al entendimiento de cada aplicación de patrón.
+
 \section{Adapter}
 
-\textbf{Intención}
+\subsection*{Intención}
 
 Convierte la interfaz de una clase en otra interfaz que los clientes esperan, permitiendo que clases con interfaces incompatibles trabajen juntas. Es una solución para integrar clases existentes sin modificar su código original, asegurando que cumplan con los requisitos de una aplicación específica.
 
-\textbf{Aplicabilidad}
+\subsection*{Aplicabilidad}
 
 \begin{itemize}
 \item Se desea usar una clase existente cuya interfaz no coincide con la requerida.
@@ -20,7 +22,7 @@ Convierte la interfaz de una clase en otra interfaz que los clientes esperan, pe
 \end{itemize}
 
 
-\textbf{Participantes}
+\subsection*{Participantes}
 
 \begin{itemize}
 \item \textbf{Objetivo}\\
@@ -33,7 +35,7 @@ Define una interfaz existente que necesita ser adaptada.
 Adapta la interfaz del \textbf{Adaptable} para que cumpla con la interfaz del \textbf{Objetivo}.
 \end{itemize}
 
-\textbf{Estructura}
+\subsection*{Estructura}
 
 \begin{figure}[h]
 \caption{Estructura patrón \textbf{Adapter}}
@@ -68,26 +70,26 @@ umluniassoc
 \section{Command}
 
 
-\textbf{Intención}
+\subsection*{Intención}
 
 El patrón encapsula una solicitud como un módulo, permitiendo parametrizar clientes con diferentes solicitudes, encolar o registrar solicitudes, y admitir operaciones reversibles. Este enfoque facilita la creación de sistemas flexibles y extensibles que manejan comandos de manera uniforme.
 
-\textbf{Aplicabilidad}
+\subsection*{Aplicabilidad}
 
 \begin{itemize}
-\item Parametrizar objetos con una acción a realizar. Esta parametrización puede expresarse en un lenguaje procedimental mediante una función de callback, es decir, una función registrada para ser llamada posteriormente. Los comandos representan una solución orientada a objetos que reemplaza los callbacks.
+\item Parametrizar objetos con una acción a realizar. Esta parametrización puede expresarse en un lenguaje procedimental mediante una función de \gls{callback}, es decir, una función registrada para ser llamada posteriormente. Los comandos representan una solución orientada a objetos que reemplaza los \glspl{callback}.
 
-\item Especificar, encolar y ejecutar solicitudes en diferentes momentos. Un módulo Command puede tener una vida útil independiente de la solicitud original. Si el receptor de una solicitud puede representarse de forma independiente del espacio de direcciones, puedes transferir un objeto Command a otro proceso y ejecutar la solicitud allí.
+\item Especificar, encolar y ejecutar solicitudes en diferentes momentos. Un módulo \textbf{Command} puede tener una vida útil independiente de la solicitud original. Si el receptor de una solicitud puede representarse de forma independiente del espacio de direcciones, puedes transferir un objeto \textbf{Command} a otro proceso y ejecutar la solicitud allí.
 
-\item Soportar la funcionalidad de deshacer ("undo"). El método Execute del Command puede almacenar el estado necesario para revertir sus efectos. La interfaz del Command debe incluir una operación Unexecute para revertir los efectos de una ejecución previa. Los comandos ejecutados se almacenan en una lista de historial, lo que permite deshacer y rehacer a múltiples niveles navegando hacia adelante y hacia atrás en la lista mientras se llaman a Unexecute y Execute.
+\item Soportar la funcionalidad de deshacer (``undo''). El método \textbf{Execute} del \textbf{Command} puede almacenar el estado necesario para revertir sus efectos. La interfaz del \textbf{Command} debe incluir una operación \textbf{Unexecute} para revertir los efectos de una ejecución previa. Los comandos ejecutados se almacenan en una lista de historial, lo que permite deshacer y rehacer a múltiples niveles navegando hacia adelante y hacia atrás en la lista mientras se llaman a \textbf{Unexecute} y \textbf{Execute}.
 
-\item Registrar cambios para que puedan reaplicarse en caso de una falla del sistema. Al ampliar la interfaz del Command con operaciones de carga y almacenamiento, puedes mantener un registro persistente de los cambios. Recuperar un sistema tras una falla implica recargar los comandos registrados desde el disco y reejecutarlos mediante la operación Execute.
+\item Registrar cambios para que puedan reaplicarse en caso de una falla del sistema. Al ampliar la interfaz del \textbf{Command} con operaciones de carga y almacenamiento, puedes mantener un registro persistente de los cambios. Recuperar un sistema tras una falla implica recargar los comandos registrados desde el disco y reejecutarlos mediante la operación \textbf{Execute}.
 
-\item Estructurar un sistema en torno a operaciones de alto nivel basadas en operaciones primitivas. Esta estructura es común en sistemas de información que admiten transacciones. Una transacción encapsula un conjunto de cambios a los datos. El patrón Command proporciona una forma de modelar transacciones, ya que los comandos tienen una interfaz común, lo que permite invocar todas las transacciones de la misma manera. Además, el patrón facilita la extensión del sistema con nuevas transacciones.
+\item Estructurar un sistema en torno a operaciones de alto nivel basadas en operaciones primitivas. Esta estructura es común en sistemas de información que admiten transacciones. Una transacción encapsula un conjunto de cambios a los datos. El patrón \textbf{Command} proporciona una forma de modelar transacciones, ya que los comandos tienen una interfaz común, lo que permite invocar todas las transacciones de la misma manera. Además, el patrón facilita la extensión del sistema con nuevas transacciones.
 \end{itemize}
 
 
-\textbf{Participantes}
+\subsection*{Participantes}
 
 \begin{itemize}
 \item \textbf{Orden}\\
@@ -108,7 +110,7 @@ Conoce cómo realizar las operaciones asociadas con la ejecución de una solicit
 \end{itemize}
 
 
-\textbf{Estructura}
+\subsection*{Estructura}
 
 \begin{figure}[h]
 \caption{Estructura patrón \textbf{Command}}
@@ -144,18 +146,18 @@ ejecutar()
 \section{State}
 
 
-\textbf{Intención}
+\subsection*{Intención}
 
 Permitir que un módulo altere su comportamiento cuando su estado interno cambia. El módulo parecerá cambiar de clase.
 
-\textbf{Aplicabilidad}
+\subsection*{Aplicabilidad}
 
 \begin{itemize}
 \item El comportamiento de un objeto depende de su estado, y debe cambiar su comportamiento en tiempo de ejecución según ese estado.
 \item Las operaciones suelen tener declaraciones condicionales grandes y complejas que dependen del estado del módulo. Este estado generalmente está representado por una o más constantes enumeradas. Frecuentemente, varias operaciones comparten la misma estructura condicional. El patrón separa cada rama de la estructura condicional en una clase independiente. Esto permite tratar el estado del módulo como un módulo por derecho propio, que puede variar independientemente de otros módulos.
 \end{itemize}
 
-\textbf{Participantes}
+\subsection*{Participantes}
 
 \begin{itemize}
 \item \textbf{Contexto}\\
@@ -169,7 +171,7 @@ Cada subclase implementa un comportamiento asociado con un estado del contexto.
 \end{itemize}
 
 
-\textbf{Estructura}
+\subsection*{Estructura}
 
 \begin{figure}[h]
 \caption{Estructura patrón \textbf{State}}
@@ -211,10 +213,10 @@ manejar()
 
 \section{Mediator}
 
-\textbf{Intención}
+\subsection*{Intención}
 Define un modulo que encapsula cómo interactúa un conjunto de módulos. Fomenta un acoplamiento débil al evitar que los objetos se refieran explícitamente entre sí, y permite variar sus interacciones de manera independiente.
 
-\textbf{Aplicabilidad}
+\subsection*{Aplicabilidad}
 \begin{itemize}
 \item Un conjunto de módulos se comunica de maneras bien definidas pero complejas. Las interdependencias resultantes son desestructuradas y difíciles de comprender.
 
@@ -223,7 +225,7 @@ Define un modulo que encapsula cómo interactúa un conjunto de módulos. Foment
 \item Un comportamiento distribuido entre varios módulos debería ser personalizable sin requerir una gran cantidad de subclases.
 \end{itemize}
 
-\textbf{Participantes}
+\subsection*{Participantes}
 
 \begin{itemize}
 \item \textbf{Mediador} Define una interfaz para comunicarse con los módulos Colega.
@@ -231,7 +233,7 @@ Define un modulo que encapsula cómo interactúa un conjunto de módulos. Foment
 \item \textbf{Colega} Conoce a su objeto Mediator y se comunica con se siempre que, de otra forma, se habría comunicado con otro Colega.
 \end{itemize}
 
-\textbf{Estructura}
+\subsection*{Estructura}
 
 \begin{figure}[h]
 \caption{Estructura patrón \textbf{Mediator}}
@@ -262,17 +264,17 @@ Define un modulo que encapsula cómo interactúa un conjunto de módulos. Foment
 
 \section{Decorator}
 
-\textbf{Intención}
+\subsection*{Intención}
 Agregar responsabilidades adicionales a un objeto de manera dinámica. Los decoradores ofrecen una alternativa flexible a la herencia para extender la funcionalidad.
 
-\textbf{Aplicabilidad}
+\subsection*{Aplicabilidad}
 \begin{itemize}
 \item Agregar responsabilidades a objetos individuales de manera dinámica y transparente, es decir, sin afectar a otros objetos.
 \item Para responsabilidades que pueden ser eliminadas.
 \item Cuando la extensión mediante herencia es impracticable. A veces, es posible tener una gran cantidad de extensiones independientes, lo que produciría una explosión de subclases para admitir cada combinación. O bien, la definición de una clase puede estar oculta o no estar disponible para la subclase.
 \end{itemize}
 
-\textbf{Participantes}
+\subsection*{Participantes}
 \begin{itemize}
 \item \textbf{Componente} Define la interfaz para módulos a los que se les pueden agregar responsabilidades de manera dinámica.
 \item \textbf{ComponenteConcreto} Define un módulo al que se le pueden adjuntar responsabilidades adicionales.
@@ -281,7 +283,7 @@ Agregar responsabilidades adicionales a un objeto de manera dinámica. Los decor
 \end{itemize}
 
 
-\textbf{Estructura}
+\subsection*{Estructura}
 
 \begin{figure}[h]
 \caption{Estructura patrón \textbf{Decorator}}
@@ -340,10 +342,10 @@ operacion \{\\
 \section{Proxy}
 \label{patronProxy}
 
-\textbf{Intención}
+\subsection*{Intención}
 Proporcionar un sustituto o marcador de posición para otro objeto con el fin de controlar el acceso a este.
 
-\textbf{Aplicabilidad}
+\subsection*{Aplicabilidad}
 
 El patrón Proxy es aplicable siempre que se necesite una referencia más versátil o sofisticada a un objeto que un simple puntero. Estas son varias situaciones comunes en las que se puede aplicar el patrón:
 
@@ -376,7 +378,7 @@ Este patrón ofrece flexibilidad, seguridad y eficiencia en la gestión de inter
 \end{enumerate}
 
 
-\textbf{Participantes}
+\subsection*{Participantes}
 
 \begin{itemize}
 \item \textbf{Proxy} Mantiene una referencia que permite al proxy acceder al sujeto real. El Proxy puede referirse a un \textbf{Sujuteo} si las interfaces de \textbf{SujetoReal} y \textbf{Sujeto} son las mismas.
@@ -390,7 +392,7 @@ Controla el acceso al sujeto real y puede ser responsable de crearlo y eliminarl
 \end{itemize}
 
 
-\textbf{Estructura}
+\subsection*{Estructura}
 
 
 \begin{figure}[h]

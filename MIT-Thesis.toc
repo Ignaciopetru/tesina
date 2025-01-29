@@ -30,9 +30,9 @@
 \contentsline {chapter}{\numberline {A}Patrones de diseño de Gamma}{83}{appendix.Alph1}%
 \contentsline {section}{\numberline {A.1}Adapter}{83}{section.Alph1.1}%
 \contentsline {section}{\numberline {A.2}Command}{84}{section.Alph1.2}%
-\contentsline {section}{\numberline {A.3}State}{86}{section.Alph1.3}%
+\contentsline {section}{\numberline {A.3}State}{85}{section.Alph1.3}%
 \contentsline {section}{\numberline {A.4}Mediator}{87}{section.Alph1.4}%
-\contentsline {section}{\numberline {A.5}Decorator}{87}{section.Alph1.5}%
-\contentsline {section}{\numberline {A.6}Proxy}{88}{section.Alph1.6}%
-\contentsline {chapter}{Glosario}{92}{appendix*.61}%
-\contentsline {backmatter}{Referencias}{93}{appendix*.62}%
+\contentsline {section}{\numberline {A.5}Decorator}{88}{section.Alph1.5}%
+\contentsline {section}{\numberline {A.6}Proxy}{89}{section.Alph1.6}%
+\contentsline {chapter}{Glosario}{94}{appendix*.61}%
+\contentsline {backmatter}{Referencias}{95}{appendix*.62}%

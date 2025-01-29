@@ -2487,6 +2487,8 @@
     <bcf:citekey order="82" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
     <bcf:citekey order="83" intorder="1">douglass</bcf:citekey>
     <bcf:citekey order="84" intorder="1">glass2009graceful</bcf:citekey>
+    <bcf:citekey order="85" intorder="1">laura</bcf:citekey>
+    <bcf:citekey order="86" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">
