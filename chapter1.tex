@@ -52,7 +52,7 @@
 \chapter{Problemas comunes}
 \label{problemasComunes}
 
-En este capítulo se enumeran problemas comunes en el desarrollo de software embebido de control, extraídos principalmente del libro Design Patterns for Embedded Systems in C: An Embedded Software Engineering Toolkit \cite{douglass}. Además, se analiza la solución de diseño propuesta en esta obra y, a su vez, se intenta aportar otra desde la perspectiva de la IS), enfocada en el diseño para el cambio. En muchos casos, se identifica la posibilidad de aplicar ciertos patrones de diseño de \cite{Gamma:1995:DPE:186897}, mientras que en otros se utilizan conceptos y metodologías clave del diseño para el cambio, propuestos por David L. Parnas \cite{Parnas02, Parnas1972, parnas1977abstract}.
+En este capítulo se enumeran problemas comunes en el desarrollo de software embebido de control, extraídos principalmente del libro ``\textit{Design Patterns for Embedded Systems in C: An Embedded Software Engineering Toolkit}'' \cite{douglass}. Además, se analiza la solución de diseño propuesta en ese libro y, a su vez, se intenta aportar otra desde la perspectiva de la IS enfocada en el diseño para el cambio. En muchos casos, se identifica la posibilidad de aplicar ciertos patrones de diseño de \cite{Gamma:1995:DPE:186897}, mientras que en otros se utilizan conceptos y metodologías clave del diseño para el cambio, propuestos por David L. Parnas \cite{Parnas02, Parnas1972, parnas1977abstract}.
 
 
 \minitoc
@@ -63,7 +63,7 @@ En este capítulo se enumeran problemas comunes en el desarrollo de software emb
 \label{Accesoalhardware}
 Una de las características distintivas de los sistemas embebidos es que trabajan directamente con dispositivos de hardware. Cada uno de estos tiene sus propios protocolos de comunicación y estándares de funcionamiento (por ejemplo, direcciones de memoria, codificación de bits, etc), por lo tanto el software se debe ajustar a sus requerimientos. Como se puede entender esta tarea no es simple y puede demandar mucho esfuerzo cada vez que se quiera modificar o agregar un componente de hardware. A su vez, puede que múltiples módulos de un sistema embebido quieran acceder al dispositivo, por lo que cada uno debe encargarse de la comunicación creando código repetido y complicando aún más las modificaciones. 
 
-Para entender los inconvenientes que puede conllevar no diseñar pensando en el cambio veamos un ejemplo simple. Suponga que se tiene un sistema embebido debe controlar un motor de corriente continua (\gls{DC}) y que el software para hacerlo corre en un microcontrolador Arduino. Los requerimientos definen que es necesario poder asignar el sentido y la velocidad de rotación del motor según se necesite. Para controlar el motor se utiliza un módulo \gls{DRV8838}, el cual se coloca entre el microcontrolador y el motor. Es necesario ya que el microcontrolador y su plataforma no pueden manejar las potencias necesarias para hacer funcionar el dispositivo. Podemos ver el conexionado del mismo en la figura \ref{drv8838}.
+Para entender los inconvenientes que puede conllevar no diseñar pensando en el cambio veamos un ejemplo simple. Suponga que se tiene un sistema embebido que debe controlar un motor de corriente continua (\gls{DC}) y que el software para hacerlo corre en un microcontrolador de la empresa \gls{arduinoEmpre}. Los requerimientos definen que es necesario poder asignar el sentido y la velocidad de rotación del motor según se necesite. Para controlar el motor se utiliza un módulo \gls{DRV8838}, el cual se coloca entre el microcontrolador y el motor. Es necesario ya que el microcontrolador y su plataforma no pueden manejar las potencias necesarias para hacer funcionar el dispositivo. Podemos ver el conexionado del mismo en la figura \ref{drv8838}.
 
 \begin{figure}[h]
     \centering
@@ -88,7 +88,7 @@ Notemos que el \gls{DRV8838} tiene 3 pines de control, \textit{ENABLE}. \textit{
 \label{funciones_pin_drv8838}
 \end{table}
 
-Por lo tanto, con los dos primeros pines podremos cumplir los requerimientos mencionados. Tendremos dos cables conectados a nuestro \gls{microcontrolador} \gls{arduino}, uno que se dirige a \textit{ENABLE} y otro a \textit{PHASE}. En el código \ref{listing1} se encuentran las lineas necesarias para poder configurar el motor para luego poder utilizarlo como en los códigos \ref{codigoMax} y \ref{codigoDet}. Las funciones \verb|pinMode|, \verb|digitalWrite| y \verb|analogWrite| son provistas por el entorno de desarrollo de Arduino. Sus nombres son bastastantes descriptivos de su comportamiento, \verb|pinMode| configura el modo de operacion de un PIN en particular, puede ser \verb|OUTPUT| o \verb|INPUT|. Y tanto \verb|digitalWrite| como \verb|analogWrite|, escriben en un PIN el valor especificado.
+Por lo tanto, con los dos primeros pines podremos cumplir los requerimientos mencionados. Tendremos dos cables conectados al \gls{microcontrolador}, uno que se dirige a \textit{ENABLE} y otro a \textit{PHASE}. En el código \ref{listing1} se encuentran las lineas necesarias para poder configurar el motor para luego poder utilizarlo como en los códigos \ref{codigoMax} y \ref{codigoDet}. Las funciones \verb|pinMode|, \verb|digitalWrite| y \verb|analogWrite| son provistas por el entorno de desarrollo de Arduino. Sus nombres son bastastantes descriptivos de su comportamiento, \verb|pinMode| configura el modo de operacion de un PIN en particular, puede ser \verb|OUTPUT| o \verb|INPUT|. Y tanto \verb|digitalWrite| como \verb|analogWrite|, escriben en un PIN el valor especificado.
 
 \begin{lstlisting}[caption=Configuración inicial,label={listing1}]
 # Notar que los numeros asignados a los pines son arbritarios dentro del conjunto de pines disponibles en nuestro Aruino.
@@ -283,16 +283,7 @@ El cliente no tiene noción con cual de los dos tipos de controladores esta trat
 De esta manera seguimos las prácticas recomendadas en la IS \cite{ShawGarlan1996, ghezzi2003, bass2003, DBLP:books/daglib/0030743} y logramos un diseño orientado al cambio \cite{Gamma:1995:DPE:186897}.
 
 \section{Interfaces que no se ajustan perfectamente}
-Muchas veces el proveedor del hardware incluye con este librerías para su control, otras veces las conseguimos en internet o las extraemos previos proyectos. El problema recae en que estas interfaces pueden no ajustarse a las expectativas del sistema, generando la necesidad de ajustar la implementación de múltiples módulos. El hecho de que no se ajusten al sistema no quiere decir que este último este mal diseñado o que las interfaces lo estén. Simplemente puede ocurrir que se diseñaron teniendo en cuenta diferentes puntos de vista, probablemente influenciados por los requerimientos particulares.
-
-Para solventar este inconveniente, podemos aplicar el patrón \textit{Adapter} de Gamma. En donde:
-
-\begin{itemize}
-    \item \textbf{Target}: es la interfaz que utilizará el cliente.
-    \item \textbf{Client}: cualquier módulo del sistema que requiera utilizar el hardware.
-    \item \textbf{Adaptee}: interfaz que necesita ser adaptada para cumplir con lo que requiere el sistema.
-    \item \textbf{Adapter}: módulo que adapta la interfaz.
-\end{itemize}
+Muchas veces el proveedor del hardware incluye con este librerías para su control, otras veces se consiguen en internet o en previos proyectos. El problema recae en que estas interfaces pueden no ajustarse a las expectativas del sistema, generando la necesidad de ajustar la implementación de múltiples módulos. El hecho de que no se ajusten al sistema no quiere decir que este último este mal diseñado o que las interfaces lo estén. Simplemente puede ocurrir que se diseñaron teniendo en cuenta diferentes puntos de vista, probablemente influenciados por los requerimientos particulares.
 
 Veamos un ejemplo, supóngase que un cierto sistema embebido está utilizando un display de 7 segmentos de 4 dígitos para mostrar la temperatura de funcionamiento y posición en grados de cierto actuador, como el de la imagen \ref{fig:enter-label}.
 
@@ -303,9 +294,11 @@ Veamos un ejemplo, supóngase que un cierto sistema embebido está utilizando un
     \label{fig:enter-label}
 \end{figure}
 
-Este display recibe la información utilizando comunicación en serie, con un protocolo propio del fabricante. Para facilitar su uso, este provee una librería que implementa la comunicación y provee funciones simples de usar, tales como \verb|escribir(i: str): bool| y \verb|limpiar()|. La primera intenta escribir la cadena de caracteres indicada, pero solo lo hace si el display no está mostrando nada. En ese caso devuelve \verb|True| indicando que la acción fue completada con éxito, en caso contrario, es decir el display está mostrando texto al momento de llamar la función, retorna \verb|False|. \verb|limpiar()|, siempre limpia el display. Por lo tanto, se implementó el sistema utilizando las funciones provistas para comunicarse, múltiples módulos llaman esas funciones.
+Este display recibe la información utilizando comunicación en serie, con un protocolo propio del fabricante. Para facilitar su uso, este brinda una librería que implementa la comunicación y provee funciones simples de usar, tales como \verb|escribir(i: str): bool| y \verb|limpiar()|. La primera intenta escribir la cadena de caracteres indicada, pero solo lo hace si el display no está mostrando nada. En ese caso devuelve \verb|True| indicando que la acción fue completada con éxito, en caso contrario, es decir el display está mostrando texto al momento de llamar la función, retorna \verb|False|. \verb|limpiar()|, siempre limpia el display. Por lo tanto, se implementó el sistema utilizando las funciones provistas para comunicarse, múltiples módulos llaman esas funciones.
 
-En cierto momento el módulo display dejó de funcionar y se lo reemplazó por otro de un fabricante distinto, que funciona con otro protocolo de comunicación. De la misma manera, la empresa provee una librería para utilizar el display. Pero la interfaz no es la misma que la anterior e incluso algunos comportamientos son diferentes. Por ejemplo, en la primer librería el método de escritura devolvía \verb|False| si se quería escribir y ya estaba mostrándose algo en el display, en la nueva si el display está mostrando algo el texto es pisado al momento de imprimir. Pero, provee un nueva método para verificar qué es lo que se está mostrando en el momento en que es invocada \verb|get_current(): str|. Entonces para adaptarnos al nuevo display tenemos que modificar todas las llamadas a las viejas funciones alrededor del sistema agregando la lógica nueva, como en el código \ref{cambiosAdapter}. El cambio puedo parecer no muy profundo, pero hay que tener en cuenta que se deben verificar \textbf{todos} los usos de la librería, actualizarlos a mano y re-verificarlos. Además, este es un ejemplo simple, en el mundo real los cambios pueden ser mucho mas profundo y de diferente naturaleza.
+En cierto momento el módulo display dejó de funcionar y se lo reemplazó por otro de un fabricante distinto, que funciona con otro protocolo de comunicación. De la misma manera, la empresa provee una librería para utilizar el display. Pero la interfaz no es la misma que la anterior e incluso algunos comportamientos son diferentes. Por ejemplo, en la primer librería el método de escritura devolvía \verb|False| si se quería escribir y ya estaba mostrándose algo en el display, en la nueva si el display está mostrando algo el texto es pisado al momento de imprimir. Pero, provee un nueva método para verificar qué es lo que se está mostrando en el momento en que es invocada \verb|get_current(): str|.
+
+Entonces, para hacer uso del nuevo display tradicionalmente se modifican todas las llamadas a las viejas funciones alrededor de todo sistema agregando la lógica nueva, como en el código \ref{cambiosAdapter}. El cambio puedo parecer no muy profundo, pero se debe tener en cuenta que con los nuevos cambios es necesario recopilar \textbf{todos} los usos de la librería, actualizarlos a mano y re-verificarlos. Además, este es un ejemplo simple, en el mundo real los cambios pueden ser mucho más complicados en su lógica y de diferente naturaleza. La configuración inicial del diseño es la que se muestra en \ref{configOri}. Es decir, la solución tradicional es no tener en cuenta el cambio en el diseño, lo que provoca las desventajas comentadas.
 
 \begin{lstlisting}[label={cambiosAdapter}, caption=Ejemplo de modificaciones necesarias para adaptar la nueva librería.]
 libAcme = LibAcme()
@@ -335,6 +328,7 @@ if libEmca.get_current() == "" {
 
 \begin{figure}[!h]
 \caption{Configuración original}
+\label{configOri}
 \begin{center}
 \begin{tikzpicture}\sf
 \umlsimpleclass[]{Cliente}
@@ -352,8 +346,9 @@ limpiar()
 \end{center}
 \end{figure}
 
-\begin{figure}[!h]
-\caption{Configuración utilizando la solución de la sección anterior \ref{Accesoalhardware}.}
+\begin{figure}[h!]
+\caption{Configuración utilizando los conceptos de la sección anterior \ref{Accesoalhardware}.}
+\label{configUsando}
 \begin{center}
 \begin{tikzpicture}\sf
 \umlsimpleclass[]{Cliente}
@@ -380,10 +375,11 @@ limpiar()
 \end{center}
 \end{figure}
 
+\newpage
 
-Para permitir el cambio propuesto sin tener que realizar todas las modificaciones mencionadas, podemos aplicar el patrón \textit{Adapter}, creando un módulo intermedio con la misma interfaz que \textbf{DisplayLib}. El cual utilice los métodos provistos por la librería que encapsula el display con el objetivo de proveer la misma interfaz que la librería original. Podemos ver la nueva estructura en \ref{configNueva} y su debida documentación de aplicación del patrón en \ref{docAdapter}.
+Para construir un diseño orientado al cambio, primero se aplican los conceptos vistos en la sección \nameref{Accesoalhardware}, logrando el diseño \ref{configUsando}. Luego, para permitir el cambio propuesto sin tener que realizar todas las modificaciones mencionadas, se propone aplicar el patrón \textit{Adapter}, creando un módulo intermedio con la misma interfaz que \textbf{DisplayLib}. El cual utiliza los métodos provistos por la librería que encapsula el display con el objetivo de proveer la misma interfaz que la librería original. Podemos ver la nueva estructura en \ref{configNueva} y su debida documentación de aplicación del patrón en \ref{docAdapter}.
 
-\begin{figure}[h]
+\begin{figure}[h!]
 \caption{Configuración nueva}
 \label{configNueva}
 \begin{center}
@@ -423,9 +419,7 @@ umluniassoc
 \end{center}
 \end{figure}
 
-Por lo tanto el cliente sigue utilizando la misma interfaz para utilizar el display, reduciendo la cantidad y complejidad de los cambios necesarios para utilizar el nuevo display.
-
-\begin{figure}
+\begin{figure}[h!]
 \caption{Documentacion de la aplicación del patrón Adapter al ejemplo del display.}
 \label{docAdapter}
 \begin{pattern}[]{Adaptar nuevo controlador de display}{Algorithm}{idFigAlg}
@@ -441,7 +435,23 @@ Por lo tanto el cliente sigue utilizando la misma interfaz para utilizar el disp
 \end{pattern}
 \end{figure}
 
-Una posible implementación para las funciones \verb|escribir(i: str): bool| y \verb|limpiar()| del módulo \textbf{ControlEmca} es la del código \ref{codigoAdapter}.
+Por lo tanto el cliente sigue utilizando la misma interfaz para acceder al display, reduciendo la cantidad y complejidad de los cambios necesarios para utilizar el nuevo display. Con esta solución se obtienen las siguientes ventajas:
+
+\begin{itemize}
+
+\item Facilitar la sustitución de hardware: permite cambiar el display sin necesidad de modificar el código del cliente, reduciendo el impacto del cambio de hardware en el sistema.
+
+\item Mantiener la coherencia en la interfaz: el cliente sigue interactuando con la misma interfaz abstracta (\textit{ControlDisplay}), evitando la necesidad de modificar múltiples módulos en el sistema.
+
+\item Minimizar el riesgo de errores: al encapsular las diferencias de implementación en el adaptador (\textbf{ControlEmca}), se reduce la posibilidad de introducir errores al modificar manualmente todas las llamadas en el código.
+
+\item Mejorar la mantenibilidad: cualquier nuevo display con una interfaz distinta solo requiere la creación de un nuevo adaptador.
+
+\item Se promueve la reutilización de código: la abstracción permite reutilizar la lógica del cliente sin importar qué display se use, evitando la duplicación de código y mejorando la modularidad.
+\end{itemize}
+
+
+En este ejemplo, una posible implementación para las funciones \verb|escribir(i: str): bool| y \verb|limpiar()| del módulo \textbf{ControlEmca} es la del código \ref{codigoAdapter}.
 
 \begin{lstlisting}[label={codigoAdapter}, caption=Ejemplo implementación módulo Adapter.]
 bool escribir(char* cadena) {
@@ -456,6 +466,7 @@ void limpiar() {
     libEmca.imprimir("");
 }
 \end{lstlisting}
+
 
 \section{Control en conjunto de dispositivos}
 Muchas aplicaciones embebidas robóticas controlan \gls{actuadores} que deben trabajar en conjunto para lograr el efecto deseado. Por ejemplo, para lograr el movimiento coordinado de un brazo robótico con múltiples articulaciones, todos los motores deben trabajar a la par. De manera similar, el uso de propulsores en una nave espacial en tres dimensiones requiere que muchos de estos dispositivos actúen en el momento preciso y con la cantidad correcta de fuerza para lograr la estabilización de la actitud. En ambos casos existe comunicación entre todos los componentes, ya sea para encadenar la ejecución de ciertos movimientos o para avisar de restricciones. Esto no es tarea simple y requiere de muchas lineas de código, por lo que un diseño orientado al cambio resulta clave.
@@ -490,7 +501,7 @@ A lo largo del código se utilizan estructuras condicionales (if, switch, etc.) 
 Otros inconvenientes referidos al cambio que están presentes en el código:
 \begin{itemize}
 \item El código parece estar compuesto por funciones largas y bloques monolíticos sin modularidad clara. Esto dificulta la localización y modificación de funcionalidades específicas, ya que los cambios pueden propagarse a otras partes del sistema.
-\item Hay valores "hardcodeados" (constantes definidas directamente en el código). Si estos valores cambian, es necesario modificar el código fuente, aumentando el riesgo de introducir errores.
+\item Hay valores ``hardcodeados'' (constantes definidas directamente en el código). Si estos valores cambian, es necesario modificar el código fuente, aumentando el riesgo de introducir errores.
 \item Las dependencias entre funciones y módulos están estrechamente acopladas. Lo que provoca que cambiar un módulo pueda requerir modificaciones significativas en otros.
 \item El manejo de errores parece ser inconsistente o inexistente en varias secciones. Esto puede llevar a comportamientos impredecibles y dificultar el diagnóstico de problemas.
 \end{itemize}
@@ -664,11 +675,9 @@ Antes de ver un ejemplo repasemos que conseguimos al usar los subsistemas de con
 \subsection{Ejemplo}
 
 Veamos como podemos resolver el ejemplo propuesto en el libro de Douglass\cite{douglass} en la sección de 3.4 Mediator Pattern.
-\\
-\noident
-\textbf{Requisitos}
-\\
-\noident
+
+\subsubsection*{Requisitos}
+
 Se necesita desarrollar el software de control de un brazo robótico que consta de tres actuadores, dos servomotores (uno para rotar y otro para extender o retraer el brazo) y una pinza que se puede cerrar o abrir. Para ello, se provee una función compleja la cual toma coordenadas en el espacio y genera una secuencia de ordenes para que el brazo tome un objeto en la posición determinada por las coordenadas. La secuencia es una serie de pasos, y cada uno consta de una orden para cada actuador del brazo robótico. Estos se deben ejecutar de manera secuencial, es decir que el paso número 2 empezará su ejecución solo si el primero culmino completamente y con éxito. En caso de que las coordenadas sean inalcanzables devuelve 0 pasos. A su vez cada actuador puede informar un error al intentar ejecutar cada movimiento, y si esto pasa se requiere frenar la ejecución total del sistema.
 
 \begin{figure}[h]
@@ -678,10 +687,8 @@ Se necesita desarrollar el software de control de un brazo robótico que consta 
 \end{centering}
 \end{figure}
 
-\noident
-\textbf{Solución libro}
-\\
-\noident
+\subsubsection*{Solución libro}
+
 El ejemplo que plantea el libro es similar al descrito, pero el brazo robótico tiene más articulaciones y actuadores. Como solución, se propone la creación de un módulo llamado \textbf{RobotArmManager}, cuya función es gestionar los actuadores y coordinar su comportamiento. Además, para cada tipo de articulación o actuador, se crea un módulo específico encargado de su control. Este módulo proporciona métodos para consultar el estado actual (posición, longitud, etc.) y otros para configurar un valor similar a un \textit{set-point}. Dichos métodos desempeñan el rol de ejecutores de la acción, es decir, toman un valor \textit{set-point}, ejecutan la acción y retornan \verb|True| si fue satisfactoria, o \verb|False| en caso contrario.
 
 El comportamiento del sistema comienza con la generación de una lista de pasos a realizar. Luego, se itera sobre esta lista ejecutando las acciones definidas en cada paso. Como el sistema debe interrumpir la ejecución si encuentra un error, el \textbf{RobotArmManager} verifica el valor de retorno tras cada acción. La ejecución de un movimiento completo finaliza cuando se completan todos los pasos generados previamente por el método \verb|graspAt(i: Coordenadas)|.
@@ -705,10 +712,8 @@ Por le lado de la aplicacion del patron \textit{Mediator}, Gamma establece que e
 
 Entiendo que la estructura lograda sea similar al patrón, pero originalmente los módulos encargados de ejecutar tareas relacionadas con un actuador específico no necesitaban comunicarse entre sí. Según el propósito del patrón, Gamma establece que el objetivo principal es reducir el acoplamiento, evitando que los módulos se refieran directamente entre ellos. Y este objetivo parece estar logrado en el diseño propuesto.
 
-\noident
-\textbf{Solución orientada al cambio}
-\\
-\noident
+\subsubsection*{Solución orientada al cambio}
+
 La idea es utilizar el concepto de subsistemas que se introdujo previamente, para ello primero necesitamos identificar las propiedades del mundo físico que debemos controlar. Claramente, lo que se quiere modificar es la posición y el estado de la pinza del brazo, para hacerlo tenemos distintos actuadores que intervienen en diferentes propiedades atómicas. Además, en los requisitos nos especifican que poseemos una función que nos genera una orden para cada actuador. De esta manera definimos un subsistema de control por cada actuador que serán los encargados de llevar a cabo las ordenes generadas. Un ejemplo de orden es rotar 30\textdegree, es claro el \textit{set-point} que se está indicando. Para coordinar los subsistemas proponemos un controlador principal llamado \textbf{MainController}, el cual provee el método \verb|graspAt(i: Coordenadas)| al cliente, realiza la generación de los pasos y controla su ejecución. La estructura seria algo así:
 
 
@@ -1454,8 +1459,8 @@ Algunos sistemas se encargan de mostrar, almacenar o verificar información de s
 
 Una implementación intuitiva es escribir un \textit{loop} y en el que verificamos la información de los sensores y luego ejecutamos una función \textit{sleep} que bloquea la ejecución determinada cantidad de tiempo. Esto tiene varias desventajas, primero el tiempo de ejecución de nuestra rutina alarga el periodo, si queremos agregar otras funcionalidades a realizar mientras esperamos el periodo tendríamos que dividir el \textit{sleep} y calcular tiempo de ejecución.
 
-Una solución que nos parece más adecuada desde el punto de vista del diseño orientado al cambio es la siguiente. Se registra un temporizador que cada \textit{x} cantidad de tiempo gatilla una interrupción, esto es provisto por muchos entornos de desarrollo para sistemas embebidos como \textit{Arduino}.
-Registraremos un \textit{handler} para esta que será un módulo orden del patrón  \textit{Command} el cual encapsula que funciones son necesarias ejecutar para llevar a cabo la funcionalidad deseada. Por ejemplo, pedir la información de los sensores, ya sea a sus respectivos \textbf{Buffers} (si tenemos sensores como en el ejemplo anterior) o a los sensores en si, si son de otro tipo y luego registrarla en cierta módulo (que oculte una estructura de datos). De esta forma liberamos el procesador en los tiempos de espera y desacoplamos esta funcionalidad.
+Una solución que parece más adecuada desde el punto de vista del diseño orientado al cambio es la siguiente. Se registra un temporizador que cada \textit{x} cantidad de tiempo gatilla una interrupción, esto es provisto por muchos entornos de desarrollo para sistemas embebidos como \gls{arduino}.
+Registraremos un \textit{handler} para esta que será un módulo orden del patrón \textit{Command} el cual encapsula que funciones son necesarias ejecutar para llevar a cabo la funcionalidad deseada. Por ejemplo, pedir la información de los sensores, ya sea a sus respectivos \textbf{Buffers} (si tenemos sensores como en el ejemplo anterior) o a los sensores en si, si son de otro tipo y luego registrarla en cierta módulo (que oculte una estructura de datos). De esta forma liberamos el procesador en los tiempos de espera y desacoplamos esta funcionalidad.
 
 
 
@@ -1563,7 +1568,8 @@ switch (ESTADO) {
 
 Antes de ver un enfoque desde el punto de vista del diseño orientado al cambio, un poco mas en profundidad el ejemplo planteado en el libro y como se aplica una solución similar a la nombrada.
 
-\textbf{Transiciones basadas en eventos}. Supongamos un sistema en donde las transiciones entre los estados son dadas por eventos particulares, por ejemplo si trabajamos con el sistema de un microondas, abrir la puerta sería un evento que desencadena una transición, apretar el botón de Cancelar mientras está calentando también. Estamos hablando de un sistema con característica de máquina de estados, en el cual el comportamiento se basa en una una sucesión de transiciones. Considere el siguiente ``\textit{state chart}'' extraído del libro que describe el funcionamiento del microondas:
+\subsubsection*{Transiciones basadas en eventos}.
+Supongamos un sistema en donde las transiciones entre los estados son dadas por eventos particulares, por ejemplo si trabajamos con el sistema de un microondas, abrir la puerta sería un evento que desencadena una transición, apretar el botón de Cancelar mientras está calentando también. Estamos hablando de un sistema con característica de máquina de estados, en el cual el comportamiento se basa en una una sucesión de transiciones. Considere el siguiente ``\textit{state chart}'' extraído del libro que describe el funcionamiento del microondas:
 
 
 \begin{figure}[h]
@@ -2005,11 +2011,11 @@ ErrorHandler decide como manejar el error, esto puede ser desde loggearlo, termi
 Con este diseño añadimos una capa de verificación sin modificar el módulo original, ya que \verb|getStock| y \verb|setStock| de \textit{StockProxy} van a realizar la verificación indicada y luego si todo es correcto invocarán los métodos de \textit{StockProducto}. Con esto conseguimos las siguientes ventajas:
 
 \begin{itemize}
-    \item encapsular la lógica de validación y control de acceso en un solo lugar, sin necesidad de modificar el módulo original que gestiona los datos. Facilitando la reutilización y la separación de responsabilidades.
+    \item Encapsular la lógica de validación y control de acceso en un solo lugar, sin necesidad de modificar el módulo original que gestiona los datos. Facilitando la reutilización y la separación de responsabilidades.
 
-    \item centraliza el control sobre cómo y cuándo se accede o modifica el dato sensible. Esto facilita la implementación de reglas de negocio más complejas, como la validación de entradas, sin tener que modificar cada parte del código que interactúa con \textbf{StockProducto}.
+    \item Centraliza el control sobre cómo y cuándo se accede o modifica el dato sensible. Esto facilita la implementación de reglas de negocio más complejas, como la validación de entradas, sin tener que modificar cada parte del código que interactúa con \textbf{StockProducto}.
 
-    \item extender funcionalidades, el proxy puede evolucionar independientemente del modulo SujetoReal (ver \ref{patronProxy}), añadiendo nuevas funciones o cambiando las reglas de validación sin afectar la implementación original del módulo que contiene los datos. Por ejemplo, se pueden implementar restricciones de acceso, límites en las operaciones permitidas o incluso operaciones en diferido, sin necesidad de modificar el objeto real.
+    \item Extender funcionalidades, el proxy puede evolucionar independientemente del modulo SujetoReal (ver \ref{patronProxy}), añadiendo nuevas funciones o cambiando las reglas de validación sin afectar la implementación original del módulo que contiene los datos. Por ejemplo, se pueden implementar restricciones de acceso, límites en las operaciones permitidas o incluso operaciones en diferido, sin necesidad de modificar el objeto real.
 \end{itemize}
 
 \section{Organización de la ejecución}
@@ -2026,10 +2032,11 @@ Como primer solución uno piensa en crear funciones para cada parte del proceso 
 
 De las tareas que se tienen, dos deben ser llamadas por el sistema y la otra (recibir información) en muchos casos se dará en forma de interrupciones que el sistema debe atender. Ya se comentó de ese proceso en la sección \nameref{obtInfo}, solo es importante recordar que la estructura propuesta nos provee de una interfaz en la cual se puede invocar para obtener la información recibida de manera simple. Una vez resuelta esa cuestión ahora se debe ejecutar las otras dos tareas, dado que se quieren hacer los ajustes cada determinado tiempo, se propone crear una nueva interrupción que sea disparada de manera periódica y que su \textit{handler} se encargue de realizar todo el proceso de control y cálculo. En el manejo de esa interrupción, se accederá a la interfaces propuestas para obtener información de los sensores. Y por ultimo, para los actuadores que necesitan un seguimiento temporal para su control, se agrega una nueva interrupción que puede ser individual para el actuador y el tiempo de disparo puede estar determinado de manera particular.
 
-Tener interrupciones periódicas puede general una bola de nieve de ejecución si el manejo de una tarda más que el tiempo entre disparos. Para prevenirlo se aplica el patrón \textit{State}, haciendo que cuando se comience a manejar la interrupción cambie el estado y toda nueva llamada al \textit{handler} resulte en un retorno rápido (solo \textit{return}). Una vez terminada la ejecución de este ciclo se cambia el estado otra vez permitiendo la ejecución de nuevos llamados.
+Tener interrupciones periódicas puede general una bola de nieve de ejecución si el manejo de una tarda más que el tiempo entre disparos. Para prevenirlo se aplica el patrón \textit{State}, haciendo que cuando se comience a manejar la interrupción cambie el estado y toda nueva llamada al \textit{handler} resulte en un retorno rápido (solo \textit{return}). Una vez terminada la ejecución de este ciclo se cambia el estado otra vez permitiendo la ejecución de nuevos llamados. Un ejemplo de la estructura de modulos subyacente a esta solución es la que se puede ver en la figura \ref{estructuraInterrup}, seguida de la documentación del uso del patrón \textit{State}.
 
-\begin{figure}[h]
+\begin{figure}[h!]
 \caption{Ejemplo de handler usando \textit{State}.}
+\label{estructuraInterrup}
 \begin{center}
 \begin{tikzpicture}\sf
 
@@ -2085,11 +2092,12 @@ handInterruption() \{ \\
 \end{tikzpicture}
 \end{center}
 
+
 \begin{pattern}[]{Control de manejo de interrupciones}{Algorithm}{idFigAlg}
 \based{State (Estado)}
 \why{\textbf{Cambios previstos}: Agregar, quitar o editar estados de manejo de la interrupción.
 
-\textbf{Funcionalidad}: Configura el estado actual de manejo de una interrupcion a fin de que una interrupción corte la ejecución de otra.
+\textbf{Funcionalidad}: Configura el estado actual de manejo de una interrupción a fin de que una interrupción corte la ejecución de otra.
 }
 \assigns
 \is{InterruptionHandler}{Contexto}
@@ -2100,6 +2108,8 @@ handInterruption() \{ \\
 \end{pattern}
 
 \end{figure}
+
+
 
 Notar que esta estrategia explota la capacidad de manejar interrupciones del microcontrolador, por lo tanto es necesario que este las soporte para llevarla a cabo.
 

@@ -2463,33 +2463,34 @@
     <bcf:citekey order="64" intorder="1">ShawGarlan1996</bcf:citekey>
     <bcf:citekey order="65" intorder="1">ShawGarlan1996</bcf:citekey>
     <bcf:citekey order="66" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
-    <bcf:citekey order="67" intorder="1">douglass</bcf:citekey>
-    <bcf:citekey order="68" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
-    <bcf:citekey order="69" intorder="1">Parnas02</bcf:citekey>
-    <bcf:citekey order="69" intorder="2">Parnas1972</bcf:citekey>
-    <bcf:citekey order="69" intorder="3">parnas1977abstract</bcf:citekey>
+    <bcf:citekey order="67" intorder="1">Parnas1972</bcf:citekey>
+    <bcf:citekey order="68" intorder="1">douglass</bcf:citekey>
+    <bcf:citekey order="69" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
     <bcf:citekey order="70" intorder="1">Parnas02</bcf:citekey>
-    <bcf:citekey order="70" intorder="2">parnas1977abstract</bcf:citekey>
-    <bcf:citekey order="71" intorder="1">ShawGarlan1996</bcf:citekey>
-    <bcf:citekey order="71" intorder="2">ghezzi2003</bcf:citekey>
-    <bcf:citekey order="71" intorder="3">bass2003</bcf:citekey>
-    <bcf:citekey order="71" intorder="4">DBLP:books/daglib/0030743</bcf:citekey>
-    <bcf:citekey order="72" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
-    <bcf:citekey order="73" intorder="1">douglass</bcf:citekey>
-    <bcf:citekey order="74" intorder="1">paperPomponio</bcf:citekey>
-    <bcf:citekey order="75" intorder="1">pidlibro</bcf:citekey>
-    <bcf:citekey order="76" intorder="1">paperPomponio</bcf:citekey>
-    <bcf:citekey order="77" intorder="1">douglass</bcf:citekey>
-    <bcf:citekey order="78" intorder="1">paperPomponio</bcf:citekey>
-    <bcf:citekey order="79" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
+    <bcf:citekey order="70" intorder="2">Parnas1972</bcf:citekey>
+    <bcf:citekey order="70" intorder="3">parnas1977abstract</bcf:citekey>
+    <bcf:citekey order="71" intorder="1">Parnas02</bcf:citekey>
+    <bcf:citekey order="71" intorder="2">parnas1977abstract</bcf:citekey>
+    <bcf:citekey order="72" intorder="1">ShawGarlan1996</bcf:citekey>
+    <bcf:citekey order="72" intorder="2">ghezzi2003</bcf:citekey>
+    <bcf:citekey order="72" intorder="3">bass2003</bcf:citekey>
+    <bcf:citekey order="72" intorder="4">DBLP:books/daglib/0030743</bcf:citekey>
+    <bcf:citekey order="73" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
+    <bcf:citekey order="74" intorder="1">douglass</bcf:citekey>
+    <bcf:citekey order="75" intorder="1">paperPomponio</bcf:citekey>
+    <bcf:citekey order="76" intorder="1">pidlibro</bcf:citekey>
+    <bcf:citekey order="77" intorder="1">paperPomponio</bcf:citekey>
+    <bcf:citekey order="78" intorder="1">douglass</bcf:citekey>
+    <bcf:citekey order="79" intorder="1">paperPomponio</bcf:citekey>
     <bcf:citekey order="80" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
-    <bcf:citekey order="81" intorder="1">ganssleDebouncing</bcf:citekey>
-    <bcf:citekey order="82" intorder="1">paperPomponio</bcf:citekey>
-    <bcf:citekey order="83" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
-    <bcf:citekey order="84" intorder="1">douglass</bcf:citekey>
-    <bcf:citekey order="85" intorder="1">glass2009graceful</bcf:citekey>
-    <bcf:citekey order="86" intorder="1">laura</bcf:citekey>
-    <bcf:citekey order="87" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
+    <bcf:citekey order="81" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
+    <bcf:citekey order="82" intorder="1">ganssleDebouncing</bcf:citekey>
+    <bcf:citekey order="83" intorder="1">paperPomponio</bcf:citekey>
+    <bcf:citekey order="84" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
+    <bcf:citekey order="85" intorder="1">douglass</bcf:citekey>
+    <bcf:citekey order="86" intorder="1">glass2009graceful</bcf:citekey>
+    <bcf:citekey order="87" intorder="1">laura</bcf:citekey>
+    <bcf:citekey order="88" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">

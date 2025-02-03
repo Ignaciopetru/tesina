@@ -22,40 +22,40 @@
 \contentsline {figure}{\numberline {5.3}{\ignorespaces Módulo MotorDC abstracto y estructura de herencia.}}{43}{figure.caption.20}%
 \contentsline {figure}{\numberline {5.4}{\ignorespaces Display 7 segmentos 4 digitos}}{44}{figure.caption.21}%
 \contentsline {figure}{\numberline {5.5}{\ignorespaces Configuración original}}{45}{figure.caption.22}%
-\contentsline {figure}{\numberline {5.6}{\ignorespaces Configuración utilizando la solución de la sección anterior \ref {Accesoalhardware}.}}{46}{figure.caption.23}%
-\contentsline {figure}{\numberline {5.7}{\ignorespaces Configuración nueva}}{47}{figure.caption.24}%
-\contentsline {figure}{\numberline {5.8}{\ignorespaces Documentacion de la aplicación del patrón Adapter al ejemplo del display.}}{48}{figure.caption.25}%
+\contentsline {figure}{\numberline {5.6}{\ignorespaces Configuración utilizando los conceptos de la sección anterior \ref {Accesoalhardware}.}}{45}{figure.caption.23}%
+\contentsline {figure}{\numberline {5.7}{\ignorespaces Configuración nueva}}{46}{figure.caption.24}%
+\contentsline {figure}{\numberline {5.8}{\ignorespaces Documentacion de la aplicación del patrón Adapter al ejemplo del display.}}{46}{figure.caption.25}%
 \contentsline {figure}{\numberline {5.9}{\ignorespaces Módulos de un subsistema}}{50}{figure.caption.26}%
-\contentsline {figure}{\numberline {5.10}{\ignorespaces Estructura módulo \textbf {Control} extendida con estado.}}{51}{figure.caption.27}%
-\contentsline {figure}{\numberline {5.11}{\ignorespaces Documentacion de la aplicación del patrón State en el módulo Control.}}{52}{figure.caption.28}%
-\contentsline {figure}{\numberline {5.12}{\ignorespaces Brazo robótico.}}{53}{figure.caption.29}%
-\contentsline {figure}{\numberline {5.13}{\ignorespaces Diagrama de los componentes del sistema brazo robótico.}}{54}{figure.caption.30}%
-\contentsline {figure}{\numberline {5.14}{\ignorespaces Actuadores paso a paso.}}{55}{figure.caption.31}%
+\contentsline {figure}{\numberline {5.10}{\ignorespaces Estructura módulo \textbf {Control} extendida con estado.}}{52}{figure.caption.27}%
+\contentsline {figure}{\numberline {5.11}{\ignorespaces Documentacion de la aplicación del patrón State en el módulo Control.}}{53}{figure.caption.28}%
+\contentsline {figure}{\numberline {5.12}{\ignorespaces Brazo robótico.}}{54}{figure.caption.29}%
+\contentsline {figure}{\numberline {5.13}{\ignorespaces Diagrama de los componentes del sistema brazo robótico.}}{55}{figure.caption.30}%
+\contentsline {figure}{\numberline {5.14}{\ignorespaces Actuadores paso a paso.}}{56}{figure.caption.31}%
 \contentsline {figure}{\numberline {5.15}{\ignorespaces Interfaz módulo Pinza.}}{56}{figure.caption.32}%
-\contentsline {figure}{\numberline {5.16}{\ignorespaces Sensores}}{56}{figure.caption.33}%
+\contentsline {figure}{\numberline {5.16}{\ignorespaces Sensores}}{57}{figure.caption.33}%
 \contentsline {figure}{\numberline {5.17}{\ignorespaces Timer}}{57}{figure.caption.34}%
 \contentsline {figure}{\numberline {5.18}{\ignorespaces Documentacion de la aplicación del patrón Command para el desacople de ejecuciones que invoca el Timer.}}{58}{figure.caption.35}%
 \contentsline {figure}{\numberline {5.19}{\ignorespaces Módulos necesarios para complementar el Controller}}{59}{figure.caption.36}%
 \contentsline {figure}{\numberline {5.20}{\ignorespaces Módulos complementarios a Controller.}}{59}{figure.caption.37}%
 \contentsline {figure}{\numberline {5.21}{\ignorespaces Controller}}{60}{figure.caption.38}%
-\contentsline {figure}{\numberline {5.22}{\ignorespaces Iterator}}{60}{figure.caption.39}%
+\contentsline {figure}{\numberline {5.22}{\ignorespaces Iterator}}{61}{figure.caption.39}%
 \contentsline {figure}{\numberline {5.23}{\ignorespaces Orden}}{61}{figure.caption.40}%
-\contentsline {figure}{\numberline {5.24}{\ignorespaces Documentación de la aplicación del patrón Command para el desacople de ordenes a ejecutar en cada actuador del brazo en un paso.}}{62}{figure.caption.42}%
-\contentsline {figure}{\numberline {5.25}{\ignorespaces MainController}}{63}{figure.caption.43}%
-\contentsline {figure}{\numberline {5.26}{\ignorespaces Transiciones de estados del MainController}}{63}{figure.caption.44}%
-\contentsline {figure}{\numberline {5.27}{\ignorespaces Componente sensor activo.}}{64}{figure.caption.45}%
-\contentsline {figure}{\numberline {5.28}{\ignorespaces Ejemplo módulos para obtener la información referida a la velocidad.}}{66}{figure.caption.46}%
+\contentsline {figure}{\numberline {5.24}{\ignorespaces Documentación de la aplicación del patrón Command para el desacople de ordenes a ejecutar en cada actuador del brazo en un paso.}}{63}{figure.caption.42}%
+\contentsline {figure}{\numberline {5.25}{\ignorespaces MainController}}{64}{figure.caption.43}%
+\contentsline {figure}{\numberline {5.26}{\ignorespaces Transiciones de estados del MainController}}{64}{figure.caption.44}%
+\contentsline {figure}{\numberline {5.27}{\ignorespaces Componente sensor activo.}}{65}{figure.caption.45}%
+\contentsline {figure}{\numberline {5.28}{\ignorespaces Ejemplo módulos para obtener la información referida a la velocidad.}}{67}{figure.caption.46}%
 \contentsline {figure}{\numberline {5.29}{\ignorespaces State chart microondas}}{71}{figure.caption.47}%
-\contentsline {figure}{\numberline {5.30}{\ignorespaces Módulos participantes del patrón state en el ejemplo del horno microondas.}}{74}{figure.caption.48}%
-\contentsline {figure}{\numberline {5.31}{\ignorespaces Ejemplo \textit {Decorator} integridad de la información}}{76}{figure.caption.50}%
-\contentsline {figure}{\numberline {5.32}{\ignorespaces Documentación de la aplicación del patrón Decorator al caso de verificación de la integridad de la información.}}{77}{figure.caption.51}%
-\contentsline {figure}{\numberline {5.33}{\ignorespaces Uso del patrón Proxy al ejemplo del módulo stock}}{79}{figure.caption.52}%
-\contentsline {figure}{\numberline {5.34}{\ignorespaces Ejemplo de handler usando \textit {State}.}}{82}{figure.caption.53}%
+\contentsline {figure}{\numberline {5.30}{\ignorespaces Módulos participantes del patrón state en el ejemplo del horno microondas.}}{75}{figure.caption.48}%
+\contentsline {figure}{\numberline {5.31}{\ignorespaces Ejemplo \textit {Decorator} integridad de la información}}{77}{figure.caption.50}%
+\contentsline {figure}{\numberline {5.32}{\ignorespaces Documentación de la aplicación del patrón Decorator al caso de verificación de la integridad de la información.}}{78}{figure.caption.51}%
+\contentsline {figure}{\numberline {5.33}{\ignorespaces Uso del patrón Proxy al ejemplo del módulo stock}}{80}{figure.caption.52}%
+\contentsline {figure}{\numberline {5.34}{\ignorespaces Ejemplo de handler usando \textit {State}.}}{83}{figure.caption.53}%
 \addvspace {10\p@ }
-\contentsline {xchapter}{Patrones de diseño de Gamma}{83}{appendix.Alph1}%
-\contentsline {figure}{\numberline {A.1}{\ignorespaces Estructura patrón \textbf {Adapter}}}{84}{figure.caption.54}%
-\contentsline {figure}{\numberline {A.2}{\ignorespaces Estructura patrón \textbf {Command}}}{86}{figure.caption.55}%
-\contentsline {figure}{\numberline {A.3}{\ignorespaces Estructura patrón \textbf {State}}}{87}{figure.caption.56}%
-\contentsline {figure}{\numberline {A.4}{\ignorespaces Estructura patrón \textbf {Mediator}}}{88}{figure.caption.57}%
-\contentsline {figure}{\numberline {A.5}{\ignorespaces Estructura patrón \textbf {Decorator}}}{89}{figure.caption.58}%
-\contentsline {figure}{\numberline {A.6}{\ignorespaces Estructura patrón \textbf {Proxy}}}{91}{figure.caption.59}%
+\contentsline {xchapter}{Patrones de diseño de Gamma}{85}{appendix.Alph1}%
+\contentsline {figure}{\numberline {A.1}{\ignorespaces Estructura patrón \textbf {Adapter}}}{86}{figure.caption.54}%
+\contentsline {figure}{\numberline {A.2}{\ignorespaces Estructura patrón \textbf {Command}}}{88}{figure.caption.55}%
+\contentsline {figure}{\numberline {A.3}{\ignorespaces Estructura patrón \textbf {State}}}{89}{figure.caption.56}%
+\contentsline {figure}{\numberline {A.4}{\ignorespaces Estructura patrón \textbf {Mediator}}}{90}{figure.caption.57}%
+\contentsline {figure}{\numberline {A.5}{\ignorespaces Estructura patrón \textbf {Decorator}}}{91}{figure.caption.58}%
+\contentsline {figure}{\numberline {A.6}{\ignorespaces Estructura patrón \textbf {Proxy}}}{93}{figure.caption.59}%
