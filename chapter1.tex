@@ -681,13 +681,13 @@ Veamos como podemos resolver el ejemplo propuesto en el libro de Douglass\cite{d
 Se necesita desarrollar el software de control de un brazo robótico que consta de tres actuadores, dos servomotores (uno para rotar y otro para extender o retraer el brazo) y una pinza que se puede cerrar o abrir. Para ello, se provee una función compleja la cual toma coordenadas en el espacio y genera una secuencia de ordenes para que el brazo tome un objeto en la posición determinada por las coordenadas. La secuencia es una serie de pasos, y cada uno consta de una orden para cada actuador del brazo robótico. Estos se deben ejecutar de manera secuencial, es decir que el paso número 2 empezará su ejecución solo si el primero culmino completamente y con éxito. En caso de que las coordenadas sean inalcanzables devuelve 0 pasos. A su vez cada actuador puede informar un error al intentar ejecutar cada movimiento, y si esto pasa se requiere frenar la ejecución total del sistema.
 
 \begin{figure}[h]
-\caption{Brazo robótico.}
+\caption{Esquema del brazo robótico.}
 \begin{centering}
-{\includegraphics[width=0.5\textwidth]{Screenshot from 2024-08-29 18-44-50.png}\par}
+{\includegraphics[width=0.5\textwidth]{brazo2.png}\par}
 \end{centering}
 \end{figure}
 
-\subsubsection*{Solución libro}
+\subsubsection*{Solución propuesta en el libro de Douglass}
 
 El ejemplo que plantea el libro es similar al descrito, pero el brazo robótico tiene más articulaciones y actuadores. Como solución, se propone la creación de un módulo llamado \textbf{RobotArmManager}, cuya función es gestionar los actuadores y coordinar su comportamiento. Además, para cada tipo de articulación o actuador, se crea un módulo específico encargado de su control. Este módulo proporciona métodos para consultar el estado actual (posición, longitud, etc.) y otros para configurar un valor similar a un \textit{set-point}. Dichos métodos desempeñan el rol de ejecutores de la acción, es decir, toman un valor \textit{set-point}, ejecutan la acción y retornan \verb|True| si fue satisfactoria, o \verb|False| en caso contrario.
 
@@ -776,7 +776,7 @@ pulse()
 \end{center}
 \end{figure}
 
-Estos son motores paso a paso \footnote{Se utiliza el mismo diseño propuesto para el robot desmalezador\cite{paperPomponio}.}, lo cuales para controlarlos debemos primero setear su dirección llamando a las funciones \verb|right| o \verb|left| para luego avanzar un paso llamando al método \verb|pulse|. Claramente para que lleguen a la posición deseada puede ser necesario invocar reiteradas veces al método \verb|pulse|. Esto será importante a la hora de diseñar el subsistema que controlará cada dispositivo.
+Estos son motores paso a paso\footnote{Se utiliza el mismo diseño propuesto para el robot desmalezador\cite{paperPomponio}.}, lo cuales para controlarlos debemos primero setear su dirección llamando a las funciones \verb|right| o \verb|left| para luego avanzar un paso llamando al método \verb|pulse|. Claramente para que lleguen a la posición deseada puede ser necesario invocar reiteradas veces al método \verb|pulse|. Esto será importante a la hora de diseñar el subsistema que controlará cada dispositivo.
 
 En cambio, en el caso de la pinza se utiliza un dispositivo que tiene dos estados, abierto o cerrado, por lo que solo tenemos dos funciones para cambiar entre los estados.
 
@@ -1855,7 +1855,9 @@ invertedValue: dato
 \end{center}
 \end{figure}
 
-Desde el punto de vista del diseño de software se puede aportar una mirada crítica hacia las propuestas el libro, dado que proponen modificar la interfaz e implementación de los módulos encargados de almacenar la información con el objetivo de añadir esta ``capa'' de verificación. Es decir que los módulos no solo ocultan como se almacena la información sino que se encargan de verificar su integridad. Se propone que una posible forma de solucionar esto desde el diseño orientado al cambio es utilizar el patrón \textit{Decorator} que nos permite añadir de manera dinámica funcionalidades. En este caso, la capacidad de verificar la información. Otra ventaja, ademas de poder hacerlo de manera dinámica, es que mantenemos separadas las responsabilidades de cada módulo. A diferencia de los propuesto en el libro, no juntos el almacenaje de la información con su verificación, de manera que cada porción puede ser implementada de manera independiente. La solución se muestra en el gráfico \ref{decorator} con su correspondiente documentación en \ref{docDecorator}.
+Desde el punto de vista del diseño de software se puede aportar una mirada crítica hacia las propuestas el libro, dado que plantean modificar la interfaz e implementación de los módulos encargados de almacenar la información con el objetivo de añadir esta ``capa'' de verificación. Es decir que los módulos no solo oculten como se almacena la información sino que se encarguen de verificar su integridad. 
+
+En cambio, una posible forma de solucionar esto desde el diseño orientado al cambio es utilizar el patrón \textit{Decorator} que nos permite añadir de manera dinámica funcionalidades. En este caso, la capacidad de verificar la información. Otra ventaja, además de poder hacerlo de manera dinámica, es que mantenemos separadas las responsabilidades de cada módulo. A diferencia de los propuesto en el libro, no se combina el almacenaje de la información con su verificación, de manera que cada porción puede ser implementada de manera independiente. La solución se muestra en el gráfico \ref{decorator} con su correspondiente documentación en \ref{docDecorator}.
 
 \begin{figure}[h]
 \caption{Ejemplo \textit{Decorator} integridad de la información}
@@ -1888,7 +1890,7 @@ Desde el punto de vista del diseño de software se puede aportar una mirada crí
 \end{figure}
 
 \begin{figure}[]
-\caption{Documentación de la aplicación del patrón Decorator al caso de verificación de la integridad de la información.}
+\caption{Documentación de la aplicación del patrón \textit{Decorator} al caso de verificación de la integridad de la información.}
 \label{docDecorator}
 \begin{pattern}[]{Modulo decorador que extiende dinámicamente las funcionalidades de otro módulo sin cambiar la implementación.}{Algorithm}{idFigAlg}
 \based{Decorador (Decorator)}
@@ -1904,7 +1906,7 @@ Desde el punto de vista del diseño de software se puede aportar una mirada crí
 \end{figure}
 
 
-\begin{lstlisting}[caption=Implementación métodos setData y getData,label={codDeco},style=seudocode]
+\begin{lstlisting}[caption=Ejemplo de implementación métodos setData y getData,label={codDeco},style=seudocode]
 setData(i: dato){
     calculatedCrc = calcularCrc(i)
     data.setData(dato)
@@ -1922,7 +1924,7 @@ getData() {
 De esta forma logramos añadir una capa de protección a la integridad de la información, a su vez permitimos combinar diferentes técnicas usando este patrón. Un ejemplo de la implementación de los métodos del modulo decorador se puede observar en \ref{codDeco}.
 
 \section{Verificación de precondiciones.}
-El autor del libro comenta que uno de los problemas más grandes que ve en el desarrollo de sistemas embebidos es que prácticamente todas las funciones tiene precondiciones para ejecutarse correctamente pero que casi nunca se verifica si todas estas se cumplen. Además, la manera común de informar precondiciones inadecuadas en una función en \textbf{C} es utilizando el valor de retorno (-1 en caso de errores, 0 en el contrario). Por lo tanto el encargado de manejar el error es la función o método que llamó en primer lugar a la función, generando así un acoplamiento extra entre módulos. Esto provoca una complicación derivando en muchas veces no manejarlo de la manera más adecuada. Por ejemplo, supongamos que tenemos un módulo que exporta una función que permite guardar un valor, \verb|setValor(i: Valor)|. Existen múltiples posibles implementaciones, pero veamos algunas:
+El autor del libro \cite{douglass} comenta que uno de los problemas más grandes que ve en el desarrollo de sistemas embebidos es que prácticamente todas las funciones tiene precondiciones para ejecutarse correctamente pero que casi nunca se verifica si todas estas se cumplen. Además, la manera común de informar precondiciones inadecuadas en una función en \textbf{C} es utilizando el valor de retorno (-1 en caso de errores, 0 en el contrario). Por lo tanto el encargado de manejar el error es la función o método que llamó en primer lugar a la función, generando así un acoplamiento extra entre módulos. Esto provoca una complicación derivando en muchas veces no manejarlo de la manera más adecuada. Por ejemplo, supongamos que tenemos un módulo que exporta una función que permite guardar un valor, \verb|setValor(i: Valor)|. Existen múltiples posibles implementaciones, estas son algunas:
 \begin{itemize}
     \item Una posible implementación, es que la función no realice ningún chequeo y simplemente guarde en una variable el valor pasado como argumento. Esto puede generar un error en el momento si el tipo no coincide por ejemplo o en el futuro si el valor está por fuera de ciertos parámetros requeridos por el sistema. Por ejemplo, si se está almacenando un entero negativo pero se requiere que siempre sea positivo, podemos provocar un error en el futuro, si es que los clientes no chequean que sea positivo y a su vez, estamos obligando a que todos los que usen este valor deban verificar que sea positivo. Escribiendo código repetido y que en caso de que el requisito cambie deba ser actualizado manualmente.
     \item Otra forma es que la función verifique que el valor es permitido y retorne 0 o -1 en caso de que no. Esto es mejor que nada, pero como se comento en el principio estamos acoplando al usuario de la función con el módulo que la exporta, ya que este tiene que verificar el valor de retorno para determinar si existió un error o no.
@@ -2022,7 +2024,7 @@ Con este diseño añadimos una capa de verificación sin modificar el módulo or
 
 En un sistema robótico embebido se tienen que ejecutar múltiples tareas para lograr el objetivo del mismo. Ya sea, si se eligió una arquitectura de diseño de tipo ``Control de procesos'' o no, por lo general se debe verificar información recibida a través de sensores y otras fuentes (comunicación serial, web, etc), realizar cómputos y efectuar acciones con los actuadores del robot.
 
-Como primer solución uno piensa en crear funciones para cada parte del proceso y llamarlas en \textit{loop} en el \textit{main}, y si es necesario añadir un tiempo de espera entre cada ejecución mediante \textit{sleeps}. El principal problema que tiene este enfoque es que los sistemas robóticos son en tiempo real, es decir se pueden perder \textit{inputs} de sensores si no se los maneja de manera correcta. Además, los tiempos de espera son bloqueantes por lo que se desperdicia acceso a computo. Una estrategia que logra mejorar estos puntos consta de hacer uso de las interrupciones del microcontrolador permitiendo atender a todos los \textit{inputs}. En el robot desmalezador \cite{laura} esta estrategia se utiliza en conjunto con una arquitectura de control de procesos, por lo tanto existen 3 tareas principales:
+Como primer solución uno piensa en crear funciones para cada parte del proceso y llamarlas en \textit{loop} en el \textit{main}, y si es necesario añadir un tiempo de espera entre cada ejecución mediante \textit{sleeps}. El principal problema que tiene este enfoque es que los sistemas robóticos son en tiempo real, es decir se pueden perder \textit{inputs} de sensores si no se los maneja de manera correcta. Además, los tiempos de espera son bloqueantes por lo que se desperdicia acceso a computo. Una estrategia que logra mejorar estos puntos consta de hacer uso de las interrupciones del microcontrolador permitiendo atender a todos los \textit{inputs}. En el robot desmalezador \cite{paperPomponio} esta estrategia se utiliza en conjunto con una arquitectura de control de procesos, por lo tanto existen 3 tareas principales:
 
 \begin{itemize}
     \item Recibir información de los sensores y de la PC (por ejemplo, puerto serial).
