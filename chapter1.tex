@@ -90,7 +90,7 @@ Notemos que el \gls{DRV8838} tiene 3 pines de control, \textit{ENABLE}. \textit{
 
 Por lo tanto, con los dos primeros pines podremos cumplir los requerimientos mencionados. Tendremos dos cables conectados al \gls{microcontrolador}, uno que se dirige a \textit{ENABLE} y otro a \textit{PHASE}. En el código \ref{listing1} se encuentran las lineas necesarias para poder configurar el motor para luego poder utilizarlo como en los códigos \ref{codigoMax} y \ref{codigoDet}. Las funciones \verb|pinMode|, \verb|digitalWrite| y \verb|analogWrite| son provistas por el entorno de desarrollo de Arduino. Sus nombres son bastastantes descriptivos de su comportamiento, \verb|pinMode| configura el modo de operacion de un PIN en particular, puede ser \verb|OUTPUT| o \verb|INPUT|. Y tanto \verb|digitalWrite| como \verb|analogWrite|, escriben en un PIN el valor especificado.
 
-\begin{lstlisting}[caption=Configuración inicial,label={listing1}]
+\begin{lstlisting}[caption=Configuración inicial del control del motor paso a paso.,label={listing1}]
 # Notar que los numeros asignados a los pines son arbritarios dentro del conjunto de pines disponibles en nuestro Aruino.
 
 # Constantes globales
@@ -109,18 +109,19 @@ void setup() {
 }
 \end{lstlisting}
 
-\begin{lstlisting}[caption=Máxima velocidad giro horario,label={codigoMax}]
+\begin{lstlisting}[caption=Configurar 
+máxima velocidad giro en sentido horario.,label={codigoMax}]
 digitalWrite(DIR_pin, HIGH);
 analogWrite(VEL_pin, 255); # Maximo valor aceptado, PWM siempre encendido
 \end{lstlisting}
 
-\begin{lstlisting}[caption=Detenerce, label={codigoDet}]
+\begin{lstlisting}[caption=Detener giro del motor paso a paso., label={codigoDet}]
 analogWrite(VEL_pin, 0);
 \end{lstlisting}
 
 No es necesario entender por completo que hace cada llamada, pero si es importante comprender que es necesario ejecutar ese código para controlar el motor. Es decir, que si cualquier cliente (se supone que ya definimos que es cliente) del motor en nuestro sistema deberá saber que para hacer que el motor vaya hacia adelante a la mayor velocidad posible es necesario ejecutar las dos funciones indicadas sobre los pines correspondientes al motor. Un pequeño ejemplo podría ser el siguiente \ref{listingMotor}, en el cual se consulta una bandera asociada al estado de un valor y en base a este se acciona el motor.
 
-\begin{lstlisting}[caption=Ejemplo uso del motor,label={listingMotor}]
+\begin{lstlisting}[caption=Ejemplo uso del motor paso a paso.,label={listingMotor}]
     .
     .
     .
@@ -141,7 +142,7 @@ if (valor > 100) {
     \item Imagine el caso en el que por cierto motivo se debe invertir el sentido de giro del motor, de manera que lo que era ir hacia adelante ahora es hacia atrás. Para llevar a cabo el cambio, debemos modificar todas las llamadas a \verb|digitalWrite(DIR_pin, | cambiando \verb|HIGH| por \verb|DOWN| y viceversa. Es fácil cometer un error y dejar al sistema en un estado inconsistente.
     \item Ahora, qué pasa si tenemos que agregar un segundo motor del mismo tipo con el mismo controlador? Ya sea por duplicación de la potencia o un motor que cumpla otra función en el sistema. En el código tenemos que declarar nuevamente 2 constantes (suponga \verb|DIR_pin2| y \verb|VEL_pin2|, una para cada nuevo pin de control, también debemos setear esos pines como \verb|OUTPUT| y ahora en diferentes partes del código tendremos llamadas a \verb|digitalWrite| y \verb|analogWrite| sobre diferentes pines lo cual es cada vez más confuso.
     \item Por cierto motivo se descompuso el controlador del motor, y no se consigue un reemplazo idéntico, sino que se adquiere un nuevo controlador de otra marca, por ejemplo, un \textit{Pololu Simple Motor Controller G2}. En este caso, este controlador no utilizar la misma interfaz de control que el DVR8838, sino para controlarlo hay que acceder a el mediante comunicación serial (utiliza un solo pin especifico). Incluso utilizando las herramientas provistas por el entorno de Arduino, el código no es similar \ref{listingDistinto}.
-    \begin{lstlisting}[caption=Configuración, label={listingDistinto}]
+    \begin{lstlisting}[caption=Configuración del motor paso a paso que utiliza comunicación serie., label={listingDistinto}]
         void set_up() {
             .
             .
@@ -180,16 +181,16 @@ MotorDC(i: int, i: int)
 }
 {
     
-    set\_dir(i: Dir) \\ 
-    set\_vel(i: int) \\
+    setDir(i: Dir) \\ 
+    setVel(i: int) \\
 }
 \end{tikzpicture}
 \end{center}
 \end{figure}
 
-Donde los parámetros del constructor \verb|MotorDC| son los pines de control, el parámetro de \verb|set_dir| es de tipo \verb|Dir| el cual es un int que puede tomar dos valores uno para el sentido de giro horario y otro anti-horario y por último el input de \verb|set_vel| es un int entre 0 y 255 que representa la velocidad porcentual. Veamos en el ejemplo \ref{constructorMotor} una posible implementación de esta interfaz utilizando el controlador DVR8838.
+Donde los parámetros del constructor \verb|MotorDC| son los pines de control, el parámetro de \verb|set_dir| es de tipo \verb|Dir| el cual es un int que puede tomar dos valores uno para el sentido de giro horario y otro anti-horario y por último el input de \verb|setVel| es un int entre 0 y 255 que representa la velocidad porcentual. Veamos en el ejemplo \ref{constructorMotor} una posible implementación de esta interfaz utilizando el controlador DVR8838.
 
-\begin{lstlisting}[caption=Posible implementación de la interfaz del módulo MotorDC,label={constructorMotor}]
+\begin{lstlisting}[caption=Posible implementación de la interfaz del módulo MotorDC.,label={constructorMotor}]
 void MotorDC(int dir_pin, int vel_pin) {
     this->dir_pin = dir_pin;
     this->vel_pin = vel_pin;
@@ -205,7 +206,7 @@ void set_dir(Dir dir) {
     }
 }
 
-void set_vel(int vel) {
+void setVel(int vel) {
     if vel > 0 && vel <= 255 {
         analogWrite(VEL_pin, vel);
     }
@@ -216,23 +217,23 @@ Ya son evidentes las primeras ventajas, es mucho más claro en el código \ref{e
 
 \begin{lstlisting}[caption=Ejmplo de uso de la interfaz del módulo MotorDC, label={ejeploUsoMotor}]
 	motor = MotorDC(1, 2)
-    motor->set_dir(Dir.HORARIO)
-    motor->set_vel(255)
+    motor->setDir(Dir.HORARIO)
+    motor->setVel(255)
 \end{lstlisting}
 
-Además si debemos modificar el sentido de giro es tan fácil como cambiar el método \verb|set_dir|, los clientes no notarán el cambio. A su vez, si queremos controlar otro motor podemos hacerlo como en \ref{ejemploOtroMotor}. 
+Además si debemos modificar el sentido de giro es tan fácil como cambiar el método \verb|setDir|, los clientes no notarán el cambio. A su vez, si queremos controlar otro motor podemos hacerlo como en \ref{ejemploOtroMotor}. 
 
-\begin{lstlisting}[caption=Ejemplo control nuevo motor,label={ejemploOtroMotor}]
+\begin{lstlisting}[caption=Ejemplo control motor paso a paso comunicación serie.,label={ejemploOtroMotor}]
     MotorDC motor_delantero = MotorDC(18, 19)
 
-    motor_delantero->set_dir(Dir.ANTIHORARIO)
-    motor_delantero->set_vel(10)
+    motor_delantero->setDir(Dir.ANTIHORARIO)
+    motor_delantero->setVel(10)
 \end{lstlisting}
 
-Y para un cambio de componente, como el explicado anteriormente, los clientes del módulo lo ignoraran, ya que sera prácticamente la misma (a menos un cambio en el constructor, donde ya no se necesitaran los pines). Por ejemplo, ahora \verb|set_dir| será definida como en el listing \ref{nuevaSetDir}.
+Y para un cambio de componente, como el explicado anteriormente, los clientes del módulo lo ignoraran, ya que sera prácticamente la misma (a menos un cambio en el constructor, donde ya no se necesitaran los pines). Por ejemplo, ahora \verb|setDir| será definida como en el listing \ref{nuevaSetDir}.
 
-\begin{lstlisting}[caption=Nueva definición set\_dir,label={nuevaSetDir}]
-void set_vel(vel: int) {
+\begin{lstlisting}[caption=Implementación método setVel para el motor que utiliza comunicación serie.,label={nuevaSetDir}]
+void setVel(vel: int) {
     if vel > 0 && vel <= 255 {
         this->serial.write(0xAA);
         this->serial.write(0x0C);
@@ -242,7 +243,7 @@ void set_vel(vel: int) {
 }
 \end{lstlisting}
 
-Aún podemos mejorar el diseño haciendo uso del concepto de herencia de interfaz (explicado en la sección \ref{ingso}). Esto nos permitirá reutilizar módulos ya implementados y abstraer aun más a los clientes de la implementación. Para hacerlo definiremos un módulo \textbf{MotorDC} abstracto del cual heredarán la interfaz cada modelo o combinación de motor y controlador. En este caso tendremos la estructura de la figura \ref{estructuraHerencia}.
+Aún podemos mejorar el diseño haciendo uso del concepto de herencia de interfaz (explicado en la sección \ref{ingso}). Esto nos permitirá reutilizar módulos ya implementados y abstraer aun más a los clientes de la implementación. Para hacerlo se define un módulo \textbf{MotorDC} abstracto del cual hereda la interfaz cada modelo o combinación de motor y controlador. En este caso la estructura es la de la figura \ref{estructuraHerencia}.
 
 \begin{figure}
 \caption{Módulo MotorDC abstracto y estructura de herencia.}
@@ -252,8 +253,8 @@ Aún podemos mejorar el diseño haciendo uso del concepto de herencia de interfa
 \umlclass[x=0,type=abstract]{MotorDC}
 {}
 {
-    \umlvirt{set\_dir(i: Dir)} \\ 
-    \umlvirt{set\_vel(i: int)} \\
+    \umlvirt{setDir(i: Dir)} \\ 
+    \umlvirt{setVel(i: int)} \\
 }
 
 \umlclass[x=-3, y=-4]{MotorDCDVR8838}
@@ -261,16 +262,16 @@ Aún podemos mejorar el diseño haciendo uso del concepto de herencia de interfa
 	MotorDC(i: int, i: int)
 }
 {
-    set\_dir(i: Dir) \\ 
-    set\_vel(i: int) \\
+    setDir(i: Dir) \\ 
+    setVel(i: int) \\
 }
 \umlclass[x=3, y=-4]{MotorDCG2}
 {
 	MotorDC(i: Serial)
 }
 {
-    set\_dir(i: Dir) \\ 
-    set\_vel(i: int) \\
+    setDir(i: Dir) \\ 
+    setVel(i: int) \\
 }
 \umlinherit[geometry=|-|]{MotorDCDVR8838}{MotorDC}
 \umlinherit[geometry=|-|]{MotorDCG2}{MotorDC}
@@ -327,7 +328,7 @@ if libEmca.get_current() == "" {
 
 
 \begin{figure}[!h]
-\caption{Configuración original}
+\caption{Configuración original del controlador del display.}
 \label{configOri}
 \begin{center}
 \begin{tikzpicture}\sf
@@ -380,7 +381,7 @@ limpiar()
 Para construir un diseño orientado al cambio, primero se aplican los conceptos vistos en la sección \nameref{Accesoalhardware}, logrando el diseño \ref{configUsando}. Luego, para permitir el cambio propuesto sin tener que realizar todas las modificaciones mencionadas, se propone aplicar el patrón \textit{Adapter}, creando un módulo intermedio con la misma interfaz que \textbf{DisplayLib}. El cual utiliza los métodos provistos por la librería que encapsula el display con el objetivo de proveer la misma interfaz que la librería original. Podemos ver la nueva estructura en \ref{configNueva} y su debida documentación de aplicación del patrón en \ref{docAdapter}.
 
 \begin{figure}[h!]
-\caption{Configuración nueva}
+\caption{Nueva configuración utilizando el patrón \textit{Adapter}.}
 \label{configNueva}
 \begin{center}
 \begin{tikzpicture}\sf
@@ -420,7 +421,7 @@ umluniassoc
 \end{figure}
 
 \begin{figure}[h!]
-\caption{Documentacion de la aplicación del patrón Adapter al ejemplo del display.}
+\caption{Documentación de la aplicación del patrón Adapter al ejemplo del display.}
 \label{docAdapter}
 \begin{pattern}[]{Adaptar nuevo controlador de display}{Algorithm}{idFigAlg}
 \based{Adaptador (Adapter)}
@@ -453,7 +454,7 @@ Por lo tanto el cliente sigue utilizando la misma interfaz para acceder al displ
 
 En este ejemplo, una posible implementación para las funciones \verb|escribir(i: str): bool| y \verb|limpiar()| del módulo \textbf{ControlEmca} es la del código \ref{codigoAdapter}.
 
-\begin{lstlisting}[label={codigoAdapter}, caption=Ejemplo implementación módulo Adapter.]
+\begin{lstlisting}[label={codigoAdapter}, caption=Ejemplo implementación módulo ControlEmca.]
 bool escribir(char* cadena) {
     if (libEmca.get_current() != "") {
         return False;
@@ -475,11 +476,11 @@ Como se discutió previamente, en casos como este se puede aplicar la arquitectu
 
 \subsection*{Solución tradicional}
 
-Antes de pasar a explicar la solución propuesta y analizar cómo aplicarla al ejemplo presentado por Douglass en su libro \cite{douglass}, se describirá cómo se aborda tradicionalmente esta problemática. Para ello, se tomará como ejemplo el software desarrollado para el robot desmalezador antes de la propuesta del nuevo diseño \cite{paperPomponio}. Este software fue creado en conjunto por ingenieros electrónicos como parte de un trabajo final. Los requerimientos son similares a los que se consideraron para el desarrollo del nuevo diseño.
+Antes de pasar a explicar la solución propuesta y analizar cómo aplicarla al ejemplo presentado por Douglass en su libro \cite{douglass}, se describirá cómo se aborda tradicionalmente esta problemática. Para ello, se tomará como ejemplo el software desarrollado para el robot desmalezador antes de la propuesta del nuevo diseño \cite{paperPomponio}. En particular existieron dos desarrollos creados en conjunto por ingenieros electrónicos como parte del trabajo final de carrera \cite{disenioViejo1, disenioViejo2}. Los requerimientos son similares a los que se consideraron para el desarrollo del nuevo diseño.
 
 \subsubsection*{Estructura y funcionamiento general}
 
-El código se encuentra dividido en unos pocos archivos, concentrando todo el flujo de control en \verb|main.c|, el resto de archivos contienen métodos que son invocados desde este último. No se utiliza programación orientada a objetos, en cambio, como estructura de subdivisión se utilizan las funciones clásicas de C. Estas parece que encapsulan operaciones específicas como:
+El código se encuentra dividido en unos pocos archivos, concentrando todo el flujo de control en \verb|main.c|, el resto de archivos contienen métodos que son invocados desde este último y son utilidades. No se utiliza programación orientada a objetos, en cambio, como estructura de subdivisión se utilizan las funciones clásicas de C. Estas parece que encapsulan operaciones específicas como:
 \begin{itemize}
 \item Configuración de hardware.
 \item Lectura de entradas (sensores, botones, etc.).
@@ -496,7 +497,18 @@ La función principal del sistema es \verb|main|, la misma se encarga de inicial
 \end{itemize}
 
 \subsubsection*{Observaciones}
-A lo largo del código se utilizan estructuras condicionales (if, switch, etc.) para determinar el flujo de ejecución. A su vez, las funciones de hardware están directamente integradas en la lógica del control, lo que indica una baja separación entre la capa de abstracción del hardware y la lógica de ``alto'' nivel. Esto es acompañado con un diseño procedimental, con una serie de pasos secuenciales y un control centralizado en el flujo principal. Ademas, el hardware se encuentra integrado a la lógica, se aplican estructuras condicionales directamente a este.
+El criterio de división del código parece ser funcional, tanto por el aspecto del código, como por la documentación adjunta en los informes \cite[pág. 78-85]{disenioViejo1}, \cite[pág. 110-149]{disenioViejo2}. Esta ultima, se centra es describir la funcionalidad de cada meteodo y para hacerlo se muestra su comportamiento utilizando diagramas de flujo como el de la figura \ref{diagra}. 
+
+\begin{figure}[h]
+\caption{Diagrama de flujo que explica el comportamiento de la función emergency \cite[pág. 82]{disenioViejo1}.}
+\label{diagra}
+\begin{centering}
+{\includegraphics[width=0.8\textwidth]{diagramaFlujo.png}\par}
+\end{centering}
+\end{figure}
+
+
+Por otro lado, a lo largo del código se utilizan estructuras condicionales (if, switch, etc.) para determinar el flujo de ejecución. A su vez, las funciones de hardware están directamente integradas en la lógica del control, lo que indica una baja separación entre la capa de abstracción del hardware y la lógica de ``alto'' nivel. Esto es acompañado con un diseño procedimental, con una serie de pasos secuenciales y un control centralizado en el flujo principal. Ademas, el hardware se encuentra integrado a la lógica, se aplican estructuras condicionales directamente a este.
 
 Otros inconvenientes referidos al cambio que están presentes en el código:
 \begin{itemize}
@@ -1254,10 +1266,15 @@ Por lo que, el estado Waiting no implementa \verb|notifyOrder| y a su vez 0, 1 y
 \section{Obtención de información}
 \label{obtInfo}
 
-Generalmente una tarea importante que tienen los sistemas embebidos es recavar información proveniente de sensores. Existen diferentes formas en las que los sensores transmiten información al sistema, algunos, por ejemplo un sensor de temperatura, setea en el pin en el que esta conectado un cierto valor de tensión, por lo que el sistema solo debe consultar el valor del pin. Otros, en cambio, se comunican mediante interrupciones, por ejemplo un sensor de efecto \textbf{Hall} genera una interrupción por cada detección de campo magnético. Por lo tanto, si lo estamos usando para calcular las \textbf{RPM} de cierto componente giratorio, debemos llevar una cuenta de las interrupciones que generó en cierto periodo de tiempo y realizar cierta matemática. Evidentemente, es necesario que alguna porción de nuestro sistema se encargue de hacerlo y maneje las interrupciones generadas por el sensor. Algo similar pasa con otro tipos de sensores como joysticks, botones, etc. Es por esto que resulta útil una forma general de atacar este problema, en el diseño del robot desmalezador, Laura utilizo una estructura de módulos que lleva a cabo las actividades necesarias para integrar al sistema los sensores que generan interrupciones.
+Generalmente una tarea importante que tienen los sistemas embebidos es recavar información proveniente de sensores. Existen diferentes formas en las que los sensores transmiten información al sistema, algunos, por ejemplo un sensor de temperatura, setea en el pin en el que esta conectado un cierto valor de tensión, por lo que el sistema solo debe consultar el valor del pin. Otros, en cambio, se comunican mediante interrupciones, por ejemplo un sensor de efecto \textbf{Hall} genera una interrupción por cada detección de campo magnético. Por lo tanto, si lo estamos usando para calcular las \textbf{RPM} de cierto componente giratorio, debemos llevar una cuenta de las interrupciones que generó en cierto periodo de tiempo y realizar cierta matemática. Evidentemente, es necesario que alguna porción de nuestro sistema se encargue de hacerlo y maneje las interrupciones generadas por el sensor. Algo similar pasa con otro tipos de sensores como joysticks, botones, etc.
+
+Tradicionalmente esta tarea es centralizada en un único módulo, generalmente representado por un método, que se encarga de manejar la interrupción y almacenar el estado resultante. De esa manera se obtiene una estructura resiliente al cambio, en la cual se dificulta reutilizar código y las funcionalidades están altamente acopladas. Esto es, por ejemplo, si se modifican los cálculos para obtener el resultado deseado, se debe modificar a su vez la toda la implementación. Así como en caso de que cambie la manera en que se maneja la interrupción.
+
+Es por esto que resulta útil una forma general de atacar este problema desde el punto de vista del diseño para el cambio, en el trabajo que se realizó sobre el robot desmalezador \cite{paperPomponio}, se utilizó una estructura de módulos que lleva a cabo las actividades necesarias para integrar al sistema los sensores que generan interrupciones. La estructura del mismo se puede observar en la figura \ref{activo}.
 
 \begin{figure}[h!]
-\caption{Componente sensor activo.}
+\caption{Estructura componentes para la lectura de un sensor activo.}
+\label{activo}
 \centering
 \begin{tikzpicture}\hypertarget{fig:ConnectBufferToMCU}{}
 %-------------Estilos para dibujar-----
@@ -1276,8 +1293,7 @@ Generalmente una tarea importante que tienen los sistemas embebidos es recavar i
 \tikzstyle{flechaFisica}=[-latex,snake=coil,segment aspect=0, red, thick];
 %--------------------------
 
-
-\node[módulo, below =4cm of CR, fill=yellow!20](Pin){Pin};
+\node[módulo,fill=yellow!20](Pin){Pin};
 
 \node[módulo, above left=0.5cm and 2cm of Pin, fill=yellow!20](CountTime){Count};
 
@@ -1301,7 +1317,7 @@ Generalmente una tarea importante que tienen los sistemas embebidos es recavar i
 
 %%------------------------------Referencias------------
 
-\node[módulo, below left=1cm and -0.5cm of BufferReader, fill=yellow!20](mod){nombre};
+\node[módulo, below left=1cm and 1cm of BufferReader, fill=yellow!20](mod){nombre};
 \node[right =0.5cm of mod](modDesc){módulo};
 
 \node[right=4cm of modDesc](x1){};
@@ -1327,14 +1343,25 @@ Generalmente una tarea importante que tienen los sistemas embebidos es recavar i
 
 
 
-Podemos distinguir 4 módulos principales, \textbf{Pin} que es la representación en el diseño del hardware asociado al dispositivo que genera e introduce la interrupción, esta es manejada por \textbf{Count} que es un módulo perteneciente al patrón \textit{Command} el cual cumple la función de comando para reemplazar la utilización de \textit{callbacks}. En particular, opera sobre \textbf{Collector} almacenando en este la información relevante del evento (interrupción). Esta por lo general es un \textit{timestamp} y la cantidad de veces que sucedió.  Por ultimo, \textbf{Buffer} actúa como buffer de la información recibida a través, posee un método que permite obtener el valor recibido. Cuando es invocada toma los valores necesarios que se almacenan en el \textbf{Collector} y realiza los cómputos necesarios para calcular el dato pedido.
+Se distinguen 4 módulos principales, \textbf{Pin} que es la representación en el diseño del hardware asociado al dispositivo que genera e introduce la interrupción, esta es manejada por \textbf{Count} que es un módulo perteneciente al patrón \textit{Command} el cual cumple la función de comando para reemplazar la utilización de \textit{callbacks}. En particular, opera sobre \textbf{Collector} almacenando en este la información relevante del evento (interrupción). Esta por lo general es un \textit{timestamp} y la cantidad de veces que sucedió.  Por ultimo, \textbf{Buffer} actúa como buffer de la información recibida, posee un método que permite obtener el valor recibido. Cuando es invocada toma los valores necesarios que se almacenan en el \textbf{Collector} y realiza los cómputos necesarios para calcular el dato pedido.
 
-Veamos esta estructura más en detalle con un ejemplo de aplicación. Supongamos que tenemos un sensor \textit{Hall} montado en una rueda y con este queremos medir la velocidad a la que se está moviendo. Por lo tanto, cada vez que el sensor detecte un campo magnético emitirá una interrupción que será manejada por el módulo \textbf{Count} que es un comando, por lo que sabe que funciones ejecutar del módulo \textbf{Collector}. \textbf{Count} tiene la siguiente interfaz:
+Veamos esta estructura más en detalle con un ejemplo de aplicación. Supongase que se tiene un sensor \textit{Hall} montado en una rueda y con este se quiere medir la velocidad a la que está girando la rueda. Por lo tanto, cada vez que el sensor detecte un campo magnético (ver grafico \ref{hall}) emitirá una interrupción que será manejada por el módulo \textbf{Count} que es un comando, por lo que sabe que funciones ejecutar del módulo \textbf{Collector}. 
+
+\begin{figure}[h]
+    
+    \caption{Ejemplo señales emitidas por un sensor hall al detectar una variación del campo magnético. Cada pico de voltaje provoca que el microcontrolador genere una interrupción. Imagen extraída de \cite{disenioViejo2}.}
+    \centering
+    \includegraphics[width=0.8\linewidth]{sensorHall.png}
+    \label{hall}
+\end{figure}
+
+
+\textbf{Count} tiene la siguiente interfaz:
 \begin{itemize}
     \item \verb|execute()| registra en el acumulador el instante actual, mediante Collector::currentTime, y luego incrementa el contador de interrupciones invocando Collector::addOne.
 \end{itemize}
 
-Y la de el módulo \textbf{Collector}:
+Y el módulo \textbf{Collector}:
 \begin{itemize}
     \item \verb|currentTime()|: registra internamente el momento actual de cuando el método es invocado.
     \item \verb|getCurrentTime()|: devuelve el último instante de tiempo registrado por el módulo.
@@ -1342,14 +1369,13 @@ Y la de el módulo \textbf{Collector}:
     \item \verb|total()|: retorna el valor del contador interno.
 \end{itemize}
 
-Por lo tanto cuando se pida el valor de velocidad al \textbf{Buffer} este llamará a las funciones necesarias del \textbf{Collector} para obtener información, computará el valor y lo retornará.
+Por lo tanto cuando se pida el valor de velocidad al \textbf{Buffer} este llamará a las funciones necesarias del \textbf{Collector} para obtener información, computará el valor y lo retornará. De esta forma un cliente puede obtener la información recibida a través del pin sin necesidad de manejar las interrupciones y todas las operaciones asociadas al tratamiento de los datos.
 
-De esta forma un cliente de nuestro componente puede obtener la información recibida a través del pin sin necesidad de manejar las interrupciones y todas las operaciones asociadas al tratamiento de los datos.
-
-Por ejemplo, si tenemos un sensor de efecto Hall que emite una interrupción en cada detección del campo magnético y lo usamos para medir la velocidad de una rueda, podemos utilizar el siguiente diseño (obviamente, aplicando lo que acabamos de ver):
+La estructura de módulos resultante de aplicar la técnica al ejemplo seria la de la figura \ref{estructuraHall}.
 
 \begin{figure}[H]
 \caption{Ejemplo módulos para obtener la información referida a la velocidad.}
+\label{estructuraHall}
 \begin{center}
 \scalebox{.90}{
 \begin{tikzpicture}\sf
@@ -1457,7 +1483,7 @@ periodTime()\{\\
 
 Algunos sistemas se encargan de mostrar, almacenar o verificar información de sensores cada cierto tiempo. No resulta crítico perder valores intermedios, es decir que no nos interesa una respuesta inmediata. Un ejemplo puede ser una estación meteorológica o un dispositivo médico de control como un tensiómetro que registra los valores de presión del paciente cada cierto periodo de tiempo.
 
-Una implementación intuitiva es escribir un \textit{loop} y en el que verificamos la información de los sensores y luego ejecutamos una función \textit{sleep} que bloquea la ejecución determinada cantidad de tiempo. Esto tiene varias desventajas, primero el tiempo de ejecución de nuestra rutina alarga el periodo, si queremos agregar otras funcionalidades a realizar mientras esperamos el periodo tendríamos que dividir el \textit{sleep} y calcular tiempo de ejecución.
+Una implementación intuitiva es escribir un \textit{loop} y en el que se verifique la información de los sensores, llamando a ciertos métodos que obtengan esta directamente del hardware, y luego se ejecute una función \textit{sleep} que bloquea la ejecución determinada cantidad de tiempo. Esto tiene varias desventajas, primero el tiempo de ejecución la rutina alarga el periodo, si queremos agregar otras funcionalidades a realizar mientras se espera el periodo se debe dividir el \textit{sleep} y calcular tiempo de ejecución.
 
 Una solución que parece más adecuada desde el punto de vista del diseño orientado al cambio es la siguiente. Se registra un temporizador que cada \textit{x} cantidad de tiempo gatilla una interrupción, esto es provisto por muchos entornos de desarrollo para sistemas embebidos como \gls{arduino}.
 Registraremos un \textit{handler} para esta que será un módulo orden del patrón \textit{Command} el cual encapsula que funciones son necesarias ejecutar para llevar a cabo la funcionalidad deseada. Por ejemplo, pedir la información de los sensores, ya sea a sus respectivos \textbf{Buffers} (si tenemos sensores como en el ejemplo anterior) o a los sensores en si, si son de otro tipo y luego registrarla en cierta módulo (que oculte una estructura de datos). De esta forma liberamos el procesador en los tiempos de espera y desacoplamos esta funcionalidad.
@@ -2022,9 +2048,11 @@ Con este diseño añadimos una capa de verificación sin modificar el módulo or
 
 \section{Organización de la ejecución}
 
-En un sistema robótico embebido se tienen que ejecutar múltiples tareas para lograr el objetivo del mismo. Ya sea, si se eligió una arquitectura de diseño de tipo ``Control de procesos'' o no, por lo general se debe verificar información recibida a través de sensores y otras fuentes (comunicación serial, web, etc), realizar cómputos y efectuar acciones con los actuadores del robot.
+En un sistema robótico embebido se tienen que ejecutar múltiples tareas para lograr el objetivo del mismo. Ya sea, si se eligió una arquitectura de diseño de tipo ``Control de procesos'' o no, por lo general se debe verificar información recibida a través de sensores y otras fuentes (comunicación serial, web, etc), realizar cómputos y efectuar acciones con los actuadores del robot en tiempo real.
 
-Como primer solución uno piensa en crear funciones para cada parte del proceso y llamarlas en \textit{loop} en el \textit{main}, y si es necesario añadir un tiempo de espera entre cada ejecución mediante \textit{sleeps}. El principal problema que tiene este enfoque es que los sistemas robóticos son en tiempo real, es decir se pueden perder \textit{inputs} de sensores si no se los maneja de manera correcta. Además, los tiempos de espera son bloqueantes por lo que se desperdicia acceso a computo. Una estrategia que logra mejorar estos puntos consta de hacer uso de las interrupciones del microcontrolador permitiendo atender a todos los \textit{inputs}. En el robot desmalezador \cite{paperPomponio} esta estrategia se utiliza en conjunto con una arquitectura de control de procesos, por lo tanto existen 3 tareas principales:
+Como primer solución se considera crear funciones para cada parte del proceso y llamarlas en \textit{loop} desde la función \textit{main}, y si es necesario añadir un tiempo de espera entre cada ejecución mediante \textit{sleeps}. El principal problema que tiene este enfoque es que los sistemas robóticos son en tiempo real, es decir se pueden perder \textit{inputs} de sensores si no se los maneja de manera correcta. Además, los tiempos de espera son bloqueantes por lo que se desperdicia acceso a computo. 
+
+Una estrategia que logra mejorar estos puntos consta de hacer uso de las interrupciones del microcontrolador permitiendo atender a todos los \textit{inputs}. En el robot desmalezador \cite{paperPomponio} esta estrategia se utiliza en conjunto con una arquitectura de control de procesos, por lo tanto existen 3 tareas principales:
 
 \begin{itemize}
     \item Recibir información de los sensores y de la PC (por ejemplo, puerto serial).

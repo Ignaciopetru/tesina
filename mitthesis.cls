@@ -169,6 +169,7 @@
 
 \patchcmd{\listoffigures}{\chapter*{\listfigurename}}{\chapter*{\phantomsection\listfigurename}\MakeLinkTarget*{listoffigures}\addcontentsline{toc}{frontmatter}{\listfigurename}}{}{}
 \patchcmd{\listoftables}{\chapter*{\listtablename}}{\chapter*{\phantomsection\listtablename}\MakeLinkTarget*{listoftables}\addcontentsline{toc}{frontmatter}{\listtablename}}{}{}
+%\patchcmd{\lstlistoflistings}{\chapter*{\lstlistlistingname}}{\chapter*{\phantomsection\lstlistlistingname}\MakeLinkTarget*{lstlistoflistings}\addcontentsline{toc}{frontmatter}{\lstlistlistingname}}{}{}
 
 \NewCommandCopy\l@frontmatter\l@chapter
 \NewCommandCopy\l@backmatter\l@chapter

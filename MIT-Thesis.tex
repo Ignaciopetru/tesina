@@ -95,6 +95,13 @@
 
 \usepackage[plain]{is}
 
+\usepackage{listings}
+\renewcommand{\lstlistlistingname}{Índice de códigos}
+\renewcommand{\lstlistingname}{Código}
+
+
+
+
 \dominitoc
 \renewcommand{\mtctitle}{\\}
 
@@ -331,6 +338,9 @@
 \tableofcontents
 \listoffigures
 \listoftables
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{frontmatter}{\lstlistlistingname}
 \lstlistoflistings
 %%% Chapters of thesis  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
