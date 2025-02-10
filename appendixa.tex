@@ -434,3 +434,92 @@ sujetoReal.peticion()\\
 
 
 
+\section{Iterator}
+\label{patronIterator}
+
+\subsection*{Intención}
+Proporcionar un modo de acceder secuencialmente a elementos de un módulo sin exponer su representación interna.
+
+\subsection*{Aplicabilidad}
+
+Úsese el patrón Iterador:
+\begin{itemize}
+\item Para acceder al contenido de un módulo agregado sin exponer su representación interna.
+\item Para permitir varios recorridos sobre objetos agregados.
+\item Para proporcionar una interfaz uniforme para recorrer diferentes estructuras agregadas (es decir, para permitir la iteración polimórfica).
+
+\end{itemize}
+
+
+\subsection*{Participantes}
+
+\begin{itemize}
+\item \textbf{Iterador} Define una interfaz para recorrer los elementos y acceder a ellos.
+
+\item \textbf{IteradorConcreto} Implementa la interfaz de \textbf{Iterator}.
+
+\item \textbf{Agregado} Define una interfaz para crear una instancia de \textbf{Iterator}.
+
+\item \textbf{AgregadoConcreto} Implementa la interaz de Agregado.
+
+\end{itemize}
+
+
+\subsection*{Estructura}
+
+
+\begin{figure}[h]
+\caption{Estructura patrón \textbf{Iterador}}
+\begin{center}
+\begin{tikzpicture}\sf
+\umlsimpleclass{Cliente}
+
+\umlclass[left=1.5cm of Cliente]{Agregado}{}
+{
+crearIterator() \\
+}
+
+\umlclass[below=2cm of Agregado]{AgregadoConcreto}{}
+{
+crearIterator() \\
+}
+
+
+\umlclass[right=1.5cm of Cliente]{Iterador}{}
+{
+primero() \\
+siguiente() \\
+haTerminado() \\
+elementoActual() \\
+}
+
+\umlclass[below right=2cm and 4.83cm of Agregado]{IteradorConcreto}{}
+{
+primero() \\
+siguiente() \\
+haTerminado() \\
+elementoActual() \\
+}
+
+\umlnote[below=1cm of AgregadoConcreto,withd=4cm]{AgregadoConcreto}{
+return new IteradorConcreto()
+}
+
+\umlinherit{IteradorConcreto}{Iterador}
+\umlinherit{AgregadoConcreto}{Agregado}
+\umluniassoc[]{Cliente}{Iterador}
+\umluniassoc[]{Cliente}{Agregado}
+
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+
+
+
+
+
+
+
+
