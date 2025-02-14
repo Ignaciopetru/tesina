@@ -2,16 +2,16 @@
 \addvspace {10\p@ }
 \contentsline {xchapter}{Introducción}{11}{chapter.1}%
 \addvspace {10\p@ }
-\contentsline {xchapter}{Estado del arte}{15}{chapter.2}%
+\contentsline {xchapter}{Estado del arte}{13}{chapter.2}%
 \addvspace {10\p@ }
 \contentsline {xchapter}{Conceptos previos}{19}{chapter.3}%
 \contentsline {table}{\numberline {3.1}{\ignorespaces Ejemplos sistemas embebidos.}}{20}{table.caption.9}%
-\contentsline {table}{\numberline {3.2}{\ignorespaces Conceptos clave en la arquitectura de control de procesos.}}{31}{table.caption.15}%
+\contentsline {table}{\numberline {3.2}{\ignorespaces Conceptos clave en la arquitectura de control de procesos.}}{33}{table.caption.15}%
 \addvspace {10\p@ }
-\contentsline {xchapter}{Técnicas útiles}{33}{chapter.4}%
+\contentsline {xchapter}{Técnicas útiles}{35}{chapter.4}%
 \addvspace {10\p@ }
-\contentsline {xchapter}{Problemas comunes}{37}{chapter.5}%
-\contentsline {table}{\numberline {5.1}{\ignorespaces Funciones de cada pin del módulo DRV8838}}{38}{table.caption.19}%
-\contentsline {table}{\numberline {5.2}{\ignorespaces Anticipos al cambio del diseño propuesto para el brazo robótico.}}{66}{table.caption.48}%
+\contentsline {xchapter}{Problemas comunes}{39}{chapter.5}%
+\contentsline {table}{\numberline {5.1}{\ignorespaces Funciones de cada pin del módulo DRV8838}}{40}{table.caption.19}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces Anticipos al cambio del diseño propuesto para el brazo robótico.}}{68}{table.caption.48}%
 \addvspace {10\p@ }
-\contentsline {xchapter}{Patrones de diseño de Gamma}{87}{appendix.Alph1}%
+\contentsline {xchapter}{Patrones de diseño de Gamma}{89}{appendix.Alph1}%

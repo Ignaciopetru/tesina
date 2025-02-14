@@ -1,4 +1,5 @@
 \chapter{Conceptos previos}
+\label{conceptos}
 
 En este capítulo se abordan conceptos necesarios para poder comprender las soluciones a los problemas comunes que se trataran luego. Entre ellos se encuentran algunas definiciones como la de \textit{Sistemas embebidos} y otras relacionadas a la IS. También, conceptos centrales del diseño para el cambio y todo lo necesario para llevarlo a cabo.
 
@@ -21,7 +22,7 @@ El último autor comenta que los sistemas embebidos cumplen las siguientes afirm
 	\item Los sistemas embebidos son más limitados en funcionalidad de hardware y/o software que una computadora personal.
 	\item Un sistema embebido está diseñado para realizar una función dedicada.
 	\item Un sistema embebido es un sistema informático con requisitos de mayor calidad y fiabilidad que otros tipos de sistemas informáticos.
-	\item Algunos dispositivos que se denominan sistemas embebidos, como los PDA\footnote{Asistentes Personales Digitales} o las tabletas web, no son realmente sistemas embebidos.
+	\item Algunos dispositivos que se denominan sistemas embebidos, como los \gls{pda}.
 \end{itemize}
 
 De las definiciones se puede concluir que un sistema embebido es una pieza clave que permite que hardware especializado cumpla con su propósito específico. A diferencia de los sistemas de propósito general, el software en un sistema embebido está diseñado para interactuar estrechamente con los componentes de hardware, respondiendo en tiempo real a eventos del entorno, ya sea para controlar actuadores, monitorear sensores o gestionar comunicaciones. Este software está optimizado para requisitos específicos como velocidad, consumo energético, y confiabilidad, lo que lo hace esencial en aplicaciones críticas como dispositivos médicos, sistemas automotrices y controles industriales.
@@ -62,7 +63,7 @@ En resumen, el software de un sistema embebido actúa como el cerebro que dirige
     \end{tabular}
 \end{table}
 
-Otros autores \cite{lee2017introduction} describen sistemas \textit{ciber-físicos} (CSP\footnote{por sus siglas en inglés (cyber-physical system)}) como la integración de la computación con procesos físicos. Usualmente llevada a cabo utilizando sistemas embebidos con ciclos de retroalimentación. En los cuales la parte computacional afecta al ámbito físico y viceversa. Para realizarlo se utiliza una serie de sensores y actuadores que permiten la comunicación entre ambos mundos.
+Otros autores \cite{lee2017introduction} describen sistemas \textit{ciber-físicos} (\Ac{CSP}\footnote{por sus siglas en inglés (cyber-physical system)}) como la integración de la computación con procesos físicos. Esta integración usualmente se lleva a cabo utilizando sistemas embebidos con ciclos de retroalimentación; en los cuales la parte computacional afecta al ámbito físico y viceversa. Los componentes que permiten la comunicación entre ambos mundos son sensores y actuadores.
 Además, si tomamos en cuenta los ejemplos que se presentan tanto en \cite{noergaard2005embedded} como en \cite{lee2017introduction}, podemos decir que la mayoría de los sistemas embebidos realizan tareas de \textbf{control} sobre el mundo físico.
 
 Con respecto al hardware en donde corren los sistemas embebidos podemos descatar que suele consistir en una placa o chip compacto que incluye:
@@ -75,9 +76,9 @@ Con respecto al hardware en donde corren los sistemas embebidos podemos descatar
 \end{itemize}
 El tama\~no compacto y la integraci\'on de componentes distinguen a los sistemas embebidos de otros sistemas m\'as grandes como las computadoras de escritorio o los servidores. Se diferencian, además, en su poder de computo limitado tanto por el hardware (baja disponibilidad de memoria RAM, \gls{clock} de la CPU bajo, etc) como por la disponibilidad de energía eléctrica.
 
-Existen varios microcontroladores multipropósito de uso comercial, tales como los producidos por la empresa Arduino o los similares de la familia  Raspberry Pi. La presentación de los mismos suele ser en forma de una placa preparada para conectar los inputs y outputs, como las que se observan en \ref{arduinoUNO} y \ref{raspberry}.
+Existen varios microcontroladores multipropósito de uso comercial, tales como los producidos por la empresa Arduino \cite{arduinoMicro} o los similares de la familia  Raspberry Pi \cite{raspMicro}. La presentación de los mismos suele ser en forma de una placa preparada para conectar los inputs y outputs, como las que se observan en figuras \ref{arduinoUNO} y \ref{raspberry}.
 
-Por defecto, el microcontrolador ejecuta el software almacenado en su unidad flash, la cual debe ser grabada cada vez que se actualice. Dado esto y las limitaciones de hardware ya mencionadas, se deben tener ciertas consideraciones a la hora de escribir el código. Tales como, prestar atención a la performance del sistema, a la cantidad de librerías a utilizar, al uso de memoria RAM, etc.
+Por defecto, el microcontrolador ejecuta el software almacenado en su unidad flash, la cual debe ser grabada cada vez que se actualice el código. Dado esto y las limitaciones de hardware ya mencionadas, se deben tener ciertas consideraciones a la hora de escribir el código. Tales como, prestar atención a la performance del sistema, a la cantidad de librerías a utilizar, al uso de memoria RAM, etc.
 
 \begin{figure}[h!]
 	\caption{Arduino UNO}
@@ -98,12 +99,12 @@ Por defecto, el microcontrolador ejecuta el software almacenado en su unidad fla
 \subsection{Interrupciones}
 Las interrupciones en un microcontrolador son eventos que pausan la ejecución del programa principal para atender una tarea urgente. Funcionan como un mecanismo de respuesta automática que permite que el microcontrolador responda inmediatamente a eventos externos o internos sin depender de que el programa principal revise continuamente el estado de los dispositivos o variables asociadas a la generación de la interrupción.
 
-Cuando ocurre una interrupción (por ejemplo, un cambio en un sensor o una solicitud de un actuador), el microcontrolador detiene su ejecución actual y salta a una rutina de interrupción (ISR, Interrupt Service Routine). Esta rutina es un fragmento de código predefinido que realiza las tareas necesarias, como leer un sensor o activar un actuador. Después de ejecutar la ISR, el microcontrolador regresa automáticamente al punto donde fue interrumpido, reanudando el programa principal sin perder el flujo de ejecución. En la imagen \ref{interrupt} se puede apreciar este comportamiento.
+Cuando ocurre una interrupción (por ejemplo, un cambio en un sensor o una solicitud de un actuador), el microcontrolador detiene su ejecución actual y salta a una rutina de interrupción (ISR, Interrupt Service Routine), ver diagrama de la figura \ref{interrupt}. Esta rutina es un fragmento de código predefinido que realiza las tareas necesarias, como leer un sensor o activar un actuador. Después de ejecutar la ISR, el microcontrolador regresa automáticamente al punto donde fue interrumpido, reanudando el programa principal sin perder el flujo de ejecución.
 
 \begin{figure}[h!]
 	\centering
     \includegraphics[width=0.7\linewidth]{components_interrupt.png}
-    \caption{Diagrama interrupción}
+    \caption{Diagrama interrupción extraído de \cite{imgInterrupciones}.}
     \label{interrupt}
 \end{figure}
 
@@ -121,20 +122,30 @@ Gracias a las interrupciones, el microcontrolador puede realizar tareas en tiemp
 \label{ingso}
 
 La arquitectura y el diseño del software se consideran herramientas esenciales para lograr atributos importantes de calidad del software, como la modificabilidad, reusabilidad, mantenibilidad, etc.\cite{ShawGarlan1996, ghezzi2003, bass2003, DBLP:books/daglib/0030743}
-Tradicionalmente, el software para robots tiende a desarrollarse de manera monolítica, con pocas funciones de gran tamaño y numerosos condicionales anidados, o mediante una descomposición funcional básica que resulta ineficiente para mantener y reutilizar componentes \cite{code-1,code-2}. Frente a esto, se propone un diseño sistemático basado en principios de la ingeniería de software, aplicados para anticipar y manejar los cambios \cite{Gamma:1995:DPE:186897, DBLP:books/lib/BuschmannHS07}.
+Tradicionalmente, el software para robots tiende a desarrollarse de manera monolítica, con pocas funciones de gran tamaño y numerosas sentencias condicionales anidadas, o mediante una descomposición funcional básica que resulta ineficiente para mantener y reutilizar componentes \cite{code-1,code-2}. Frente a esto, se propone un diseño sistemático basado en principios de la ingeniería de software, aplicados para anticipar y manejar los cambios \cite{Gamma:1995:DPE:186897, DBLP:books/lib/BuschmannHS07}.
 
-El diseño para el cambio, como principio fundamental, se centra en prever modificaciones probables en el software \cite{Parnas1972, ShawGarlan1996, ghezzi2003, bass2003, DBLP:books/daglib/0030743}, ya sea por cambios en los objetivos de comportamiento, en el hardware o en los algoritmos de control. Diseñar anticipando estos cambios permite reducir los esfuerzos necesarios para implementar ajustes y facilita la reutilización de componentes en familias de software\footnote{en este caso familias de robots} que comparten funcionalidades similares pero adaptadas a diferentes plataformas de hardware\cite{Parnas02, DBLP:books/daglib/0019719}.
+El diseño para el cambio, como principio fundamental, se centra en prever modificaciones probables en el software \cite{Parnas1972, ShawGarlan1996, ghezzi2003, bass2003, DBLP:books/daglib/0030743}, por cambios en los objetivos de comportamiento, en el hardware o en los algoritmos de control, entre otros. Diseñar anticipando estos cambios permite reducir los esfuerzos necesarios para implementar ajustes y facilita la reutilización de componentes en familias de software\footnote{en este caso familias de robots} que comparten funcionalidades similares, pero no iguales, y adaptadas a diferentes plataformas de hardware \cite{Parnas02, DBLP:books/daglib/0019719}.
 
-Para abordar estos retos, el diseño modular es clave \cite{Parnas1972}. Este enfoque organiza el software como un conjunto de módulos simples con responsabilidades claramente definidas y relaciones explícitas entre ellos. Cada módulo se diseña para ocultar información específica y gestionar un cambio probable de forma aislada, lo que minimiza el impacto de las modificaciones en el resto del sistema. Por ejemplo, si un sensor cambia su forma de reportar datos, el ajuste puede limitarse al módulo responsable de interactuar con ese sensor.
+Para abordar estos retos, el diseño modular es clave \cite{Parnas1972}.
+Un \textbf{módulo} es un elemento de diseño que, en un lenguaje de programación orientado a objetos, suele implementarse como una \textbf{clase}. A su vez, una \textbf{instancia} de un módulo, en este tipo de lenguajes, corresponde a un \textbf{objeto}. Sin embargo, cuando se habla de diseño, el término adecuado es módulo e instancia, ya que la implementación podría realizarse en un lenguaje que no sea orientado a objetos. Este enfoque de diseño organiza el software como un conjunto de módulos simples con responsabilidades claramente definidas y relaciones explícitas entre ellos. Cada módulo se diseña para ocultar información específica y gestionar un cambio probable de forma aislada, lo que minimiza el impacto de las modificaciones en el resto del sistema. Por ejemplo, si un sensor cambia su forma de reportar datos, el ajuste debería limitarse al módulo responsable de interactuar con ese sensor.
 
-Además, el principio de diseño abierto-cerrado \cite{DBLP:books/ph/Meyer97} se implementa para garantizar que el sistema pueda extenderse mediante nuevos módulos en lugar de modificar los existentes, reduciendo el riesgo de introducir errores al alterar componentes ya probados. Es decir, que un sistema debe estar abierto a extensiones pero cerrado a modificaciones \cite{DBLP:books/ph/Meyer97}. Esto se complementa con la aplicación de patrones de diseño y estilos arquitectónicos, que aportan soluciones probadas para manejar cambios recurrentes en dominios específicos \cite{Gamma:1995:DPE:186897, DBLP:books/lib/BuschmannHS07}. Por ejemplo, en sistemas robóticos, un estilo arquitectónico basado en bucles de control puede destacar las características esenciales del sistema y facilitar decisiones de diseño óptimas \cite{ShawGarlan1996}.
+Además, el principio de diseño abierto-cerrado \cite{DBLP:books/ph/Meyer97} se implementa para garantizar que el sistema pueda extenderse mediante nuevos módulos en lugar de modificar los existentes, reduciendo el riesgo de introducir errores al alterar componentes ya probados. Es decir, que un sistema debe estar abierto a extensiones pero cerrado a modificaciones. Esto se complementa con la aplicación de patrones de diseño y estilos arquitectónicos, que aportan soluciones probadas para manejar cambios recurrentes en dominios específicos \cite{Gamma:1995:DPE:186897, DBLP:books/lib/BuschmannHS07}. Por ejemplo, en sistemas robóticos, un estilo arquitectónico basado en bucles de control puede destacar las características esenciales del sistema y facilitar decisiones de diseño óptimas \cite{ShawGarlan1996}.
 
-\textbf{Herencia de Interfaz}
-La herencia de interfaz es una técnica mediante la cual una clase hija hereda la interfaz (es decir, el conjunto de métodos públicos) de una clase padre. Este enfoque permite que las clases hijas implementen o amplíen la funcionalidad definida en la clase base. Según el archivo, este método se utiliza típicamente cuando las subclases comparten comportamientos comunes, y el objetivo principal es reutilizar código y garantizar una coherencia en la interfaz entre las clases relacionadas. Sin embargo, una limitación clave de la herencia es que introduce un acoplamiento fuerte entre la clase base y las subclases, lo que puede dificultar la adaptabilidad a cambios inesperados en el sistema.
+\subsubsection*{Herencia de Interfaz}
+En el diseño modular, un módulo consta de una interfaz y una implementación. La interfaz define el conjunto de métodos accesibles externamente, mientras que la implementación gestiona como el módulo realizar los comportamientos de cada método definido en la interfaz.
 
-\textbf{Composición}
-La composición consiste en estructurar sistemas combinando módulos a través de sus interfaces en lugar de depender de relaciones de herencia. Esto se logra mediante la inclusión de referencias a otros dentro de una clase, lo que permite que las instancias deleguen tareas a estos módulos asociados. En el diseño presentado en el archivo, la composición es destacada como una solución que favorece la flexibilidad, ya que evita el acoplamiento jerárquico y permite reemplazar componentes sin afectar el resto del sistema. Además, este enfoque está alineado con el principio de diseño ``preferir la composición sobre la herencia'' \cite{Gamma:1995:DPE:186897}, que enfatiza la modularidad y la apertura al cambio.
+Existen esencialmente dos tipos de herencia:
 
+\begin{itemize}
+\item \textbf{Herencia de clases}: Un módulo hijo hereda tanto la interfaz como la implementación de un módulo padre, es decir, hereda todo su comportamiento. Si bien esto permite la reutilización de código, introduce un acoplamiento fuerte y reduce la flexibilidad ante cambios, lo que se una mala práctica.
+\item \textbf{Herencia de interfaces}: En este caso, un módulo hijo solo hereda la interfaz, permitiendo que cada módulo implemente su propio comportamiento. Este enfoque es más flexible y facilita la adaptabilidad del sistema.
+\end{itemize}
+
+
+\subsubsection*{Composición}
+La composición consiste en estructurar sistemas combinando módulos a través de sus interfaces en lugar de depender de relaciones de herencia. Esto se logra mediante la inclusión de referencias a otros dentro de una clase, lo que permite que las instancias deleguen tareas a estos módulos asociados. La composición es una solución que favorece la flexibilidad, ya que evita el acoplamiento jerárquico y permite reemplazar componentes sin afectar el resto del sistema. Además, este enfoque está alineado con el principio de diseño ``preferir la composición sobre la herencia'' \cite{Gamma:1995:DPE:186897}, que enfatiza la modularidad y la apertura al cambio.
+
+Dado que la herencia de clases tiende a ser rígida, los patrones de diseño la evitan, combinando en su lugar herencia de interfaces con composición de módulos y delegación de responsabilidades. Mediante la composición, un módulo puede reutilizar funcionalidad sin necesidad de heredar implementación, mientras que la delegación permite distribuir tareas entre distintos módulos de manera flexible.
 
 
 \subsection{Metodología de Parnas}
@@ -147,7 +158,7 @@ Principio de Ocultación de la Información: Los ítem con alta probabilidad de 
 \end{minipage}} 
 \\\\
 \indent
-El núcleo de esta metodología es la identificación de los ítems con alta probabilidad de cambio dentro del sistema. Estos ítems representan aspectos de diseño o implementación susceptibles de modificaciones futuras, como algoritmos, estructuras de datos, interfaces con hardware o incluso requerimientos del usuario (ver lista extendida en \ref{listaItems}). Una vez identificados, Parnas sugiere aislar cada ítem en módulos independientes, asegurando que cada módulo oculte las decisiones de diseño específicas que podrían cambiar. Esto se logra diseñando interfaces que no expongan detalles de implementación, permitiendo que los módulos interactúen sin conocer sus detalles internos.
+El núcleo de esta metodología es la identificación de los ítems con alta probabilidad de cambio dentro del sistema. Estos ítems representan aspectos de diseño o implementación susceptibles de modificaciones futuras, como algoritmos, estructuras de datos, interfaces con hardware o incluso requerimientos del usuario (ver lista extendida en sección \ref{listaItems}). Una vez identificados, Parnas sugiere ocultar y aislar cada item de cambio en un módulo independiente, asegurando que cada módulo oculte las decisiones de diseño específicas que podrían cambiar. Esto se logra diseñando interfaces que no expongan detalles de implementación, permitiendo que los módulos interactúen sin conocer sus detalles internos.
 
 La razón por la que queremos aplicar esta metodología es clara: minimizar los costos asociados al desarrollo y mantenimiento del software. Al aislar las áreas susceptibles de cambio, cualquier modificación futura afectará únicamente al módulo correspondiente, sin propagarse al resto del sistema. Además, esta aproximación mejora la capacidad de escalar el sistema, facilita la colaboración en equipos de desarrollo grandes y permite que diferentes programadores trabajen en módulos específicos de manera independiente.
 
@@ -192,7 +203,7 @@ Es útil consultar estos items a la hora de diseñar siguiendo los criterios de 
 
 Quienes diseñan un sistema no serán necesariamente quienes lo implementen, por lo que sus decisiones deben estar disponibles para que diversos interesados en el sistema puedan revisarlas y comprenderlas. Por ello, documentar o describir el diseño de manera adecuada es tan importante como el diseño mismo. En este sentido, Parnas introduce el concepto de ``\textit{design through documentation}'' \cite{parnasDoc}, lo que nos lleva a enunciar el siguiente principio de diseño: \textit{Un diseño sin documentación carece de utilidad práctica.}
 
-Para lograr una buena descripción del diseño se utilizan multiples documentos que aportan informacion sobre distintos aspectos a tener en cuenta, entre ellos encontramos:
+Para lograr una buena descripción del diseño se utilizan múltiples documentos que aportan información sobre distintos aspectos a tener en cuenta \cite{ClementsEtAl2010}, entre ellos se encuentran:
 
 \begin{itemize}
 \item \textbf{Documentos de módulos}. Los elementos de estos documentos son módulos o unidades de implementación. Los módulos representan una forma basada en el código de considerar al sistema. Cada módulo tiene asignada y es responsable de llevar adelante una función.
@@ -250,7 +261,7 @@ En los diagramas (o figuras) se utilizan los siguientes símbolos.
 \end{tabular}\\\vspace{0.5cm}
 
 
-Por otro lado, para la documentación del uso de patrones de diseño, utilizamos el lenguaje 2MIL, en la figura \ref{docPatron}  podemos observar un ejemplo.
+Por otro lado, para la documentación del uso de patrones de diseño, utilizamos el lenguaje 2MIL\footnote{2MIL es una adaptación del lenguaje TDN presentado en \cite{2mil}.}, en la figura \ref{docPatron}  podemos observar un ejemplo.
 
 \begin{figure}
 \caption{Documentación aplicación de patrón.}
@@ -273,35 +284,35 @@ Por otro lado, para la documentación del uso de patrones de diseño, utilizamos
 
 \subsection{Patrones de Diseño}
 
-A la hora de estructurar código podemos distinguir dos niveles, uno se tratará en esa sub-sección y el otro en \ref{secArq}. Los patrones de diseño se aplican en el nivel de diseño. En este los elementos son módulos y la comunicación se lleva a cabo mediante llamadas a procedimiento. Además de las llamadas, se aplican dos conceptos previamente mencionados en \ref{ingso}, la composición y la herencia de interfaces. Estas son las herramientas con las se cuenta en el nivel de diseño para estructurar el código.
+A la hora de estructurar código podemos distinguir dos niveles, uno se tratará en esa sub-sección y el otro en sección \ref{secArq}. Los patrones de diseño se aplican en el nivel de diseño. En este los elementos son módulos y la comunicación se lleva a cabo mediante llamadas a procedimiento. Además de las llamadas, se aplican dos conceptos previamente mencionados en \ref{ingso}, la composición y la herencia de interfaces. Estas son las herramientas con las se cuenta en el nivel de diseño para estructurar el código.
 
-En \cite{Gamma:1995:DPE:186897}, el autor trae a colación la definición de patrón de diseño que dio Christopher Alexander:
+En \cite{Gamma:1995:DPE:186897}, los autores trae a colación la definición de patrón de diseño que dio Christopher Alexander:
 
 \textit{``cada patrón describe un problema que ocurre una y otra vez en nuestro entorno, así como la solución al problema, de modo que pueda aplicarse un millón de veces esta solución sin hacer lo mismo dos veces''}
 
-Christopher era arquitecto, pero su definición puede ser aplicada al ámbito del software, en lugar de paredes, vigas y columnas, trabajamos con módulos e interfaces.
+Christopher era arquitecto, pero su definición fue aplicada al ámbito del software, en lugar de paredes, vigas y columnas, trabajamos con módulos e interfaces.
 
 Un patrón tiene tres elementos principales:
 
 \begin{itemize}
 	\item El \textbf{problema} al que se intenta dar solución. Posee una explicación del mismo, con el fin de que el usuario pueda saber si aplica o no a su situación en cuestión.
-	\item La \textbf{solución} al problema, dada como los elementos de del diseño, sus relación responsabilidades y colaboraciones. Es una plantilla que puede ser aplicada en diferentes condiciones.
+	\item La \textbf{solución} al problema, dada como los elementos de diseño, sus relación responsabilidades y colaboraciones. Es una plantilla que puede ser aplicada en diferentes condiciones.
 	\item Las \textbf{consecuencias}, que son los resultados de aplicar esta solución. Es decir, que beneficios y costos obtenemos de la aplicación. Así como las formas que el patrón provee para anticiparse a los posibles cambios futuros.
 \end{itemize}
 
-Determinar que es o no un patrón resulta objetivo, pero utilizaremos el mismo criterio que el autor de \cite{Gamma:1995:DPE:186897}:
+Determinar qué es o no un patrón resulta objetivo y el criterio de selección varia entre autores. Para este trabajo se utilizará el mismo criterio que los autores eligieron en \cite{Gamma:1995:DPE:186897}:
 
 \textit{``descripciones de módulos relacionados que están particularizados para resolver un problema de diseño general en un determinado contexto''}
 
-Notar no solo se quiere saber como resolver un problema, sino que se busca que la solución se alinee con los principios de la ingeniería de software y provea un buen diseño que permita lograr las propiedades que se buscan, modificabilidad, reusabilidad, mantenibilidad, etc. Esto será importante para diferenciar algunos ``patrones de diseño'' que no tiene en cuenta el objetivo mencionado.
+Notar no solo se quiere saber cómo resolver un problema, sino que se busca que la solución se alinee con los principios de la ingeniería de software y provea un buen diseño que permita lograr las propiedades que se buscan, modificabilidad, reusabilidad, mantenibilidad, etc.
 
-Para anticiparse al cambio, los patrones aseguran que un sistema pueda cambiar de manera concreta, es decir, que se deja que algún aspecto de la estructura varíe de manera independiente y esperada.
+Para anticiparse al cambio, los patrones aseguran que un sistema pueda cambiar de manera concreta, es decir, se deja que algún aspecto de la estructura varíe de manera independiente y esperada.
 
 
 \subsection{Arquitectura de software}
 \label{secArq}
 
-En contraste con los patrones de diseño, la arquitectura de software no utiliza módulos e interfaces como actores principales, sino que los elementos son componentes, los cuales pueden estar formatos por múltiples módulos y tener cierta complejidad. La forma de comunicarse en este nivel se realiza mediante conectores los cuales pueden no ser necesariamente llamadas a procesos, sino otras estructuras como protocolos, pipes, etc..
+En contraste con los patrones de diseño, la arquitectura de software no utiliza módulos e interfaces como actores principales, sino que los elementos son componentes, los cuales pueden estar formados por múltiples módulos y tener cierta complejidad. La forma de comunicarse en este nivel se realiza mediante conectores los cuales pueden no ser necesariamente llamadas a procesos, sino otras estructuras como protocolos, pipes, etc..
 
 Según \cite{ShawGarlan1996} la arquitectura de software se define como la estructura fundamental de un sistema de software, que está compuesta por sus componentes y las relaciones entre estos. Este campo aborda la organización y los patrones utilizados para estructurar los sistemas de software de manera que sean eficientes, sostenibles y capaces de manejar cambios a lo largo del tiempo.
 
@@ -416,12 +427,12 @@ La arquitectura provee una serie de pasos para realizar el control, estos se eje
 \begin{itemize}
 \item El sistema recibe valores de referencia llamados \textit{set-points}.
 \item Se leen los valores actuales a través de los sensores.
-\item Con los nuevos valores, se realizan los calculos a fin de modificar mediante actuadores las propiedades e intentar acerlarlas a los valores de referencia.
-\item Una vez, decidida la accion se aplica el cambio.
+\item Con los nuevos valores, se realizan los cálculos a fin de modificar mediante actuadores las propiedades e intentar acercarlas a los valores de referencia.
+\item Una vez, decidida la acción se aplica el cambio.
 \end{itemize}
 
 
-Para llevar a cabo los pasos, esta arquitectura emplea conectores como eventos, llamadas a procedimiento y tubos (pipes) para gestionar la comunicación y las acciones entre los componentes. A nivel computacional, el sistema funciona en un ciclo continuo de retroalimentación donde los sensores miden las variables, el \textbf{Control} evalúa estas mediciones y, de ser necesario, ajusta el \textbf{Proceso} para garantizar el cumplimiento de los objetivos definidos. Este enfoque modular facilita la incorporación de nuevos sensores, actualizaciones en el algoritmo de control y cambios en el hardware, promoviendo flexibilidad y escalabilidad.
+Para llevar a cabo los pasos, esta arquitectura emplea conectores como eventos, llamadas a procedimiento y tubos (pipes) para gestionar la comunicación y las acciones entre los componentes. A nivel computacional, el sistema funciona en un ciclo continuo de retroalimentación donde los sensores miden las variables, el \textbf{Control} evalúa estas mediciones y, de ser necesario, ajusta el \textbf{Proceso} para garantizar el cumplimiento de los objetivos definidos. Este enfoque modular brinda independencia entre componentes. Por ejemplo, un sensor emite información colocándola en un pipe sin conocer al destinatario. Esto permite que los sensores puedan ser modificado o reemplazado sin afectar al controlador, así como agregar nuevos sensores. De manera similar, existe una separación clara entre el algoritmo de control, que realiza los cálculos para alcanzar los valores de referencia, y el proceso, que se encarga de aplicar dichos cálculos. Este desacople permite que cambios en el algoritmo de control no impacten directamente en el proceso y viceversa. En conclusión se facilita la incorporación de nuevos sensores, actualizaciones en el algoritmo de control y cambios en el hardware, promoviendo flexibilidad y escalabilidad.
 
 \begin{table}[h!]
 
