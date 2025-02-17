@@ -22,20 +22,20 @@
 \contentsline {section}{\numberline {5.2}Interfaces que no se ajustan perfectamente}{45}{section.5.2}%
 \contentsline {section}{\numberline {5.3}Control en conjunto de dispositivos}{50}{section.5.3}%
 \contentsline {subsection}{\numberline {5.3.1}Subsistemas de control}{52}{subsection.5.3.1}%
-\contentsline {subsection}{\numberline {5.3.2}Ejemplo}{55}{subsection.5.3.2}%
-\contentsline {section}{\numberline {5.4}Obtención de información}{69}{section.5.4}%
+\contentsline {subsection}{\numberline {5.3.2}Ejemplo}{56}{subsection.5.3.2}%
+\contentsline {section}{\numberline {5.4}Obtención de información}{70}{section.5.4}%
 \contentsline {section}{\numberline {5.5}Control anti-rebote}{73}{section.5.5}%
 \contentsline {section}{\numberline {5.6}Máquinas de estado}{74}{section.5.6}%
 \contentsline {section}{\numberline {5.7}Integridad de la información}{82}{section.5.7}%
-\contentsline {section}{\numberline {5.8}Verificación de precondiciones.}{83}{section.5.8}%
-\contentsline {section}{\numberline {5.9}Organización de la ejecución}{86}{section.5.9}%
-\contentsline {chapter}{\numberline {A}Patrones de diseño de Gamma}{89}{appendix.Alph1}%
-\contentsline {section}{\numberline {A.1}Adapter}{89}{section.Alph1.1}%
-\contentsline {section}{\numberline {A.2}Command}{90}{section.Alph1.2}%
-\contentsline {section}{\numberline {A.3}State}{91}{section.Alph1.3}%
-\contentsline {section}{\numberline {A.4}Mediator}{93}{section.Alph1.4}%
-\contentsline {section}{\numberline {A.5}Decorator}{94}{section.Alph1.5}%
-\contentsline {section}{\numberline {A.6}Proxy}{95}{section.Alph1.6}%
-\contentsline {section}{\numberline {A.7}Iterator}{96}{section.Alph1.7}%
-\contentsline {chapter}{Glosario}{101}{appendix*.67}%
-\contentsline {backmatter}{Referencias}{103}{appendix*.68}%
+\contentsline {section}{\numberline {5.8}Verificación de precondiciones.}{84}{section.5.8}%
+\contentsline {section}{\numberline {5.9}Organización de la ejecución}{87}{section.5.9}%
+\contentsline {chapter}{\numberline {A}Patrones de diseño de Gamma}{91}{appendix.Alph1}%
+\contentsline {section}{\numberline {A.1}Adapter}{91}{section.Alph1.1}%
+\contentsline {section}{\numberline {A.2}Command}{92}{section.Alph1.2}%
+\contentsline {section}{\numberline {A.3}State}{93}{section.Alph1.3}%
+\contentsline {section}{\numberline {A.4}Mediator}{95}{section.Alph1.4}%
+\contentsline {section}{\numberline {A.5}Decorator}{96}{section.Alph1.5}%
+\contentsline {section}{\numberline {A.6}Proxy}{97}{section.Alph1.6}%
+\contentsline {section}{\numberline {A.7}Iterator}{98}{section.Alph1.7}%
+\contentsline {chapter}{Glosario}{103}{appendix*.67}%
+\contentsline {backmatter}{Referencias}{105}{appendix*.68}%
