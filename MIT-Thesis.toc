@@ -4,19 +4,20 @@
 \contentsline {frontmatter}{Índice de códigos}{9}{section*.6}%
 \contentsline {chapter}{\numberline {1}Introducción}{11}{chapter.1}%
 \contentsline {chapter}{\numberline {2}Estado del arte}{13}{chapter.2}%
-\contentsline {chapter}{\numberline {3}Conceptos previos}{19}{chapter.3}%
-\contentsline {section}{\numberline {3.1}Sistemas embebidos}{19}{section.3.1}%
-\contentsline {subsection}{\numberline {3.1.1}Interrupciones}{21}{subsection.3.1.1}%
-\contentsline {section}{\numberline {3.2}Ingeniería de Software}{23}{section.3.2}%
-\contentsline {subsection}{\numberline {3.2.1}Metodología de Parnas}{24}{subsection.3.2.1}%
-\contentsline {subsection}{\numberline {3.2.2}Items de cambio comunes}{26}{subsection.3.2.2}%
-\contentsline {subsection}{\numberline {3.2.3}Documentación}{26}{subsection.3.2.3}%
-\contentsline {subsection}{\numberline {3.2.4}Patrones de Diseño}{29}{subsection.3.2.4}%
-\contentsline {subsection}{\numberline {3.2.5}Arquitectura de software}{30}{subsection.3.2.5}%
-\contentsline {section}{\numberline {3.3}Arquitectura Control de Procesos}{30}{section.3.3}%
-\contentsline {chapter}{\numberline {4}Técnicas útiles}{35}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Desacople de módulos: Patrón Command}{35}{section.4.1}%
-\contentsline {subsubsection}{\numberline {4.1.0.1}Ejemplo}{37}{subsubsection.4.1.0.1}%
+\contentsline {chapter}{\numberline {3}Sistemas embebidos}{19}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Definición}{19}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Interrupciones}{21}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Sistemas Embebidos Robóticos}{23}{section.3.3}%
+\contentsline {chapter}{\numberline {4}Ingeniería de Software}{25}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Definiciones}{25}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Metodología de Parnas}{27}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Items de cambio comunes}{28}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Documentación}{28}{section.4.4}%
+\contentsline {section}{\numberline {4.5}Patrones de Diseño}{31}{section.4.5}%
+\contentsline {section}{\numberline {4.6}Arquitectura de Software}{32}{section.4.6}%
+\contentsline {section}{\numberline {4.7}Arquitectura de Software Control de Procesos}{32}{section.4.7}%
+\contentsline {section}{\numberline {4.8}Desacople de módulos: Patrón Command}{34}{section.4.8}%
+\contentsline {subsubsection}{\numberline {4.8.0.1}Ejemplo}{36}{subsubsection.4.8.0.1}%
 \contentsline {chapter}{\numberline {5}Problemas comunes}{39}{chapter.5}%
 \contentsline {section}{\numberline {5.1}Acceso al hardware}{39}{section.5.1}%
 \contentsline {section}{\numberline {5.2}Interfaces que no se ajustan perfectamente}{45}{section.5.2}%
