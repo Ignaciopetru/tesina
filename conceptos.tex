@@ -121,23 +121,25 @@ Gracias a las interrupciones, el microcontrolador puede realizar tareas en tiemp
 \section{Sistemas Embebidos Robóticos}
 
 
-Los sistemas embebidos de control robótico son fundamentales en la automatización y operación de robots en diversas aplicaciones. Estos sistemas integran hardware y software diseñados específicamente, asegurando que el robot responda adecuadamente a su entorno y a las instrucciones programadas. Se encargan de relacionar la información obtenida mediante sensores con la configurada por el usuario, a fin de lograr el objetivo deseado aplicando cambios en el mundo físico con los actuadores disponibles.
+Los sistemas embebidos de control robótico son fundamentales en la automatización y operación de robots en diversas aplicaciones. Se trata de sistemas computacionales diseñados para realizar funciones específicas dentro de un robot, integrando hardware y software con el objetivo de realizar cierto comportamiento. A diferencia de los sistemas informáticos de propósito general, los sistemas embebidos están optimizados en términos de recursos computacionales, consumo energético y capacidad de respuesta en tiempo real.
+
+Estos sistemas se implementan en una amplia variedad de hardware, que incluye microcontroladores, sistemas en chip (SoC) y computadoras industriales. Dependiendo de la complejidad del robot y sus requerimientos, pueden emplearse desde microcontroladores simples como los de la familia \cite{stm32}, hasta plataformas más avanzadas como \cite{raspMicro} o \cite{arduinoMicro}.
+
+Un ejemplo concreto de sistema robótico embebido es el control de un robot móvil autónomo, como un robot aspirador. En este caso, el sistema embebido gestiona la adquisición de datos de sensores como lidar\footnote{Un sensor lidar​ (acrónimo del inglés LiDAR, Light Detection and Ranging o Laser Imaging Detection and Ranging) es un dispositivo que permite determinar la distancia desde un emisor láser a un objeto o superficie utilizando un haz láser pulsado. La distancia al objeto se determina midiendo el tiempo de retraso entre la emisión del pulso y su detección a través de la señal reflejada.}, sensores de proximidad, sensores de velocidad de las ruedas, entre otros, procesa la información para detectar obstáculos y calcular la trayectoria óptima, y finalmente envía comandos a los motores para ejecutar el movimiento.
 
 Una de las maneras comunes de llevar a cabo el control es utilizando ciclos de control. En particular, estos pueden presentarse de dos maneras:
 
-\begin{itemize}
-\item Control en lazo abierto: en este enfoque, el sistema envía comandos al actuador sin recibir retroalimentación sobre el resultado de la acción. Es adecuado para tareas simples donde la precisión no es crítica.
-\item Control en lazo cerrado: aquí, el sistema monitorea constantemente las salidas mediante sensores y ajusta sus acciones en función de la retroalimentación recibida, permitiendo una mayor precisión y adaptación a cambios en el entorno.
+\begin{itemize} \item \textbf{Control en lazo abierto}: en este enfoque, el sistema envía comandos al actuador sin recibir retroalimentación sobre el resultado de la acción. Es adecuado para tareas simples donde la precisión no es crítica.
+\item \textbf{Control en lazo cerrado}: aquí, el sistema monitorea constantemente las salidas mediante sensores y ajusta sus acciones en función de la retroalimentación recibida, permitiendo una mayor precisión y adaptación a cambios en el entorno.
 \end{itemize}
 
 En un ciclo de control de lazo cerrado se realizan las siguientes tareas básicas:
 
-\begin{itemize}
-\item \textbf{Medición}: Los sensores recopilan datos del entorno o del propio estado del robot.
+\begin{itemize} \item \textbf{Medición}: Los sensores recopilan datos del entorno o del propio estado del robot.
 \item \textbf{Procesamiento}: El sistema embebido analiza los datos y los compara con los valores deseados.
 \item \textbf{Cálculo de la acción de control}: Se determina la respuesta adecuada para minimizar cualquier discrepancia entre el estado actual y el deseado. Se hace uso de diferentes algoritmos en base al caso en particular, por ejemplo, algoritmos que se basen en \gls{PID} \cite{feedBackPID}.
 \item \textbf{Actuación}: Se envían señales a los actuadores para ejecutar la acción correctiva.
-\item \textbf{Repetición}: El sistema ejecuta otro ciclo de control y con los datos obtenidos de la nueva fase de \textbf{Medición} se ajustan los valores de la próxima etapa de \textbf{Actuación} a fin de logra un ajuste preciso.
+\item \textbf{Repetición}: El sistema ejecuta otro ciclo de control y con los datos obtenidos de la nueva fase de \textbf{Medición} se ajustan los valores de la próxima etapa de \textbf{Actuación} a fin de lograr un ajuste preciso.
 \end{itemize}
 
 
