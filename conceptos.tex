@@ -97,7 +97,7 @@ Por defecto, el microcontrolador ejecuta el software almacenado en su unidad fla
 
 
 \section{Interrupciones}
-Como se mencionó, el dispositivo en el que el software corre suele ser un microcontrolador. Estos poseen ciertas características particulares, entra ellas las interrupciones. Estas son un mecanismo de eventos que pausan la ejecución del programa principal para atender una tarea urgente. Funcionan como un mecanismo de respuesta automática que permite que el microcontrolador responda inmediatamente a eventos externos o internos sin depender de que el programa principal revise continuamente el estado de los dispositivos o variables asociadas a la generación de la interrupción.
+Como se mencionó, el dispositivo en el que el software corre suele ser un microcontrolador. Estos poseen ciertas características particulares que los hacen ideales para trabajar en entornos cercanos al mundo real, entra ellas las interrupciones. Las mismas son un mecanismo de eventos que pausan la ejecución del programa principal para atender una tarea urgente. Funcionan como un mecanismo de respuesta automática que permite que el microcontrolador responda inmediatamente a eventos externos o internos sin depender de que el programa principal revise continuamente el estado de los dispositivos o variables asociadas a la generación de la interrupción.
 
 Cuando ocurre una interrupción (por ejemplo, un cambio en un sensor o una solicitud de un actuador), el microcontrolador detiene su ejecución actual y salta a una rutina de interrupción (ISR, Interrupt Service Routine), ver diagrama de la figura \ref{interrupt}. Esta rutina es un fragmento de código predefinido que realiza las tareas necesarias, como leer un sensor o activar un actuador. Después de ejecutar la ISR, el microcontrolador regresa automáticamente al punto donde fue interrumpido, reanudando el programa principal sin perder el flujo de ejecución.
 
@@ -118,41 +118,27 @@ Este mecanismo es esencial en sistemas embebidos, especialmente en aquellos que 
 Gracias a las interrupciones, el microcontrolador puede realizar tareas en tiempo real y responder rápidamente a eventos críticos, asegurando un control preciso de los sensores y actuadores sin necesidad de monitorear activamente cada dispositivo constantemente.
 
 
-\section{Sistemas Embebidos Robóticos}
+\section{Sistemas Embebidos de Control Robótico}
+\label{sistControl}
 
+Un sistema embebido de control robótico es una unidad de procesamiento diseñada para gestionar el funcionamiento de un robot, integrando sensores, actuadores y algoritmos de control. Por lo general estos sistemas están diseñados para operar en tiempo real y ejecutar tareas específicas llevando a cabo comportamientos básicos del robot relacionados al movimiento o adquisición de información. Por ejemplo, en \cite{paperPomponio} el sistema se encarga realizar las ordenes provenientes de una PC, las cuales pueden ser configurar cierta velocidad de desplazamiento o doblar. Para concretar las acciones se necesita llevar un control en el tiempo del hardware y para hacerlo se hace uso de todo el hardware disponible, sensores y actuadores.
 
-Los sistemas embebidos de control robótico son fundamentales en la automatización y operación de robots en diversas aplicaciones. Se trata de sistemas computacionales diseñados para realizar funciones específicas dentro de un robot, integrando hardware y software con el objetivo de realizar cierto comportamiento. A diferencia de los sistemas informáticos de propósito general, los sistemas embebidos están optimizados en términos de recursos computacionales, consumo energético y capacidad de respuesta en tiempo real.
+Existen dos enfoques básicos para llevar a cabo el control, lazo cerrado y lazo abierto.
 
-Estos sistemas se implementan en una amplia variedad de hardware, que incluye microcontroladores, sistemas en chip (SoC) y computadoras industriales. Dependiendo de la complejidad del robot y sus requerimientos, pueden emplearse desde microcontroladores simples como los de la familia \cite{stm32}, hasta plataformas más avanzadas como \cite{raspMicro} o \cite{arduinoMicro}.
+\begin{itemize}
+\item Control en lazo abierto: en este enfoque, el sistema embebido envía comandos al actuador sin recibir retroalimentación del entorno. Es una estrategia más simple y rápida, pero menos precisa, ya que no puede corregir desviaciones en la ejecución de la tarea. Un ejemplo es un motor que gira a una velocidad fija sin verificar si realmente alcanza la velocidad deseada.
 
-Un ejemplo concreto de sistema robótico embebido es el control de un robot móvil autónomo, como un robot aspirador. En este caso, el sistema embebido gestiona la adquisición de datos de sensores como lidar\footnote{Un sensor lidar​ (acrónimo del inglés LiDAR, Light Detection and Ranging o Laser Imaging Detection and Ranging) es un dispositivo que permite determinar la distancia desde un emisor láser a un objeto o superficie utilizando un haz láser pulsado. La distancia al objeto se determina midiendo el tiempo de retraso entre la emisión del pulso y su detección a través de la señal reflejada.}, sensores de proximidad, sensores de velocidad de las ruedas, entre otros, procesa la información para detectar obstáculos y calcular la trayectoria óptima, y finalmente envía comandos a los motores para ejecutar el movimiento.
-
-Una de las maneras comunes de llevar a cabo el control es utilizando ciclos de control. En particular, estos pueden presentarse de dos maneras:
-
-\begin{itemize} \item \textbf{Control en lazo abierto}: en este enfoque, el sistema envía comandos al actuador sin recibir retroalimentación sobre el resultado de la acción. Es adecuado para tareas simples donde la precisión no es crítica.
-\item \textbf{Control en lazo cerrado}: aquí, el sistema monitorea constantemente las salidas mediante sensores y ajusta sus acciones en función de la retroalimentación recibida, permitiendo una mayor precisión y adaptación a cambios en el entorno.
+\item Control en lazo cerrado: aquí, el sistema embebido recibe información en tiempo real de sensores y ajusta su comportamiento en función de la retroalimentación. Esto permite corregir errores y mejorar la precisión del control. Un ejemplo clásico es el control de velocidad de un motor, donde sensores miden la velocidad real y ajustan la potencia suministrada para mantener el valor deseado.
 \end{itemize}
 
-En un ciclo de control de lazo cerrado se realizan las siguientes tareas básicas:
+Para implementar un control por lazo cerrado se pueden aplicar la noción de ciclos de control. Se ejecutan ciertas operaciones de manera repetida a fin de lograr que una cierta característica llegue al valor deseado. Luego de configurar el valor deseado, las operaciones que se llevan a cabo en el ciclo son las siguientes:
 
-\begin{itemize} \item \textbf{Medición}: Los sensores recopilan datos del entorno o del propio estado del robot.
-\item \textbf{Procesamiento}: El sistema embebido analiza los datos y los compara con los valores deseados.
-\item \textbf{Cálculo de la acción de control}: Se determina la respuesta adecuada para minimizar cualquier discrepancia entre el estado actual y el deseado. Se hace uso de diferentes algoritmos en base al caso en particular, por ejemplo, algoritmos que se basen en \gls{PID} \cite{feedBackPID}.
-\item \textbf{Actuación}: Se envían señales a los actuadores para ejecutar la acción correctiva.
-\item \textbf{Repetición}: El sistema ejecuta otro ciclo de control y con los datos obtenidos de la nueva fase de \textbf{Medición} se ajustan los valores de la próxima etapa de \textbf{Actuación} a fin de lograr un ajuste preciso.
+\begin{itemize}
+\item Medición: captura de datos de sensores (posición, velocidad, temperatura, etc.).
+\item Cálculo: se determina si se alcanzó el valor configurado y en caso de no haberlo logrado se definen las acciones necesarias basadas en algoritmos de control (por ejemplo algoritmos \gls{PID}).
+\item Actuación: envío de comandos a motores, servomecanismos u otros actuadores para ejecutar las acciones calculadas.
 \end{itemize}
 
-
-
-
-
-
-
-
-
-
-
-
-
+Por lo tanto en la siguiente ejecución se parte de los resultados aplicados en el anterior y así se logra ajustar la propiedad deseada.
 
 
