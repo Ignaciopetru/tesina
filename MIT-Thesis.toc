@@ -25,11 +25,11 @@
 \contentsline {subsection}{\numberline {5.3.1}Subsistemas de control}{52}{subsection.5.3.1}%
 \contentsline {subsection}{\numberline {5.3.2}Ejemplo}{56}{subsection.5.3.2}%
 \contentsline {section}{\numberline {5.4}Obtención de información}{70}{section.5.4}%
-\contentsline {section}{\numberline {5.5}Control anti-rebote}{73}{section.5.5}%
-\contentsline {section}{\numberline {5.6}Máquinas de estado}{74}{section.5.6}%
-\contentsline {section}{\numberline {5.7}Integridad de la información}{82}{section.5.7}%
-\contentsline {section}{\numberline {5.8}Verificación de precondiciones.}{84}{section.5.8}%
-\contentsline {section}{\numberline {5.9}Organización de la ejecución}{87}{section.5.9}%
+\contentsline {section}{\numberline {5.5}Control anti-rebote}{74}{section.5.5}%
+\contentsline {section}{\numberline {5.6}Máquinas de estado}{75}{section.5.6}%
+\contentsline {section}{\numberline {5.7}Integridad de la información}{83}{section.5.7}%
+\contentsline {section}{\numberline {5.8}Verificación de precondiciones.}{85}{section.5.8}%
+\contentsline {section}{\numberline {5.9}Organización de la ejecución}{88}{section.5.9}%
 \contentsline {chapter}{\numberline {A}Patrones de diseño de Gamma}{91}{appendix.Alph1}%
 \contentsline {section}{\numberline {A.1}Adapter}{91}{section.Alph1.1}%
 \contentsline {section}{\numberline {A.2}Command}{92}{section.Alph1.2}%

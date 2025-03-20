@@ -46,15 +46,15 @@
 \contentsline {figure}{\numberline {5.27}{\ignorespaces Documentación de la aplicación del patrón \textit {State} para el manejo de ejecución de pasos completos.}}{67}{figure.caption.46}%
 \contentsline {figure}{\numberline {5.28}{\ignorespaces Transiciones de estados del MainController}}{68}{figure.caption.47}%
 \contentsline {figure}{\numberline {5.29}{\ignorespaces Estructura componentes para la lectura de un sensor activo.}}{71}{figure.caption.49}%
-\contentsline {figure}{\numberline {5.30}{\ignorespaces Ejemplo señales emitidas por un sensor hall al detectar una variación del campo magnético. Cada pico de voltaje provoca que el microcontrolador genere una interrupción. Imagen extraída de \blx@tocontentsinit {0}\cite {disenioViejo2}.}}{72}{figure.caption.50}%
-\contentsline {figure}{\numberline {5.31}{\ignorespaces Ejemplo módulos para obtener la información referida a la velocidad.}}{72}{figure.caption.51}%
-\contentsline {figure}{\numberline {5.32}{\ignorespaces State chart microondas}}{77}{figure.caption.52}%
-\contentsline {figure}{\numberline {5.33}{\ignorespaces Módulos participantes del patrón state en el ejemplo del horno microondas.}}{80}{figure.caption.53}%
-\contentsline {figure}{\numberline {5.34}{\ignorespaces Interfaz del módulo Data,}}{82}{figure.caption.54}%
-\contentsline {figure}{\numberline {5.35}{\ignorespaces Ejemplo de aplicación del patrón \textit {Decorator} para garantizar la integridad de la información.}}{83}{figure.caption.55}%
-\contentsline {figure}{\numberline {5.36}{\ignorespaces Documentación de la aplicación del patrón \textit {Decorator} al caso de verificación de la integridad de la información.}}{83}{figure.caption.56}%
-\contentsline {figure}{\numberline {5.37}{\ignorespaces Uso del patrón Proxy en el ejemplo del módulo stock y documentación del mismo.}}{86}{figure.caption.57}%
-\contentsline {figure}{\numberline {5.38}{\ignorespaces Ejemplo de handler usando \textit {State} con su correspondiente documentación.}}{89}{figure.caption.58}%
+\contentsline {figure}{\numberline {5.30}{\ignorespaces Ejemplo señales emitidas por un sensor hall al detectar una variación del campo magnético. Cada pico de voltaje provoca que el microcontrolador genere una interrupción. Imagen extraída de \blx@tocontentsinit {0}\cite {disenioViejo2}.}}{71}{figure.caption.50}%
+\contentsline {figure}{\numberline {5.31}{\ignorespaces Ejemplo módulos para obtener la información referida a la velocidad.}}{73}{figure.caption.51}%
+\contentsline {figure}{\numberline {5.32}{\ignorespaces State chart microondas}}{78}{figure.caption.52}%
+\contentsline {figure}{\numberline {5.33}{\ignorespaces Módulos participantes del patrón state en el ejemplo del horno microondas.}}{81}{figure.caption.53}%
+\contentsline {figure}{\numberline {5.34}{\ignorespaces Interfaz del módulo Data,}}{83}{figure.caption.54}%
+\contentsline {figure}{\numberline {5.35}{\ignorespaces Ejemplo de aplicación del patrón \textit {Decorator} para garantizar la integridad de la información.}}{84}{figure.caption.55}%
+\contentsline {figure}{\numberline {5.36}{\ignorespaces Documentación de la aplicación del patrón \textit {Decorator} al caso de verificación de la integridad de la información.}}{84}{figure.caption.56}%
+\contentsline {figure}{\numberline {5.37}{\ignorespaces Uso del patrón Proxy en el ejemplo del módulo stock y documentación del mismo.}}{87}{figure.caption.57}%
+\contentsline {figure}{\numberline {5.38}{\ignorespaces Ejemplo de handler usando \textit {State} con su correspondiente documentación.}}{90}{figure.caption.58}%
 \addvspace {10\p@ }
 \contentsline {xchapter}{Patrones de diseño de Gamma}{91}{appendix.Alph1}%
 \contentsline {figure}{\numberline {A.1}{\ignorespaces Estructura patrón \textbf {Adapter}}}{92}{figure.caption.59}%
