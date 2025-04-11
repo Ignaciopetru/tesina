@@ -31,9 +31,9 @@
 \contentsline {figure}{\numberline {5.12}{\ignorespaces Documentacion de la aplicación del patrón State en el módulo Control.}}{56}{figure.caption.30}%
 \contentsline {figure}{\numberline {5.13}{\ignorespaces Esquema del brazo robótico.}}{57}{figure.caption.31}%
 \contentsline {figure}{\numberline {5.14}{\ignorespaces Diagrama de los componentes del sistema brazo robótico.}}{59}{figure.caption.32}%
-\contentsline {figure}{\numberline {5.15}{\ignorespaces Actuadores paso a paso.}}{59}{figure.caption.33}%
+\contentsline {figure}{\numberline {5.15}{\ignorespaces Actuadores paso a paso.}}{60}{figure.caption.33}%
 \contentsline {figure}{\numberline {5.16}{\ignorespaces Interfaz módulo Pinza.}}{60}{figure.caption.34}%
-\contentsline {figure}{\numberline {5.17}{\ignorespaces Sensores del brazo robótico.}}{60}{figure.caption.35}%
+\contentsline {figure}{\numberline {5.17}{\ignorespaces Sensores del brazo robótico.}}{61}{figure.caption.35}%
 \contentsline {figure}{\numberline {5.18}{\ignorespaces Módulo Timer}}{61}{figure.caption.36}%
 \contentsline {figure}{\numberline {5.19}{\ignorespaces Documentacion de la aplicación del patrón Command para el desacople de ejecuciones que invoca el Timer.}}{62}{figure.caption.37}%
 \contentsline {figure}{\numberline {5.22}{\ignorespaces Estructura módulo Controller}}{62}{figure.caption.40}%

@@ -529,7 +529,7 @@ El diseño del código parece estar orientado a cumplir con un objetivo específ
 
 \subsection{Subsistemas de control}
 
-Para dar la solucion orientada al cambio, primero se debe definir el concepto de \textbf{Subsistema de control}. Un subsistema de control es una estructura de módulos relacionados mediante herencia, composición o invocación, que responde al control de una propiedad física particular del sistema embebido de control en el que se va a aplicar. Para hacerlo lleva a cabo todas las tareas de la arquitectura de \nameref{arqControlProc} en el nivel conceptual de módulos. 
+Para dar la solucion orientada al cambio, primero se introducirá el concepto de \textbf{Subsistema de control}. Un subsistema de control es una estructura de módulos relacionados mediante herencia, composición o invocación, que responde al control de una propiedad física particular del sistema embebido de control en el que se va a aplicar. Para hacerlo lleva a cabo todas las tareas de la arquitectura de \nameref{arqControlProc} en el nivel conceptual de módulos. 
 
 A fin de aplicar la arquitectura de software de control de procesos, se propone la creación de un \textit{subsistema de control} por cada variable a manipular\footnote{Ver tabla conceptos arquitectura Control de Procesos \ref{tab:conceptosArq}} que sea necesaria controlar por el sistema. Para permitir la interacción con un cliente externo debe proveer una interfaz que permita setear un valor al que se quiera llevar la propiedad (\textit{setPoint} (ver tabla \ref{tab:conceptosArq})) y que indique el comienzo de la tarea de control. Un subsistema tiene una estructura similar a la de la arquitectura \ref{fig:arqCtrlRobot}, pero su alcance estará restringido a la variable a manipular y las variables medidas relacionadas. En la figura \ref{modulosSub} se puede observar de manera concreta los módulos que forman parte de cada componente de un subsistema.
 
@@ -706,7 +706,7 @@ Se necesita desarrollar el software de control de un brazo robótico que consta 
 \begin{figure}[h]
 \caption{Esquema del brazo robótico.}
 \begin{centering}
-{\includegraphics[width=0.5\textwidth]{brazo2.png}\par}
+{\includegraphics[width=0.5\textwidth]{brazo3.png}\par}
 \end{centering}
 \end{figure}
 
@@ -1301,7 +1301,7 @@ La solución propuesta mejora varios aspectos a la que utiliza como criterio de 
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{|p{3cm}|p{5cm}|p{8cm}|}
 \hline
-\textbf{Item de cambio}    & \textbf{Forma de cambio}  & \textbf{Manejo del cambio}  \\ \hline
+\textbf{Item de cambio}    & \textbf{Naturaleza del cambio}  & \textbf{Manejo del cambio}  \\ \hline
 \textbf{Hardware}          &  
     - Agregar, quitar o modificar actuadores y sensores.
     
@@ -2014,9 +2014,9 @@ En la figura \ref{codDeco} se observa un ejemplo de implementación de los méto
 De esta forma, aplicando el patron \textit{decorator} se logra añadir una capa de protección a la integridad de la información, a su vez permite combinar diferentes técnicas usando este patrón.
 
 \section{Verificación de precondiciones.}
-El autor del libro \cite{douglass} comenta que uno de los problemas más grandes que ve en el desarrollo de sistemas embebidos es que prácticamente todas las funciones tiene precondiciones para ejecutarse correctamente pero que casi nunca se verifica si todas estas se cumplen. Además, la manera común de informar precondiciones inadecuadas en una función en \textbf{C}\footnote{Lenguaje comúnmente utilizado en sistemas embebidos.} es utilizando el valor de retorno (-1 en caso de errores, 0 en el contrario). Por lo tanto el encargado de manejar el error es la función que invocó en primer lugar a la función, generando así un acoplamiento extra entre módulos. Esto provoca una complicación derivando en muchas veces no manejarlo de la manera más adecuada. Por ejemplo, supongamos que tenemos un módulo que exporta una función que permite guardar un valor, \verb|setValor(i: Valor)|. Existen múltiples posibles implementaciones, estas son algunas:
+El autor del libro \cite{douglass} comenta que uno de los problemas más grandes que ve en el desarrollo de sistemas embebidos es que prácticamente todas las funciones tiene precondiciones para ejecutarse correctamente pero que casi nunca se verifica si todas estas se cumplen. Además, la manera común de informar precondiciones inadecuadas en una función en \textbf{C}\footnote{Lenguaje comúnmente utilizado en sistemas embebidos.} es utilizando el valor de retorno (-1 en caso de errores, 0 en el contrario). Por lo tanto el encargado de manejar el error es la función que invocó en primer lugar a la función, generando así un acoplamiento extra entre módulos. Esto provoca una complicación derivando en muchas veces, en no manejar los errores de la manera adecuada. Por ejemplo, supongamos que se tiene un módulo que exporta una función que permite guardar un valor, \verb|setValor(i: Valor)|. Existen múltiples posibles implementaciones, estas son algunas:
 \begin{itemize}
-    \item Una posible implementación, es que la función no realice ningún chequeo y simplemente guarde en una variable el valor pasado como argumento. Esto puede generar un error en el momento si el tipo no coincide por ejemplo o en el futuro si el valor está por fuera de ciertos parámetros requeridos por el sistema. Por ejemplo, si se está almacenando un entero negativo pero se requiere que siempre sea positivo, podemos provocar un error en el futuro, si es que los clientes no chequean que sea positivo y a su vez, estamos obligando a que todos los que usen este valor deban verificar que sea positivo. Escribiendo código repetido y que en caso de que el requisito cambie deba ser actualizado manualmente.
+    \item Una posible implementación, es que la función no realice ningún chequeo y simplemente guarde en una variable el valor pasado como argumento. Esto puede generar un error en el momento si el tipo no coincide o en el futuro si el valor está por fuera de ciertos parámetros requeridos por el sistema. Por ejemplo, si se está almacenando un entero negativo pero se requiere que siempre sea positivo, podemos provocar un error en el futuro, si es que los clientes no chequean que sea positivo y a su vez, estamos obligando a que todos los que usen este valor deban verificar que sea positivo. Escribiendo código repetido y que en caso de que el requisito cambie deba ser actualizado manualmente.
     \item Otra forma es que la función verifique que el valor es permitido y retorne 0 o -1 en caso de que no. Esto es mejor que nada, pero como se comento en el principio estamos acoplando al usuario de la función con el módulo que la exporta, ya que este tiene que verificar el valor de retorno para determinar si existió un error o no.
 \end{itemize}
 
