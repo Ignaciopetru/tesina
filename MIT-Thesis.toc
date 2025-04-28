@@ -28,15 +28,15 @@
 \contentsline {section}{\numberline {5.5}Control anti-rebote}{74}{section.5.5}%
 \contentsline {section}{\numberline {5.6}Máquinas de estado}{75}{section.5.6}%
 \contentsline {section}{\numberline {5.7}Integridad de la información}{83}{section.5.7}%
-\contentsline {section}{\numberline {5.8}Verificación de precondiciones.}{85}{section.5.8}%
-\contentsline {section}{\numberline {5.9}Organización de la ejecución}{88}{section.5.9}%
-\contentsline {chapter}{\numberline {A}Patrones de diseño de Gamma}{91}{appendix.Alph1}%
-\contentsline {section}{\numberline {A.1}Adapter}{91}{section.Alph1.1}%
-\contentsline {section}{\numberline {A.2}Command}{92}{section.Alph1.2}%
-\contentsline {section}{\numberline {A.3}State}{93}{section.Alph1.3}%
-\contentsline {section}{\numberline {A.4}Mediator}{95}{section.Alph1.4}%
-\contentsline {section}{\numberline {A.5}Decorator}{96}{section.Alph1.5}%
-\contentsline {section}{\numberline {A.6}Proxy}{97}{section.Alph1.6}%
-\contentsline {section}{\numberline {A.7}Iterator}{98}{section.Alph1.7}%
-\contentsline {chapter}{Glosario}{103}{appendix*.67}%
-\contentsline {backmatter}{Referencias}{105}{appendix*.68}%
+\contentsline {section}{\numberline {5.8}Verificación de precondiciones.}{86}{section.5.8}%
+\contentsline {section}{\numberline {5.9}Organización de la ejecución}{89}{section.5.9}%
+\contentsline {chapter}{\numberline {A}Patrones de diseño de Gamma}{93}{appendix.Alph1}%
+\contentsline {section}{\numberline {A.1}Adapter}{93}{section.Alph1.1}%
+\contentsline {section}{\numberline {A.2}Command}{94}{section.Alph1.2}%
+\contentsline {section}{\numberline {A.3}State}{95}{section.Alph1.3}%
+\contentsline {section}{\numberline {A.4}Mediator}{97}{section.Alph1.4}%
+\contentsline {section}{\numberline {A.5}Decorator}{98}{section.Alph1.5}%
+\contentsline {section}{\numberline {A.6}Proxy}{99}{section.Alph1.6}%
+\contentsline {section}{\numberline {A.7}Iterator}{100}{section.Alph1.7}%
+\contentsline {chapter}{Glosario}{105}{appendix*.67}%
+\contentsline {backmatter}{Referencias}{107}{appendix*.68}%
