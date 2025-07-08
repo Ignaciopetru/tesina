@@ -22,12 +22,12 @@ El último autor comenta que los sistemas embebidos cumplen las siguientes afirm
 	\item Los sistemas embebidos son más limitados en funcionalidad de hardware y/o software que una computadora personal.
 	\item Un sistema embebido está diseñado para realizar una función dedicada.
 	\item Un sistema embebido es un sistema informático con requisitos de mayor calidad y fiabilidad que otros tipos de sistemas informáticos.
-	\item Algunos dispositivos que se denominan sistemas embebidos, como los \gls{pda}.
+	\item Algunos dispositivos que se denominan sistemas embebidos, como los Asistentes Digitales Personales (\gls{pda}).
 \end{itemize}
 
 De las definiciones se puede concluir que un sistema embebido es una pieza clave que permite que hardware especializado cumpla con su propósito específico. A diferencia de los sistemas de propósito general, el software en un sistema embebido está diseñado para interactuar estrechamente con los componentes de hardware, respondiendo en tiempo real a eventos del entorno, ya sea para controlar actuadores, monitorear sensores o gestionar comunicaciones. Este software está optimizado para requisitos específicos como velocidad, consumo energético, y confiabilidad, lo que lo hace esencial en aplicaciones críticas como dispositivos médicos, sistemas automotrices y controles industriales.
 	
-En resumen, el software de un sistema embebido actúa como el cerebro que dirige y coordina los recursos del hardware para realizar funciones concretas. En la tabla~\ref{tab:ejSistEmbebidos} encontramos ejemplos de dispositivos en los que se utilizan sistemas embebidos extraída de \cite{noergaard2005embedded}.
+En resumen, el software de un sistema embebido actúa como el cerebro que dirige y coordina los recursos del hardware para realizar funciones concretas. En la Tabla~\ref{tab:ejSistEmbebidos} extraída de \cite{noergaard2005embedded} encontramos ejemplos de dispositivos en los que se utilizan sistemas embebidos.
 
 \begin{table}[h]
 \caption{Ejemplos sistemas embebidos.}
@@ -74,11 +74,11 @@ Con respecto al hardware en donde corren los sistemas embebidos podemos descatar
     \item \textbf{Interfaces de entrada/salida:} Puertos \gls{GPIO}, \gls{ADC}, \gls{PWM} y otros para interactuar con sensores, actuadores y otros dispositivos externos.
     \item \textbf{Fuente de Energ\'ia:} Puede provenir de bater\'ias, adaptadores de corriente o incluso energ\'ia recolectada del entorno.
 \end{itemize}
-El tama\~no compacto y la integraci\'on de componentes distinguen a los sistemas embebidos de otros sistemas m\'as grandes como las computadoras de escritorio o los servidores. Se diferencian, además, en su poder de computo limitado tanto por el hardware (baja disponibilidad de memoria RAM, \gls{clock} de la CPU bajo, etc) como por la disponibilidad de energía eléctrica.
+El tama\~no compacto y la integraci\'on de componentes distinguen a los sistemas embebidos de otros sistemas m\'as grandes como las computadoras de escritorio o los servidores. Se diferencian, además, en su poder de cómputo limitado tanto por el hardware (baja disponibilidad de memoria RAM, \gls{clock} de la CPU bajo, etc) como por la disponibilidad de energía eléctrica.
 
-Existen varios microcontroladores multipropósito de uso comercial, tales como los producidos por la empresa Arduino \cite{arduinoMicro} o los similares de la familia  Raspberry Pi \cite{raspMicro}. La presentación de los mismos suele ser en forma de una placa preparada para conectar los inputs y outputs, como las que se observan en figuras \ref{arduinoUNO} y \ref{raspberry}.
+Existen varios microcontroladores multipropósito de uso comercial, tales como los producidos por la empresa Arduino \cite{arduinoMicro} o los similares de la familia  Raspberry Pi \cite{raspMicro}. La presentación de los mismos suele ser en forma de una placa preparada para conectar los inputs y outputs, como las que se observan en Figuras \ref{arduinoUNO} y \ref{raspberry}.
 
-Por defecto, el microcontrolador ejecuta el software almacenado en su unidad flash, la cual debe ser grabada cada vez que se actualice el código. Dado esto y las limitaciones de hardware ya mencionadas, se deben tener ciertas consideraciones a la hora de escribir el código. Tales como, prestar atención a la performance del sistema, a la cantidad de librerías a utilizar, al uso de memoria RAM, etc.
+Por defecto, el microcontrolador ejecuta el software almacenado en su unidad flash, la cual debe ser grabada cada vez que se actualice el código. Dado esto y las limitaciones de hardware ya mencionadas, se deben tener ciertas consideraciones a la hora de escribir el código. En particular, se debe prestar atención a la performance del sistema, a la cantidad de librerías a utilizar, al uso de memoria RAM, etc.
 
 \begin{figure}[h!]
 	\caption{Arduino UNO}
@@ -97,9 +97,9 @@ Por defecto, el microcontrolador ejecuta el software almacenado en su unidad fla
 
 
 \section{Interrupciones}
-Como se mencionó, el dispositivo en el que el software corre suele ser un microcontrolador. Estos poseen ciertas características particulares que los hacen ideales para trabajar en entornos cercanos al mundo real, entra ellas las interrupciones. Las mismas son un mecanismo de eventos que pausan la ejecución del programa principal para atender una tarea urgente. Funcionan como un mecanismo de respuesta automática que permite que el microcontrolador responda inmediatamente a eventos externos o internos sin depender de que el programa principal revise continuamente el estado de los dispositivos o variables asociadas a la generación de la interrupción.
+Como se mencionó, el dispositivo en el que el software corre suele ser un microcontrolador (\gls{MCU}). Estos dispositivos poseen ciertas características particulares que los hacen ideales para trabajar en entornos cercanos al mundo real; entre ellas las interrupciones. Las mismas son un mecanismo de eventos que pausan la ejecución del programa principal para atender una tarea urgente. Funcionan como un mecanismo de respuesta automática que permite que el microcontrolador responda inmediatamente a eventos externos o internos sin depender de que el programa principal revise continuamente el estado de los dispositivos o variables asociadas a la generación de la interrupción.
 
-Cuando ocurre una interrupción (por ejemplo, un cambio en un sensor o una solicitud de un actuador), el microcontrolador detiene su ejecución actual y salta a una rutina de interrupción (ISR, Interrupt Service Routine), ver diagrama de la figura \ref{interrupt}. Esta rutina es un fragmento de código predefinido que realiza las tareas necesarias, como leer un sensor o activar un actuador. Después de ejecutar la ISR, el microcontrolador regresa automáticamente al punto donde fue interrumpido, reanudando el programa principal sin perder el flujo de ejecución.
+Cuando ocurre una interrupción (por ejemplo, un cambio en un sensor o una solicitud de un actuador), el \gls{MCU} detiene su ejecución actual y salta a una rutina de servicio de interrupción (ISR, Interrupt Service Routine). Esta rutina es un fragmento de código predefinido que realiza las tareas necesarias, como leer un sensor o activar un actuador. Una vez finalizada la ejecución de la ISR, el \gls{MCU} retorna automáticamente al punto en el que se había interrumpido, reanudando el programa principal sin perder el flujo de ejecución. Siguiendo la Figura \ref{interrupt}, el \gls{MCU} se encuentra ejecutando el código principal cuando se produce una interrupción. En ese momento, detiene temporalmente dicha ejecución para atender la rutina de interrupción. Al completarse esta, el \gls{MCU} continúa la ejecución del código principal desde la primera instrucción que no había sido ejecutada, en este caso, la \textit{instrucción 3}.
 
 \begin{figure}[H]
 	\centering
@@ -121,7 +121,7 @@ Gracias a las interrupciones, el microcontrolador puede realizar tareas en tiemp
 \section{Sistemas Embebidos de Control Robótico}
 \label{sistControl}
 
-Un sistema embebido de control robótico es una unidad de procesamiento diseñada para gestionar el funcionamiento de un robot, integrando sensores, actuadores y algoritmos de control. Por lo general estos sistemas están diseñados para operar en tiempo real y ejecutar tareas específicas llevando a cabo comportamientos básicos del robot relacionados al movimiento o adquisición de información. Por ejemplo, en \cite{paperPomponio} el sistema se encarga realizar las ordenes provenientes de una PC, las cuales pueden ser configurar cierta velocidad de desplazamiento o doblar. Para concretar las acciones se necesita llevar un control en el tiempo del hardware y para hacerlo se hace uso de todo el hardware disponible, sensores y actuadores.
+Un sistema embebido de control robótico es una unidad de procesamiento diseñada para gestionar el funcionamiento de un robot, integrando sensores, actuadores y algoritmos de control. Por lo general estos sistemas están diseñados para operar en tiempo real y ejecutar tareas específicas llevando a cabo comportamientos básicos del robot relacionados al movimiento o adquisición de información. Por ejemplo, en \cite{paperPomponio} el sistema se encarga realizar las ordenes provenientes de una PC, las cuales pueden establecer el desplazamiento en cuanto a velocidad y giro. Para concretar las acciones se necesita llevar un control en tiempo real de los componenetes físicos y para hacerlo se hace uso de todo el hardware disponible (sensores, actuadores, sistemas de comunicación, etc.).
 
 Existen dos enfoques básicos para llevar a cabo el control, lazo cerrado y lazo abierto.
 
@@ -131,14 +131,15 @@ Existen dos enfoques básicos para llevar a cabo el control, lazo cerrado y lazo
 \item Control en lazo cerrado: aquí, el sistema embebido recibe información en tiempo real de sensores y ajusta su comportamiento en función de la retroalimentación. Esto permite corregir errores y mejorar la precisión del control. Un ejemplo clásico es el control de velocidad de un motor, donde sensores miden la velocidad real y ajustan la potencia suministrada para mantener el valor deseado.
 \end{itemize}
 
-Para implementar un control por lazo cerrado se pueden aplicar la noción de ciclos de control. Se ejecutan ciertas operaciones de manera repetida a fin de lograr que una cierta característica llegue al valor deseado. Luego de configurar el valor deseado, las operaciones que se llevan a cabo en el ciclo son las siguientes:
+Para implementar un control por lazo cerrado se pueden aplicar la noción de ciclos de control. Se ejecutan ciertas operaciones de manera repetida a fin de lograr que una cierta característica llegue al valor deseado. Las operaciones que se llevan a cabo en el ciclo son las siguientes:
 
 \begin{itemize}
-\item Medición: captura de datos de sensores (posición, velocidad, temperatura, etc.).
-\item Cálculo: se determina si se alcanzó el valor configurado y en caso de no haberlo logrado se definen las acciones necesarias basadas en algoritmos de control (por ejemplo algoritmos \gls{PID}).
-\item Actuación: envío de comandos a motores, servomecanismos u otros actuadores para ejecutar las acciones calculadas.
+\item Establecer valores de referencia (posición deseada, velocidad deseada, etc.).
+\item Medición: obtener datos de sensores (posición, velocidad, temperatura, etc.).
+\item Cálculo: se compara los valores medidos con los de referencia a fin de determinar si se alcanzaron y en caso de no haberlo logrado definir las acciones necesarias. Para hacerlo se utilizan algoritmos de control como, por ejemplo, algoritmos \gls{PID}.
+\item Actuación: envío de comandos a motores, \gls{servomecanismos} u otros actuadores para ejecutar las acciones calculadas.
 \end{itemize}
 
-Por lo tanto en la siguiente ejecución se parte de los resultados aplicados en el anterior y así se logra ajustar la propiedad deseada.
+De esta manera, luego de una serie de iteraciones, si los valores de referencia son posibles, se tiende a obtener los resultados deseados.
 
 

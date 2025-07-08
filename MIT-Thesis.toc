@@ -3,40 +3,40 @@
 \contentsline {frontmatter}{\'{I}ndice de cuadros}{7}{listoftables}%
 \contentsline {frontmatter}{Índice de códigos}{9}{section*.6}%
 \contentsline {chapter}{\numberline {1}Introducción}{11}{chapter.1}%
-\contentsline {chapter}{\numberline {2}Estado del arte}{13}{chapter.2}%
-\contentsline {chapter}{\numberline {3}Sistemas embebidos}{19}{chapter.3}%
-\contentsline {section}{\numberline {3.1}Definición}{19}{section.3.1}%
-\contentsline {section}{\numberline {3.2}Interrupciones}{21}{section.3.2}%
-\contentsline {section}{\numberline {3.3}Sistemas Embebidos de Control Robótico}{23}{section.3.3}%
-\contentsline {chapter}{\numberline {4}Ingeniería de Software}{25}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Definiciones}{25}{section.4.1}%
-\contentsline {section}{\numberline {4.2}Metodología de Parnas}{27}{section.4.2}%
-\contentsline {section}{\numberline {4.3}Items de cambio comunes}{28}{section.4.3}%
-\contentsline {section}{\numberline {4.4}Documentación}{28}{section.4.4}%
-\contentsline {section}{\numberline {4.5}Patrones de Diseño}{31}{section.4.5}%
-\contentsline {section}{\numberline {4.6}Arquitectura de Software}{32}{section.4.6}%
-\contentsline {section}{\numberline {4.7}Arquitectura de Software Control de Procesos}{32}{section.4.7}%
-\contentsline {section}{\numberline {4.8}Desacople de módulos: Patrón Command}{34}{section.4.8}%
-\contentsline {subsubsection}{\numberline {4.8.0.1}Ejemplo}{36}{subsubsection.4.8.0.1}%
-\contentsline {chapter}{\numberline {5}Problemas comunes}{39}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Acceso al hardware}{39}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Interfaces que no se ajustan perfectamente}{45}{section.5.2}%
-\contentsline {section}{\numberline {5.3}Control en conjunto de dispositivos}{50}{section.5.3}%
-\contentsline {subsection}{\numberline {5.3.1}Subsistemas de control}{52}{subsection.5.3.1}%
-\contentsline {subsection}{\numberline {5.3.2}Ejemplo}{56}{subsection.5.3.2}%
-\contentsline {section}{\numberline {5.4}Obtención de información}{70}{section.5.4}%
-\contentsline {section}{\numberline {5.5}Control anti-rebote}{74}{section.5.5}%
-\contentsline {section}{\numberline {5.6}Máquinas de estado}{75}{section.5.6}%
-\contentsline {section}{\numberline {5.7}Integridad de la información}{83}{section.5.7}%
-\contentsline {section}{\numberline {5.8}Verificación de precondiciones.}{86}{section.5.8}%
-\contentsline {section}{\numberline {5.9}Organización de la ejecución}{89}{section.5.9}%
-\contentsline {chapter}{\numberline {A}Patrones de diseño de Gamma}{93}{appendix.Alph1}%
-\contentsline {section}{\numberline {A.1}Adapter}{93}{section.Alph1.1}%
-\contentsline {section}{\numberline {A.2}Command}{94}{section.Alph1.2}%
-\contentsline {section}{\numberline {A.3}State}{95}{section.Alph1.3}%
-\contentsline {section}{\numberline {A.4}Mediator}{97}{section.Alph1.4}%
-\contentsline {section}{\numberline {A.5}Decorator}{98}{section.Alph1.5}%
-\contentsline {section}{\numberline {A.6}Proxy}{99}{section.Alph1.6}%
-\contentsline {section}{\numberline {A.7}Iterator}{100}{section.Alph1.7}%
-\contentsline {chapter}{Glosario}{105}{appendix*.67}%
-\contentsline {backmatter}{Referencias}{107}{appendix*.68}%
+\contentsline {chapter}{\numberline {2}Estado del arte}{15}{chapter.2}%
+\contentsline {chapter}{\numberline {3}Sistemas embebidos}{21}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Definición}{21}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Interrupciones}{23}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Sistemas Embebidos de Control Robótico}{25}{section.3.3}%
+\contentsline {chapter}{\numberline {4}Ingeniería de Software}{27}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Definiciones}{27}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Metodología de Parnas}{29}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Items de cambio comunes}{30}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Documentación}{30}{section.4.4}%
+\contentsline {section}{\numberline {4.5}Patrones de Diseño}{33}{section.4.5}%
+\contentsline {section}{\numberline {4.6}Arquitectura de Software}{34}{section.4.6}%
+\contentsline {section}{\numberline {4.7}Arquitectura de Software Control de Procesos}{34}{section.4.7}%
+\contentsline {section}{\numberline {4.8}Desacople de módulos: Patrón Command}{36}{section.4.8}%
+\contentsline {subsubsection}{\numberline {4.8.0.1}Ejemplo}{38}{subsubsection.4.8.0.1}%
+\contentsline {chapter}{\numberline {5}Problemas comunes}{41}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Acceso al hardware}{41}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Interfaces que no se ajustan perfectamente}{47}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Control en conjunto de dispositivos}{52}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Subsistemas de control}{54}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Ejemplo}{58}{subsection.5.3.2}%
+\contentsline {section}{\numberline {5.4}Obtención de información}{72}{section.5.4}%
+\contentsline {section}{\numberline {5.5}Control anti-rebote}{76}{section.5.5}%
+\contentsline {section}{\numberline {5.6}Máquinas de estado}{77}{section.5.6}%
+\contentsline {section}{\numberline {5.7}Integridad de la información}{85}{section.5.7}%
+\contentsline {section}{\numberline {5.8}Verificación de precondiciones.}{88}{section.5.8}%
+\contentsline {section}{\numberline {5.9}Organización de la ejecución}{91}{section.5.9}%
+\contentsline {chapter}{\numberline {A}Patrones de diseño de Gamma}{95}{appendix.Alph1}%
+\contentsline {section}{\numberline {A.1}Adapter}{95}{section.Alph1.1}%
+\contentsline {section}{\numberline {A.2}Command}{96}{section.Alph1.2}%
+\contentsline {section}{\numberline {A.3}State}{97}{section.Alph1.3}%
+\contentsline {section}{\numberline {A.4}Mediator}{99}{section.Alph1.4}%
+\contentsline {section}{\numberline {A.5}Decorator}{100}{section.Alph1.5}%
+\contentsline {section}{\numberline {A.6}Proxy}{101}{section.Alph1.6}%
+\contentsline {section}{\numberline {A.7}Iterator}{102}{section.Alph1.7}%
+\contentsline {chapter}{Glosario}{107}{appendix*.67}%
+\contentsline {backmatter}{Referencias}{109}{appendix*.68}%
