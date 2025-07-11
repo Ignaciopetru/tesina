@@ -20,33 +20,38 @@
 \chapter{Ingeniería de Software}
 \label{ingso}
 
-En este capítulo se abordan conceptos centrales a la IS y que resultan esenciales para el entendimiento del trabajo realizado en la tesina. Entre ellos, se tratan las definiciones principales, metodologías de trabajo y técnicas utilizadas en el ámbito.
+En este capítulo se abordan conceptos centrales a la \gls{IS} y que resultan esenciales para el entendimiento del trabajo realizado en la tesina. Entre ellos, se tratan las definiciones principales, metodologías de trabajo y técnicas utilizadas en el ámbito.
 
 \section{Definiciones}
 
 La arquitectura y el diseño del software se consideran herramientas esenciales para lograr atributos importantes de calidad del software, como la modificabilidad, reusabilidad, mantenibilidad, etc.\cite{ShawGarlan1996, ghezzi2003, bass2003, DBLP:books/daglib/0030743}
 Tradicionalmente, el software para robots tiende a desarrollarse de manera monolítica, con pocas funciones de gran tamaño y numerosas sentencias condicionales anidadas, o mediante una descomposición funcional básica que resulta ineficiente para mantener y reutilizar componentes \cite{code-1,code-2}. Frente a esto, se propone un diseño sistemático basado en principios de la \gls{IS}, aplicados para anticipar y manejar los cambios \cite{Gamma:1995:DPE:186897, DBLP:books/lib/BuschmannHS07}.
 
-El \textit{diseño para el cambio}, como principio fundamental, se centra en prever modificaciones probables en el software \cite{Parnas1972, ShawGarlan1996, ghezzi2003, bass2003, DBLP:books/daglib/0030743}, por cambios en los objetivos de comportamiento, en el hardware o en los algoritmos de control, entre otros. Diseñar anticipando estos cambios permite reducir los esfuerzos necesarios para implementar ajustes y facilita la reutilización de componentes en familias de software\footnote{en este caso familias de robots.} que comparten funcionalidades similares, pero no iguales, y adaptadas a diferentes plataformas de hardware \cite{Parnas02, DBLP:books/daglib/0019719}.
+El \textit{diseño para el cambio}, como principio fundamental, se centra en prever modificaciones probables en el software \cite{Parnas1972, ShawGarlan1996, ghezzi2003, bass2003, DBLP:books/daglib/0030743}. Ya sean probocadas cambios en los objetivos de comportamiento, en el hardware o en los algoritmos de control, entre otros. Para esto, cuando se diseña se tiene en ceunta aquello que probablemente cambiará y se piensa cómo debe ser el diseño para que los cambios impliquen modificar porciones minimas y aisaldas del software \cite{ghezzi2003}.
 
-Para abordar estos retos, el diseño modular es clave \cite{Parnas1972}.
-Un \textbf{módulo} es un elemento de diseño que, en un lenguaje de programación orientado a objetos, suele implementarse como una \textbf{clase}. A su vez, una \textbf{instancia} de un módulo, en este tipo de lenguajes, corresponde a un \textbf{objeto}. Sin embargo, cuando se habla de diseño, el término adecuado es módulo e instancia, ya que la implementación podría realizarse en un lenguaje que no sea orientado a objetos. Este enfoque de diseño organiza el software como un conjunto de módulos simples con responsabilidades claramente definidas y relaciones explícitas entre ellos. Cada módulo se diseña para ocultar información específica y gestionar un cambio probable de forma aislada, lo que minimiza el impacto de las modificaciones en el resto del sistema. Por ejemplo, si un sensor cambia su forma de reportar datos, el ajuste debería limitarse al módulo responsable de interactuar con ese sensor.
+Diseñar anticipando los cambios permite reducir los esfuerzos necesarios para implementar ajustes y facilita la reutilización de componentes entre distintos sistemas \cite{Parnas02, DBLP:books/daglib/0019719}.
+
+Para abordar el reto que implica anticiparse al cambio, el diseño modular es clave \cite{Parnas1972}.
+Un \textbf{módulo} es un elemento de diseño que, en un lenguaje de programación orientado a objetos, suele implementarse como una \textbf{clase}. A su vez, una \textbf{instancia} de un módulo, en este tipo de lenguajes, corresponde a un \textbf{objeto}. Sin embargo, cuando se habla de diseño, el término adecuado es módulo e instancia, ya que la implementación podría realizarse en un lenguaje que no sea orientado a objetos. Este enfoque de diseño organiza el software como un conjunto de módulos simples con responsabilidades claramente definidas y relaciones tambien bien definidas entre ellos. Cada módulo se diseña para ocultar aquello que puede cambiar, lo que minimiza el impacto de las modificaciones en el resto del sistema. Por ejemplo, si un sensor de velocidad es reemplazada y por tanto cambia su forma de reportar datos, el ajuste del software debería limitarse al módulo que encapsula ese sensor físico.
 
 Además, el principio de diseño abierto-cerrado \cite{DBLP:books/ph/Meyer97} se implementa para garantizar que el sistema pueda extenderse mediante nuevos módulos en lugar de modificar los existentes, reduciendo el riesgo de introducir errores al alterar componentes ya probados. Es decir, que un sistema debe estar abierto a extensiones pero cerrado a modificaciones. Esto se complementa con la aplicación de patrones de diseño y estilos arquitectónicos, que aportan soluciones probadas para manejar cambios recurrentes en dominios específicos \cite{Gamma:1995:DPE:186897, DBLP:books/lib/BuschmannHS07}. Por ejemplo, en sistemas robóticos, un estilo arquitectónico basado en bucles de control puede destacar las características esenciales del sistema y facilitar decisiones de diseño óptimas \cite{ShawGarlan1996}.
 
 \subsubsection*{Herencia de Interfaz}
-En el diseño modular, un módulo consta de una interfaz y una implementación. La interfaz define el conjunto de métodos accesibles externamente, mientras que la implementación gestiona como el módulo realizar los comportamientos de cada método definido en la interfaz.
+En el diseño modular, un módulo consta de una parte visible llamada \textit{interfaz} y una oculta la \textit{implementación}. La interfaz define el conjunto de métodos accesibles externamente, mientras que la implementación gestiona cómo el módulo lleva a cabo los comportamientos de cada método definido en la interfaz. Se dice que la implementación es invisible para el resto de módulos de sistema, esta misma oculta el posible cambio que encapsula en módulo.
 
 Existen esencialmente dos tipos de herencia:
 
 \begin{itemize}
-\item \textbf{Herencia de clases}: Un módulo hijo hereda tanto la interfaz como la implementación de un módulo padre, es decir, hereda todo su comportamiento. Si bien esto permite la reutilización de código, introduce un acoplamiento fuerte y reduce la flexibilidad ante cambios, lo que se una mala práctica.
-\item \textbf{Herencia de interfaces}: En este caso, un módulo hijo solo hereda la interfaz, permitiendo que cada módulo implemente su propio comportamiento. Este enfoque es más flexible y facilita la adaptabilidad del sistema.
+\item \textbf{Herencia de clases}: Un módulo hijo hereda tanto la interfaz como la implementación de un módulo padre, es decir, hereda todo su comportamiento. Si bien esto permite la reutilización de código, introduce un acoplamiento\footnote{El grado de dependencia o vinculación entre dos módulos. Un acoplamiento bajo implica que los módulos están independientes, mientras que un acoplamiento alto implica que conocer o modificar uno requiere conocer o modificar el otro.} fuerte y, por lo tanto, reduce la flexibilidad ante cambios. Lo cual es contraproducente al objetivo de diseñar anticipando el cambio.
+\item \textbf{Herencia de interfaces}: En este caso, un módulo hijo solo hereda la interfaz, permitiendo que cada módulo implemente su propio comportamiento. Este enfoque es más flexible y facilita la adaptabilidad del sistema. Cuando hablemos de herencia en el resto de la tesina nos referiremos a este enfoque, herencia de interfaces.
 \end{itemize}
 
 
-\subsubsection*{Composición}
-La composición consiste en estructurar sistemas combinando módulos a través de sus interfaces en lugar de depender de relaciones de herencia. Esto se logra mediante la inclusión de referencias a otros dentro de una clase, lo que permite que las instancias deleguen tareas a estos módulos asociados. La composición es una solución que favorece la flexibilidad, ya que evita el acoplamiento jerárquico y permite reemplazar componentes sin afectar el resto del sistema. Además, este enfoque está alineado con el principio de diseño ``preferir la composición sobre la herencia'' \cite{Gamma:1995:DPE:186897}, que enfatiza la modularidad y la apertura al cambio.
+
+\subsubsection*{Composición y delegación}
+La composición consiste en estructurar sistemas combinando módulos a través de sus interfaces en lugar de depender de relaciones de herencia. Esto se logra mediante la inclusión de referencias a otros módulos dentro de un módulo, lo que permite que las instancias deleguen tareas a estos módulos asociados. En lugar de que un módulo herede directamente un comportamiento específico, como un tipo particular de algoritmo de ordenamiento, la composición propone que el módulo mantenga una referencia a otro que se encargue de esa tarea. Por ejemplo, en vez de que una módulo de procesamiento de datos herede una forma fija de ordenar elementos, con lo cual debe contener un método \verb|ordenar(lista)|, puede delegar esa responsabilidad a un componente intercambiable que implemente distintas estrategias. De marnera que cuando el módulo principar necesite ordenar una lista simplemente llame a un método del módulo compuesto, delegando esa tarea.
+
+ La composición es una solución que favorece la flexibilidad, ya que evita el acoplamiento jerárquico y permite reemplazar componentes sin afectar el resto del sistema. Además, este enfoque está alineado con el principio de diseño ``preferir la composición sobre la herencia'' \cite{Gamma:1995:DPE:186897}, que enfatiza la modularidad y la apertura al cambio.
 
 Dado que la herencia de clases tiende a ser rígida, los patrones de diseño la evitan, combinando en su lugar herencia de interfaces con composición de módulos y delegación de responsabilidades. Mediante la composición, un módulo puede reutilizar funcionalidad sin necesidad de heredar implementación, mientras que la delegación permite distribuir tareas entre distintos módulos de manera flexible.
 
@@ -57,24 +62,24 @@ Dado que la herencia de clases tiende a ser rígida, los patrones de diseño la 
 La metodología de \textbf{Parnas}\cite{Parnas1972}, conocida como Diseño Basado en Ocultación de la Información (\gls{dboi}), es una estrategia de diseño modular que tiene como objetivo preparar los sistemas de software para gestionar el cambio de manera eficiente y con el menor costo posible. Esta metodología parte del principio de que los requerimientos de un sistema no son inmutables, sino que evolucionarán durante su vida útil. Por ello, el diseño debe anticipar y facilitar la incorporación de cambios sin comprometer la integridad del sistema.
 
 \noindent\fbox{\begin{minipage}{\textwidth}
-Principio de Ocultación de la Información: Los ítem con alta probabilidad de cambio son el fundamento para descomponer un sistema en módulos. Cada módulo de la descomposición debe ocultar un \textbf{único} ítem con alta probabilidad de cambio, y debe ofrecer a los demás módulos una interfaz insensible a los cambios anticipados. \cite{Parnas1972}
+Principio de Ocultación de la Información: Los ítem con alta probabilidad de cambio son el fundamento para descomponer un sistema en módulos. Cada módulo de la descomposición debe ocultar un \textbf{único} ítem con alta probabilidad de cambio, y debe ofrecer a los demás módulos una interfaz insensible a los cambios anticipados. \cite{Parnas1972, cristia2022diseno}
 \end{minipage}} 
 \\\\
 \indent
-El núcleo de esta metodología es la identificación de los ítems con alta probabilidad de cambio dentro del sistema. Estos ítems representan aspectos de diseño o implementación susceptibles de modificaciones futuras, como algoritmos, estructuras de datos, interfaces con hardware o incluso requerimientos del usuario (ver lista extendida en sección \ref{listaItems}). Una vez identificados, Parnas sugiere ocultar y aislar cada item de cambio en un módulo independiente, asegurando que cada módulo oculte las decisiones de diseño específicas que podrían cambiar. Esto se logra diseñando interfaces que no expongan detalles de implementación, permitiendo que los módulos interactúen sin conocer sus detalles internos.
+El núcleo de esta metodología es la identificación de los ítems con alta probabilidad de cambio dentro del sistema. Estos ítems representan aspectos de diseño o implementación susceptibles de modificaciones futuras, como algoritmos, estructuras de datos, interfaces con hardware o incluso requerimientos del usuario (ver lista extendida en Sección \ref{listaItems}). Una vez identificados, Parnas sugiere ocultar y aislar cada item de cambio en un módulo independiente, asegurando que cada módulo oculte las decisiones de diseño específicas que podrían cambiar. Esto se logra diseñando interfaces que expongan tan poco como sea imposible sobre sus detalles de implementación, permitiendo que los módulos interactúen sin conocer su trabajo internos. 
 
 La razón por la que queremos aplicar esta metodología es clara: minimizar los costos asociados al desarrollo y mantenimiento del software. Al aislar las áreas susceptibles de cambio, cualquier modificación futura afectará únicamente al módulo correspondiente, sin propagarse al resto del sistema. Además, esta aproximación mejora la capacidad de escalar el sistema, facilita la colaboración en equipos de desarrollo grandes y permite que diferentes programadores trabajen en módulos específicos de manera independiente.
 
-La metodología de Parnas nos ayuda a diseñar para el cambio porque impone una disciplina clara en la forma en que los módulos se estructuran e interactúan. Al encapsular\footnote{Encapsular funcionalidades como el principio de ocultar los detalles internos de un módulo y exponer solo lo necesario a los demás módulos del sistema. La idea clave es que cada módulo tenga una interfaz bien definida y que sus detalles internos (implementación, estructuras de datos, algoritmos) sean ocultos.} las decisiones de diseño que podrían cambiar, evitamos la degradación de la integridad conceptual del sistema y reducimos significativamente el riesgo de introducir errores al realizar modificaciones. En definitiva, el \gls{dboi} fomenta un diseño robusto y adaptable, preparado para enfrentar la evolución inevitable de los sistemas de software.
+La metodología de Parnas nos ayuda a diseñar para el cambio porque impone una disciplina clara en la forma en que los módulos se estructuran e interactúan. Al encapsular\footnote{Encapsular funcionalidades refiere al principio de ocultar los detalles internos de un módulo y exponer solo lo necesario a los demás módulos del sistema. La idea clave es que cada módulo tenga una interfaz bien definida y que sus detalles internos (implementación, estructuras de datos, algoritmos) sean ocultos.} las decisiones de diseño que podrían cambiar, evitamos la degradación de la integridad conceptual del sistema y reducimos significativamente el riesgo de introducir errores al realizar modificaciones. En definitiva, el \gls{dboi} fomenta un diseño robusto y adaptable, preparado para enfrentar la evolución inevitable de los sistemas de software.
 
 
-Los pasos de la metodología son:
+Los pasos de la metodología son \cite{Parnas02, cristia2022diseno}:
 
 \begin{enumerate}
 	\item Identificar los ítem con probabilidad de cambio presentes en los requerimientos.
 	\item Analizar la diversas formas en que cada ítem puede cambiar.
 	\item Se asigna una probabilidad de cambio a cada variación analizada.
-	\item Aislar en módulos separados los ítem cuya probabilidad de cambio sea alta; implícitamente este punto indica que en cada módulo se debe aislar un único ítem con probabilidad de cambio.
+	\item Aislar en módulos separados los ítem cuya probabilidad de cambio sea alta. Implícitamente este punto indica que en cada módulo se debe aislar un único ítem con alta probabilidad de cambio.
 	\item Diseñar las interfaces de los módulos de manera que resulten insensibles a los cambios anticipados.
 
 \end{enumerate}
@@ -84,38 +89,73 @@ Los pasos de la metodología son:
 \section{Items de cambio comunes}
 \label{listaItems}
 
-Cuando se diseña pensando en el cambio, una tarea que se agrega es identificar las características o requerimientos del sistema que pueden variar en el tiempo. Naturalmente existen elementos que son mas probables a cambiar que otros, por lo que resulta importante anticiparse a esos cambios en particular. Algunos autores mencionaron algunos items de cambio comunes entre múltiples sistemas \cite{Parnas02}.
+Cuando se diseña pensando en el cambio, una tarea que se agrega es identificar las características o requerimientos del sistema que pueden variar en el tiempo. Naturalmente existen elementos que son mas probables a cambiar que otros, por lo que resulta importante anticiparse a esos cambios en particular. Algunos autores mencionaron algunos items de cambio comunes entre múltiples sistemas \cite{Parnas02, cristia2022diseno}.
 
 \begin{itemize}
-	\item Contracción o extension de requisitos.
-	\item Configuraciones de hardware.
-	\item Formato de los datos de entrada y salida.
-	\item Estructuras de datos.
-	\item Algoritmos.
-	\item Algunos usuarios pueden requerir solo un subconjunto de los servicios o características que otros usuarios necesitan.
-	\item Dispositivos periféricos.
+	\item Contracción o extension de requisitos (agregar, quitar o editar funcionalidades).
+	\item Configuraciones de hardware (cambio de \gls{MCU}, plataforma, etc.).
+	\item Formato de los datos de entrada y salida (protocolos de comunicación, etc).
+	\item Estructuras de datos (listas, tablas hash, queues, stacks, etc.).
+	\item Algoritmos (de control, de decición, ordenamiento, etc.).
+	\item Algunos usuarios pueden requerir solo un subconjunto de los servicios o características que otros usuarios necesitan (limitar las funcionalidades, por ejemplo).
+	\item Dispositivos periféricos (actuadores, sensores, etc.).
 	\item Entorno socio-cultural (moneda, impuestos, fechas, idioma, etc.).
 	\item Cambios propios del dominio de aplicación.
 	\item Cambios propios del negocio de la compañía desarrolladora.
-	\item Interconexión con otros sistemas.
+	\item Interconexión con otros sistemas (\gls{API}, por ejemplo).
 \end{itemize}
 
 Es útil consultar estos items a la hora de diseñar siguiendo los criterios de modularización de \cite{Parnas1972}.
 
+
+
+
+\section{Patrones de Diseño}
+
+A la hora de estructurar código podemos distinguir dos niveles, uno se tratará en esa sub-sección y el otro en Sección \ref{secArq}. Los patrones de diseño se aplican en el nivel de diseño. En este los elementos son módulos y la comunicación se lleva a cabo mediante llamadas a procedimiento. Además de las llamadas, se aplican dos conceptos previamente mencionados en la Sección \ref{ingso}, la composición y la herencia de interfaces. Estas son las herramientas con las se cuenta en el nivel de diseño para estructurar el código.
+
+En \cite{Gamma:1995:DPE:186897}, los autores traen a colación la definición de patrón de diseño que dio Christopher Alexander:
+
+\textit{``cada patrón describe un problema que ocurre una y otra vez en nuestro entorno, así como la solución al problema, de modo que pueda aplicarse un millón de veces esta solución sin hacer lo mismo dos veces''}
+
+Christopher era arquitecto, pero su definición fue aplicada al ámbito del software, en lugar de paredes, vigas y columnas, trabajamos con módulos e interfaces.
+
+Un patrón tiene tres elementos principales:
+
+\begin{itemize}
+	\item El \textbf{problema} al que se intenta dar solución. Posee una explicación del mismo, con el fin de que el usuario pueda saber si aplica o no a su situación en cuestión.
+	\item La \textbf{solución} al problema dada como los elementos de diseño (módulos), sus relacipnes responsabilidades y colaboraciones. Es una plantilla que puede ser aplicada en diferentes condiciones.
+	\item Las \textbf{consecuencias}, que son los resultados de aplicar esta solución. Es decir, qué beneficios y costos obtenemos de la aplicación. Así como las formas que el patrón provee para anticiparse a los posibles cambios futuros.
+\end{itemize}
+
+Determinar qué es o no un patrón resulta objetivo y el criterio de selección varía entre autores. Para este trabajo se utilizará el mismo criterio que los autores eligieron en \cite{Gamma:1995:DPE:186897}:
+
+\textit{``descripciones de módulos relacionados que están particularizados para resolver un problema de diseño general en un determinado contexto''}
+
+Notar que no solo se quiere saber cómo resolver un problema, sino que se busca que la solución se alinee con los principios de la \gls{IS} y provea un buen diseño que permita lograr las propiedades que se buscan; modificabilidad, reusabilidad, mantenibilidad, etc.
+
+Para anticiparse al cambio, los patrones aseguran que un sistema pueda cambiar de manera concreta, es decir; se deja que algún aspecto de la estructura varíe de manera independiente y esperada.
+
+
+\section{Arquitectura de Software}
+\label{secArq}
+
+En contraste con los patrones de diseño, la arquitectura de software no utiliza módulos e interfaces como actores principales, sino que los elementos son componentes, los cuales pueden estar formados por uno o múltiples módulos y tener cierta complejidad. La forma de comunicarse en este nivel se realiza mediante conectores los cuales pueden no ser necesariamente llamadas a procesos, sino otras estructuras como protocolos, pipes, etc. \cite{bass2003, buschmann1996posa1}.
+
+Según \cite{ShawGarlan1996} la arquitectura de software se define como la estructura fundamental de un sistema de software, que está compuesta por sus componentes y las relaciones entre estos. Este campo aborda la organización y los patrones utilizados para estructurar los sistemas de software de manera que sean eficientes, sostenibles y capaces de manejar cambios a lo largo del tiempo.
+
+Se destaca que la arquitectura de software no solo se trata de la estructura del código o la implementación técnica, sino de las decisiones de alto nivel que afectan la organización y el comportamiento del sistema. Estas decisiones incluyen cómo dividir un sistema en partes modulares, qué patrones de diseño aplicar para facilitar la extensión y el mantenimiento, y cómo gestionar las interacciones entre diferentes componentes del sistema.
+
 \section{Documentación}
 
-Quienes diseñan un sistema no serán necesariamente quienes lo implementen, por lo que sus decisiones deben estar disponibles para que diversos interesados en el sistema puedan revisarlas y comprenderlas. Por ello, documentar o describir el diseño de manera adecuada es tan importante como el diseño mismo. En este sentido, Parnas introduce el concepto de ``\textit{design through documentation}'' \cite{parnasDoc}, lo que nos lleva a enunciar el siguiente principio de diseño: \textit{Un diseño sin documentación carece de utilidad práctica.}
+Quienes diseñan un sistema no serán necesariamente quienes lo implementen e incluso es deseable que no lo sean, por lo que sus decisiones deben estar disponibles para que diversos interesados en el sistema puedan revisarlas y comprenderlas. Por ello, documentar o describir el diseño de manera adecuada es tan importante como el diseño mismo. En este sentido, Parnas, Clements y Weiss introducen en el concepto de ``\textit{design through documentation}'' (diseño a través de la documentación), lo que nos lleva a enunciar el siguiente principio de diseño: \textit{Un diseño sin documentación carece de utilidad práctica.} Ese enfoque de diseño de software que consiste en avanzar en el desarrollo estructurando y escribiendo documentación técnica precisa desde las primeras etapas del proyecto. En lugar de centrarse inicialmente en el código o en representaciones informales, se propone utilizar documentos (que más adelante en esta Sección veremos) como la guía de módulos, las especificaciones de interfaces y los requisitos formales como herramientas fundamentales para organizar, analizar y comunicar las decisiones de diseño. Permiiendo identificar inconsistencias, delegar responsabilidades claramente entre módulos y facilitar el mantenimiento y la incorporación de nuevos desarrolladores al proyecto. Según los autores, diseñar mediante documentación no solo clarifica el proceso, sino que mejora la calidad y reutilización del software resultante.
 
 Para lograr una buena descripción del diseño se utilizan múltiples documentos que aportan información sobre distintos aspectos a tener en cuenta \cite{ClementsEtAl2010}, entre ellos se encuentran:
 
 \begin{itemize}
-\item \textbf{Documentos de módulos}. Los elementos de estos documentos son módulos o unidades de implementación. Los módulos representan una forma basada en el código de considerar al sistema. Cada módulo tiene asignada y es responsable de llevar adelante una función.
-\item \textbf{Documentos de aspectos dinámicos}. En estos documentos los elementos son componentes presentes en tiempo de ejecución y los conectores que permiten que los componentes interactúen entre sí.
-\item \textbf{Documentos con referencias externas}. Estos documentos muestran la relación entre las partes en que fue descompuesto el sistema y elementos externos (tales como archivos, procesadores, personas, etc.).
-\item \textbf{Documentos de módulos}. Especificación de Interfaces, Estructura de Módulos, Guía de Módulos, Estructura de Herencia y Estructura de Uso.
-\item \textbf{Documentos de aspectos dinámicos}. Estructura de Procesos, Estructura de Objetos, Diagrama
-de Interacciones.
-\item \textbf{Documentos con referencias externas}. Estructura Física o de Despliegue
+\item \textbf{Documentos de módulos}. Los elementos de estos documentos son módulos o unidades de implementación. Los módulos representan una forma basada en el código de considerar al sistema. Cada módulo tiene asignada y es responsable de llevar adelante una función. Estos son: Especificación de Interfaces, Estructura de Módulos, Guía de Módulos, Estructura de Herencia y Estructura de Uso.
+\item \textbf{Documentos de aspectos dinámicos}. En estos documentos los elementos son componentes presentes en tiempo de ejecución y los conectores que permiten que los componentes interactúen entre sí. Los documentos que conforman este tipo son: Estructura de Procesos, Estructura de Objetos, Diagrama.
+\item \textbf{Documentos con referencias externas}. Estos documentos muestran la relación entre las partes en que fue descompuesto el sistema y elementos externos (tales como archivos, procesadores, personas, etc.). Enre ellos: Estructura Física o de Despliegue.
 \end{itemize}
 
 A fines didácticos la tesina se centrará, al igual que los patrones, en módulos, interfaces y sus relaciones. Por lo que se utilizarán diagramas de módulos a fin de documentar. Estos consisten en cajas nombradas en las cuales se define la interfaz de un módulo. Ademas, utilizando un conjunto de flechas se determinan sus relaciones.
@@ -183,44 +223,7 @@ Por otro lado, para la documentación del uso de patrones de diseño, utilizamos
 
 
 
-
-
-\section{Patrones de Diseño}
-
-A la hora de estructurar código podemos distinguir dos niveles, uno se tratará en esa sub-sección y el otro en sección \ref{secArq}. Los patrones de diseño se aplican en el nivel de diseño. En este los elementos son módulos y la comunicación se lleva a cabo mediante llamadas a procedimiento. Además de las llamadas, se aplican dos conceptos previamente mencionados en \ref{ingso}, la composición y la herencia de interfaces. Estas son las herramientas con las se cuenta en el nivel de diseño para estructurar el código.
-
-En \cite{Gamma:1995:DPE:186897}, los autores trae a colación la definición de patrón de diseño que dio Christopher Alexander:
-
-\textit{``cada patrón describe un problema que ocurre una y otra vez en nuestro entorno, así como la solución al problema, de modo que pueda aplicarse un millón de veces esta solución sin hacer lo mismo dos veces''}
-
-Christopher era arquitecto, pero su definición fue aplicada al ámbito del software, en lugar de paredes, vigas y columnas, trabajamos con módulos e interfaces.
-
-Un patrón tiene tres elementos principales:
-
-\begin{itemize}
-	\item El \textbf{problema} al que se intenta dar solución. Posee una explicación del mismo, con el fin de que el usuario pueda saber si aplica o no a su situación en cuestión.
-	\item La \textbf{solución} al problema, dada como los elementos de diseño, sus relación responsabilidades y colaboraciones. Es una plantilla que puede ser aplicada en diferentes condiciones.
-	\item Las \textbf{consecuencias}, que son los resultados de aplicar esta solución. Es decir, que beneficios y costos obtenemos de la aplicación. Así como las formas que el patrón provee para anticiparse a los posibles cambios futuros.
-\end{itemize}
-
-Determinar qué es o no un patrón resulta objetivo y el criterio de selección varia entre autores. Para este trabajo se utilizará el mismo criterio que los autores eligieron en \cite{Gamma:1995:DPE:186897}:
-
-\textit{``descripciones de módulos relacionados que están particularizados para resolver un problema de diseño general en un determinado contexto''}
-
-Notar no solo se quiere saber cómo resolver un problema, sino que se busca que la solución se alinee con los principios de la ingeniería de software y provea un buen diseño que permita lograr las propiedades que se buscan, modificabilidad, reusabilidad, mantenibilidad, etc.
-
-Para anticiparse al cambio, los patrones aseguran que un sistema pueda cambiar de manera concreta, es decir, se deja que algún aspecto de la estructura varíe de manera independiente y esperada.
-
-
-\section{Arquitectura de Software}
-\label{secArq}
-
-En contraste con los patrones de diseño, la arquitectura de software no utiliza módulos e interfaces como actores principales, sino que los elementos son componentes, los cuales pueden estar formados por múltiples módulos y tener cierta complejidad. La forma de comunicarse en este nivel se realiza mediante conectores los cuales pueden no ser necesariamente llamadas a procesos, sino otras estructuras como protocolos, pipes, etc..
-
-Según \cite{ShawGarlan1996} la arquitectura de software se define como la estructura fundamental de un sistema de software, que está compuesta por sus componentes y las relaciones entre estos. Este campo aborda la organización y los patrones utilizados para estructurar los sistemas de software de manera que sean eficientes, sostenibles y capaces de manejar cambios a lo largo del tiempo.
-
-Se destaca que la arquitectura de software no solo se trata de la estructura del código o la implementación técnica, sino de las decisiones de alto nivel que afectan la organización y el comportamiento del sistema. Estas decisiones incluyen cómo dividir un sistema en partes modulares, qué patrones arquitectónicos aplicar para facilitar la extensión y el mantenimiento, y cómo gestionar las interacciones entre diferentes componentes del sistema. Notar que cuando se habla de componentes estos pueden estar formados por múltiples módulos, son de una capa de abstracción superior a los conceptos que se manejan cuando hablamos de patrones de diseño.
-
+\chapter{Soluciones útiles.}
 
 \section{Arquitectura de Software Control de Procesos}
 \label{arqControlProc}
