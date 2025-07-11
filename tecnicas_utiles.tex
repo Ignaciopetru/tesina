@@ -46,7 +46,7 @@ Existen esencialmente dos tipos de herencia:
 \item \textbf{Herencia de interfaces}: En este caso, un módulo hijo solo hereda la interfaz, permitiendo que cada módulo implemente su propio comportamiento. Este enfoque es más flexible y facilita la adaptabilidad del sistema. Cuando hablemos de herencia en el resto de la tesina nos referiremos a este enfoque, herencia de interfaces.
 \end{itemize}
 
-
+A parir de esta relación entre módulos podemos definir dos tipos de módulos, los abstractos y los concretos. Un módulo abstracto define un conjunto de operaciones que pueden ser utilizadas por otros módulos. Este tipo establece un contrato de uso, permitiendo a otros módulos interactuar con él sin conocer sus detalles internos. Su función principal es favorecer la flexibilidad y extensibilidad del sistema, ya que distintos módulos pueden cumplir con ese mismo contrato ofreciendo implementaciones diferentes (en la Sección \ref{Accesoalhardware} se estudia caso de aplicación). Un módulo concreto, en cambio, es aquel que proporciona una implementación específica del comportamiento definido por un módulo abstracto. En los diseños que aplican patrones, se busca que los módulos consumidores dependan solo de las abstracciones y no directamente de las implementaciones concretas. Esta separación permite modificar, reemplazar o extender funcionalidades sin afectar el resto del sistema, y facilita la aplicación de técnicas como la composición (que veremos a continuación).
 
 \subsubsection*{Composición y delegación}
 La composición consiste en estructurar sistemas combinando módulos a través de sus interfaces en lugar de depender de relaciones de herencia. Esto se logra mediante la inclusión de referencias a otros módulos dentro de un módulo, lo que permite que las instancias deleguen tareas a estos módulos asociados. En lugar de que un módulo herede directamente un comportamiento específico, como un tipo particular de algoritmo de ordenamiento, la composición propone que el módulo mantenga una referencia a otro que se encargue de esa tarea. Por ejemplo, en vez de que una módulo de procesamiento de datos herede una forma fija de ordenar elementos, con lo cual debe contener un método \verb|ordenar(lista)|, puede delegar esa responsabilidad a un componente intercambiable que implemente distintas estrategias. De marnera que cuando el módulo principar necesite ordenar una lista simplemente llame a un método del módulo compuesto, delegando esa tarea.
@@ -158,14 +158,64 @@ Para lograr una buena descripción del diseño se utilizan múltiples documentos
 \item \textbf{Documentos con referencias externas}. Estos documentos muestran la relación entre las partes en que fue descompuesto el sistema y elementos externos (tales como archivos, procesadores, personas, etc.). Enre ellos: Estructura Física o de Despliegue.
 \end{itemize}
 
-A fines didácticos la tesina se centrará, al igual que los patrones, en módulos, interfaces y sus relaciones. Por lo que se utilizarán diagramas de módulos a fin de documentar. Estos consisten en cajas nombradas en las cuales se define la interfaz de un módulo. Ademas, utilizando un conjunto de flechas se determinan sus relaciones.
+\declareCMod{ModuloA}
+\declareCMod{ModuloB}
 
-En los diagramas (o figuras) se utilizan los siguientes símbolos. 
+Esta documentación debe estar bien estructurada con un formato bien definido. Los autores establecen cómo se define cada tipo de documento. En particular para documentar módulos de manera estructurada se utiliza un lenguaje llamado \textbf{2MIL} basado en TDN presentado en \cite{2mil}. Por ejemplo, un módulo llamado \ModuloA que exporta dos métodos se documenta de la forma mostrada en la Figura \ref{docModulo}.
 
+\begin{figure}[H]
+\caption{Documentación de un módulo utilizando 2MIL.}
+\label{docModulo}
+\begin{module}[]{ModuloA}{}{docModulo}
+  \exports
+  \proc{metodo1}
+  \proc{metodo2}
+  \comm{En esta sección se muestra comentarios relevantes al usuario.}
+\end{module}
+\end{figure}
+
+Y un heredero de \ModuloA llamado \ModuloB se documenta como en la Figura \ref{docModuloHere}.
+
+\begin{figure}[H]
+\caption{Documentación de un módulo heredero utilizando 2MIL.}
+\label{docModuloHere}
+\begin{hmodule}[]{ModuloB}{ModuloA}{}{docModuloB}
+  \exports
+  \proc{metodo3}
+  \comm{Este módulo hereda el comportamiento de \ModuloA y lo extiende con funcionalidades adicionales (metodo3).}
+\end{hmodule}
+\end{figure}
+
+Esto puede ser a su vez documentado de manera gráfica siguiendo el diagrama mostrado en la Figura \ref{moduloGraf}.
+
+\begin{figure}[H]
+\begin{center}
+\caption{Documentación gráfica de un módulo y su heredero.}
+\label{moduloGraf}
+\begin{tikzpicture}\sf
+\umlclass[]{ModuloA}{}
+{metodo1()\\
+metodo2()\\
+}
+
+\umlclass[below=0.5cm of ModuloA]{ModuloB}{}
+{metodo1()\\
+metodo2()\\
+metodo3()\\}
+\umlVHVinherit{ModuloB}{ModuloA}
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+
+Este formato gráfico de documentación puede ser extendido haciendo uso de los símbolos definidos en la Figura \ref{simbolos}.
+
+\begin{figure}
+
+\caption{Significado de los símbolos}
+\label{simbolos}
 \begin{tabular}{m{0.3\linewidth} p{0.6\linewidth}}
-\hline
-&\\[-0.2cm]
-& \textbf{Significado de los símbolos}\\
+
 \hline
 &\\
 \begin{tikzpicture}\sf
@@ -178,13 +228,13 @@ En los diagramas (o figuras) se utilizan los siguientes símbolos.
 \umlsimpleclass{A}
 \umlsimpleclass[right=1cm of A]{B}
 \umluniaggreg{A}{B}
-\end{tikzpicture} & {\modFCFont A} está compuesto por {\modFCFont B}. En el extremo de la flecha pueden  aparecer los siguientes símbolos: *, \textit{n}; o ninguno. En el primer caso indica que en la composición hay \textbf{0 o más elementos}, el segundo caso significa que hay \textbf{al menos un elemento} y en el último caso, la flecha sin símbolos adicionales indica que la composición tiene \textbf{exactamente un elemento}.\\\hline
+\end{tikzpicture} & {\modFCFont A} está compuesto por un elemento del tipo {\modFCFont B}. En el extremo de la flecha pueden  aparecer los siguientes símbolos: *, \textit{n}; o ninguno. En el primer caso indica que en la composición hay \textbf{0 o más elementos}, el segundo caso significa que hay \textbf{al menos un elemento} y en el último caso, la flecha sin símbolos adicionales indica que la composición tiene \textbf{exactamente un elemento}.\\\hline
 &\\
 \begin{tikzpicture}\sf
 \umlsimpleclass{A}
 \umlsimpleclass[right=1cm of A]{B}
 \umldep{A}{B}
-\end{tikzpicture} & {\modFCFont A} crea uno o más elemento de tipo {\modFCFont B}.\\\hline
+\end{tikzpicture} & {\modFCFont A} crea uno o más elementos de tipo {\modFCFont B}.\\\hline
 &\\
 \begin{tikzpicture}\sf
 \umlsimpleclass{A}
@@ -204,9 +254,11 @@ En los diagramas (o figuras) se utilizan los siguientes símbolos.
 \end{tabular}\\\vspace{0.5cm}
 
 
-Por otro lado, para la documentación del uso de patrones de diseño, utilizamos el lenguaje 2MIL\footnote{2MIL es una adaptación del lenguaje TDN presentado en \cite{2mil}.}, en la figura \ref{docPatron}  podemos observar un ejemplo.
+\end{figure}
 
-\begin{figure}
+Por otro lado, la aplicación de patrones de diseño también debe ser documentada. Para hacerlo se utiliza de igual forma el lenguade \textbf{2MIL} de la manera indicada en la Figura \ref{docPatron}. En este formato se establece el patrón que se está aplicando y se da una breve descripción del caso de aplicación. Además, se enumeran los cambios previstos y comó el patrón funciona en el caso particular. Por último, se define qué módulo de nuestro sistema cumple el rol de cada participante del patrón.
+
+\begin{figure}[H]
 \caption{Documentación aplicación de patrón.}
 \label{docPatron}
 \begin{pattern}[]{Breve descripción}{Algorithm}{idFigAlg}
@@ -220,6 +272,9 @@ Por otro lado, para la documentación del uso de patrones de diseño, utilizamos
 \is{ModuloParticipante2}{Participante2}
 \end{pattern}
 \end{figure}
+
+
+A fines didácticos en esta tesina utilizaremos solo la representacion grafica para dpcumentar módulos y sus relaciones. Para documentar patrones si se mostrará utilizando \textbf{2MIL}. Información adicional sobre cómo documentar utilizando este lenguaje puede encontrarse en \cite{cristia2022diseno, cristiaDocu, isStyDoc}.
 
 
 
