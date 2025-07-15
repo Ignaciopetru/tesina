@@ -85,7 +85,6 @@ Los pasos de la metodología son \cite{Parnas02, cristia2022diseno}:
 \end{enumerate}
 
 
-
 \section{Items de cambio comunes}
 \label{listaItems}
 
@@ -278,16 +277,49 @@ A fines didácticos en esta tesina utilizaremos solo la representacion grafica p
 
 
 
-\chapter{Soluciones útiles.}
+\chapter{Soluciones útiles}
 
-\section{Arquitectura de Software Control de Procesos}
+\section{Un estilo arquitectonico para sistemas embebidos}
 \label{arqControlProc}
 
-Si nos centramos en los sistemas embebidos de control como los que se definieron en la sección \ref{sistControl}, encontramos que existen trabajos sobre arquitecturas de software orientadas al control de procesos, por ejemplo el estilo arquitectónico de \textit{Control del Procesos} presentado en \cite{ShawGarlan1996}. El mismo está definido para ser usado en sistemas de control donde se quiere mantener ciertas propiedades de la salida del proceso cerca de valores de referencia. Como por ejemplo la velocidad de giro de una rueda, la posición del extrusor de una impresora 3D, la temperatura del agua en una caldera, etc.
+Si nos centramos en los sistemas embebidos de control como los que se definieron en la Sección \ref{sistControl}, encontramos que existen trabajos sobre estilos arquitectonicos de software orientados al control de procesos; por ejemplo el estilo arquitectónico de \textit{Control del Procesos} presentado en \cite{ShawGarlan1996}. El mismo está definido para ser aplicado en sistemas de control de procesos físicos donde se quiere mantener ciertas propiedades de la salida del proceso, cerca de valores de referencia. Algunos ejemplos son el control de la velocidad de giro de una rueda, la posición del extrusor de una impresora 3D, la temperatura del agua en una caldera, etc.
 
-Para llevar a cabo el enfoque se fundamenta en tres componentes básicos: \textbf{Control}, \textbf{Proceso} y \textbf{Sensores}, los cuales trabajan de manera independiente.
+Antes de explicar en que se basa el estilo veamos las definiciones presentes en el Cuadro \ref{tab:conceptosArq}. Los tres conceptos hacen referencia al mundo físico, no son definiciones de software. Podemos decir entonces, que nuestro sistema de control se relacionará con estas variables físicas para lograr el objetivo.
 
-\begin{figure}[h!]
+\begin{table}[H]
+
+\caption{Conceptos clave de un proceso físico.}
+\label{tab:conceptosArq}
+\setlength{\extrarowheight}{5pt} % Incrementa el espacio vertical entre filas
+\renewcommand{\arraystretch}{1.0} % Ajusta el espacio vertical adicional en las celdas
+\begin{tabular}{|>{\raggedright\arraybackslash}p{4.5cm}|>{\raggedright\arraybackslash}p{10.5cm}|}
+\hline
+\textbf{Término}               & \textbf{Definición}                                                                                                                                       \\ \hline
+\textbf{Variable controlada}   & Propiedad o valor físico que puede ser medido mediante un sensor, velocidad de giro de una rueda, temperatura del agua, etc..    \\ \hline
+\textbf{Variable manipulada}   & Variable del proceso que se puede ajustar directamente para influir en las variables controladas, como la tensión suministrada al un motor. \\ \hline
+\textbf{Set Point}             & El valor deseado o de referencia para una variable controlada. Se busca ajustar el sistema para alcanzar y mantener este valor.                              \\ \hline
+
+\end{tabular}
+\end{table}
+
+El control se basa en un proceso a ciclo cerrado (\textit{clossed-loop}) con retroalimentación hacia atrás (feedback). En este se realizan las siguientes operaciones:
+\begin{itemize}
+\item El sistema recibe valores de referencia llamados \textit{set-points}.
+\item Se leen los valores de las variables controladas a través de sensores.
+\item Con los valores recolectados, se realizan los cálculos a fin de modificar mediante actuadores las variables manipuladas intentando que las variables controladas lleguen a los valores de referencia.
+\item Una vez decidida la acción, se aplica el ajuste sobre las variables manipuladas y la iteración se repite.
+\end{itemize}
+
+De esta manera se logra alcanzar, si es posible, a los valores deseados luego de una serie de iteraciones.
+
+Supóngase que se está trabajando con un robot móvil y, en particular, con una de sus ruedas motorizadas. El objetivo del control es lograr que la velocidad de la rueda alcance los valores de referencia configurados por el usuario. La variable controlada es la velocidad de giro de la rueda, medida mediante con un velocímetro, y la variable manipulada es la tensión aplicada al motor. Modificando dicha tensión se logra alterar la velocidad de giro del motor y, por ende, la de la rueda.
+
+Siguiendo los pasos descriptos, el sistema leerá primero el valor de velocidad configurado por el usuario y luego el valor medido por el velocímetro. Con estos dos datos, decidirá qué tensión aplicar. Por ejemplo, si el usuario solicita 30  \gls{RPM} y el velocímetro mide 20  \gls{RPM}, el sistema incrementará la tensión. En una iteración futura, si se alcanza la velocidad deseada, se ajustará nuevamente la tensión para no sobrepasar el valor configurado.
+
+Para llevar este comportamiento a cabo, el estilo arquitectonico propone los componentes de software que se muestran en la Figura \ref{fig:arqCtrlRobot}.
+
+
+\begin{figure}[H]
 \caption{Diagrama de la arquitectura control de procesos}
 \label{fig:arqCtrlRobot}
 \vspace{0.5cm}
@@ -338,12 +370,19 @@ Para llevar a cabo el enfoque se fundamenta en tres componentes básicos: \textb
 %%%---pipes
 \draw[pipe] (sensorVel.west) -| (-3.3,-4) |- (controlR.south west);
 \draw[pipe] (sensorCte.south) |- (-4.5,-8.7) |- (controlR.west);
-\draw[pipe] (sensorDir.east) -| (3.5,-4) |- (controlR.east);
+\draw[pipe] (sensorDir.south) |- (-5.7,-9.8) |- (controlR.north west);
 %
 %%
-
+\path let \p1 = (controlR) in
+  \draw[-latex](\x1+2,\y1+0.6) -- node[at start, yshift=10pt, xshift=15pt]{\normalsize Valores de ref. (set points)}(controlR.north east);
+  
+\path let \p1 = (controlR) in
+  \draw[*-latex](\x1+2.3,\y1+0) -- node[at start, yshift=4pt, xshift=20pt]{\normalsize evento}(controlR.12);
+ 
 \draw[-latex](controlR.250) -- (proceso.120);
-\draw[-latex](controlR.-70) -- (proceso.60);
+\draw[-latex](controlR.-70) -- node[midway, right]{\normalsize modificar variables manipuladas
+} (proceso.60);
+
 %%
 \node[below left=0.7cm and -0.7cm of controlR, text width=1.3cm]{};
 \node[below right=0.7cm and -0.5cm of controlR, text width=1.3cm]{};
@@ -352,26 +391,26 @@ Para llevar a cabo el enfoque se fundamenta en tres componentes básicos: \textb
 
 
 %---Referencias---
-\node[below left=3.5cm and 4cm of sensorVel](f11){};
-\node[below left=3.5cm and 2cm of sensorVel](f12){};
+\node[below left=4.5cm and 4cm of sensorVel](f11){};
+\node[below left=4.5cm and 2cm of sensorVel](f12){};
 \draw[*-latex] (f11) edge node[above](f1){evento} (f12);
 
-\node[below left=3.5cm and 2cm of sensorCte](f21){};
-\node[below left=3.5cm and 0cm of sensorCte](f22){};
+\node[below left=4.5cm and 2cm of sensorCte](f21){};
+\node[below left=4.5cm and 0cm of sensorCte](f22){};
 \draw[-latex] (f21) edge node[above, text width =2.1cm](f2){llamada a\\ procedimiento} (f22);
 
 
-\node[below left=3.5cm and 1cm of sensorDir](f31){};
-\node[below right=3.5cm and 1cm of sensorDir](f32){};
+\node[below left=4.5cm and 1cm of sensorDir](f31){};
+\node[below right=4.5cm and 1cm of sensorDir](f32){};
 \draw[dashed,-latex] (f31) edge node[above, text width =1.5cm](f3){respuesta física}
  (f32);
  
-\node[below right=3.5cm and 2.5cm of sensorDir](f41){};
-\node[below right=3.5cm and 4.5cm of sensorDir](f42){};
+\node[below right=4.5cm and 2.5cm of sensorDir](f41){};
+\node[below right=4.5cm and 4.5cm of sensorDir](f42){};
 \draw[pipe] (f41) edge node[above, text width =1.5cm]{tubo}
  (f42);
  
-\node[shape=circle,draw,minimum width=1.2cm,below=1.5cm of f1,label={above,text width=1.7cm:algoritmo\\ de control}](c){};
+\node[shape=circle,draw,minimum width=1.2cm,below=1.5cm of f1,label={control}](c){};
 
 \node[shape=rectangle,draw,minimum width=1.5cm,minimum height=0.8cm ,below=1.5cm of f2,label={above:proceso}](p){};
 
@@ -381,48 +420,42 @@ Para llevar a cabo el enfoque se fundamenta en tres componentes básicos: \textb
 \end{tikzpicture}
 \end{figure}
 
-El componente \textbf{Control} es responsable de implementar el algoritmo de control, procesar datos provenientes de los sensores y realizar ajustes al proceso para mantener las variables dentro de los valores deseados. Además, se encarga de activar y desactivar el sistema, y de configurar los rangos de operación o \textit{set-points}. Por otro lado, el \textbf{Proceso} encapsula los dispositivos que generan las salidas controladas, proporcionando interfaces para modificar sus variables según las instrucciones del \textbf{Control}. Finalmente, los \textbf{Sensores} miden las variables clave del proceso y transmiten estos datos al componente \textbf{Control}, ocultando la complejidad de los dispositivos de medición.
 
-La arquitectura provee una serie de pasos para realizar el control, estos se ejecutan de manera cíclica. Muchas veces se hace uso de temporizadores para limitar la cantidad de ciclos por unidad de tiempo. De esta manera se evita saturar al procesador y a su vez se le da tiempo a los actuadores a realizar su trabajo. Cuando, por ejemplo, se le indica a un motor aumentar las \gls{RPM} la inercia provoca que el aumento no sea instantáneo, sino que lleve un tiempo llegar al valor indicado. En caso de no esperar, el sistema realizaría otro ciclo de control sin utilidad, desperdiciando tiempo de \gls{CPU} que puede ser aprovechado para otras tareas.
+Como se puede observar el estilo se basa en tres componenes básicos \textbf{Control}, \textbf{Proceso} y \textbf{Sensores}. Cada uno de ellos trabaja de manera independiente y se comunican mediante dos mecanismos principales, llamadas a prodedimientos y tubos (\textit{pipes}). Veamos qué información oculta cada uno:
 
 \begin{itemize}
-\item El sistema recibe valores de referencia llamados \textit{set-points}.
-\item Se leen los valores actuales a través de los sensores.
-\item Con los nuevos valores, se realizan los cálculos a fin de modificar mediante actuadores las propiedades e intentar acercarlas a los valores de referencia.
-\item Una vez, decidida la acción se aplica el cambio.
+\item \textbf{Proceso}: encapsula los mecanismos y dispositivos que permiten modificar las variables manipuladas del proceso físico. Por ejemplo, el hardware y los drivers que permiten ajustar la tensión que se entrega al motor de una rueda. Nótese que este es un componente de software; no debe confundirse con el proceso físico que ocurre en el mundo real.
+
+\item \textbf{Control}: encapsula el algoritmo que decide cómo modificar las variables manipuladas para que las variables controladas alcancen los valores de referencia deseados. Siguiendo el ejemplo planteado anteriormente, oculta el algoritmo que, a partir de la velocidad deseada y la medida por el velocímetro, determina cuál es la tensión que debe aplicarse al motor para alcanzar el valor requerido.
+
+\item \textbf{Sensores}: encapsulan los dispositivos y mecanismos necesarios para obtener los valores de las variables controladas. Por ejemplo, el funcionamiento del velocímetro.
 \end{itemize}
 
+Además, el estilo cuenta con otro tipo de componente importante: los \textbf{tubos}. Estos se utilizan para transmitir los valores de las variables controladas desde los sensores al algoritmo de control de manera desacoplada. El objetivo es que el \textbf{Control} pueda operar sin conocer directamente los sensores, logrando así una mayor independencia. Comúnmente, cada \textbf{tubo} es un módulo que provee un método para escribir y otro para leer. En este esquema, los \textbf{Sensores} escriben los valores obtenidos del entorno físico, y el \textbf{Control} los recupera utilizando el método de lectura del \textbf{tubo}.
 
-Para llevar a cabo los pasos, esta arquitectura emplea conectores como eventos, llamadas a procedimiento y tubos (pipes) para gestionar la comunicación y las acciones entre los componentes. A nivel computacional, el sistema funciona en un ciclo continuo de retroalimentación donde los sensores miden las variables, el \textbf{Control} evalúa estas mediciones y, de ser necesario, ajusta el \textbf{Proceso} para garantizar el cumplimiento de los objetivos definidos. Este enfoque modular brinda independencia entre componentes. Por ejemplo, un sensor emite información colocándola en un pipe sin conocer al destinatario. Esto permite que los sensores puedan ser modificado o reemplazado sin afectar al controlador, así como agregar nuevos sensores. De manera similar, existe una separación clara entre el algoritmo de control, que realiza los cálculos para alcanzar los valores de referencia, y el proceso, que se encarga de aplicar dichos cálculos. Este desacople permite que cambios en el algoritmo de control no impacten directamente en el proceso y viceversa. En conclusión se facilita la incorporación de nuevos sensores, actualizaciones en el algoritmo de control y cambios en el hardware, promoviendo flexibilidad y escalabilidad.
 
-\begin{table}[h!]
+La ventaja de este estilo arquiectónico es que brinda un enfoque modular con independencia entre componentes. Por ejemplo, un sensor emite información colocándola en un tubo sin conocer al destinatario. Esto permite que los sensores puedan ser modificado o reemplazado sin afectar al controlador, así como agregar nuevos sensores. De manera similar, existe una separación clara entre el algoritmo de control, que realiza los cálculos para alcanzar los valores de referencia, y el proceso, que se encarga de aplicar dichos cálculos. Este desacople permite que cambios en el algoritmo de control no impacten directamente en el proceso y viceversa. En conclusión se facilita la incorporación de nuevos sensores, actualizaciones en el algoritmo de control y cambios en el hardware, promoviendo flexibilidad y escalabilidad.
 
-\caption{Conceptos clave en la arquitectura de control de procesos.}
-\label{tab:conceptosArq}
-\setlength{\extrarowheight}{5pt} % Incrementa el espacio vertical entre filas
-\renewcommand{\arraystretch}{1.0} % Ajusta el espacio vertical adicional en las celdas
-\begin{tabular}{|>{\raggedright\arraybackslash}p{4.5cm}|>{\raggedright\arraybackslash}p{10.5cm}|}
-\hline
-\textbf{Término}               & \textbf{Definición}                                                                                                                                       \\ \hline
-\textbf{Variable del proceso}  & Propiedades del proceso que pueden medirse y monitorearse, como temperatura, presión, flujo o velocidad. Estas variables reflejan el estado del sistema. \\ \hline
-\textbf{Variable controlada}   & Una variable del proceso cuyo valor el sistema intenta mantener en un rango deseado, como la temperatura de un horno o el nivel de agua en un tanque.    \\ \hline
-\textbf{Variable manipulada}   & Variable del proceso que el controlador puede ajustar directamente para influir en la variable controlada, como la válvula de flujo en un sistema de bombeo. \\ \hline
-\textbf{Variable de entrada}   & Variable que mide una entrada al proceso, como la potencia suministrada a un motor o la cantidad de material en una cinta transportadora.               \\ \hline
-\textbf{Set Point}             & El valor deseado para una variable controlada. El controlador busca ajustar el sistema para alcanzar y mantener este valor.                              \\ \hline
 
-\end{tabular}
-\end{table}
 
-\section{Desacople de módulos:  Patrón Command}
+\section{Un patrón muy conveniente para sistemas embebidos}
 
 Parnas en \cite{Parnas1972} establece que desacoplar se refiere a la idea de reducir la dependencia entre módulos en un sistema de software. Un sistema está acoplado cuando los cambios en un módulo requieren modificaciones en otros módulos. Desacoplar significa diseñar los módulos de manera que puedan funcionar y cambiar independientemente.
 
-A lo largo de los ejemplos del documento, veremos repetidas veces el uso de la noción de \textit{orden} o \textit{comando}. Cada vez que sea nombrado haremos referencia a la aplicación de un patrón de diseño de Gamma \cite{Gamma:1995:DPE:186897}, el patrón \textit{Command}. 
+A lo largo de los ejemplos del documento, veremos repetidas veces el uso de la noción de \textit{orden} o \textit{comando}. Cada vez que sea nombrado haremos referencia a la aplicación de un patrón de diseño de Gamma \cite{Gamma:1995:DPE:186897}, llamdo \textit{Command}. Este patrón es el que más veces se aplicó en el trabajo del robot desmalezador \cite{laura}, por lo que es importante conocerlo.
 
-La función principal que cumple este patrón es la de desacoplar el módulo que invoca una orden, la orden en si y aquel que sabe como llevarla a cabo. Es decir, este patrón puede ser utilizado para reemplazar las \textit{callbacks} entre módulos. Como objetivo fundamental, buscamos no tener que modificar la implementación del módulo invocador en caso de un cambio en el módulo que se encarga de realizar las tareas. Ademas, se le quita la responsabilidad de saber exactamente qué acciones realizar para llevar a cabo un procedimiento particular. Por ejemplo, un módulo necesita que otro se inicie, pero este último para hacerlo requiere que se invoque una serie de sus funciones de manera ordenada. Si lo se lo hace de la forma clásica, el primer módulo debe ajustar su implementación al segundo. En cambio, con una orden se mueve la responsabilidad a un nuevo módulo.
+La función principal que cumple este patrón es la de desacoplar el módulo que invoca una orden, la orden en si y aquel que sabe como llevarla a cabo. En particular, este patrón puede ser utilizado para reemplazar las \textit{callbacks} entre módulos. Es común utilizar \textit{callbacks} para mantener los niveles de abstracción, en donde módulos de bajo nivel de abstracción desconocen la existencia de módulos más abstractos.
+
+En la Figura \ref{commandEst} podemos observar la estructura de módulos del mismo.
+
+\declareCMod{Invocador}
+\declareAMod{Orden}
+\declareCMod{OrdenConcreta}
+\declareCMod{Receptor}
 
 \begin{figure}[H]
 \caption{Estructura patrón \textit{Command}}
+\label{commandEst}
 \begin{center}
 \begin{tikzpicture}\sf
 \umlsimpleclass[]{Invocador}
@@ -452,15 +485,22 @@ ejecutar()
 \end{figure}
 
 \begin{itemize}
-    \item \textbf{Invocador}: le pide a la Orden que ejecute la acción.
-    \item \textbf{Orden}: declara la interfaz para ejecutar una acción.
-    \item \textbf{OrdenConcreta}: implementa la método ejecución la cual se encarga de llamar la o las métodos del \textbf{Receptor} con el objetivo de llevar a cabo la acción.
-    \item \textbf{Receptor}: cualquier módulo, es sobre la cual se realiza la acción.
+    \item \Invocador: le pide a la \Orden que ejecute la acción.
+    \item \Orden: declara la interfaz para ejecutar una acción.
+    \item \OrdenConcreta: implementa el método ejecución el cual se encarga de llamar a el o los métodos del \Receptor con el objetivo de llevar a cabo la acción.
+    \item \Receptor: cualquier módulo sobre la cual se realiza la acción.
 \end{itemize}
 
-Al encapsular cada solicitud de una operación dentro de un módulo, el patrón permite que los módulos que invocan acciones no necesiten conocer los detalles de implementación de los módulos que las ejecutan. Esto reduce significativamente las dependencias y hace que el sistema sea más fácil de mantener, ya que cada módulo se concentra en su propia responsabilidad, sin acoplarse a los detalles de otros módulos. Además, la extensión de funcionalidades se simplifica considerablemente. Dado que cada acción está representada por un módulo independiente, se pueden agregar nuevos comandos al sistema sin modificar los módulos existentes. Esta estructura es particularmente útil cuando se necesita modificar o añadir funcionalidades de manera frecuente. Al mismo tiempo, los comandos encapsulados pueden almacenarse, reutilizarse y combinarse en secuencias, lo que facilita la implementación de operaciones complejas que se repiten o que requieren ser acumuladas para un procesamiento posterior. Por otro lado, como el comando es un módulo puede ser extendido para implementar múltiples funcionalidades, como deshacer operaciones o registrar cambios. 
+Como objetivo fundamental, buscamos no tener que modificar la implementación del módulo invocador en caso de un cambio en el módulo que se encarga de realizar las tareas. Ademas, se le quita la responsabilidad de saber exactamente qué acciones realizar para llevar a cabo un procedimiento particular. Por ejemplo, un módulo necesita que otro se inicie, pero este último para hacerlo requiere que se invoque una serie de sus métodos de manera ordenada. Si se lo hace de la forma clásica, el primer módulo debe ajustar su implementación al segundo. En cambio, con una orden se mueve la responsabilidad a un nuevo módulo.
+
+Al encapsular cada solicitud de una operación dentro de un módulo, el patrón permite que los módulos que invocan acciones no necesiten conocer los detalles de implementación de los módulos que las ejecutan. Esto reduce significativamente las dependencias y hace que el sistema sea más fácil de mantener, ya que cada módulo se concentra en su propia responsabilidad, sin acoplarse a los detalles del resto de módulos. Esta estructura es particularmente útil cuando se necesita modificar o añadir funcionalidades de manera frecuente. Al mismo tiempo, los comandos encapsulados pueden almacenarse, reutilizarse y combinarse en secuencias, lo que facilita la implementación de operaciones complejas que se repiten o que requieren ser acumuladas para un procesamiento posterior. Por otro lado, como la orden es un módulo puede ser extendido para implementar múltiples funcionalidades, como deshacer operaciones o registrar cambios. 
 
 \subsubsection{Ejemplo}
+
+\declareCMod{Motor}
+\declareAMod{Orden}
+\declareCMod{MotorGirarIzq}
+\declareCMod{Controller}
 
 \begin{figure}[H]
 \caption{Ejemplo de aplicación básica del patrón \textit{Command}}
@@ -490,11 +530,21 @@ ejecutar() \{ \\
 \}
 }
 
+\umlclass[above=1.3cm of MotorGirarIzq,type=abstract]{Orden}
+{}
+{
+\umlvirt{ejecutar()}
+}
+
+
+\umluniaggreg[geometry=|-]{Controller}{Orden}
+\umlinherit{MotorGirarIzq}{Orden}
+\umluniassoc[geometry=-|-]{MotorGirarIzq}{Motor}
 
 \end{tikzpicture}
 \end{center}
 \end{figure}
-Un módulo \textbf{Controller}, necesita manejar un motor paso a paso reprensentado en el diseño por el módulo \textbf{Motor}. Para hacerlo se deben ejecutar una serie de métodos de la interfaz del \textbf{Motor}. En particular, primero se debe habilitar el giro del motor llamando al método \verb|enable|, luego configurar el sentido de giro con el método \verb|left| o \verb|right| (izquierda o derecha) y por ultimo avanzar un paso de giro invocando \verb|pulse|. Tradicionalmente esto seria realizado desde el módulo \textbf{Controller} agregando el código en cierto método de este (ver ejemplo en código) \ref{notCommand}. Provocando así, un fuerte acoplamiento entre \textbf{Controller} y \textbf{Motor}. Dado que ante cualquier cambio de la interfaz de \textbf{Motor}, se debe actualizar la implementación del módulo \textbf{Controller}.
+Un módulo \Controller, necesita manejar un \gls{pasoapaso} reprensentado en el diseño por el módulo \Motor. Para hacerlo se deben ejecutar una serie de métodos de la interfaz del \Motor. En particular, primero se debe habilitar el giro del motor llamando al método \verb|enable|, luego configurar el sentido de giro con el método \verb|left| o \verb|right| (izquierda o derecha) y por ultimo avanzar un paso de giro invocando \verb|pulse|. Tradicionalmente esto seria realizado desde el módulo \Controller agregando el código en cierto método de este (ver ejemplo en Código \ref{notCommand}), provocando así, un fuerte acoplamiento entre \Controller y \Motor. Esto es, ante cualquier cambio de la interfaz de \Motor, se debe actualizar la implementación del módulo \Controller, es decir, hay que modificar dos módulos y como dijimos el sistema debe estar cerrado a cambios y abierto a extensiones. Reduciendo al mínimo la modificación de código existente lo que podría traer como resultado la introducción de errores.
 
 
 \begin{lstlisting}[label={notCommand}, caption=Ejemplo de implementación sin usar el patrón \textit{Command}.]
@@ -510,11 +560,12 @@ control() {
     .  
 }
 \end{lstlisting}
+Para aplicar el patrón \textit{Command} se debe crear el módulo heredero de \Orden que representa el comando en cuestión, en este caso, \MotorGirarIzq. Este encapsula cómo deben invocarse los métodos del módulo \Motor para que este realice un paso de giro hacia la izquierda. Por lo tanto, \Controller invocará el método ejecutar de \MotorGirarIzq para realizar dicha acción.
 
-Para aplicar el patrón \textit{Command} se debe crear el módulo que representa el comando en cuestión, en este caso \textbf{MotorGirarIzq}. Este encapsula cómo se deben invocar los métodos del módulo \textbf{Motor} para que este realice un paso de giro hacia la izquierda. Por lo que \textbf{Controller} invocará el método \verb|ejecutar| de \textbf{MotorGirarIzq} para realizar la misma acción.
+Los problemas del diseño tradicional se solucionan al aplicar este patrón. Se logra desacoplar al \Motor del \Controller: los posibles cambios en el módulo \Motor afectan solo al módulo \MotorGirarIzq. El \Controller desconoce cómo se lleva a cabo la acción de girar el motor un paso hacia la izquierda.
 
-Los problemas del diseño utilizado tradicionalmente se solucionan al aplicar el patrón. Se logra desacoplar al \textbf{Motor} del \textbf{Controller}, los posibles cambios en el módulo \textbf{Motor} afectan solo al módulo \textbf{MotorGirarIzq}. El \textbf{Controller} desconoce como se lleva a cabo la accion de girar el motor un paso hacia la izquierda.
+En caso de que la interfaz de \Motor cambie por cualquier motivo, se puede crear un nuevo módulo heredado de \Orden, el cual implemente cómo ejecutar la acción de girar a la izquierda sobre el nuevo motor.
 
-Otro uso interesante del patrón, es cuando se define una cierta estructura conceptual en el sistema. Esta puede responder a la naturaleza de la aplicación del mismo. Por ejemplo, en un sistema de control, se puede definir que los módulos que realizan el control del mismo invoquen a los sensores para obtener información. Generando así, una cierta jerarquía en la cual los sensores no deben invocar métodos de módulos superiores. En caso de ser necesaria la comunicación de manera inversa se puede hacer uso del patrón \textit{command} para reemplazar el uso de \textit{callbacks}.
+Otro uso interesante del patrón surge cuando se define una cierta estructura conceptual en el sistema. Esta puede responder a la naturaleza de la aplicación. Por ejemplo, en un sistema de control, se puede definir que los módulos que toman decisiones sobre el control sean quienes invoquen a los sensores para obtener información, generando así una jerarquía en la que los sensores no deben invocar métodos de módulos superiores. En caso de ser necesaria la comunicación en sentido inverso, se puede utilizar el patrón \textit{Command} para reemplazar el uso de \textit{callbacks}.
 
-
+Este uso del patrón \textit{Command} será aplicado en varias de las soluciones a problemas comunes en sistemas embebidos que se proponen más adelante en esta tesina.

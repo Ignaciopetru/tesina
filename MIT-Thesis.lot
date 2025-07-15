@@ -9,11 +9,11 @@
 \addvspace {10\p@ }
 \contentsline {xchapter}{Ingeniería de Software}{27}{chapter.4}%
 \addvspace {10\p@ }
-\contentsline {xchapter}{Soluciones útiles.}{37}{chapter.5}%
-\contentsline {table}{\numberline {5.1}{\ignorespaces Conceptos clave en la arquitectura de control de procesos.}}{39}{table.caption.19}%
+\contentsline {xchapter}{Soluciones útiles}{37}{chapter.5}%
+\contentsline {table}{\numberline {5.1}{\ignorespaces Conceptos clave de un proceso físico.}}{37}{table.caption.18}%
 \addvspace {10\p@ }
-\contentsline {xchapter}{Problemas comunes}{43}{chapter.6}%
-\contentsline {table}{\numberline {6.1}{\ignorespaces Funciones de cada pin del módulo DRV8838}}{44}{table.caption.23}%
-\contentsline {table}{\numberline {6.2}{\ignorespaces Anticipos al cambio del diseño propuesto para el brazo robótico.}}{73}{table.caption.52}%
+\contentsline {xchapter}{Problemas comunes}{45}{chapter.6}%
+\contentsline {table}{\numberline {6.1}{\ignorespaces Funciones de cada pin del módulo DRV8838}}{46}{table.caption.23}%
+\contentsline {table}{\numberline {6.2}{\ignorespaces Anticipos al cambio del diseño propuesto para el brazo robótico.}}{75}{table.caption.52}%
 \addvspace {10\p@ }
-\contentsline {xchapter}{Patrones de diseño de Gamma}{97}{appendix.Alph1}%
+\contentsline {xchapter}{Patrones de diseño de Gamma}{99}{appendix.Alph1}%

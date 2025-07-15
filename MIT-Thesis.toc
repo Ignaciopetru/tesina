@@ -15,29 +15,29 @@
 \contentsline {section}{\numberline {4.4}Patrones de Diseño}{31}{section.4.4}%
 \contentsline {section}{\numberline {4.5}Arquitectura de Software}{32}{section.4.5}%
 \contentsline {section}{\numberline {4.6}Documentación}{32}{section.4.6}%
-\contentsline {chapter}{\numberline {5}Soluciones útiles.}{37}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Arquitectura de Software Control de Procesos}{37}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Desacople de módulos: Patrón Command}{39}{section.5.2}%
-\contentsline {subsubsection}{\numberline {5.2.0.1}Ejemplo}{41}{subsubsection.5.2.0.1}%
-\contentsline {chapter}{\numberline {6}Problemas comunes}{43}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Acceso al hardware}{43}{section.6.1}%
-\contentsline {section}{\numberline {6.2}Interfaces que no se ajustan perfectamente}{49}{section.6.2}%
-\contentsline {section}{\numberline {6.3}Control en conjunto de dispositivos}{54}{section.6.3}%
-\contentsline {subsection}{\numberline {6.3.1}Subsistemas de control}{56}{subsection.6.3.1}%
-\contentsline {subsection}{\numberline {6.3.2}Ejemplo}{60}{subsection.6.3.2}%
-\contentsline {section}{\numberline {6.4}Obtención de información}{74}{section.6.4}%
-\contentsline {section}{\numberline {6.5}Control anti-rebote}{78}{section.6.5}%
-\contentsline {section}{\numberline {6.6}Máquinas de estado}{79}{section.6.6}%
-\contentsline {section}{\numberline {6.7}Integridad de la información}{87}{section.6.7}%
-\contentsline {section}{\numberline {6.8}Verificación de precondiciones.}{90}{section.6.8}%
-\contentsline {section}{\numberline {6.9}Organización de la ejecución}{93}{section.6.9}%
-\contentsline {chapter}{\numberline {A}Patrones de diseño de Gamma}{97}{appendix.Alph1}%
-\contentsline {section}{\numberline {A.1}Adapter}{97}{section.Alph1.1}%
-\contentsline {section}{\numberline {A.2}Command}{98}{section.Alph1.2}%
-\contentsline {section}{\numberline {A.3}State}{99}{section.Alph1.3}%
-\contentsline {section}{\numberline {A.4}Mediator}{101}{section.Alph1.4}%
-\contentsline {section}{\numberline {A.5}Decorator}{102}{section.Alph1.5}%
-\contentsline {section}{\numberline {A.6}Proxy}{103}{section.Alph1.6}%
-\contentsline {section}{\numberline {A.7}Iterator}{104}{section.Alph1.7}%
-\contentsline {chapter}{Glosario}{109}{appendix*.71}%
-\contentsline {backmatter}{Referencias}{111}{appendix*.72}%
+\contentsline {chapter}{\numberline {5}Soluciones útiles}{37}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Un estilo arquitectonico para sistemas embebidos}{37}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Un patrón muy conveniente para sistemas embebidos}{40}{section.5.2}%
+\contentsline {subsubsection}{\numberline {5.2.0.1}Ejemplo}{42}{subsubsection.5.2.0.1}%
+\contentsline {chapter}{\numberline {6}Problemas comunes}{45}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Acceso al hardware}{45}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Interfaces que no se ajustan perfectamente}{51}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Control en conjunto de dispositivos}{56}{section.6.3}%
+\contentsline {subsection}{\numberline {6.3.1}Subsistemas de control}{58}{subsection.6.3.1}%
+\contentsline {subsection}{\numberline {6.3.2}Ejemplo}{62}{subsection.6.3.2}%
+\contentsline {section}{\numberline {6.4}Obtención de información}{76}{section.6.4}%
+\contentsline {section}{\numberline {6.5}Control anti-rebote}{80}{section.6.5}%
+\contentsline {section}{\numberline {6.6}Máquinas de estado}{81}{section.6.6}%
+\contentsline {section}{\numberline {6.7}Integridad de la información}{89}{section.6.7}%
+\contentsline {section}{\numberline {6.8}Verificación de precondiciones.}{92}{section.6.8}%
+\contentsline {section}{\numberline {6.9}Organización de la ejecución}{95}{section.6.9}%
+\contentsline {chapter}{\numberline {A}Patrones de diseño de Gamma}{99}{appendix.Alph1}%
+\contentsline {section}{\numberline {A.1}Adapter}{99}{section.Alph1.1}%
+\contentsline {section}{\numberline {A.2}Command}{100}{section.Alph1.2}%
+\contentsline {section}{\numberline {A.3}State}{101}{section.Alph1.3}%
+\contentsline {section}{\numberline {A.4}Mediator}{103}{section.Alph1.4}%
+\contentsline {section}{\numberline {A.5}Decorator}{104}{section.Alph1.5}%
+\contentsline {section}{\numberline {A.6}Proxy}{105}{section.Alph1.6}%
+\contentsline {section}{\numberline {A.7}Iterator}{106}{section.Alph1.7}%
+\contentsline {chapter}{Glosario}{111}{appendix*.71}%
+\contentsline {backmatter}{Referencias}{113}{appendix*.72}%
