@@ -206,8 +206,25 @@ metodo3()\\}
 \end{center}
 \end{figure}
 
+Además, es posible indicar el tipo de los parámetros de entrada de un método así como el tipo del valor de retorno del mismo. Para eso utilizamos la gramática presentada en la Figura \ref{parametros}. Recordar que asumimos que un módulo es, genera o define un tipo. Es decir que para tipar nuestros métodos usamos módulos.
 
-Este formato gráfico de documentación puede ser extendido haciendo uso de los símbolos definidos en la Figura \ref{simbolos}.
+Este formato gráfico de documentación puede ser extendido haciendo uso de los símbolos definidos en la Figura \ref{simbolos}. 
+
+\begin{figure}[H]
+\begin{center}
+\caption{Documentación de un módulo indicando el tipo de sus parámetros.}
+\label{parametros}
+\begin{tikzpicture}\sf
+\umlclass[]{ModuloA}{}
+{metodo1(i: Tipo)\\
+metodo2(): Tipo\\
+}
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+ 
 
 \begin{figure}
 
@@ -543,6 +560,20 @@ ejecutar() \{ \\
 
 \end{tikzpicture}
 \end{center}
+
+\begin{pattern}[]{Orden para controlar motor paso a paso}{Algorithm}{idFigAlg}
+\based{Orden (Command)}
+\why{\textbf{Cambios previstos}: Se pueden agregar o modificar ordenes.
+
+\textbf{Funcionalidad}: Desacoplar al que invoca una orden de que la lleva a cabo, proporcionando flexibilidad ante cambios en las ordenes o el receptor.
+}
+\assigns
+\is{Orden}{Orden}
+\is{MotorGirarIzq}{OrdenConcreta}
+\is{Motor}{Receptor}
+\is{Controller}{Invocador}
+\end{pattern}
+
 \end{figure}
 Un módulo \Controller, necesita manejar un \gls{pasoapaso} reprensentado en el diseño por el módulo \Motor. Para hacerlo se deben ejecutar una serie de métodos de la interfaz del \Motor. En particular, primero se debe habilitar el giro del motor llamando al método \verb|enable|, luego configurar el sentido de giro con el método \verb|left| o \verb|right| (izquierda o derecha) y por ultimo avanzar un paso de giro invocando \verb|pulse|. Tradicionalmente esto seria realizado desde el módulo \Controller agregando el código en cierto método de este (ver ejemplo en Código \ref{notCommand}), provocando así, un fuerte acoplamiento entre \Controller y \Motor. Esto es, ante cualquier cambio de la interfaz de \Motor, se debe actualizar la implementación del módulo \Controller, es decir, hay que modificar dos módulos y como dijimos el sistema debe estar cerrado a cambios y abierto a extensiones. Reduciendo al mínimo la modificación de código existente lo que podría traer como resultado la introducción de errores.
 

@@ -17,14 +17,14 @@
     showstringspaces=false,
     showtabs=false,                  
     tabsize=2,
-    language=C,
+    language=Python,
     basicstyle=\ttfamily,
 	keywordstyle=\color{blue}\ttfamily,
 	stringstyle=\color{red}\ttfamily,
     commentstyle=\color{green}\ttfamily,
     morecomment=[l][\color{magenta}]{\#}
 }%
-\lstset{language=C++,style={mystyle}}%
+\lstset{language=Python,style={mystyle}}%
 
 \lstdefinestyle{seudocode}{
     backgroundcolor=\color{Goldenrod!30!white},   
@@ -40,7 +40,7 @@
     showstringspaces=false,
     showtabs=false,                  
     tabsize=2,
-    language=C,
+    language=Python,
     basicstyle=\ttfamily,
 	keywordstyle=\color{blue}\ttfamily,
 	stringstyle=\color{red}\ttfamily,
@@ -52,7 +52,7 @@
 \chapter{Problemas comunes}
 \label{problemasComunes}
 
-En este capítulo se enumeran problemas comunes en el desarrollo de software embebido de control, extraídos principalmente del libro ``\textit{Design Patterns for Embedded Systems in C: An Embedded Software Engineering Toolkit}'' \cite{douglass}. Además, se analiza la solución de diseño propuesta en ese libro y, a su vez, se intenta aportar otra desde la perspectiva de la IS enfocada en el diseño para el cambio. En muchos casos, se identifica la posibilidad de aplicar ciertos patrones de diseño de \cite{Gamma:1995:DPE:186897}, mientras que en otros se utilizan conceptos y metodologías clave del diseño para el cambio, propuestos por David L. Parnas \cite{Parnas02, Parnas1972, parnas1977abstract}.
+En este capítulo se enumeran problemas comunes en el desarrollo de software embebido de control, extraídos principalmente del libro ``\textit{Design Patterns for Embedded Systems in C: An Embedded Software Engineering Toolkit}'' \cite{douglass}. Cabe recordar que, si bien el título del libro indica que propone patrones de diseño, las soluciones que presenta no lo son realmente y, en algunos casos, resultan inadecuadas. Además, se analiza la solución de diseño propuesta en dicho libro y, a su vez, se aporta una alternativa desde la perspectiva de la Ingeniería del Software (\gls{IS}) enfocada en el diseño para el cambio. En muchos casos, se identifica la posibilidad de aplicar ciertos patrones de diseño descritos en \cite{Gamma:1995:DPE:186897}, mientras que en otros se utilizan conceptos y metodologías clave del diseño para el cambio, propuestos por David L. Parnas \cite{Parnas02, Parnas1972, parnas1977abstract}.
 
 
 \minitoc
@@ -63,17 +63,18 @@ En este capítulo se enumeran problemas comunes en el desarrollo de software emb
 \label{Accesoalhardware}
 Una de las características distintivas de los sistemas embebidos es que trabajan directamente con dispositivos de hardware. Cada uno de estos tiene sus propios protocolos de comunicación y estándares de funcionamiento (por ejemplo, direcciones de memoria, codificación de bits, etc), por lo tanto el software se debe ajustar a sus requerimientos. Como se puede entender esta tarea no es simple y puede demandar mucho esfuerzo cada vez que se quiera modificar o agregar un componente de hardware. A su vez, puede que múltiples módulos de un sistema embebido quieran acceder al dispositivo, por lo que cada uno debe encargarse de la comunicación creando código repetido y complicando aún más las modificaciones. 
 
-Para entender los inconvenientes que puede conllevar no diseñar pensando en el cambio se trabajará sobre un ejemplo simple. Suponga que se tiene un sistema embebido que debe controlar un motor de corriente continua (\gls{DC}) y que el software para hacerlo corre en un microcontrolador (MCU) de la empresa \gls{arduinoEmpre}. Los requerimientos definen que es necesario poder asignar el sentido y la velocidad de rotación del motor según se necesite. Para controlar el motor se utiliza un módulo \gls{DRV8838}, el cual se coloca entre el microcontrolador y el motor. Es necesario ya que el microcontrolador y su plataforma no pueden manejar las potencias necesarias para hacer funcionar el dispositivo. Podemos ver el conexionado del mismo en la figura \ref{drv8838}.
+Para entender los inconvenientes que puede conllevar no diseñar pensando en el cambio se trabajará sobre un ejemplo simple. Suponga que se tiene un sistema embebido que debe controlar un motor de corriente continua (\gls{DC}) y que el software para hacerlo corre en un \gls{MCU} de la empresa \gls{arduinoEmpre}. Los requerimientos definen que es necesario poder asignar el sentido de giro (horario o antihorario) y la velocidad de rotación del motor según se necesite. Para controlar el motor se utiliza una placa \gls{DRV8838}, la cual se coloca entre el \gls{MCU} y el motor. Es necesario ya que el microcontrolador y su plataforma no pueden manejar las potencias requeridas para hacer funcionar el dispositivo. Podemos ver el conexionado de la mismo en la Figura \ref{drv8838}.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.65\linewidth]{drv8838.png}
-    \caption{Conexionado del módulo de control DRV8838.}
+    \caption{Conexionado de la placa de control DRV8838.}
     \label{drv8838}
 \end{figure}
 
-Notemos que el \gls{DRV8838} tiene 3 pines de control, \textit{ENABLE}. \textit{PHASE} y \textit{SLEEP} pero solo se utilizaran los 2 primeros para simplificar el ejemplo. De todas formas, en esta tabla \ref{funciones_pin_drv8838} podemos ver la función de cada pin.
+Como se observa la placa \gls{DRV8838} tiene múltiples pines. De estos podemos identificar dos grupos: los que aparecen a la izquierda, que llamaremos pines de entrada, y los de la derecha, que denominaremos pines de salida. El \gls{MCU} se conecta a los pines de entrada y, a través de estos, controlará el funcionamiento de la placa. En cambio, en los pines de salida se conecta el motor y transmiten la potencia necesaria.
 
+Dentro de cada uno de estos grupos se encuentran pines destinados a la comunicación entre componentes, y otros que se utilizan para alimentar tanto la lógica de la placa \gls{DRV8838} como al motor. Estos últimos son \textit{GND}, \textit{VCC} y \textit{VIN}. Los pines de control de entrada son \textit{ENABLE}, \textit{PHASE} y \textit{SLEEP}, aunque en este ejemplo se utilizarán solo los dos primeros para simplificar la explicación. De todas formas, en la Tabla \ref{funciones_pin_drv8838} se puede consultar la función de cada pin y si la señal correspondiente es analógica o digital. Por último, \textit{OUT1}, \textit{OUT2} y \textit{VMM} son los pines de salida hacia el motor, y son los que finalmente transmiten la tensión y potencia necesarias para lograr el comportamiento deseado del motor.
 
 \begin{table}[h]
 \centering
@@ -88,89 +89,209 @@ Notemos que el \gls{DRV8838} tiene 3 pines de control, \textit{ENABLE}. \textit{
 \label{funciones_pin_drv8838}
 \end{table}
 
-Por lo tanto, con los dos primeros pines se podrá cumplir los requerimientos mencionados. Tendremos dos cables conectados al \gls{microcontrolador}, uno que se dirige a \textit{ENABLE} y otro a \textit{PHASE}. En el código \ref{listing1} se encuentran las lineas necesarias para poder configurar el motor para luego poder utilizarlo como en los códigos \ref{codigoMax} y \ref{codigoDet}. Las funciones \verb|pinMode|, \verb|digitalWrite| y \verb|analogWrite| son provistas por el entorno de desarrollo de Arduino. Sus nombres son bastastantes descriptivos de su comportamiento, \verb|pinMode| configura el modo de operacion de un PIN en particular, puede ser \verb|OUTPUT| o \verb|INPUT|. Y tanto \verb|digitalWrite| como \verb|analogWrite|, escriben en un PIN el valor especificado.
+\gls{MCU} se conecta a los pines de \textit{ENABLE}, \textit{PHASE} y \textit{SLEEP} el software deberá gestionarlos. Pero, como se mencionó, para acotar el ejemplo se restringieron los requerimientos y para complirlos solo necesitaremos trabajar con los pines \textit{ENABLE} y \textit{PHASE}. Tendremos entonces dos cables conectados desde \gls{microcontrolador} a la placa \gls{DRV8838}, uno que se dirige a \textit{ENABLE} y otro a \textit{PHASE}. En el pseudo-código \ref{listing1} se encuentran las lineas necesarias para poder configurar el motor para luego poder utilizarlo en el resto del sistema. En estas se establece que el pin número siete del \gls{MCU} está conectado a el pin \textit{PHASE} y que el nueve a \textit{ENABLE}. Y a su vez se inicializa el pin dentro del software como pin de salida (\textit{OUTPUT}). Esto es necesario para que otras funciones que se llamen en el futuro se comporten como esperamos.
 
-\begin{lstlisting}[caption=Configuración inicial del control del motor paso a paso.,label={listing1}]
+\begin{lstlisting}[caption=Configuración inicial del control del motor DC.,label={listing1}]
 # Notar que los numeros asignados a los pines son arbitrarios dentro del conjunto de pines disponibles en nuestro Arduino.
 
 # Constantes globales
-const int DIR_pin = 7;
-const int VEL_pin = 9;
+DIR_pin = 7
+VEL_pin = 9
 
-void setup() {
+def setup()
      .
      .
      .
-  pinMode(DIR_pin, OUTPUT);
-  pinMode(VEL_pin, OUTPUT);
+  pinMode(DIR_pin, OUTPUT)
+  pinMode(VEL_pin, OUTPUT)
      .
      .
      .
-}
 \end{lstlisting}
 
-\begin{lstlisting}[caption=Configurar 
+
+Una vez configurados los pines podemos hacer uso de las funciones \verb|pinMode|, \verb|digitalWrite| y \verb|analogWrite| provistas por el entorno de desarrollo de Arduino. Sus nombres son bastastantes descriptivos de su comportamiento, \verb|pinMode| configura el modo de operacion de un PIN en particular, puede ser \verb|OUTPUT| o \verb|INPUT| (entrada o salida). Y tanto \verb|digitalWrite| como \verb|analogWrite|, configuran en un PIN el valor especificado. \verb|digitalWrite| admite dos valores definidos por el entorno \verb|HIGH| y \verb|DOWN|. Por lo tanto, si se quiere establecer la máxima velocidad de giro en el motor se haría algo como en el Código \ref{codigoMax}. Y en caso de querer detenerlo usamos \verb|analogWrite| de la forma que se muestra en el Código \ref{codigoDet}.
+
+\begin{lstlisting}[caption=Establecer 
 máxima velocidad giro en sentido horario.,label={codigoMax}]
-digitalWrite(DIR_pin, HIGH);
-analogWrite(VEL_pin, 255); # Maximo valor aceptado, PWM siempre encendido
+digitalWrite(DIR_pin, HIGH)
+analogWrite(VEL_pin, 255) # Maximo valor aceptado, PWM siempre encendido
 \end{lstlisting}
 
-\begin{lstlisting}[caption=Detener giro del motor paso a paso., label={codigoDet}]
-analogWrite(VEL_pin, 0);
+\begin{lstlisting}[caption=Detener giro del motor DC., label={codigoDet}]
+analogWrite(VEL_pin, 0)
 \end{lstlisting}
 
-No es necesario entender por completo qué hace cada llamada, pero sí es importante comprender que ejecutar ese código es fundamental para controlar el motor. Es decir, cualquier cliente del motor en el sistema debe saber que, para hacer que el motor avance a la máxima velocidad, es necesario ejecutar las dos funciones indicadas sobre los pines correspondientes al motor. Por ejemplo, si se desea realizar una acción con el motor en función del valor de alguna variable del sistema, tradicionalmente se implementa algo similar al código mostrado en \ref{listingMotor}.
+No es necesario entender por completo qué hace cada llamada, pero sí es importante comprender que ejecutar el Código \ref{codigoMax} y \ref{codigoDet} es fundamental para controlar el motor. Es decir, cualquier cliente del motor en el sistema debe saber que, para hacer que el motor gire a la máxima velocidad, es necesario ejecutar las dos lineas mostradas en el Código \ref{codigoMax} sobre los pines correspondientes al motor. Por ejemplo, si se desea realizar una acción con el motor en función del valor de alguna variable del sistema (\verb|valor|), \textbf{tradicionalmente} se implementa algo similar al código mostrado en el Código \ref{listingMotor}. En el cual si se cumple la condición de que \verb|valor| es mayor a 100 se ordenará al motor que avance a máxima velocidad, en caso contrario se indicará velocidad nula.
 
-\begin{lstlisting}[caption=Ejemplo uso del motor paso a paso.,label={listingMotor}]
-    .
-    .
-    .
-if (valor > 100) {
-    digitalWrite(DIR_pin, HIGH);
-    analogWrite(VEL_pin, 255);
-} else {
-    analogWrite(VEL_pin, 0);
-}
-    .
-    .
-    .
+\begin{lstlisting}[caption=Ejemplo uso del motor DC.,label={listingMotor}]
+def controlar_motor()
+
+	if (valor > 100)
+    	digitalWrite(DIR_pin, HIGH)
+	    analogWrite(VEL_pin, 255)
+	else
+	    analogWrite(VEL_pin, 0)
+
 \end{lstlisting}
 
 ¿Qué problemas tiene esta estrategia de cara al cambio?
 \begin{itemize}
-    \item Hace que el código sea poco evidente, es decir, no es fácil saber de qué se trata una cierta porción de código con solo leerlo. Y por lo tanto, provoca que sea difícil de modificar, requiere un trabajo extra de entendimiento antes de poder aplicar cualquier cambio. En el ejemplo, la sentencia condicional es simple, pero la legibilidad se puede complejizar fácilmente ya sea si la condición está conformada por varias conjunciones y disyunciones combinadas o si su comportamiento está definido por una serie de sentencias condicionales anidadas. 
-    \item Imagine el caso en el que por cierto motivo se debe invertir el sentido de giro del motor, de manera que lo que era ir hacia adelante ahora es hacia atrás. Para llevar a cabo el cambio, debemos modificar todas las llamadas a \verb|digitalWrite(DIR_pin, HIGH)| cambiando \verb|HIGH| por \verb|DOWN| y viceversa. Es fácil cometer un error y dejar al sistema en un estado inconsistente.
-    \item Ahora, qué pasa si tenemos que agregar un segundo motor del mismo tipo con el mismo controlador? Ya sea por duplicación de la potencia o un motor que cumpla otra función en el sistema. En el código tenemos que declarar nuevamente 2 constantes (suponga \verb|DIR_pin2| y \verb|VEL_pin2|, una para cada nuevo pin de control, también debemos setear esos pines como \verb|OUTPUT| y ahora en diferentes partes del código tendremos llamadas a \verb|digitalWrite| y \verb|analogWrite| sobre diferentes pines lo cual es cada vez más confuso.
-    \item Por cierto motivo se descompuso el controlador del motor, y no se consigue un reemplazo idéntico, sino que se adquiere un nuevo controlador de otra marca, por ejemplo, un \textit{Pololu Simple Motor Controller G2}. En este caso, este controlador no utiliza la misma interfaz de control que el \gls{DVR8838}, sino para controlarlo hay que acceder a él mediante comunicación serial (utiliza un solo pin especifico). Incluso utilizando las herramientas provistas por el entorno de \gls{arduino}, el nuevo código (códigos \ref{listingDistinto}, \ref{maxSerial} y \ref{detSerial}) difiere significativamente del anterior (códigos \ref{listing1} y \ref{listingMotor}).
-\begin{lstlisting}[caption=Configuración del motor paso a paso que utiliza comunicación serie., label={listingDistinto}]
-void set_up() {
+	\item Consideremos un caso en el que un segundo motor es agregado. Este es controlado por otra placa \gls{DRV8838} que también se conecta con dos pines al \gls{MCU}. Para poder utilizarlo en el código debemos definir al, al igual que con el primer motor, los dos pines que utilizará, supongamos en este caso \verb|DIR_pin2| y \verb|VEL_pin2|. Si queremos modificar la función \verb|controlar_motor| para incluir a este nuevo motor podríamos hacer algo como en el Código \ref{motor2}.
+	
+\begin{lstlisting}[caption=Extención de la función controlar\_motor para controlar dos motores.,label={motor2}]
+def controlar_motor(motor)
+
+	if (valor > 100)
+		if (motor = IDMotor1)
+    		digitalWrite(DIR_pin, HIGH)
+	    	analogWrite(VEL_pin, 255)
+	    else if (motor = IDMotor2)
+	    	digitalWrite(DIR_pin2, HIGH)
+	    	analogWrite(VEL_pin2, 255)
+	    	.
+	    	.
+	    	.
+	else
+		if (motor = IDMotor1)
+	    	analogWrite(VEL_pin, 0)
+	    else if (motor = IDMotor2)
+	    	analogWrite(VEL_pin2, 0)
+	    	.
+	    	.
+	    	.
+
+\end{lstlisting}
+	
+La modificación consiste en verificar que motor es el que se quiere manipular y en base a eso enviar la señal a traves de los pines correspondientes. Pero, ¿qué pasaría si se quiere añadir un tercer motor? Deberíamos agregar aún mas sentencias \verb|if else|, extendiendo aun más el código. ¿Y si debemos realizar operaciones diferentes según cada motor? Por ejemplo, en el caso que \verb|valor| sea mayor a 100 con el motor 1 se debe establecer velocidad máxima pero con el motor 2 nula. El cambio en el código es pequeño (ver Código \ref{motor2mod}), solo cambia un valor en la linea 9. Pero introduce complejidad en la lectura y comprensión facilitando la introducción de errores en futuras modificaciones. Es insostenible en el tiempo este enfoque de diseño.
+\begin{lstlisting}[caption=Modificación de la función controlar\_motor para cambiar comportamiento al utilizar el motor 2.,label={motor2mod}]
+def controlar_motor(motor)
+
+	if (valor > 100)
+		if (motor = IDMotor1)
+    		digitalWrite(DIR_pin, HIGH)
+	    	analogWrite(VEL_pin, 255)
+		else if (motor = IDMotor2)
+	    	digitalWrite(DIR_pin2, HIGH)
+	    	analogWrite(VEL_pin2, 0)
+	    	.
+	    	.
+	    	.
+	else
+		if (motor = IDMotor1)
+	    	analogWrite(VEL_pin, 0)
+		else if (motor = IDMotor2)
+	    	analogWrite(VEL_pin2, 0)
+	    	.
+	    	.
+	    	.
+
+\end{lstlisting}
+	\item Imagine el caso en el que por cierto motivo se debe invertir el sentido de giro del motor, de manera que lo que era ir giro horario ahora es anti horario. Para llevar a cabo el cambio, debemos modificar \textbf{todas} las llamadas a \verb|digitalWrite(DIR_pin, HIGH)|, tanto en el código que de la función \verb|controlar_motor| como en el resto del sistema, cambiando \verb|HIGH| por \verb|DOWN| y viceversa. Por ejemplo, en el Código \ref{motor2mod} debemos modificar las lineas 5 y 8. Es fácil cometer un error y dejar al sistema en un estado inconsistente. Ni hablar en el caso que se planteó en el punto anterior, puede ser necesario discriminar entre motores. La precaución a la hora de modificar debe ser mayor aún y a su vez la probabilidad de introducir errores aumenta.
+   
+    \item Por cierto motivo se descompuso la placa controladora del motor 1, y no se consigue un reemplazo idéntico, sino que se adquiere una nueva placa de otra marca, por ejemplo, una \textit{Pololu Simple Motor Controller G2}. En este caso, este placa no utiliza la misma interfaz de control que el \gls{DVR8838}, sino para controlarla se accede a ella mediante comunicación serial (utiliza un solo pin especifico). Incluso utilizando las herramientas provistas por el entorno de \gls{arduino}, el nuevo código de configuración (ver Codigo \ref{listingDistinto}) y uso (ver Codigos \ref{maxSerial} y \ref{detSerial}) difiere significativamente del anterior (Codigo \ref{listing1} para configuración y Codigos \ref{codigoMax} y \ref{codigoDet} para uso).
+\begin{lstlisting}[caption=Configuración de la placa de control del motor DC utiliza comunicación serie., label={listingDistinto}]
+def set_up() 
     .
     .
     .
-    Serial.begin(9000);
+    Serial.begin(9000)
     .
     .
     .
-}
+
     \end{lstlisting}
-\begin{lstlisting}[caption=Configurar máxima velocidad giro horario para el caso de comunicación en serie., label={maxSerial}]
-Serial.write(0xAA);
-Serial.write(0x0C);
-Serial.write(0x85);
-Serial.write(0x7F);
+\begin{lstlisting}[caption=Establecer máxima velocidad giro horario para el caso de comunicación en serie., label={maxSerial}]
+Serial.write(0xAA)
+Serial.write(0x0C)
+Serial.write(0x85)
+Serial.write(0x7F)
 \end{lstlisting}
-\begin{lstlisting}[caption=Configurar detención para el caso de comunicación en serie., label={detSerial}]
-Serial.write(0xAA);
-Serial.write(0x0C);
-Serial.write(0xE0);
+\begin{lstlisting}[caption=Establecer detención para el caso de comunicación en serie., label={detSerial}]
+Serial.write(0xAA)
+Serial.write(0x0C)
+Serial.write(0xE0)
 \end{lstlisting}
-    Por lo tanto debemos modificar todos los usos de la antigua implementación por la nueva, lo cual además requerir un esfuerzo considerable, da pie a errores y obliga a re-probar código que ya se sabia que funcionaba correctamente.
+    Por lo tanto debemos modificar todos los usos de la antigua implementación por la nueva, lo cual además requerir un esfuerzo considerable, da pie a errores y obliga a re-verificar código que ya se sabía que funcionaba correctamente. Se debe modificar las lineas 5, 6 y 15 de la función \verb|controlar_motor| de la manera mostrada en el Código \ref{motor1serial}.
+
+\begin{lstlisting}[caption=Modificación de la función controlar\_motor para utilizar placa de control serial para controlar el motor 1.,label={motor1serial}]
+def controlar_motor(motor)
+
+	if (valor > 100)
+		if (motor = IDMotor1)
+    		Serial.write(0xAA)
+				Serial.write(0x0C)
+				Serial.write(0x85)
+				Serial.write(0x7F)
+		else if (motor = IDMotor2)
+				digitalWrite(DIR_pin2, HIGH)
+	    	analogWrite(VEL_pin2, 0)
+	    	.
+	    	.
+	    	.
+	else
+		if (motor = IDMotor1)
+	    	Serial.write(0xAA)
+				Serial.write(0x0C)
+				Serial.write(0xE0)
+		else if (motor = IDMotor2)
+	    	analogWrite(VEL_pin2, 0)
+	    	.
+	    	.
+	    	.
+
+\end{lstlisting}
+
+Pero... ¿y si en el futuro se consigue la placa \gls{DRV8838}? Muchas veces se suele añadir una bandera que indique el tipo de hardware. En este caso, se podría definir una constante, por ejemplo, \verb|TIPO_MOTOR1|, que identifique el tipo de placa controladora. Al incorporar esta bandera en nuestra función \verb|controlar_motor|, se obtiene el Código \ref{motorBandera}.
+
+\begin{lstlisting}[caption=Modificación de la función controlar\_motor para utilizar bandera indicadora de tipo de placa controladora.,label={motorBandera}]
+def controlar_motor(motor)
+
+	if (valor > 100)
+		if (motor = IDMotor1)
+			if (TIPO_MOTOR1 = DVR8838):
+			    digitalWrite(DIR_pin, HIGH)
+	    		analogWrite(VEL_pin, 255)
+			else if (TIPO_MOTOR1 = Pololu):
+    			Serial.write(0xAA)
+					Serial.write(0x0C)
+					Serial.write(0x85)
+					Serial.write(0x7F)
+		else if (motor = IDMotor2)
+	    	digitalWrite(DIR_pin2, HIGH)
+	    	analogWrite(VEL_pin2, 0)
+	    	.
+	    	.
+	    	.
+	else
+		if (motor = IDMotor1)
+			if (TIPO_MOTOR1 = DVR8838):
+				analogWrite(VEL_pin1, 255)
+			else if (TIPO_MOTOR1 = Pololu):
+	    	Serial.write(0xAA)
+				Serial.write(0x0C)
+				Serial.write(0xE0)
+	    else if (motor = IDMotor2)
+	    	analogWrite(VEL_pin2, 0)
+	    	.
+	    	.
+	    	.
+
+\end{lstlisting}
+
+Esto no es una buena solución, ya que lo unico que logra es generar más dificulad a la hora de introducir un nuevo cambio. Ahora, si se debe cambiar la lógica de la función, debemos tener en cuenta más lineas a modificar. Introduciendo así más posibilidades de cometer errores.
+
+    \item Claramente, el código obtenido es poco claro; es decir, no resulta fácil comprender de qué se trata una determinada porción de código con solo leerla. Basta con intentar entender la función del Código \ref{motorBandera} para comprobarlo. A su vez, el código resulta difícil de modificar, ya que requiere un esfuerzo adicional de comprensión antes de poder aplicar cualquier cambio. En el ejemplo, la lógica principal de la función es sencilla —solo una sentencia condicional—, pero en general las funciones suelen ser más complejas e incluyen múltiples sentencias, estructuras anidadas y bucles.
+
+
 \end{itemize}
 
 En el libro, la solución de este problema es nombrada como un patrón de diseño, el patrón \textit{``Hardware Proxy''}. Pero desde el punto de vista de la IS, no es un patrón de diseño, sino uno de los principios fundamentales de la  IS, que es el \gls{dboi}.
 
-Estos inconvenientes son derivados de que el \textit{hardware} comprende un ítem de cambio frecuente; por lo que si seguimos la metodología de Parnas (ver sección \ref{metoParnas}), se debe aislar ese posible cambio en un módulo. En el ejemplo que se está trabajado, se debe crear un módulo que encapsula el hardware en cuestión, el motor \gls{DC} (ver figura \ref{interfazMotor}). Este módulo oculta cómo debe ser usado hardware y provee una interfaz lo suficientemente insensible a la implementación. Es decir, al momento de confeccionar la interfaz del módulo se debe pensar en lo que el motor siempre va a hacer independientemente de los posibles cambios que sufra el hardware subyacente. Para esto, se debe elegir la cantidad de mínima de métodos del modo más abstracto posible, sin agregar métodos que puedan ser reemplazados utilizando otros ya fueron definidos \cite{Parnas02, parnas1977abstract}.
-Un motor \gls{DC} siempre recibirá ordenes para definir su sentido y velocidad de rotación.
+\declareCMod{MotorDC}
+
+Estos inconvenientes son derivados de que el \textit{hardware} comprende un ítem de cambio frecuente; por lo que si seguimos la metodología de Parnas (ver sección \ref{metoParnas}), se debe aislar ese posible cambio en un módulo. En el ejemplo que se está trabajado, se debe crear un módulo que encapsula el hardware en cuestión, el motor \gls{DC}. Este módulo oculta cómo debe ser usado el hardware y provee una interfaz lo suficientemente insensible a la implementación. Es decir, al momento de confeccionar la interfaz del módulo se debe pensar en lo que el motor siempre va a hacer independientemente de los posibles cambios que sufra el hardware subyacente. Para esto, se debe elegir la cantidad de mínima de métodos del modo más abstracto posible, sin agregar métodos que puedan ser reemplazados utilizando otros que ya fueron definidos \cite{Parnas02, parnas1977abstract}.
+Un motor \gls{DC} siempre recibirá ordenes para definir su sentido y velocidad de rotación. La Figura \ref{interfazMotor} presenta la interfaz del módulo \MotorDC que encapsula el hardware relacionado al motor.
 
 \begin{figure}[H]
 \caption{Interfaz MotorDC}
@@ -179,73 +300,67 @@ Un motor \gls{DC} siempre recibirá ordenes para definir su sentido y velocidad 
 \begin{tikzpicture}\sf
 \umlclass[x=-3]{MotorDC}
 {
-MotorDC(i: int, i: int)
+MotorDC(i: Pin, i: Pin)
 }
 {
     
-    setDir(i: int) \\ 
-    setVel(i: int) \\
+    setDir(i: Dir) \\ 
+    setVel(i: Vel) \\
 }
 \end{tikzpicture}
 \end{center}
 \end{figure}
 
-Los parámetros del constructor \verb|MotorDC| son los pines de control, el parámetro de \verb|setDir| puede tomar dos valores uno para el sentido de giro horario y otro anti-horario, y por último el input de \verb|setVel| es un int entre 0 y 255 que representa la velocidad porcentual. En el código \ref{constructorMotor} se puede ver un ejemplo de una posible implementación de esta interfaz utilizando el controlador \gls{DVR8838}.
+Si se cuenta con dos o mas motores del mismo tipo, se crearán dos a mas instancias del módulo. Para esto el contrsuctor recibirá como parámetros los pines de control, el método de \verb|setDir| toma el valor de dirección a establecer y el input de \verb|setVel| el valor de velocidad deseado. En el Código \ref{constructorMotor} se puede ver un ejemplo de una posible implementación de esta interfaz utilizando el controlador \gls{DVR8838}.
 
 \begin{lstlisting}[caption=Posible implementación de la interfaz del módulo MotorDC.,label={constructorMotor}]
-void MotorDC(int dir_pin, int vel_pin) {
-    this->dir_pin = dir_pin;
-    this->vel_pin = vel_pin;
+def MotorDC(dir_pin, vel_pin);
     pinMode(this->dir_pin, OUTPUT);
     pinMode(this->vel_pin, OUTPUT);
-}
 
-void set_dir(Dir dir) {
-    if (dir == Dir.HORARIO) {
-        digitalWrite(DIR_pin, HIGH);
-    } else {
-        digitalWrite(DIR_pin, DOWN);
-    }
-}
 
-void setVel(int vel) {
-    if vel > 0 && vel <= 255 {
-        analogWrite(VEL_pin, vel);
-    }
-}
+def set_dir(dir) 
+    if (dir == HORARIO)
+        digitalWrite(dir_pin, HIGH);
+    else
+        digitalWrite(dir_pin, DOWN);
+        
+
+def setVel(vel)
+    analogWrite(vel_pin, vel);
+
 \end{lstlisting}
 
-En el código \ref{ejeploUsoMotor} se evidencian las primeras ventajas, el uso del motor en el código es mucho mas claro.
+En el código \ref{ejeploUsoMotor} se evidencian las primeras ventajas, el uso del motor en el código es mucho más claro en comparación al diseño tradicional, donde teniamos que escribir las lineas de los Códigos \ref{listing1} y \ref{codigoMax} para lograr lo mismo.
 
-\begin{lstlisting}[caption=Ejmplo de uso de la interfaz del módulo MotorDC, label={ejeploUsoMotor}]
-	motor = MotorDC(1, 2)
-    motor->setDir(Dir.HORARIO)
-    motor->setVel(255)
+\begin{lstlisting}[caption=Ejemplo de uso de la interfaz del módulo MotorDC, label={ejeploUsoMotor}]
+motor = MotorDC(1, 2)
+
+motor.setDir(Dir.HORARIO)
+motor.setVel(255)
 \end{lstlisting}
 
-Además, si se debe modificar el sentido de giro es tan fácil como cambiar el método \verb|setDir|, los clientes no notarán el cambio. A su vez, si se quiere controlar otro motor es posible hacerlo fácilmente como en el código \ref{ejemploOtroMotor}. 
+Además, si se debe invertir el sentido de giro como en el ejemplo propuesto al comienzo de la sección, es tan fácil como cambiar la implementación del método \verb|setDir|, los clientes no notarán el cambio. A su vez, si se quiere controlar otro motor es posible hacerlo fácilmente como en el Código \ref{ejemploOtroMotor}. 
 
-\begin{lstlisting}[caption=Ejemplo control motor paso a paso comunicación serie.,label={ejemploOtroMotor}]
-    MotorDC motor_delantero = MotorDC(18, 19)
+\begin{lstlisting}[caption=Ejemplo control nuevo motor DC.,label={ejemploOtroMotor}]
+motor_delantero = MotorDC(18, 19)
 
-    motor_delantero->setDir(Dir.ANTIHORARIO)
-    motor_delantero->setVel(10)
+motor_delantero->setDir(ANTIHORARIO)
+motor_delantero->setVel(10)
 \end{lstlisting}
 
-En caso de un cambio de componente de hardware, como el explicado anteriormente, los clientes del módulo no lo notarán. Dado que la interfaz se mantendrá intacta. Por ejemplo, para el motor que utiliza comunicación serie, \verb|setDir| será definida como en el código \ref{nuevaSetDir}.
+
+En caso de un cambio de componente de hardware, como el explicado anteriormente, los clientes del módulo no lo notarán, dado que la interfaz se mantendrá intacta. Por ejemplo, para el motor que utiliza comunicación serie, \verb|setDir| será redefinida como en el código \ref{nuevaSetDir} teniendo que solo volver a verificar el módulo \MotorDC.
 
 \begin{lstlisting}[caption=Implementación método setVel para el motor que utiliza comunicación serie.,label={nuevaSetDir}]
-void setVel(vel: int) {
-    if vel > 0 && vel <= 255 {
-        this->serial.write(0xAA);
-        this->serial.write(0x0C);
+def setVel(vel)
+        serial.write(0xAA;
+        serial.write(0x0C)
         hex_vel = int_to_hex(vel)
-        this->serial.write(hex_vel);
-    }
-}
+        serial.write(hex_vel)
 \end{lstlisting}
 
-Aún es posible mejorar el diseño haciendo uso del concepto de herencia de interfaz (explicado en la sección \ref{ingso}). Esto permite reutilizar módulos ya implementados y abstraer aún más la implementación. Para hacerlo se define un módulo \textbf{\textit{MotorDC}} abstracto del cual hereda la interfaz cada modelo o combinación de motor y controlador. En este caso la estructura es la de la figura \ref{estructuraHerencia}.
+Sin embargo, haciendo uso del concepto de herencia de interfaz y la noción de abierto-cerrado (explicados en la sección \ref{ingso}). Esto permite reutilizar módulos ya implementados y abstraer aún más la implementación. Para hacerlo se define un módulo abstraco \textit{\MotorDC} del cual hereda la interfaz cada modelo o combinación de motor y placa controladora. ELa Figura \ref{estructuraHerencia} presenta la estructura de interfaces de esta solución.
 
 \begin{figure}[H]
 \caption{Módulo MotorDC abstracto y estructura de herencia.}
@@ -256,16 +371,16 @@ Aún es posible mejorar el diseño haciendo uso del concepto de herencia de inte
 {}
 {
     \umlvirt{setDir(i: Dir)} \\ 
-    \umlvirt{setVel(i: int)} \\
+    \umlvirt{setVel(i: Vel)} \\
 }
 
 \umlclass[x=-3, y=-4]{MotorDCDVR8838}
 {
-	MotorDC(i: int, i: int)
+	MotorDC(i: Pin, i: Pin)
 }
 {
     setDir(i: Dir) \\ 
-    setVel(i: int) \\
+    setVel(i: Vel) \\
 }
 \umlclass[x=3, y=-4]{MotorDCG2}
 {
@@ -273,7 +388,7 @@ Aún es posible mejorar el diseño haciendo uso del concepto de herencia de inte
 }
 {
     setDir(i: Dir) \\ 
-    setVel(i: int) \\
+    setVel(i: Vel) \\
 }
 \umlinherit[geometry=|-|]{MotorDCDVR8838}{MotorDC}
 \umlinherit[geometry=|-|]{MotorDCG2}{MotorDC}
@@ -281,9 +396,20 @@ Aún es posible mejorar el diseño haciendo uso del concepto de herencia de inte
 \end{center}
 \end{figure}
 
-El cliente no tiene noción con cual de los dos tipos de controladores esta tratando, solo llama a las funciones provistas en la interfaz de \textbf{MotorDC}. También es posible agregar más herederos, uno por cada modelo de controlador/motor, y reutilizar las módulos implementados en caso de utilizar hardware idéntico. 
+El cliente solo sabe que manipula un elemento \textit{\MotorDC}, no tiene noción con cual de los dos tipos de de placa controladora esta tratando. También es posible agregar más herederos, uno por cada modelo de placa controladora/motor, y reutilizar las módulos implementados en caso de utilizar hardware idéntico.
 
-De esta manera se siguen las prácticas recomendadas en la IS \cite{ShawGarlan1996, ghezzi2003, bass2003, DBLP:books/daglib/0030743} y se obtiene un diseño orientado al cambio \cite{Gamma:1995:DPE:186897}.
+Siguiendo con el ejemplo de la función \verb|controlar_motor| veamos en la Figura \ref{motorEncapsulado} cómo es una posible implementación de esta misma utilizando la encapsulación del hardware propuesta. Con esta solución el codigo de la funcion no deberá ser modificado por más que cambien las marcas/tipos de placas controladoras.
+
+\begin{lstlisting}[caption=Implementación de la función controlar\_motor utilizando encapsulación del hardware.,label={motorEncapsulado}]
+def controlar_motor(motor: MotorDC)
+	if (valor > 100)
+		motor.setDir(HORARIO)
+		motor.setDir(VelMaxima)
+	else
+		motor.setDir(VelNula)
+\end{lstlisting}
+
+De esta manera se siguen las prácticas recomendadas en la \gls{IS} \cite{ShawGarlan1996, ghezzi2003, bass2003, DBLP:books/daglib/0030743} y se obtiene un diseño orientado al cambio \cite{Gamma:1995:DPE:186897}.
 
 \section{Interfaces que no se ajustan perfectamente}
 Muchas veces el proveedor del hardware incluye con este librerías para su control, otras veces se consiguen en internet o en previos proyectos. El problema recae en que estas interfaces pueden no ajustarse a las expectativas del sistema, generando la necesidad de ajustar la implementación de múltiples módulos. El hecho de que no se ajusten al sistema no quiere decir que este último este mal diseñado o que las interfaces lo estén. Simplemente puede ocurrir que se diseñaron teniendo en cuenta diferentes puntos de vista, probablemente influenciados por los requerimientos particulares.
