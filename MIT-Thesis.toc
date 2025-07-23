@@ -22,7 +22,7 @@
 \contentsline {chapter}{\numberline {6}Problemas comunes}{45}{chapter.6}%
 \contentsline {section}{\numberline {6.1}Acceso al hardware}{45}{section.6.1}%
 \contentsline {section}{\numberline {6.2}Interfaces que no se ajustan perfectamente}{55}{section.6.2}%
-\contentsline {section}{\numberline {6.3}Control en conjunto de dispositivos}{59}{section.6.3}%
+\contentsline {section}{\numberline {6.3}Control en conjunto de dispositivos}{60}{section.6.3}%
 \contentsline {subsection}{\numberline {6.3.1}Subsistemas de control}{62}{subsection.6.3.1}%
 \contentsline {subsection}{\numberline {6.3.2}Ejemplo}{66}{subsection.6.3.2}%
 \contentsline {section}{\numberline {6.4}Obtención de información}{80}{section.6.4}%

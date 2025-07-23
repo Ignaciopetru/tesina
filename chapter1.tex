@@ -212,7 +212,7 @@ Serial.write(0xAA)
 Serial.write(0x0C)
 Serial.write(0xE0)
 \end{lstlisting}
-    Por lo tanto debemos modificar todos los usos de la antigua implementación por la nueva, lo cual además requerir un esfuerzo considerable, da pie a errores y obliga a re-verificar código que ya se sabía que funcionaba correctamente. Se debe modificar las lineas 5, 6 y 15 de la función \verb|controlar_motor| de la manera mostrada en el Código \ref{motor1serial}.
+    Por lo tanto debemos modificar todos los usos de la antigua implementación por la nueva, lo cual además requerir un esfuerzo considerable, da pie a errores y obliga a reverificar código que ya se sabía que funcionaba correctamente. Se debe modificar las lineas 5, 6 y 15 de la función \verb|controlar_motor| de la manera mostrada en el Código \ref{motor1serial}.
 
 \begin{lstlisting}[caption=Modificación de la función controlar\_motor para utilizar placa de control serial para controlar el motor 1.,label={motor1serial}]
 def controlar_motor(motor)
@@ -412,9 +412,11 @@ def controlar_motor(motor: MotorDC)
 De esta manera se siguen las prácticas recomendadas en la \gls{IS} \cite{ShawGarlan1996, ghezzi2003, bass2003, DBLP:books/daglib/0030743} y se obtiene un diseño orientado al cambio \cite{Gamma:1995:DPE:186897}.
 
 \section{Interfaces que no se ajustan perfectamente}
-Muchas veces el proveedor del hardware incluye con este librerías para su control, otras veces se consiguen en internet o en previos proyectos. El problema recae en que estas interfaces pueden no ajustarse a las expectativas del sistema, generando la necesidad de ajustar la implementación de múltiples módulos. El hecho de que no se ajusten al sistema no quiere decir que este último este mal diseñado o que las interfaces lo estén. Simplemente puede ocurrir que se diseñaron teniendo en cuenta diferentes puntos de vista, probablemente influenciados por los requerimientos particulares.
+Muchas veces el proveedor del hardware incluye con este librerías para su control, otras veces se consiguen en internet o se extraen de previos proyectos. Esto permite ahorrar tiempo de implementación, pero puede causar algunos inconvenientes si no se tiene en cuenta al cambio.
 
-Suponga el siguiente ejemplo, en un cierto sistema embebido se está utilizando un display de 7 segmentos de 4 dígitos para mostrar la temperatura de funcionamiento y posición en grados de cierto actuador, como el de la figura \ref{fig:enter-label}.
+Tradicionalmente, se toman las librerías necesarias para controlar el hardware y se las utiliza directamente a lo largo del sistema. Lo que provoca que ante un cambio de hardware se debe modificar todos los usos de la librería con el nuevo código. Veamos un ejemplo en donde se evidenciará el inconveniente y cómo podemos anticiarnos al mismo.
+
+Suponga el siguiente ejemplo: en un cierto sistema embebido se utiliza un display de 7 segmentos que forman un 8. Encendiendo o apagando independientemente cada segmento, se pueden mostrar distintos caracteres. Este display es de 4 dígitos y se emplea para mostrar la temperatura de funcionamiento y la posición, en grados, de cierto actuador, como se muestra en la figura \ref{fig:enter-label}.
 
 \begin{figure}[h]
     \centering
@@ -423,111 +425,126 @@ Suponga el siguiente ejemplo, en un cierto sistema embebido se está utilizando 
     \label{fig:enter-label}
 \end{figure}
 
-Este display recibe la información utilizando comunicación en serie, con un protocolo propio del fabricante. Para facilitar su uso, este brinda una librería que implementa la comunicación y provee funciones simples de usar, tales como \verb|escribir(i: str): bool| y \verb|limpiar()|. La primera intenta escribir la cadena de caracteres indicada, pero solo lo hace si el display no está mostrando nada. En ese caso devuelve \verb|True| indicando que la acción fue completada con éxito, en caso contrario, es decir el display está mostrando texto al momento de llamar el método, retorna \verb|False|. \verb|limpiar()|, siempre limpia el display. Por lo tanto, se implementó el sistema utilizando las funciones provistas para comunicarse, múltiples módulos llaman esas funciones.
+\declareCMod{LibAcme}
+\declareCMod{LibEmca}
 
-En cierto momento el módulo display dejó de funcionar y se lo reemplazó por otro de un fabricante distinto, que funciona con otro protocolo de comunicación. De la misma manera, la empresa provee una librería para utilizar el display. Pero la interfaz no es la misma que la anterior e incluso algunos comportamientos son diferentes. Por ejemplo, en la primer librería el método de escritura devolvía \verb|False| si se quería escribir y ya estaba mostrándose algo en el display, en la nueva si el display está mostrando algo el texto es pisado al momento de imprimir. Pero, provee un nueva método para verificar qué es lo que se está mostrando en el momento en que es invocada \verb|get_current(): str|.
+Este display recibe la información utilizando comunicación en serie, con un protocolo propio del fabricante. Para facilitar su uso, el fabricante brinda una librería llamada \LibAcme que implementa la comunicación y provee funciones simples de usar, tales como \verb|escribir(i: string): bool| y \verb|limpiar()|. La primera intenta escribir la cadena de caracteres indicada, pero solo lo hace si el display no está mostrando nada. En ese caso devuelve \verb|True| indicando que la acción fue completada con éxito. En caso contrario, es decir el display está mostrando texto al momento de llamar el método, retorna \verb|False|. \verb|limpiar()|, siempre limpia el display. Por lo tanto, se implementó el sistema utilizando las funciones provistas. Para comunicarse, múltiples módulos llaman esas funciones de la manera expuesta en el Código \ref{usoLibAcme}.
 
-Entonces, para hacer uso del nuevo display tradicionalmente se modifican todas las llamadas a las viejas funciones alrededor de todo sistema agregando la lógica nueva, como en el código \ref{cambiosAdapter}. El cambio puedo parecer no muy profundo, pero se debe tener en cuenta que con los nuevos cambios es necesario recopilar \textbf{todos} los usos de la librería, actualizarlos a mano y re-verificarlos. Además, este es un ejemplo simple, en el mundo real los cambios pueden ser mucho más complicados en su lógica y de diferente naturaleza. La configuración inicial del diseño es la que se muestra en \ref{configOri}. Es decir, la solución tradicional es no tener en cuenta el cambio en el diseño, lo que provoca las desventajas comentadas.
-
-\begin{lstlisting}[label={cambiosAdapter}, caption=Ejemplo de modificaciones necesarias para adaptar la nueva librería.]
+\begin{lstlisting}[label={usoLibAcme}, caption=Ejemplo de uso de la libreria LibAcme.]
 libAcme = LibAcme()
-libEmca = LibEmca()
 
-
-// Con ACME
-
-if libAcme.escribir("Hola mundo!") {
-	print("El display estaba vacio, se pudo escribir el nuevo texto.")
-} else {
+if libAcme.escribir("24")
+	print("El display estaba vacio, se pudo escribir el nuevo texto")
+else
 	print("El display esta ocupado mostrando algo, no se pudo escribir")
-}
+
+\end{lstlisting}
+
+En cierto momento, el módulo display dejó de funcionar y fue reemplazado por otro de un fabricante distinto, el cual utiliza un protocolo de comunicación diferente. Al igual que en el caso anterior, la empresa provee una librería \LibEmca para utilizar el nuevo display. Sin embargo, la interfaz no es la misma que la anterior, e incluso algunos comportamientos también difieren.
+
+Por ejemplo, en la primera librería, el método de escritura devolvía \verb|False| si se intentaba escribir mientras el display ya estaba mostrando información. En cambio, en la nueva implementación, si el display está mostrando algo, el nuevo texto lo sobrescribe de inmediato. No obstante, esta nueva librería proporciona un método adicional \verb|get_current(): string| que permite consultar el contenido que se está mostrando en el momento en que es invocado.
+
+Tradicionalmente, para utilizar el nuevo display, se modifican todas las llamadas a las funciones de la librería anterior en todo el sistema, incorporando la nueva lógica. En nuestro ejemplo, el Código \ref{usoLibAcme} debe ser reemplazado por el Código \ref{usoLibEmca}. Si bien el cambio puede parecer superficial, es importante considerar que con cada modificación será necesario actualizar manualmente y reverificar \textbf{todos} los usos de la librería a lo largo del sistema.
+\begin{lstlisting}[label={usoLibEmca}, caption=Ejemplo de modificaciones necesarias para adaptar la nueva librería.]
+libEmca = LibEmca()
 
 // Con EMCA
 
-if libEmca.get_current() == "" {
+if libEmca.get_current() == ""
 	libEmca.imprimir("Hola mundo!")
-	print("El display estaba vacio, se pudo escribir el nuevo texto.")
-} else {
+	print("El display estaba vacio, se pudo escribir el nuevo texto")
+else
 	print("El display esta ocupado mostrando algo, no se pudo escribir")
-}
 
 
 \end{lstlisting}
 
+Además, este es un ejemplo simple; en el mundo real, los cambios pueden ser mucho más complejos en su lógica y de distinta naturaleza. Este diseño puede representarse como se muestra en la Figura \ref{configOri}: un módulo que constituye la librería del fabricante y otro que actúa como cliente de esta, es decir, el resto del sistema.
 
-\begin{figure}[!h]
-\caption{Configuración original del controlador del display.}
+
+\begin{figure}[H]
+\caption{Diseño tradicional del uso de la libreria del fabricante.}
 \label{configOri}
 \begin{center}
 \begin{tikzpicture}\sf
 \umlsimpleclass[]{Cliente}
 
-\umlclass[right=1.5cm of Cliente]{ControlAcme}
+\umlclass[right=1.5cm of Cliente]{LibAcme}
 {}
 {
-escribir(i: str): bool  \\
+escribir(i: string): bool  \\
 limpiar()
 }
 
-\umluniassoc[]{Cliente}{ControlAcme}
+\umluniassoc[]{Cliente}{LibAcme}
+
+
+\umlnote[below left=0.5cm and 0.5cm of LibAcme, width=3cm]{LibAcme}{
+Librería externa.
+}
+
 
 \end{tikzpicture}
 \end{center}
 \end{figure}
 
-\begin{figure}[h!]
-\caption{Configuración utilizando los conceptos de la sección anterior \ref{Accesoalhardware}.}
+Este diseño presenta un fuerte acoplamiento entre el \Cliente y la \LibAcme, por lo que cualquier cambio en el hardware repercutirá en el resto del sistema, trayendo consigo todas las desventajas mencionadas tanto en este capítulo como en el anterior. Se podría decir que el principal problema radica en que no se siguió la metodología de diseño propuesta por Parnas \cite{Parnas1972}. El hardware representa un ítem con alta probabilidad de cambio, por lo tanto, debe ser encapsulado.
+
+En el libro de Douglass \cite{douglass} se observa que, en la práctica, este tipo de escenarios son comunes: ya se tiene un sistema funcionando y se produce un cambio de hardware. Por ello, se intentará proponer una posible solución desde el punto de vista de la \gls{IS}. En lugar de reescribir todo el sistema, veremos cómo, aplicando un patrón de diseño de Gamma \cite{Gamma:1995:DPE:186897}, es posible adaptar el sistema y preparar el diseño del mismo para futuros cambios de índole similar.
+\declareAMod{Display}
+Para encapsular el hardware sin modificar todo el sistema se creará un módulo abstracto llamado \Display. En su interfaz proveerá los mismos métodos que \LibAcme de esta manera evitaremos cambiar la implementación del resto del sistema. Al compartir interfaz podemos decir que \LibAcme hereda la interfaz de \Display, esto lo podemos ver en la Figura {configUsando}.
+
+\begin{figure}[H]
+\caption{Introducción del nuevo módulo abstracto\Display.}
 \label{configUsando}
 \begin{center}
 \begin{tikzpicture}\sf
 \umlsimpleclass[]{Cliente}
 
-\umlclass[right=1.5cm of Cliente,type=abstract]{ControlDisplay}
+\umlclass[right=1.5cm of Cliente,type=abstract]{Display}
 {}
 {
-\umlvirt{escribir(i: str): bool}  \\
+\umlvirt{escribir(i: string): bool}  \\
 \umlvirt{limpiar()}
 }
 
-\umlclass[right=0.5cm of Cliente,below=2cm of Cliente]{ControlAcme}
+\umlclass[right=0.5cm of Cliente,below=2cm of Cliente]{LibAcme}
 {}
 {
-escribir(i: str): bool  \\
+escribir(i: string): bool  \\
 limpiar()
 }
 
-\umluniassoc[]{Cliente}{ControlDisplay}
-\umlinherit[geometry=|-|]{ControlAcme}{ControlDisplay}
+\umluniassoc[]{Cliente}{Display}
+\umlinherit[geometry=|-|]{LibAcme}{Display}
 
 
 \end{tikzpicture}
 \end{center}
 \end{figure}
+\declareCMod{DisplayEmca}
+Como mencionamos, \LibEmca se utiliza para controlar el nuevo display, pero su interfaz y funcionalidad no son las mismas que las de \LibAcme. Por lo tanto, aplicaremos el patrón \textit{Adapter} (Adaptador) propuesto por Gamma \cite{Gamma:1995:DPE:186897}. Este patrón consiste, en este caso, en crear un módulo \DisplayEmca, que se encarga de adaptar la interfaz de \LibEmca a la de \Display. Es decir, utilizará los métodos de \LibEmca para implementar la funcionalidad esperada por los métodos de \Display. De esta manera, se obtiene la estructura de módulos mostrada en la Figura \ref{configNueva}.
 
-\newpage
-
-Para construir un diseño orientado al cambio, primero se aplican los conceptos vistos en la sección \nameref{Accesoalhardware}, logrando el diseño \ref{configUsando}. Luego, para permitir el cambio propuesto sin tener que realizar todas las modificaciones mencionadas, se propone aplicar el patrón \textit{Adapter}, creando un módulo intermedio con la misma interfaz que \textbf{DisplayLib}. El cual utiliza los métodos provistos por la librería que encapsula el display con el objetivo de proveer la misma interfaz que la librería original. Podemos ver la nueva estructura en \ref{configNueva} y su debida documentación de aplicación del patrón en \ref{docAdapter}.
-
-\begin{figure}[h!]
-\caption{Nueva configuración utilizando el patrón \textit{Adapter}.}
+\begin{figure}[H]
+\caption{Diseño aplicando el patrón \textit{Adapter}.}
 \label{configNueva}
 \begin{center}
 \begin{tikzpicture}\sf
 \umlsimpleclass[x=-4.5,y=1]{Cliente}
 
-\umlclass[x=0,y=1,type=abstract]{ControlDisplay}
+\umlclass[x=0,y=1,type=abstract]{Display}
 {}
 {
 \umlvirt{escribir(i: str): bool}  \\
 \umlvirt{limpiar()}
 }
-\umlclass[x=-2.5,y=-3]{ControlAcme}
+\umlclass[x=-2.5,y=-3]{LibAcme}
 {}
 {
 escribir(i: str): bool  \\
 limpiar()
 }
-\umlclass[x=2.5,y=-3]{ControlEmca}
+\umlclass[x=2.5,y=-3]{DisplayEmca}
 {}
 {
 escribir(i: str): bool  \\
@@ -540,15 +557,21 @@ imprimir(i: str)  \\
 get\_current(): str
 }
 umluniassoc
-\umlinherit[geometry=|-|]{ControlAcme}{ControlDisplay}
-\umlinherit[geometry=|-|]{ControlEmca}{ControlDisplay}
-\umluniassoc[]{Cliente}{ControlDisplay}
-\umluniassoc[geometry=-|-]{ControlEmca}{LibEmca}
+\umlinherit[geometry=|-|]{LibAcme}{Display}
+\umlinherit[geometry=|-|]{DisplayEmca}{Display}
+\umluniassoc[]{Cliente}{Display}
+\umluniassoc[geometry=-|-]{DisplayEmca}{LibEmca}
+
+\umlnote[below=0.5cm of LibEmca, width=3cm]{LibEmca}{
+Librería externa.
+}
 \end{tikzpicture}
 \end{center}
 \end{figure}
 
-\begin{figure}[h!]
+No olvidar que cada aplicación de un patrón de diseño debe ser seguida por su correspondiente documentación \textbf{2MIL}. En este caso se la presenta en la Figura \ref{docAdapter}.
+
+\begin{figure}[H]
 \caption{Documentación de la aplicación del patrón Adapter al ejemplo del display.}
 \label{docAdapter}
 \begin{pattern}[]{Adaptar nuevo controlador de display}{Algorithm}{idFigAlg}
@@ -558,43 +581,42 @@ umluniassoc
 \textbf{Funcionalidad}: En caso de agregar un nuevo display que provee una intefaz diferente a la utilizada en el sistema, se crea un módulo que la adapta para que corresponda a la usada.
 }
 \assigns
-\is{ControlDisplay}{Target}
+\is{Display}{Target}
 \is{LibEmca}{Adaptee}
-\is{ControlEmca}{Adapter}
+\is{DisplayEmca}{Adapter}
 \end{pattern}
 \end{figure}
 
-Por lo tanto el cliente sigue utilizando la misma interfaz para acceder al display, reduciendo la cantidad y complejidad de los cambios necesarios para utilizar el nuevo display. Con esta solución se obtienen las siguientes ventajas:
+
+En el Código \ref{codigoAdapter} se presenta un ejemplo de implementación del módulo \DisplayEmca. En este se utilizan los métodos provistos por la librería del fabricante, y se emula la interfaz de \Display. De este modo, se permite reemplazar el hardware sin necesidad de modificar ni reverificar ninguna otra parte del sistema.
+
+\begin{lstlisting}[label={codigoAdapter}, caption=Ejemplo de implementación del módulo \ControlEmca]
+escribir(string palabra)
+    if (libEmca.get_current() != "")
+        return false
+	else
+    	libEmca.imprimir(cadena)
+    	return true
+
+limpiar()
+    libEmca.imprimir("")
+\end{lstlisting}
+
+Las ventajas de aplicar este patrón en esta situación particular en la cual se parte de un diseño \textbf{no} oriendatado al cambio son:
 
 \begin{itemize}
 
 \item Facilitar la sustitución de hardware: permite cambiar el display sin necesidad de modificar el código del cliente, reduciendo el impacto del cambio de hardware en el sistema.
 
-\item Mantiener la coherencia en la interfaz: el cliente sigue interactuando con la misma interfaz abstracta (\textit{ControlDisplay}), evitando la necesidad de modificar múltiples módulos en el sistema.
+\item Mantiener la coherencia en la interfaz: el cliente sigue interactuando con la misma interfaz abstracta (\Display), evitando la necesidad de modificar múltiples módulos en el sistema.
 
-\item Minimizar el riesgo de errores: al encapsular las diferencias de implementación en el adaptador (\textbf{ControlEmca}), se reduce la posibilidad de introducir errores al modificar manualmente todas las llamadas en el código.
+\item Minimizar el riesgo de errores: al encapsular las diferencias de implementación en el adaptador (\DisplayEmca), se reduce la posibilidad de introducir errores al modificar manualmente todas las llamadas en el código.
 
-\item Mejorar la mantenibilidad: cualquier nuevo display con una interfaz distinta solo requiere la creación de un nuevo adaptador.
+\item Mejorar la mantenibilidad: cualquier nuevo display con una librearía de control solo requiere la creación de un nuevo adaptador.
 
 \item Se promueve la reutilización de código: la abstracción permite reutilizar la lógica del cliente sin importar qué display se use, evitando la duplicación de código y mejorando la modularidad.
 \end{itemize}
 
-
-En este ejemplo, una posible implementación para las funciones \verb|escribir(i: str): bool| y \verb|limpiar()| del módulo \textbf{ControlEmca} es la del código \ref{codigoAdapter}.
-
-\begin{lstlisting}[label={codigoAdapter}, caption=Ejemplo implementación módulo ControlEmca.]
-bool escribir(char* cadena) {
-    if (libEmca.get_current() != "") {
-        return False;
-    }
-    libEmca.imprimir(cadena);
-    return True;
-}
-
-void limpiar() {
-    libEmca.imprimir("");
-}
-\end{lstlisting}
 
 
 \section{Control en conjunto de dispositivos}

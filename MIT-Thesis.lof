@@ -28,19 +28,19 @@
 \contentsline {figure}{\numberline {6.2}{\ignorespaces Interfaz MotorDC}}{53}{figure.caption.25}%
 \contentsline {figure}{\numberline {6.3}{\ignorespaces Módulo MotorDC abstracto y estructura de herencia.}}{54}{figure.caption.26}%
 \contentsline {figure}{\numberline {6.4}{\ignorespaces Display 7 segmentos 4 digitos}}{55}{figure.caption.27}%
-\contentsline {figure}{\numberline {6.5}{\ignorespaces Configuración original del controlador del display.}}{57}{figure.caption.28}%
-\contentsline {figure}{\numberline {6.6}{\ignorespaces Configuración utilizando los conceptos de la sección anterior \ref {Accesoalhardware}.}}{57}{figure.caption.29}%
-\contentsline {figure}{\numberline {6.7}{\ignorespaces Nueva configuración utilizando el patrón \textit {Adapter}.}}{58}{figure.caption.30}%
-\contentsline {figure}{\numberline {6.8}{\ignorespaces Documentación de la aplicación del patrón Adapter al ejemplo del display.}}{58}{figure.caption.31}%
-\contentsline {figure}{\numberline {6.9}{\ignorespaces Diagrama de flujo que explica el comportamiento de la función emergency \blx@tocontentsinit {0}\cite [pág. 82]{disenioViejo1}.}}{61}{figure.caption.32}%
+\contentsline {figure}{\numberline {6.5}{\ignorespaces Diseño tradicional del uso de la libreria del fabricante.}}{57}{figure.caption.28}%
+\contentsline {figure}{\numberline {6.6}{\ignorespaces Introducción del nuevo módulo abstracto\mbox {\itshape \sffamily Display}\xspace .}}{58}{figure.caption.29}%
+\contentsline {figure}{\numberline {6.7}{\ignorespaces Diseño aplicando el patrón \textit {Adapter}.}}{58}{figure.caption.30}%
+\contentsline {figure}{\numberline {6.8}{\ignorespaces Documentación de la aplicación del patrón Adapter al ejemplo del display.}}{59}{figure.caption.31}%
+\contentsline {figure}{\numberline {6.9}{\ignorespaces Diagrama de flujo que explica el comportamiento de la función emergency \blx@tocontentsinit {0}\cite [pág. 82]{disenioViejo1}.}}{62}{figure.caption.32}%
 \contentsline {figure}{\numberline {6.10}{\ignorespaces Módulos de un subsistema de control.}}{63}{figure.caption.33}%
 \contentsline {figure}{\numberline {6.11}{\ignorespaces Estructura módulo \textbf {Control} extendida con estado.}}{65}{figure.caption.34}%
 \contentsline {figure}{\numberline {6.12}{\ignorespaces Documentacion de la aplicación del patrón State en el módulo Control.}}{66}{figure.caption.35}%
 \contentsline {figure}{\numberline {6.13}{\ignorespaces Esquema del brazo robótico.}}{67}{figure.caption.36}%
 \contentsline {figure}{\numberline {6.14}{\ignorespaces Diagrama de los componentes del sistema brazo robótico.}}{69}{figure.caption.37}%
-\contentsline {figure}{\numberline {6.15}{\ignorespaces Actuadores paso a paso.}}{69}{figure.caption.38}%
+\contentsline {figure}{\numberline {6.15}{\ignorespaces Actuadores paso a paso.}}{70}{figure.caption.38}%
 \contentsline {figure}{\numberline {6.16}{\ignorespaces Interfaz módulo Pinza.}}{70}{figure.caption.39}%
-\contentsline {figure}{\numberline {6.17}{\ignorespaces Sensores del brazo robótico.}}{70}{figure.caption.40}%
+\contentsline {figure}{\numberline {6.17}{\ignorespaces Sensores del brazo robótico.}}{71}{figure.caption.40}%
 \contentsline {figure}{\numberline {6.18}{\ignorespaces Módulo Timer}}{71}{figure.caption.41}%
 \contentsline {figure}{\numberline {6.19}{\ignorespaces Documentacion de la aplicación del patrón Command para el desacople de ejecuciones que invoca el Timer.}}{72}{figure.caption.42}%
 \contentsline {figure}{\numberline {6.22}{\ignorespaces Estructura módulo Controller}}{72}{figure.caption.45}%
