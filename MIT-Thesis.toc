@@ -22,15 +22,15 @@
 \contentsline {chapter}{\numberline {6}Problemas comunes}{45}{chapter.6}%
 \contentsline {section}{\numberline {6.1}Acceso al hardware}{45}{section.6.1}%
 \contentsline {section}{\numberline {6.2}Interfaces que no se ajustan perfectamente}{55}{section.6.2}%
-\contentsline {section}{\numberline {6.3}Control en conjunto de dispositivos}{60}{section.6.3}%
-\contentsline {subsection}{\numberline {6.3.1}Subsistemas de control}{62}{subsection.6.3.1}%
-\contentsline {subsection}{\numberline {6.3.2}Ejemplo}{66}{subsection.6.3.2}%
-\contentsline {section}{\numberline {6.4}Obtención de información}{80}{section.6.4}%
-\contentsline {section}{\numberline {6.5}Control anti-rebote}{84}{section.6.5}%
-\contentsline {section}{\numberline {6.6}Máquinas de estado}{85}{section.6.6}%
+\contentsline {section}{\numberline {6.3}Obtención de información}{60}{section.6.3}%
+\contentsline {section}{\numberline {6.4}Control en conjunto de dispositivos}{64}{section.6.4}%
+\contentsline {subsection}{\numberline {6.4.1}Subsistemas de control}{67}{subsection.6.4.1}%
+\contentsline {subsection}{\numberline {6.4.2}Ejemplo}{71}{subsection.6.4.2}%
+\contentsline {section}{\numberline {6.5}Control anti-rebote}{85}{section.6.5}%
+\contentsline {section}{\numberline {6.6}Máquinas de estado}{86}{section.6.6}%
 \contentsline {section}{\numberline {6.7}Integridad de la información}{93}{section.6.7}%
-\contentsline {section}{\numberline {6.8}Verificación de precondiciones.}{96}{section.6.8}%
-\contentsline {section}{\numberline {6.9}Organización de la ejecución}{99}{section.6.9}%
+\contentsline {section}{\numberline {6.8}Verificación de precondiciones.}{97}{section.6.8}%
+\contentsline {section}{\numberline {6.9}Organización de la ejecución}{100}{section.6.9}%
 \contentsline {chapter}{\numberline {A}Patrones de diseño de Gamma}{103}{appendix.Alph1}%
 \contentsline {section}{\numberline {A.1}Adapter}{103}{section.Alph1.1}%
 \contentsline {section}{\numberline {A.2}Command}{104}{section.Alph1.2}%
