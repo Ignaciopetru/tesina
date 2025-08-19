@@ -621,13 +621,13 @@ Las ventajas de aplicar este patrón en esta situación particular en la cual se
 \section{Obtención de información}
 \label{obtInfo}
 
-Generalmente una tarea importante que tienen los sistemas embebidos es recavar información proveniente de sensores. Existen diferentes formas en las que los sensores transmiten información al sistema. Algunos, por ejemplo un sensor de temperatura, setea en el pin en el que está conectado un valor de tensión, por lo que el sistema solo debe consultar el valor del pin. Otros, en cambio, se comunican mediante interrupciones; por ejemplo un sensor de efecto \gls{hall} genera una interrupción por cada detección de campo magnético. Por lo tanto, si lo estamos usando para calcular las \gls{RPM} de un componente giratorio, debemos llevar una cuenta de las interrupciones que generó en cierto periodo de tiempo y realizar una operación matemática. Evidentemente, es necesario que alguna porción de nuestro sistema se encargue de hacerlo y maneje las interrupciones generadas por el sensor. Algo similar pasa con otro tipos de dispositivos como joysticks, botones, etc.
+Generalmente una tarea importante que tienen los sistemas embebidos es recavar información proveniente de sensores. Existen diferentes formas en las que los sensores transmiten información al sistema. Algunos, por ejemplo un sensor de temperatura, establece en el pin en el que está conectado un valor de tensión, por lo que el sistema solo debe consultar el valor del pin. Otros, en cambio, se comunican mediante interrupciones; por ejemplo un sensor de efecto \gls{hall} genera una interrupción por cada detección de campo magnético. Por lo tanto, si lo estamos usando para calcular las \gls{RPM} de un componente giratorio, debemos llevar una cuenta de las interrupciones que generó en cierto periodo de tiempo y realizar una operación matemática. Evidentemente, es necesario que alguna porción de nuestro sistema se encargue de hacerlo y maneje las interrupciones generadas por el sensor. Algo similar pasa con otro tipos de dispositivos como joysticks, botones, etc.
 
-Tradicionalmente esta tarea es centralizada en un único módulo que provee dos métodos, uno encargado de manejar la interrupción, procesar y almacenar la informacion y otro que es utilizado para acceder a ella. Aplicando esta solución se obtiene una estructura poco resiliente al cambio. Por ejemplo, si se modifican los cálculos para obtener el resultado deseado, se debe modificar a su vez la implementación del módulo, dando lugar a la introducción de posibles errores. También, puede cambiar la manera de transmitir la información relacionada a la interrupción por modificaciones en el hardware (tipo o modelo del sensor, componentes mecánicos, etc.).
-En \gls{IS} decimos que el módulo oculta más de un item de cambio, y como vimos previamente, eso no sigue con las prácticas recomendadas.
+Tradicionalmente, esta tarea se centraliza en un único módulo que provee dos métodos: uno encargado de manejar la interrupción, procesar y almacenar la información, y otro que se utiliza para acceder a ella. Al aplicar esta solución, se obtiene una estructura poco resiliente al cambio. Por ejemplo, si se modifican los cálculos para obtener el resultado deseado, es necesario modificar también la implementación del módulo, lo que da lugar a la posible introducción de errores. Asimismo, la manera de transmitir la información relacionada con la interrupción puede variar debido a modificaciones en el hardware (tipo o modelo del sensor, componentes mecánicos, etc.). En \gls{IS}, decimos que el módulo oculta más de un ítem de cambio y, como vimos previamente, esto no se ajusta a las prácticas recomendadas.
 
+Además, en muchos casos ni siquiera se construye este módulo, sino que cada cliente del dispositivo se encarga de capturar y procesar los datos provenientes, lo que provoca que, ante cualquier cambio, deba modificarse el código en diferentes módulos a lo largo del sistema.
 
-Es por las problemáticas descriptas que resulta útil contar con una forma general de abordar este problema desde el punto de vista del diseño para el cambio. Tomaremos como referencia el trabajo realizado sobre el robot desmalezador en \cite{paperPomponio}, en el cual se empleó la estructura modular de la Figura \ref{activo} para llevar a cabo las actividades necesarias para utilizar los sensores que generan interrupciones en el sistema.
+Es debido a las problemáticas mencionadas que resulta útil contar con una forma general de abordar este problema desde el punto de vista del diseño orientado al cambio. Para ello, tomaremos como referencia el trabajo realizado sobre el robot desmalezador en \cite{paperPomponio}, en el cual se empleó la estructura modular presentada en la Figura \ref{activo}, destinada a llevar a cabo las actividades necesarias para el uso de sensores que generan interrupciones en el sistema.
 
 \begin{figure}[H]
 \caption{Estructura componentes para la lectura de un sensor activo.}
@@ -699,38 +699,23 @@ Es por las problemáticas descriptas que resulta útil contar con una forma gene
 \declareCMod{Computador}
 \declareCMod{Comando}
 
-En esta estructura se distinguen cuatro módulos principales: \Dispositivo, que encapsula el hardware asociado al dispositivo que genera e introduce la interrupción. \Dispositivo tiene configurado un manejador de interrupción que invoca al comando \Comando cuando la interrupción es lanzada. Este módulo \Comando pertenece al patrón \textit{Command} y ejecuta los métodos de \Colector para registrar la información requerida sobre la interrupción (por ejemplo, el momento exacto en que ocurrió dicho evento o la cantidad de veces que sucedió). Por lo tanto, podemos deducir que \Colector almacena la información ``cruda'' de la interrupción o sensor. Por último, tenemos el módulo \Computador, encargado de procesar la información cuando esta es requerida. Para ello, lee los valores almacenados en \Collector y aplica ciertos cálculos o algoritmos que generan la información final aportada por el dispositivo. Un ejemplo de esto podría ser el cálculo de la velocidad de rotación de una rueda o la obtención de los inputs de un joystick.
+En esta estructura se distinguen cuatro módulos principales: \Dispositivo, que encapsula el hardware asociado al dispositivo encargado de generar e introducir la interrupción. Este módulo cuenta con un manejador de interrupción configurado para invocar al comando encapsulado en el módulo \Comando cuando la interrupción es lanzada. Este último sigue el patrón de diseño \textit{Command} y ejecuta los métodos del módulo \Colector para registrar la información requerida sobre la interrupción (por ejemplo, el momento exacto en que ocurrió el evento o la cantidad de veces que sucedió). De este modo, podemos deducir que \Colector almacena la información ``cruda'' proveniente de la interrupción o del sensor. Finalmente, se encuentra el módulo \Computador, encargado de procesar la información cuando esta es solicitada. Para ello, lee los valores almacenados en \Colector y aplica cálculos o algoritmos que computan la información final aportada por el dispositivo. Un ejemplo de ello podría ser el cálculo de la velocidad de rotación de una rueda o la obtención de los inputs de un joystick.
 
-
- En particular, opera sobre \textbf{Collector} almacenando en este la información relevante del evento (interrupción). Los datos por lo general son un \textit{timestamp} y la cantidad de veces que sucedió dicho evento. Por último, \textbf{Buffer} actúa como buffer de la información recibida, posee un método que permite obtener el valor recibido. Cuando es invocado toma los valores necesarios que se almacenan en el \textbf{Collector} y realiza los cómputos necesarios para calcular el dato pedido.
-
-Para analizar esta estructura en mayor detalle, se presenta un ejemplo de aplicación. Se considera un sensor \textit{Hall} montado en una rueda, utilizado para medir la velocidad de giro. Cada vez que el sensor detecta un campo magnético (ver gráfico \ref{hall}), emite una interrupción que es gestionada por el módulo \textbf{Count}, el cual actúa como un comando y, por lo tanto, conoce qué funciones ejecutar dentro del módulo \textbf{Collector}.
+A continuación se presenta un ejemplo de aplicación con el objetivo de analizar en mayor profundidad la estructura modular. Se considera un sensor de efecto \gls{hall} montado de manera tal que, al girar una rueda, imanes permanentes pasen cerca de este. De esta forma, el sensor puede utilizarse para medir la velocidad de rotación. En la Figura \ref{hall} se observa la variación de voltaje producida por el paso de los imanes frente al sensor. Cada vez que el dispositivo detecta un campo magnético, emite una interrupción que es gestionada por el módulo \Comando, el cual actúa como un comando y, por lo tanto, conoce qué funciones ejecutar dentro del módulo \Colector.
 
 \begin{figure}[H]
     
-    \caption{Ejemplo señales emitidas por un sensor hall al detectar una variación del campo magnético. Cada pico de voltaje provoca que el microcontrolador genere una interrupción. Imagen extraída de \cite{disenioViejo2}.}
+    \caption{Ejemplo de la variación de voltaje producida por un sensor de efecto Hall al detectar un cambio del campo magnético. Cada pico de voltaje provoca que el microcontrolador genere una interrupción. Imagen extraída de \cite{disenioViejo2}.}
     \centering
     \includegraphics[width=0.8\linewidth]{sensorHall.png}
     \label{hall}
 \end{figure}
 
+\declareCMod{SensorVelocidad}
 
-\textbf{Count} tiene la siguiente interfaz:
-\begin{itemize}
-    \item \verb|execute()| registra en el acumulador el instante actual, mediante Collector::currentTime, y luego incrementa el contador de interrupciones invocando Collector::addOne.
-\end{itemize}
+Con los imanes colocados a una distancia conocida, para calcular la velocidad solo es necesario registrar los ultimos dos instantes de tiempo en que se detectaron. De forma simplificada, la velocidad será la distancia entre los imanes dividida por el tiempo transcurrido entre ambas detecciones. En consecuencia, el módulo \Colector debe proveer un método para almacenar el momento de cada detección. Luego, el módulo que cumple la función de \Computador, que llamaremos \SensorVelocidad, tomará la información almacenada en \Colector y realizará el cálculo matemático para obtener la velocidad de giro de la rueda. Cabe aclarar que este ejemplo está simplificado y omite situaciones que conllevarían una complejidad innecesaria.
 
-Y el módulo \textbf{Collector}:
-\begin{itemize}
-    \item \verb|currentTime()|: registra internamente el momento actual de cuando el método es invocado.
-    \item \verb|getCurrentTime()|: devuelve el último instante de tiempo registrado por el módulo.
-    \item \verb|addOne()|: incrementa el contador interno que cuenta las ocurrencias de interrupción del sensor \textit{Hall}.
-    \item \verb|total()|: retorna el valor del contador interno.
-\end{itemize}
-
-Por lo tanto cuando se requiera el valor de velocidad al \textbf{Buffer} este llamará a los métodos necesarios del \textbf{Collector} para obtener información, computará el valor y lo retornará. De esta forma un cliente puede obtener la información recibida a través del pin sin necesidad de manejar las interrupciones y todas las operaciones asociadas al tratamiento de los datos.
-
-La estructura de módulos resultante de aplicar la técnica al ejemplo seria la de la figura \ref{estructuraHall}.
+En la Figura \ref{estructuraHall} se presenta la estructura de módulos de esta solución, junto con un pseudocódigo que ilustra una posible implementación.
 
 \begin{figure}[H]
 \caption{Ejemplo módulos para obtener la información referida a la velocidad.}
@@ -739,116 +724,91 @@ La estructura de módulos resultante de aplicar la técnica al ejemplo seria la 
 \scalebox{.90}{
 \begin{tikzpicture}\sf
 
-\umlclass[]{HallSensor}
+\umlclass[]{SensorHall}
 {}
 {
-start() \\
-stopt() \\
+start()\\
+stop()\\
 signalHandler() \\
 setCommand(i: Command)
 }
 
-\umlnote[above left=1cm and -1cm of HallSensor,width=3cm]{HallSensor}
+\umlnote[above=1cm of SensorHall,width=3cm]{SensorHall}
 {
 signalHandler() \{\\
 \ \ \ \ cmd.execute() \\
 \}
 }
 
-\umlclass[right=2cm of HallSensor]{Count}
+\umlclass[above left=1cm and 2cm of SensorHall]{Count}
 {}
 {
 execute() \\
 }
 
-\umlnote[above=1cm of Count,width=4cm]{Count}
+\umlnote[below left=2.5cm and -1cm of Count,width=4cm]{Count}
 {
 Hereda de Command \\
 execute() \{ \\
-\ \ \ coll.currentTime() \\
-\ \ \ coll.addOne() \\
+\ \ \ colector.addEvent() \\
 \}
 }
 
-\umlclass[below=1cm of HallSensor]{Collector}
+\umlclass[above=1cm of Count]{Colector}
 {}
 {
-currentTime() \\
-getCurrentTime(): Real \\
-addOne() \\
-preSum(): int \\
-total(): int \\
-periodTime(): Real \\
-initPeriod()\\
+addEventTime() \\
+getLastEventTime() \\
+getSecondLastEventTime() \\
 }
 
-\umlclass[right=2cm of Collector]{Buffer}
+\umlclass[left=2cm of Colector]{SensorVelocidad}
 {
 Buffer(i: Collector)
 }
 {
-setConnection(i: Pipe) \\
-signal() \\
+getVelocidad()
 }
 
-\umlnote[below left=1.5cm and -4cm of Buffer,width=7.5cm]{Buffer}
+\umlnote[below=1cm of SensorVelocidad,width=8cm]{SensorVelocidad}
 {
-signal() \{ \\
-\ \ vColl.initPeriod() \\
-\ \ t = vColl.periodTime()\\
-\ \ nInterrup = vColl.preSum()\\
-\ \ velRPM = func(t,NINTERRUP,DELTAT)\\
-\ \ pipe.write(velRPM)\\
-\} \\
-
-DELTAT y NINTERRUP son constantes
+getVelocidad() \{ \\
+\ \ \ last = colector.getLastEventTime() \\
+\ \ \ second = colector.getSecondLastEventTime() \\
+\ \ \ return DISTANCIA / (last - second) \\
+\}
 }
 
-\umlnote[left=1cm of Collector,width=4cm]{Collector}
+\umlnote[right=1cm of Colector,width=5.5cm]{Colector}
 {
-addOne() \{ \\
-\ \ nbr++ \}\\
-\\
-currentTime()\{\\
-\ \ coll.currentTime()\\
-\ \ if nbr == 0\\
-\ \ \ \ initialT = coll.getCurrentTime()\\
-\}\\
-\\
-getCurrentTime()\{\\
-\ \ coll.getCurrentTime() \}
-\\
-\\
-preSum()\{\\
-\ \ return preN \}\\
-\\
-total()\{\\
-\ \ return totalN \}\\
-\\
-periodTime()\{\\
-\ \ return periodT \}\\
+addEventTime() \{ \\
+\ \ \ secondLast = last \\
+\ \ \ last = time.getCurrentTime() \\
+\}
+
 }
 
-\umluniaggreg{Buffer}{Collector}
-\umluniaggreg{HallSensor}{Count}
+\umluniaggreg{SensorVelocidad}{Colector}
+\umluniaggreg[geometry=-|]{SensorHall}{Count}
 
 \end{tikzpicture}
 }
 \end{center}
 \end{figure}
 
+Al aplicar esta solución orientada al cambio, preparamos esta sección del sistema para cambios probables, tanto de hardware como de algoritmos. Además, las responsabilidades se separan en módulos independientes, logrando que una modificación en uno de ellos no afecte al resto del sistema. De este modo, si la rueda fuera modificada y cambiara la distancia entre los imanes, bastaría con actualizar la implementación del módulo \SensorVelocidad. A su vez, si el sensor \gls{hall} fuese reemplazado, solo se cambiaría el módulo que lo encapsula, manteniendo intacto el resto de la aplicación.
+
+En esencia, las ventajas obtenidas con este diseño impactan directamente en la sostenibilidad y el ciclo de vida del software. Al lograr este nivel de bajo acoplamiento y alta cohesión, se minimiza el costo y el riesgo asociados al mantenimiento, ya que los cambios quedan confinados y son esperados. Esto no solo previene la propagación de errores, sino que genera que el sistema tenga una alta resiliencia y flexibilidad.
+
 
 \subsubsection*{Periodicidad}
 
-Algunos sistemas se encargan de mostrar, almacenar o verificar información de sensores cada cierto tiempo. No resulta crítico perder valores intermedios, es decir, no interesa una respuesta inmediata. Un ejemplo puede ser una estación meteorológica o un dispositivo médico de control como un tensiómetro que registra los valores de presión del paciente cada cierto periodo de tiempo.
+Algunos sistemas se encargan de mostrar, almacenar o verificar la información de los sensores a intervalos regulares. En estos casos no resulta crítico perder valores intermedios, es decir, no se requiere una respuesta inmediata. Un ejemplo de ello puede ser una estación meteorológica o un dispositivo médico de monitorización, como un tensiómetro que registra los valores de presión del paciente cada cierto período.
 
-Una implementación intuitiva es escribir un \textit{loop} y en el que se verifique la información de los sensores, llamando a ciertos métodos que obtengan esta directamente del hardware, y luego se ejecute una función \textit{sleep} que bloquea la ejecución determinada cantidad de tiempo. Esto tiene varias desventajas, primero el tiempo de ejecución la rutina alarga el periodo, si se quiere agregar otras funcionalidades a realizar mientras se espera el periodo se debe dividir el \textit{sleep} y calcular tiempo de ejecución.
+Una implementación intuitiva consiste en escribir un \textit{loop} en el que se verifique la información de los sensores, llamando a métodos que la obtengan directamente del hardware, para luego ejecutar una función \textit{sleep} que bloquea el programa durante un tiempo determinado. Este enfoque presenta varias desventajas: en primer lugar, el tiempo de ejecución de la propia rutina alarga el período; en segundo lugar, si se desean agregar otras funcionalidades durante la espera, es necesario dividir la llamada a \textit{sleep} y recalcular los tiempos de ejecución.
 
-Una solución que parece más adecuada desde el punto de vista del diseño orientado al cambio es la siguiente. Se registra un temporizador que cada \textit{x} cantidad de tiempo gatilla una interrupción, esto es provisto por muchos entornos de desarrollo para sistemas embebidos como \gls{arduino}.
-Se registrará un \textit{handler} para esta que será un módulo orden del patrón \textit{Command} el cual encapsula que funciones son necesarias ejecutar para llevar a cabo la funcionalidad deseada. Por ejemplo, pedir la información de los sensores, ya sea a sus respectivos \textbf{Buffers} (si se tienen sensores como en el ejemplo anterior) o a los sensores en si, si son de otro tipo y luego registrarla en cierta módulo (que oculte una estructura de datos). De esta forma se logra librear al procesador en los tiempos de espera y se desacopla esta funcionalidad.
-
-
-
+Una solución más adecuada desde el punto de vista del diseño orientado al cambio es la siguiente: se configura un temporizador para que, cada \textit{x} cantidad de tiempo, genere una interrupción. Esta es una funcionalidad provista por muchos entornos de desarrollo para sistemas embebidos, como \gls{arduino}.
+Para dicha interrupción, se registrará un \textit{handler} que consistirá en un módulo implementado según el patrón de diseño \textit{Command}. Este encapsula las funciones que deben ejecutarse para llevar a cabo la funcionalidad deseada como, por ejemplo, solicitar la información a sus respectivos módulos \Computador o a los sensores en sí, para luego registrarla en un cierto módulo que oculte la estructura de datos. De esta forma, se logra liberar al procesador durante los tiempos de espera y desacoplar esta funcionalidad.
 
 
 \section{Control en conjunto de dispositivos}
