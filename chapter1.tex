@@ -315,19 +315,19 @@ Si se cuenta con dos o mas motores del mismo tipo, se crearán dos a mas instanc
 
 \begin{lstlisting}[caption=Posible implementación de la interfaz del módulo MotorDC.,label={constructorMotor}]
 def MotorDC(dir_pin, vel_pin);
-    pinMode(this->dir_pin, OUTPUT);
-    pinMode(this->vel_pin, OUTPUT);
+    pinMode(this.dir_pin, OUTPUT)
+    pinMode(this.vel_pin, OUTPUT)
 
 
-def set_dir(dir) 
+def setDir(dir) 
     if (dir == HORARIO)
-        digitalWrite(dir_pin, HIGH);
+        digitalWrite(dir_pin, HIGH)
     else
-        digitalWrite(dir_pin, DOWN);
+        digitalWrite(dir_pin, DOWN)
         
 
 def setVel(vel)
-    analogWrite(vel_pin, vel);
+    analogWrite(vel_pin, vel)
 
 \end{lstlisting}
 
@@ -345,8 +345,8 @@ Además, si se debe invertir el sentido de giro como en el ejemplo propuesto al 
 \begin{lstlisting}[caption=Ejemplo control nuevo motor DC.,label={ejemploOtroMotor}]
 motor_delantero = MotorDC(18, 19)
 
-motor_delantero->setDir(ANTIHORARIO)
-motor_delantero->setVel(10)
+motor_delantero.setDir(ANTIHORARIO)
+motor_delantero.setVel(10)
 \end{lstlisting}
 
 
@@ -713,9 +713,9 @@ A continuación se presenta un ejemplo de aplicación con el objetivo de analiza
 
 \declareCMod{SensorVelocidad}
 
-Con los imanes colocados a una distancia conocida, para calcular la velocidad solo es necesario registrar los ultimos dos instantes de tiempo en que se detectaron. De forma simplificada, la velocidad será la distancia entre los imanes dividida por el tiempo transcurrido entre ambas detecciones. En consecuencia, el módulo \Colector debe proveer un método para almacenar el momento de cada detección. Luego, el módulo que cumple la función de \Computador, que llamaremos \SensorVelocidad, tomará la información almacenada en \Colector y realizará el cálculo matemático para obtener la velocidad de giro de la rueda. Cabe aclarar que este ejemplo está simplificado y omite situaciones que conllevarían una complejidad innecesaria.
+En la Figura \ref{estructuraHall} se presenta la estructura de módulos de esta solución, junto con pseudocódigo que ilustra una posible implementación.
 
-En la Figura \ref{estructuraHall} se presenta la estructura de módulos de esta solución, junto con un pseudocódigo que ilustra una posible implementación.
+Con los imanes colocados a una distancia conocida, para calcular la velocidad es necesario registrar los dos últimos instantes de tiempo en que fueron detectados. De forma simplificada, la velocidad se obtendrá al dividir la distancia entre los imanes por el tiempo transcurrido entre ambas detecciones. En consecuencia, el módulo \Colector debe proveer un método para almacenar el momento de cada detección. Posteriormente, el módulo \SensorVelocidad, que cumple la función de \Computador, tomará la información almacenada en \Colector y realizará el cálculo matemático para determinar la velocidad de giro de la rueda. Los cálculos, que pueden ser complejos, se ejecutarán únicamente bajo demanda, es decir, cuando el cliente lo requiera. Esto permite optimizar el rendimiento del sistema al disminuir la carga computacional necesaria. Cabe aclarar que este ejemplo está simplificado y omite situaciones que conllevarían una complejidad innecesaria.
 
 \begin{figure}[H]
 \caption{Ejemplo módulos para obtener la información referida a la velocidad.}
@@ -801,14 +801,343 @@ Al aplicar esta solución orientada al cambio, preparamos esta sección del sist
 En esencia, las ventajas obtenidas con este diseño impactan directamente en la sostenibilidad y el ciclo de vida del software. Al lograr este nivel de bajo acoplamiento y alta cohesión, se minimiza el costo y el riesgo asociados al mantenimiento, ya que los cambios quedan confinados y son esperados. Esto no solo previene la propagación de errores, sino que genera que el sistema tenga una alta resiliencia y flexibilidad.
 
 
-\subsubsection*{Periodicidad}
+\subsubsection*{Recolectar información de manera periódica.}
 
 Algunos sistemas se encargan de mostrar, almacenar o verificar la información de los sensores a intervalos regulares. En estos casos no resulta crítico perder valores intermedios, es decir, no se requiere una respuesta inmediata. Un ejemplo de ello puede ser una estación meteorológica o un dispositivo médico de monitorización, como un tensiómetro que registra los valores de presión del paciente cada cierto período.
 
 Una implementación intuitiva consiste en escribir un \textit{loop} en el que se verifique la información de los sensores, llamando a métodos que la obtengan directamente del hardware, para luego ejecutar una función \textit{sleep} que bloquea el programa durante un tiempo determinado. Este enfoque presenta varias desventajas: en primer lugar, el tiempo de ejecución de la propia rutina alarga el período; en segundo lugar, si se desean agregar otras funcionalidades durante la espera, es necesario dividir la llamada a \textit{sleep} y recalcular los tiempos de ejecución.
 
 Una solución más adecuada desde el punto de vista del diseño orientado al cambio es la siguiente: se configura un temporizador para que, cada \textit{x} cantidad de tiempo, genere una interrupción. Esta es una funcionalidad provista por muchos entornos de desarrollo para sistemas embebidos, como \gls{arduino}.
-Para dicha interrupción, se registrará un \textit{handler} que consistirá en un módulo implementado según el patrón de diseño \textit{Command}. Este encapsula las funciones que deben ejecutarse para llevar a cabo la funcionalidad deseada como, por ejemplo, solicitar la información a sus respectivos módulos \Computador o a los sensores en sí, para luego registrarla en un cierto módulo que oculte la estructura de datos. De esta forma, se logra liberar al procesador durante los tiempos de espera y desacoplar esta funcionalidad.
+Para dicha interrupción, se registrará un \textit{handler} que consistirá en un módulo implementado según el patrón de diseño \textit{Command} (ver Sección \ref{patronCommand} para mas información sobre este tipo de aplicación del patrón). Este encapsula las funciones que deben ejecutarse para llevar a cabo la funcionalidad deseada como, por ejemplo, solicitar la información a sus respectivos módulos \Computador o a los sensores en sí, para luego registrarla en un cierto módulo que oculte la estructura de datos. De esta forma, se logra liberar al procesador durante los tiempos de espera y desacoplar esta funcionalidad.
+
+
+\section{Máquinas de estado}\label{cap:state}
+
+Muchos sistemas ajustan su comportamiento durante su ejecución en función de diversas causas, como interacciones con el entorno o requisitos internos. Un ejemplo sencillo es un sistema de control de microondas, que no iniciará el calentamiento si la puerta está abierta. En este caso, la condición de la puerta representa un estado interno que restringe un comportamiento (calentar) mientras permite otro. Del mismo modo, el comportamiento de un motor en un robot está determinado por su estado de dirección, que puede ser ``giro horario'' o ``giro antihorario''. Otro ejemplo es un sistema en el que, al finalizar una operación, se cambia del estado trabajando al estado esperando, lo que también altera el comportamiento del sistema. De manera similar, un sistema de climatización puede estar en estado calentando o enfriando, dependiendo de la configuración del termostato. Por lo tanto, la gestión de estados, sus transiciones y los cambios de comportamiento asociados a estos son aspectos fundamentales en el diseño de sistemas complejos y representan un item de cambio bastante probable.
+
+Una solución de implementación tradicional para gestionar estados consiste en almacenarlos en una variable. Posteriormente, se verifica el valor de esta variable para modificar el comportamiento de las funciones, como se ilustra en el código \ref{codigoMicro}.
+
+\begin{lstlisting}[label=codigoMicro,caption={Ejemplo de manejo de estados tradicional, en el caso del microondas.}]
+calentar():
+    if (estado == PuertaAbierta):
+        return
+    else if (estado == Preparado):
+        magnetron.encender()
+    else if (estado == Pausa):
+    	magnetron.encender()
+
+\end{lstlisting}
+
+Este enfoque, si bien es directo, presenta varias desventajas al modificar o extender el código. Por ejemplo, al agregar nuevos estados o cambiar el comportamiento del sistema, la gestión se vuelve rápidamente compleja. Esta creciente complejidad es una de las principales desventajas de su implementación. A medida que se añaden más estados, cada método requiere más verificaciones, lo que conduce a una proliferación de estructuras \textit{if-else}. Esto no solo dificulta la lectura del código, sino que también aumenta la probabilidad de introducir errores, ya que cada nuevo estado debe ser cuidadosamente incorporado y verificado en todas las partes relevantes del sistema. Además, este enfoque compromete la sostenibilidad del software. En el Código \ref{nuevoEstado} se muestra cómo se agrega un nuevo estado al método \verb|calentar()|.
+
+\begin{lstlisting}[label=nuevoEstado,caption={Ejemplo de introducción de un nuevo estado a la solución tradicional.}]
+calentar():
+    if (estado == PuertaAbierta):
+        return
+    else if (estado == Preparado):
+        magnetron.encender()
+    else if (estado == Pausa):
+    	magnetron.encender()
+    else if (estado == Calentando):
+    	magnetron.apagar()
+
+\end{lstlisting}
+
+Cuando el comportamiento de un estado debe cambiar, es posible que se necesiten modificaciones en múltiples métodos. Esto puede llevar a la duplicación de código o dificultar la identificación de las partes que requieren cambios, complicando el proceso y aumentando el riesgo de errores. 
+
+Otra desventaja clave es la baja modularidad, ya que el comportamiento asociado a cada estado no está claramente delimitado. Si cada estado requiere comportamientos complejos, el código se vuelve monolítico y difícil de extender sin alterar los métodos existentes. Por ejemplo, al agregar un estado ``EnPausa'', sería necesario modificar la lógica de múltiples métodos para verificar este nuevo estado y ajustar el comportamiento de manera apropiada. Todas estas deficiencias dificultan la reutilización del código y hacen que la verificación del correcto funcionamiento del sistema sea cada vez más compleja.
+
+Este tipo de solución es ampliamente utilizado. Un ejemplo relevante se encuentra en el software original del robot desmalezador, como se describe en el informe \cite{informe1}. En particular, se definen diferentes estados de operación del robot y se utiliza una gran estructura de control \textit{switch-case} dentro del bucle principal. Esta estructura decide la acción a ejecutar en función del estado actual, como se detalla en el Código \ref{codigoLoopMain}.
+
+\begin{lstlisting}[caption=Main loop del previo firmware del robot desmalezador \cite{informe1}, label={codigoLoopMain}]
+switch (ESTADO) {
+	case DUTY_REMOTO:
+		duty_remoto();
+		break;
+	case RPM_REMOTO:
+		rpm_remoto();
+		break;
+	case DUTY_PC:
+		duty_pc();
+		break;
+	case RPM_PC:
+		rpm_pc();
+		break;	
+	case CALIBRACION:
+		calibracion();
+		break;
+	case PERDIDA_SENAL:
+		perdida_senal();
+		break;
+	case EMERGENCIA:
+		EMERGENCY();
+		break;
+	default:
+		ESTADO = PERDIDA_SENAL;
+		break;
+}
+\end{lstlisting}
+
+Antes de abordar una perspectiva de diseño para gestionar el cambio, se analizará en detalle el ejemplo presentado en el libro de Douglass \cite{douglass} y la aplicación de una otra solución al manejo de estados.
+
+El ejemplo propuesto consiste en el sistema de control de un microondas. Para representar el comportamiento del mismo, el autor presenta una máquina de estados como la de la Figura \ref{maquinaMicroondas}. Aunque contiene algunas incoherencias y no es del todo exacta, es suficiente para el propósito del ejemplo que se busca exponer.
+
+\begin{figure}[h]
+\caption{Máquina de estados extraída del libro \cite{douglass}}
+\label{maquinaMicroondas}
+\begin{center}
+\begin{tikzpicture}
+
+\umlsimpleclass[fill=red!20, x=-3]{Apagado}
+\umlsimpleclass[fill=red!20, x=3]{Preparado}
+\umlsimpleclass[fill=red!20, x=-3, y=-3]{PuertaAbierta}
+\umlsimpleclass[fill=red!20, x=3, y=-3]{Calentando}
+\umlsimpleclass[fill=red!20, x=0, y=-6]{Pausa}
+
+\umltrans[arg=prender, pos=0.5] {Apagado}{Preparado}
+\umltrans[arg=cancelar, pos=1.5, geometry=|-|, anchor2=-150] {PuertaAbierta}{Preparado}
+\umltrans[arg=calentarTemp, anchor1=-30, anchor2=30, pos=0.3] {Preparado}{Calentando}
+\umltrans[arg=tempListo, pos=0.3] {Calentando}{Preparado}
+\umltrans[arg=cerrar, pos=0.5,anchor1=8, anchor2=170] {PuertaAbierta}{Calentando}
+\umltrans[arg=abrir, pos=0.5,anchor1=-170, anchor2=-8] {Calentando}{PuertaAbierta}
+\umltrans[arg=abrir, pos=1.2,geometry=-|] {Pausa}{PuertaAbierta}
+\umltrans[arg=reanudar, pos=1.3,geometry=-|,anchor1=13, anchor2=-130] {Pausa}{Calentando}
+\umltrans[arg=pausar, pos=0.7,geometry=|-,anchor1=-30, anchor2=0] {Calentando}{Pausa}
+\umltrans[arg=cancelar, pos=1.3,anchor1=-13,anchor2=13,arm1=7cm,geometry=-|-]{Pausa}{Preparado}
+\umltrans[arg=cancelar, pos=1.4,arm1=4cm,anchor2=-10,geometry=-|-]{Calentando}{Preparado}
+
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+El funcionamiento principal del sistema se representa mediante estados y transiciones, donde cada transición implica un comportamiento específico relacionado con la salida del estado actual y la entrada al siguiente. Por ejemplo, si el sistema se encuentra en el estado \textit{PuertaAbierta} y se recibe el evento \textit{puertaCerrada}, se realizará una transición al estado \textit{Calentando}. Durante este proceso, el magnetrón será activado para emitir las ondas necesarias que calentarán la comida.
+
+A simple vista parece un comportamiento complejo y eso que solo es un ejemplo simplificado, por lo que en la vida real los casos pueden ser mucho más extensos. Este es uno de los motivos por los cuales es útil contar con un buen diseño. El desarrollador debe tener en cuenta que sea fácil modificar las transiciones y también agregar y quitar estados.
+
+En \cite{douglass}, el autor construye un módulo encargado de mantener el estado, el cual sabe qué funciones ejecutar cuando se da una transición. Esto es, recibe el evento, verifica si corresponde a un cambio de estado y de ser así ejecuta el método de ``salida'' del estado actual, ejecuta el método de ``entrada'' del nuevo estado y actualiza el valor del estado actual. Además, propone una implementación utilizando una tabla bidimensional lo cual lo hace un sistema eficiente computacionalmente hablando. En el caso de querer modificar estados, agregarlos o quitarlo es necesario cambiar la implementación de este módulo. 
+
+\begin{lstlisting}[caption=Código ejemplo Douglass State Table, label={ifsanidados}]
+void TokenizerStateTable_eventDispatch(TokenizerStateTable* const me, Event e) {
+int takeTransition = 0;
+Mutex_lock(me->itsMutex);
+/* first ensure the entry is within the table boundaries */
+  if (me->stateID >= NULL_STATE && me->stateID <= GN_PROCESSINGFRACTIONALPART_STATE) {
+    if (e.eType >= EVDIGIT && e.eType <= EVENDOFSTRING) {
+      /* is there a valid transition for the current state and event? */
+      if (me->table[me->stateID][e.eType].newState != NULL_STATE) {
+        /* is there a guard? */
+        if (me->table[me->stateID][e.eType].guardPtr == NULL)
+          /* is the guard TRUE? */
+          takeTransition = TRUE; /* if no guard, then it "evaluates" to TRUE */
+        else
+          takeTransition =(me->table[me->stateID][e.eType].guardPtr(me));
+        if (takeTransition) {
+          if (me->table[me->stateID][e.eType].exitActionPtr != NULL)
+            if (me->table[me->stateID][e.eType].exitActionPtr->nParams == 0)
+              me->table[me->stateID][e.eType].exitActionPtr->aPtr.a0(me);
+            else
+              me->table[me->stateID][e.eType].exitActionPtr->aPtr.a1(me, e.ed.c);
+          if (me->table[me->stateID][e.eType].transActionPtr != NULL)
+            if (me->table[me->stateID][e.eType].transActionPtr->nParams == 0)
+              me->table[me->stateID][e.eType].transActionPtr->aPtr.a0(me);
+            else
+              me->table[me->stateID][e.eType].transActionPtr->aPtr.a1(me, e.ed.c);
+          if (me->table[me->stateID][e.eType].entryActionPtr != NULL)
+            if (me->table[me->stateID][e.eType].entryActionPtr->nParams == 0)
+              me->table[me->stateID][e.eType].entryActionPtr->aPtr.a0(me);
+            else
+              me->table[me->stateID][e.eType].entryActionPtr->aPtr.a1(me, e.ed.c);
+          me->stateID = me->table[me->stateID][e.eType].newState;
+        }
+      }
+    }
+  }
+
+Mutex_release(me->itsMutex);
+}
+\end{lstlisting}
+
+
+En el Código \ref{ifsanidados} se presenta la implementación de uno de los métodos fundamentales de la solución propuesta en el libro. Aunque este enfoque cumple con la gestión de estados, el código no es legible y además no parece seguir buenas prácticas de diseño, ya que utiliza al menos cuatro niveles de sentencias if anidadas. Esto no solo complejiza su entendimiento, sino que también dificulta futuras modificaciones. Por otro lado, dado que las estructuras de datos son un elemento común de cambio en el desarrollo de software, las interfaces deben diseñarse para ser lo más independientes posible de la estructura de datos que se utiliza para implementarlas. Al no considerar esta independencia, cualquier cambio en una de ellas puede repercutir en todo el sistema, lo que aumenta la probabilidad de introducir errores y la necesidad de una reverificación exhaustiva.
+
+Como un enfoque preparado para el cambio se propone el uso del patrón \textit{State} de Gamma \cite{anexoState}. Con ciertos ajustes, este patrón permite que los estados realicen transiciones de forma autónoma. Básicamente, el patrón establece la creación de un módulo por cada estado del sistema, con el objetivo de ajustar la implementación al comportamiento que corresponde a dicho estado. Esto permite una transición dinámica entre estados, ya que el cambio de estado está representado por el cambio de módulo.
+
+El patrón admite distintas opciones para gestionar la transición entre estados. En este caso, para permitir que cada estado transicione de manera independiente, se añade una referencia a los posibles estados siguientes. De esta forma, si se recibe el evento adecuado, un estado puede invocar el método para cambiar de estado, pasando la referencia del nuevo. Por lo tanto, el constructor de cada estado debe incluir como argumento una referencia a cada uno de sus posibles estados siguientes.
+
+Este uso del patrón \textit{State} también es propuesto en \cite[\textit{Chapter 10 : Finite State Machine Patterns Part III: New Patterns as Design Components}]{douglass}.
+
+Para aplicar el patrón al ejemplo extraído del libro\cite{douglass}, se debe seguir el siguiente procedimiento. En primer lugar, se crea un módulo que contenga un método para manejar cada evento y que, a su vez, delegue dicha gestión al estado actual. Posteriormente, se define un módulo Estado del cual heredarán todos los estados concretos del sistema. En este caso, se creará un módulo por cada estado que se muestra en la máquina de estados de la Figura \ref{maquinaMicroondas}. En la Figura \ref{participantesState} podemos observar la estructura obtenida junto a seudocódigo que describen una posible implementación a modo de guía.
+
+\begin{figure}[h!]
+\caption{Módulos participantes del patrón state en el ejemplo del horno microondas.}
+\label{participantesState}
+\begin{center}
+\scalebox{0.7}{
+\begin{tikzpicture}\sf
+\umlclass[]{Microondas}
+{}
+{
+prender() \\
+cancelar() \\
+puertaCerrada() \\
+puertaAbierta() \\
+reanudar() \\
+calentarTemp() \\
+tempListo() \\
+pausar() \\
+cambiarEstado(i: Estado)\\
+}
+
+\umlclass[right=1cm of Microondas,type=abstract]{EstadoMicroondas}
+{}
+{
+\umlvirt{prender(i: Microondas)} \\
+\umlvirt{cancelar(i: Microondas)} \\
+\umlvirt{abrir(i: Microondas)} \\
+\umlvirt{cerrar(i: Microondas)} \\
+\umlvirt{reanudar(i: Microondas)} \\
+\umlvirt{calentarTemp(i: Microondas)} \\
+\umlvirt{tempListo(i: Microondas)} \\
+\umlvirt{pausar(i: Microondas)} \\
+}
+
+\umlclass[below right=2cm and 4cm of EstadoMicroondas]{Apagado}
+{
+Apagado(i: Preparado)
+}
+{
+prender(i: Microondas) \\
+cancelar(i: Microondas) \\
+.\\
+.\\
+.\\
+}
+
+
+\umlclass[below left=2cm and 6cm of EstadoMicroondas]{Preparado}
+{
+Preparado(i: Calentando)
+}
+{
+prender(i: Microondas) \\
+cancelar(i: Microondas) \\
+.\\
+.\\
+.\\
+}
+
+\umlclass[below left=2cm and 0.8cm of EstadoMicroondas]{PuertaAbierta}
+{
+PuertaAbierta(i: Calentando,\\ i: Preparado)
+}
+{
+prender(i: Microondas) \\
+cancelar(i: Microondas) \\
+.\\
+.\\
+.\\
+}
+
+\umlclass[below left=2cm and -3.65cm of EstadoMicroondas]{Calentando}
+{
+Calentando(i: PuertaAbierta,\\ i: Pausa)
+}
+{
+prender(i: Microondas) \\
+cancelar(i: Microondas) \\
+.\\
+.\\
+.\\
+}
+
+\umlclass[below right=2cm and 0.2cm of EstadoMicroondas]{Pausa}
+{
+Pausa(i: Calentando,\\ i: PuertaAbierta)
+}
+{
+prender(i: Microondas) \\
+cancelar(i: Microondas) \\
+.\\
+.\\
+.\\
+}
+
+\umlinherit[geometry=|-|, arm1=3.75cm]{Preparado}{EstadoMicroondas}
+\umlinherit[geometry=|-|, arm1=4cm]{PuertaAbierta}{EstadoMicroondas}
+\umlinherit[arm1=4cm,anchor1=84]{Calentando}{EstadoMicroondas}\umlinherit[geometry=|-|, arm1=4cm]{Pausa}{EstadoMicroondas}
+\umlinherit[geometry=|-|, arm1=3.802cm]{Apagado}{EstadoMicroondas}
+\umluniaggreg{Microondas}{EstadoMicroondas}
+
+\umlnote[below=1cm of PuertaAbierta,width=3cm]{PuertaAbierta}{
+calentarTemp()\{ \\
+\ \ \ \ return \\
+\}
+}
+
+\umlnote[left=1cm of Microondas,width=4.5cm]{Microondas}{
+prender()\{ \\
+\ \ \ \ this.estado.prender(this) \\
+\}\\
+\\
+cambiarEstado(Estado e)\{ \\
+\ \ \ \ this.estado = e \\
+\}
+}
+
+\umlnote[above=2cm of Apagado,width=5.5cm]{Apagado}{
+Apagado(Preparado st)\{ \\
+\ \ \ \ this.stPrep = st \\
+\}\\
+\\
+prender(Microondas m)\{ \\
+\ \ \ \ ... \\
+\ \ \ \ encender microondas \\
+\ \ \ \ ... \\
+\ \ \ \ m.cambiarEstado(this.stPrep) \\
+\}
+}
+
+\end{tikzpicture}
+}
+\end{center}
+
+\end{figure}
+
+\begin{pattern}[]{Estados del microondas}{Algorithm}{idFigAlg}
+\based{Estado (State)}
+\why{\textbf{Cambios previstos}: En base al estado el microondas responde a diferentes eventos de múltiples maneras. Estos estados pueden modificarse, agregar nuevos o quitar otros.
+
+\textbf{Funcionalidad}: Cada método del módulo Microondas es un handler para un evento particular. La respuesta del sistema ante los eventos cambia en base al estado actual del mismo. Ademas, los eventos pueden desencadenar cambios de estado durante la ejecución de su handler.
+}
+\assigns
+\is{Microondas}{Contexto}
+\is{EstadoMicroondas}{Estado}
+\is{Preparado}{EstadoConcreto}
+\is{PuertaAbierta}{EstadoConcreto}
+\is{Calentando}{EstadoConcreto}
+\is{Pausa}{EstadoConcreto}
+\is{Apagado}{EstadoConcreto}
+
+\end{pattern}
+
+Por lo tanto el módulo \textbf{PuertaAbierta} implementará el método \verb|puertaAbierta()|, completando en ella el comportamiento definido para la transición PuertaAbierta $\xrightarrow{}$ Calentando.
+
+\begin{lstlisting}[caption=Implementación  puertaAbierta, style=seudocode]
+puertaAbierta() {
+    magnetron.calentar()
+    microondas.changeEstate(calentando)
+}
+\end{lstlisting}
+
+En cambio, en el caso del evento \textit{prender} no hará nada, pues no existe transición posible desde \textbf{PuertaAbierta} que involucre al evento \textit{prender}.
+
+De esta forma, se logra una solución más elegante y escalable para manejar estados, superando muchas de las limitaciones del enfoque basado en verificaciones de estado dentro de las funciones. Una de las principales ventajas de este patrón es que mejora significativamente la legibilidad y modularidad del código. En lugar de manejar el comportamiento de todos los estados en una misma función, cada estado tiene su propio módulo, lo que permite que el código esté mejor organizado y sea más fácil de entender. Los módulos encapsulan el comportamiento específico de cada estado, lo que elimina la necesidad de múltiples verificaciones condicionales y simplifica el flujo de ejecución. Otro beneficio importante es que facilita la adición de nuevos estados. Cuando se necesita agregar un nuevo estado, basta con definir un nuevo módulo que implemente el comportamiento correspondiente a ese estado, sin necesidad de modificar las funciones existentes que dependen de otros estados. Esto hace que el sistema sea mucho más flexible y escalable a medida que crece en complejidad. Además, el State elimina la duplicación de código, ya que cada módulo de estado gestiona su propio comportamiento. En el enfoque tradicional, muchas funciones deben realizar repetidas verificaciones del estado y aplicar el comportamiento adecuado, lo que conduce a código repetido y potencialmente inconsistente. Una ventaja clave que mencionamos es que permite cambiar el comportamiento del sistema dinámicamente. A medida que el estado cambia, el comportamiento del objeto principal también cambia automáticamente. 
+
+Todo esto hace que el sistema sea más robusto y adaptable, ya que los cambios de estado y las transiciones se manejan de manera interna sin depender de verificaciones externas. Cuando es necesario modificar el comportamiento de un estado, simplemente se actualiza la implementación del módulo correspondiente, lo que facilita la localización y modificación del código relevante. Y como resultado es más fácil de mantener y reduce el riesgo de introducir errores al cambiar o extender el sistema.
+
+Existen otros casos de usos del patrón, como en los ejemplos que se nombraron al principio, puede ser usado para cambiar el comportamiento de cierta parte del sistema o a modo de configuración del mismo. El concepto principal es el mismo, crear un módulo por cada estado posible y cambiar la implementación para que se ajuste a lo requerido.
+
 
 
 \section{Control en conjunto de dispositivos}
@@ -1704,336 +2033,6 @@ Desde el punto de vista de la IS, creo que se están combinando múltiples respo
 
 Parece ser un problema común, por ejemplo en \cite{ganssleDebouncing} se realiza un estudio de las diferentes formas en las que se manifiesta este inconveniente. Además, presenta algoritmos utilizados para determinar la ocurrencia y poder ignorarla.
 
-\section{Máquinas de estado}\label{cap:state}
-
-
-Muchos sistemas ajustan su comportamiento durante la ejecución en función de diversas causas, como interacciones con el entorno o requisitos internos. Por ejemplo, un sistema de control de microondas no iniciará el calentamiento si la puerta está abierta. En este caso, la condición de la puerta representa un estado interno que restringe ciertos comportamientos, permitiendo otros en estados diferentes. De manera similar, distintas partes de un sistema pueden responder a estados específicos. Un ejemplo es la dirección de giro de un motor en un robot, donde el estado del motor puede ser ``girar hacia adelante'' o ``girar hacia atrás'', determinando su comportamiento. Además, un sistema en ejecución puede encontrarse en estado \textit{trabajando} y, al finalizar una operación, cambiar a estado \textit{esperando}, lo que también altera su comportamiento. Otro caso es un sistema de climatización, donde el termostato puede estar en estado \textit{calentando} o \textit{enfriando}, según la configuración establecida. Por lo tanto, la gestión de estados, sus transiciones y los cambios de comportamiento asociados a estos es un aspecto fundamental en el diseño de sistemas.
-
-Una solución de implementación intuitiva para aplicar estados es almacenarlos en una variable y verificar esta última para cambiar el comportamiento de las funciones. Por ejemplo el código \ref{codigoMicro}.
-
-\begin{lstlisting}[style=seudocode,label=codigoMicro,caption={Ejemplo de manejo de estados tradicional, en el caso del microondas.}]
-calentar() {
-    if (estado == PuertaAbierta) {
-        return
-    } else {
-        magnetron.encender()
-    }
-}
-
-// otra opcion
-
-calentar() {
-    switch (estado) {
-    	case PuertaAbierta {
-        	return
-        }
-    	case otherwise {
-    	    magnetron.encender()
-	    }
-	}
-}
-
-\end{lstlisting}
-
-Este enfoque es una solución directa. Sin embargo, presenta algunas desventajas cuando se desea modificar o extender el código. Por ejemplo, si se necesita agregar nuevos estados o cambiar el comportamiento del sistema, este método puede volverse rápidamente difícil de gestionar. Una de las principales desventajas es la complejidad creciente. A medida que se agregan más estados, cada función requerirá más verificaciones de estado, lo que llevará a una proliferación de estructuras \textit{if-else} o \textit{switch-case}. Esto no solo hace que el código sea más difícil de leer, sino que también aumenta la probabilidad de errores, ya que cada nuevo estado debe ser cuidadosamente incorporado en todas las partes relevantes del sistema. Además, este enfoque dificulta la sostenibilidad, cuando el comportamiento de un estado debe cambiar, es posible que se necesiten modificaciones en varios métodos. Esto puede resultar en código duplicado, o incluso puede ser difícil saber que modificar, lo que complica el proceso de realizar cambios sin introducir errores. Otra desventaja es la poca modularidad, no es claro el comportamiento asociado a cada estado. Si cada uno requiere comportamientos más complejos, el código se vuelve monolítico y difícil de extender sin alterar funciones existentes. Por ejemplo, si se agregara un estado ``EnPausa'', se tendría que modificar la lógica de muchas funciones para verificar este nuevo estado y ajustar el comportamiento de manera adecuada. Todas estas desventajas evidentemente conllevan a que reutilizar el código sea difícil.
-
-Este tipo de soluciones es ampliamente utilizado, incluso en el software del robot desmalezar previo al trabajo realizado en \cite{paperPomponio}. En particular, se definen diferentes estados de operación del robot, y se utiliza un gran \textit{switch-case} que es llamado en loop. En este se decide que hacer en base al estado actual. En el código \ref{codigoLoopMain}, se puede ver en detalle la estrategia utilizada.
-
-\begin{lstlisting}[caption=Main loop del previo firmware del robot desmalezador, label={codigoLoopMain}]
-switch (ESTADO) {
-	case DUTY_REMOTO:
-		duty_remoto();
-		break;
-	case RPM_REMOTO:
-		rpm_remoto();
-		break;
-	case DUTY_PC:
-		duty_pc();
-		break;
-	case RPM_PC:
-		rpm_pc();
-		break;	
-	case CALIBRACION:
-		calibracion();
-		break;
-	case PERDIDA_SENAL:
-		perdida_senal();
-		break;
-	case EMERGENCIA:
-		EMERGENCY();
-		break;
-	default:
-		ESTADO = PERDIDA_SENAL;
-		break;
-}
-\end{lstlisting}
-
-Antes de ver un enfoque desde el punto de vista del diseño orientado al cambio, se tratará en mayor profundidad el ejemplo planteado en el libro \cite{douglass} y cómo se aplica una solución similar a la nombrada.
-
-\subsubsection*{Transiciones basadas en eventos}
-Se puede describir un sistema en el que las transiciones entre los estados son provocadas por eventos específicos. Por ejemplo, en el caso de un sistema de microondas, la apertura de la puerta constituye un evento que desencadena una transición, al igual que la pulsación del botón de Cancelar durante el calentamiento. Este tipo de sistema presenta características de una máquina de estados, donde el comportamiento se define mediante una secuencia de transiciones. A continuación, se presenta un ``\textit{state chart}'' extraído del libro que describe el funcionamiento del microondas:
-
-
-\begin{figure}[h]
-\caption{State chart microondas}
-\begin{center}
-\begin{tikzpicture}
-
-\umlsimpleclass[fill=red!20, x=-3]{Apagado}
-\umlsimpleclass[fill=red!20, x=3]{Preparado}
-\umlsimpleclass[fill=red!20, x=-3, y=-3]{PuertaAbierta}
-\umlsimpleclass[fill=red!20, x=3, y=-3]{Calentando}
-\umlsimpleclass[fill=red!20, x=0, y=-6]{Pausa}
-
-\umltrans[arg=prender, pos=0.5] {Apagado}{Preparado}
-\umltrans[arg=cancelar, pos=1.5, geometry=|-|, anchor2=-150] {PuertaAbierta}{Preparado}
-\umltrans[arg=calentarTemp, anchor1=-30, anchor2=30, pos=0.3] {Preparado}{Calentando}
-\umltrans[arg=tempListo, pos=0.3] {Calentando}{Preparado}
-\umltrans[arg=puertaCerrada, pos=0.5,anchor1=8, anchor2=170] {PuertaAbierta}{Calentando}
-\umltrans[arg=puertaAbierta, pos=0.5,anchor1=-170, anchor2=-8] {Calentando}{PuertaAbierta}
-\umltrans[arg=puertaAbierta, pos=1.2,geometry=-|] {Pausa}{PuertaAbierta}
-\umltrans[arg=reanudar, pos=1.3,geometry=-|,anchor1=13, anchor2=-130] {Pausa}{Calentando}
-\umltrans[arg=pausar, pos=0.7,geometry=|-,anchor1=-30, anchor2=0] {Calentando}{Pausa}
-\umltrans[arg=cancelar, pos=1.3,anchor1=-13,anchor2=13,arm1=7cm,geometry=-|-]{Pausa}{Preparado}
-\umltrans[arg=cancelar, pos=1.4,arm1=4cm,anchor2=-10,geometry=-|-]{Calentando}{Preparado}
-
-
-\end{tikzpicture}
-\end{center}
-\end{figure}
-
-El funcionamiento principal del sistema se representa mediante estados y transiciones, donde cada transición implica un comportamiento específico relacionado con la salida del estado actual y la entrada al siguiente. Por ejemplo, si el sistema se encuentra en el estado \textit{PuertaAbierta} y se recibe el evento \textit{puertaCerrada}, se realizará una transición al estado \textit{Calentando}. Durante este proceso, el magnetrón será activado para emitir las ondas necesarias que calentarán la comida.
-
-A simple vista parece un comportamiento complejo y eso que solo es un ejemplo simplificado, por lo que en la vida real los casos pueden ser mucho más extensos. Este es uno de los motivos por los cuales es útil contar con un buen diseño. El desarrollador debe tener en cuenta que sea fácil modificar las transiciones y también agregar y quitar estados. En \cite{douglass}, el autor construye un módulo encargado de mantener el estado, el cual que sabe qué funciones ejecutar cuando se da una transición. Esto es, recibe el evento, verifica si corresponde a un cambio de estado y de ser así ejecuta el método de ``salida'' del estado actual, ejecuta el método de ``entrada'' del nuevo estado y actualiza el valor del estado actual. Además, propone una implementación utilizando una tabla bidimensional lo cual lo hace un sistema eficiente computacional hablando. En el caso de querer modificar estados, agregarlos o quitarlo es necesario cambiar la implementación de este módulo. Gamma explica esto en \cite[State]{Gamma:1995:DPE:186897}, menciona que Tom Cargill\footnote{Escritor de \textit{C++ Programming Style.Addison-Wesley}, 1992} propuso esta implementación y efectivamente es una manera de convertir código condicional en algo que se parece a una tabla.
-
-\begin{lstlisting}[caption=Código ejemplo Douglass State Table, label={ifsanidados}]
-void TokenizerStateTable_eventDispatch(TokenizerStateTable* const me, Event e) {
-int takeTransition = 0;
-Mutex_lock(me->itsMutex);
-/* first ensure the entry is within the table boundaries */
-  if (me->stateID >= NULL_STATE && me->stateID <= GN_PROCESSINGFRACTIONALPART_STATE) {
-    if (e.eType >= EVDIGIT && e.eType <= EVENDOFSTRING) {
-      /* is there a valid transition for the current state and event? */
-      if (me->table[me->stateID][e.eType].newState != NULL_STATE) {
-        /* is there a guard? */
-        if (me->table[me->stateID][e.eType].guardPtr == NULL)
-          /* is the guard TRUE? */
-          takeTransition = TRUE; /* if no guard, then it "evaluates" to TRUE */
-        else
-          takeTransition =(me->table[me->stateID][e.eType].guardPtr(me));
-        if (takeTransition) {
-          if (me->table[me->stateID][e.eType].exitActionPtr != NULL)
-            if (me->table[me->stateID][e.eType].exitActionPtr->nParams == 0)
-              me->table[me->stateID][e.eType].exitActionPtr->aPtr.a0(me);
-            else
-              me->table[me->stateID][e.eType].exitActionPtr->aPtr.a1(me, e.ed.c);
-          if (me->table[me->stateID][e.eType].transActionPtr != NULL)
-            if (me->table[me->stateID][e.eType].transActionPtr->nParams == 0)
-              me->table[me->stateID][e.eType].transActionPtr->aPtr.a0(me);
-            else
-              me->table[me->stateID][e.eType].transActionPtr->aPtr.a1(me, e.ed.c);
-          if (me->table[me->stateID][e.eType].entryActionPtr != NULL)
-            if (me->table[me->stateID][e.eType].entryActionPtr->nParams == 0)
-              me->table[me->stateID][e.eType].entryActionPtr->aPtr.a0(me);
-            else
-              me->table[me->stateID][e.eType].entryActionPtr->aPtr.a1(me, e.ed.c);
-          me->stateID = me->table[me->stateID][e.eType].newState;
-        }
-      }
-    }
-  }
-
-Mutex_release(me->itsMutex);
-}
-\end{lstlisting}
-
-En el ejemplo de código \ref{ifsanidados}, que es una porción de la solución propuesta en el libro, es posible ver que aunque el enfoque cumple los requerimientos, el código no parece utilizar buenas prácticas y hace empleo de múltiples sentencias \textit{if} anidadas, lo cual complejiza el entendimiento y modificación del mismo. Por otro lado, las estructuras de datos son un item de cambio común, las interfaces deben intentar ser independientes de la estructura de datos que se utiliza para implementarlas.
-
-Como otro enfoque, se propone utilizar el patrón \textit{State} de Gamma con ciertos ajustes para permitir a los estados transicionar a otros por si mismos. Básicamente, el patrón establece la creación de un módulo por cada estado del sistema con el fin de cambiar la implementación para que se ajuste al comportamiento cuando el sistema se encuentra en dicho estado. Esto nos permite transicionar dinámicamente entre estados, ya que el cambio de estados esta representado por cambiar de módulo.
-
-Para permitir que cada estado pueda transicionar de manera independiente a otros estados lo que se hace es agrear una referencia de los posibles siguientes estados, para que en caso de recibir el evento adecuado pueda invocar el método de cambiar estado pasando la referencia del nuevo. Por lo tanto, al constructor de cada estado hay que agregarle como argumento cada posible estado siguiente. Esto lo podemos ver en la porción de código \ref{waitingDes} perteneciente al diseño del robot desmalezador. Y para llamar a una transición de estado se ejecuta el código \ref{transicionDes}.
-
-\begin{lstlisting}[label={waitingDes},caption=Código ejemplo transición robot desmalezador,style=seudocode]
-buildOpStates(){
-    MAX=50
-    workSt=new Working(mCtrlOrd)
-    recSt=new Reconnecting(workSt, mCtrlOrd)
-    waitSt=new WaitingMAX(workSt,recSt,ctrlsStopOrd,mCtrlOrd)
-    nMax=MAX-1
-    while nMax > 0
-        temp=new WaitingN(workSt,waitSt,mCtrlOrd)
-        waitSt=temp
-        nMax--
-    workSt.setNextState(waitSt)
-    opState=workSt
-}
-\end{lstlisting}
-
-
-\begin{lstlisting}[label={transicionDes}, caption=Ejemplo transición de estado.,style=seudocode]
-actionWithMsg(MainController mCtrl, Mode md){
-    md.read(mCtrl)
-    mCtrl.changeState(workSt) // workSt class attribute
-}
-\end{lstlisting}
-
-Este uso del patrón \textit{State} también es propuesto en \cite[\textit{Chapter 10 : Finite State Machine Patterns Part III: New Patterns as Design Components}]{douglass}.
-
-
-Volviendo al ejemplo del microondas, aplicando este enfoque de diseño, se obtiene un módulo que provee un método que maneja cada evento y otro que delega al estado cada manejo de evento. Como se puede observar en la figura \ref{participantesState}.
-
-\begin{figure}[h!]
-\caption{Módulos participantes del patrón state en el ejemplo del horno microondas.}
-\label{participantesState}
-\begin{center}
-\scalebox{0.7}{
-\begin{tikzpicture}\sf
-\umlclass[]{Microondas}
-{}
-{
-prender() \\
-cancelar() \\
-puertaCerrada() \\
-puertaAbierta() \\
-reanudar() \\
-calentarTemp() \\
-tempListo() \\
-pausar() \\
-}
-
-\umlclass[right=4cm of Microondas,type=abstract]{EstadoMicroondas}
-{}
-{
-\umlvirt{prender()} \\
-\umlvirt{cancelar()} \\
-\umlvirt{puertaCerrada()} \\
-\umlvirt{puertaAbierta()} \\
-\umlvirt{reanudar()} \\
-\umlvirt{calentarTemp()} \\
-\umlvirt{tempListo()} \\
-\umlvirt{pausar()} \\
-}
-
-\umlclass[below right=2cm and 4cm of EstadoMicroondas]{Apagado}
-{}
-{
-changeEstate(i: Estado) \\
-prender() \\
-cancelar() \\
-puertaCerrada() \\
-puertaAbierta() \\
-reanudar() \\
-calentarTemp() \\
-tempListo() \\
-pausar() \\
-}
-
-
-\umlclass[below left=2cm and 6cm of EstadoMicroondas]{Preparado}
-{
-Preparado(i: Estado)
-}
-{
-prender() \\
-cancelar() \\
-puertaCerrada() \\
-puertaAbierta() \\
-reanudar() \\
-calentarTemp() \\
-tempListo() \\
-pausar() \\
-}
-
-\umlclass[below left=2cm and 0.8cm of EstadoMicroondas]{PuertaAbierta}
-{
-PuertaAbierta(i: Estado,\\ i: Estado)
-}
-{
-prender() \\
-cancelar() \\
-puertaCerrada() \\
-puertaAbierta() \\
-reanudar() \\
-calentarTemp() \\
-tempListo() \\
-pausar() \\
-}
-
-\umlclass[below left=2cm and -3.65cm of EstadoMicroondas]{Calentando}
-{
-Calentando(i: Estado,\\ i: Estado)
-}
-{
-prender() \\
-cancelar() \\
-puertaCerrada() \\
-puertaAbierta() \\
-reanudar() \\
-calentarTemp() \\
-tempListo() \\
-pausar() \\
-}
-
-\umlclass[below right=2cm and 0.2cm of EstadoMicroondas]{Pausa}
-{
-Pausa(i: Estado,\\ i: Estado)
-}
-{
-prender() \\
-cancelar() \\
-puertaCerrada() \\
-puertaAbierta() \\
-reanudar() \\
-calentarTemp() \\
-tempListo() \\
-pausar() \\
-}
-
-\umlinherit[geometry=|-|, arm1=3.75cm]{Preparado}{EstadoMicroondas}
-\umlinherit[geometry=|-|, arm1=4cm]{PuertaAbierta}{EstadoMicroondas}
-\umlinherit[arm1=4cm,anchor1=84]{Calentando}{EstadoMicroondas}\umlinherit[geometry=|-|, arm1=4cm]{Pausa}{EstadoMicroondas}
-\umlinherit[geometry=|-|, arm1=3.802cm]{Apagado}{EstadoMicroondas}
-\umluniaggreg{Microondas}{EstadoMicroondas}
-
-\end{tikzpicture}
-}
-\end{center}
-
-\end{figure}
-
-\begin{pattern}[]{Estados del microondas}{Algorithm}{idFigAlg}
-\based{Estado (State)}
-\why{\textbf{Cambios previstos}: En base al estado el microondas responde a diferentes eventos de múltiples maneras. Estos estados pueden modificarse, agregar nuevos o quitar otros.
-
-\textbf{Funcionalidad}: Cada método del módulo Microondas es un handler para un evento particular. La respuesta del sistema ante los eventos cambia en base al estado actual del mismo. Ademas, los eventos pueden desencadenar cambios de estado durante la ejecución de su handler.
-}
-\assigns
-\is{Microondas}{Contexto}
-\is{EstadoMicroondas}{Estado}
-\is{Preparado}{EstadoConcreto}
-\is{PuertaAbierta}{EstadoConcreto}
-\is{Calentando}{EstadoConcreto}
-\is{Pausa}{EstadoConcreto}
-\is{Apagado}{EstadoConcreto}
-
-\end{pattern}
-
-Por lo tanto el módulo \textbf{PuertaAbierta} implementará el método \verb|puertaAbierta()|, completando en ella el comportamiento definido para la transición PuertaAbierta $\xrightarrow{}$ Calentando.
-
-\begin{lstlisting}[caption=Implementación  puertaAbierta, style=seudocode]
-puertaAbierta() {
-    magnetron.calentar()
-    microondas.changeEstate(calentando)
-}
-\end{lstlisting}
-
-En cambio, en el caso del evento \textit{prender} no hará nada, pues no existe transición posible desde \textbf{PuertaAbierta} que involucre al evento \textit{prender}.
-
-De esta forma, se logra una solución más elegante y escalable para manejar estados, superando muchas de las limitaciones del enfoque basado en verificaciones de estado dentro de las funciones. Una de las principales ventajas de este patrón es que mejora significativamente la legibilidad y modularidad del código. En lugar de manejar el comportamiento de todos los estados en una misma función, cada estado tiene su propio módulo, lo que permite que el código esté mejor organizado y sea más fácil de entender. Los módulos encapsulan el comportamiento específico de cada estado, lo que elimina la necesidad de múltiples verificaciones condicionales y simplifica el flujo de ejecución. Otro beneficio importante es que facilita la adición de nuevos estados. Cuando se necesita agregar un nuevo estado, basta con definir un nuevo módulo que implemente el comportamiento correspondiente a ese estado, sin necesidad de modificar las funciones existentes que dependen de otros estados. Esto hace que el sistema sea mucho más flexible y escalable a medida que crece en complejidad. Además, el State elimina la duplicación de código, ya que cada módulo de estado gestiona su propio comportamiento. En el enfoque tradicional, muchas funciones deben realizar repetidas verificaciones del estado y aplicar el comportamiento adecuado, lo que conduce a código repetido y potencialmente inconsistente. Una ventaja clave que mencionamos es que permite cambiar el comportamiento del sistema dinámicamente. A medida que el estado cambia, el comportamiento del objeto principal también cambia automáticamente. 
-
-Todo esto hace que el sistema sea más robusto y adaptable, ya que los cambios de estado y las transiciones se manejan de manera interna sin depender de verificaciones externas. Cuando es necesario modificar el comportamiento de un estado, simplemente se actualiza la implementación del módulo correspondiente, lo que facilita la localización y modificación del código relevante. Y como resultado es más fácil de mantener y reduce el riesgo de introducir errores al cambiar o extender el sistema.
-
-Existen otros casos de usos del patrón, como en los ejemplos que se nombraron al principio, puede ser usado para cambiar el comportamiento de cierta parte del sistema o a modo de configuración del mismo. El concepto principal es el mismo, crear un módulo por cada estado posible y cambiar la implementación para que se ajuste a lo requerido.
 
 \section{Integridad de la información}
 
