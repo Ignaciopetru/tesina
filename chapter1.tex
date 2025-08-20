@@ -883,7 +883,7 @@ Antes de abordar una perspectiva de diseño para gestionar el cambio, se analiza
 El ejemplo propuesto consiste en el sistema de control de un microondas. Para representar el comportamiento del mismo, el autor presenta una máquina de estados como la de la Figura \ref{maquinaMicroondas}. Aunque contiene algunas incoherencias y no es del todo exacta, es suficiente para el propósito del ejemplo que se busca exponer.
 
 \begin{figure}[h]
-\caption{Máquina de estados extraída del libro \cite{douglass}}
+\caption{Máquina de estados extraída del libro \cite{douglass}.}
 \label{maquinaMicroondas}
 \begin{center}
 \begin{tikzpicture}
@@ -967,7 +967,7 @@ El patrón admite distintas opciones para gestionar la transición entre estados
 
 Este uso del patrón \textit{State} también es propuesto en \cite[\textit{Chapter 10 : Finite State Machine Patterns Part III: New Patterns as Design Components}]{douglass}.
 
-Para aplicar el patrón al ejemplo extraído del libro\cite{douglass}, se debe seguir el siguiente procedimiento. En primer lugar, se crea un módulo que contenga un método para manejar cada evento y que, a su vez, delegue dicha gestión al estado actual. Posteriormente, se define un módulo Estado del cual heredarán todos los estados concretos del sistema. En este caso, se creará un módulo por cada estado que se muestra en la máquina de estados de la Figura \ref{maquinaMicroondas}. En la Figura \ref{participantesState} podemos observar la estructura obtenida junto a seudocódigo que describen una posible implementación a modo de guía.
+Para aplicar el patrón al ejemplo extraído del libro\cite{douglass}, se debe seguir el siguiente procedimiento. En primer lugar, se crea un módulo que contenga un método para manejar cada evento y que, a su vez, delegue dicha gestión al estado actual. Posteriormente, se define un módulo que defina el estado del cual heredarán todos los estados concretos del sistema. En este caso, se creará un módulo por cada estado que se muestra en la máquina de estados de la Figura \ref{maquinaMicroondas}. En la Figura \ref{participantesState} podemos observar la estructura obtenida junto a seudocódigo que describen una posible implementación a modo de guía.
 
 \begin{figure}[h!]
 \caption{Módulos participantes del patrón state en el ejemplo del horno microondas.}
@@ -980,8 +980,8 @@ Para aplicar el patrón al ejemplo extraído del libro\cite{douglass}, se debe s
 {
 prender() \\
 cancelar() \\
-puertaCerrada() \\
-puertaAbierta() \\
+cerrar() \\
+abrir() \\
 reanudar() \\
 calentarTemp() \\
 tempListo() \\
@@ -1002,7 +1002,7 @@ cambiarEstado(i: Estado)\\
 \umlvirt{pausar(i: Microondas)} \\
 }
 
-\umlclass[below right=2cm and 4cm of EstadoMicroondas]{Apagado}
+\umlclass[below right=3cm and 2.2cm of EstadoMicroondas]{Apagado}
 {
 Apagado(i: Preparado)
 }
@@ -1015,7 +1015,7 @@ cancelar(i: Microondas) \\
 }
 
 
-\umlclass[below left=2cm and 6cm of EstadoMicroondas]{Preparado}
+\umlclass[below left=3cm and 7cm of EstadoMicroondas]{Preparado}
 {
 Preparado(i: Calentando)
 }
@@ -1027,7 +1027,7 @@ cancelar(i: Microondas) \\
 .\\
 }
 
-\umlclass[below left=2cm and 0.8cm of EstadoMicroondas]{PuertaAbierta}
+\umlclass[below left=3cm and 1.6cm of EstadoMicroondas]{PuertaAbierta}
 {
 PuertaAbierta(i: Calentando,\\ i: Preparado)
 }
@@ -1039,7 +1039,7 @@ cancelar(i: Microondas) \\
 .\\
 }
 
-\umlclass[below left=2cm and -3.65cm of EstadoMicroondas]{Calentando}
+\umlclass[below left=3cm and -3cm of EstadoMicroondas]{Calentando}
 {
 Calentando(i: PuertaAbierta,\\ i: Pausa)
 }
@@ -1051,7 +1051,7 @@ cancelar(i: Microondas) \\
 .\\
 }
 
-\umlclass[below right=2cm and 0.2cm of EstadoMicroondas]{Pausa}
+\umlclass[below right=3cm and -2.3cm of EstadoMicroondas]{Pausa}
 {
 Pausa(i: Calentando,\\ i: PuertaAbierta)
 }
@@ -1085,7 +1085,7 @@ cambiarEstado(Estado e)\{ \\
 \}
 }
 
-\umlnote[above=2cm of Apagado,width=5.5cm]{Apagado}{
+\umlnote[above=3cm of Apagado,width=5.5cm]{Apagado}{
 Apagado(Preparado st)\{ \\
 \ \ \ \ this.stPrep = st \\
 \}\\
@@ -1103,10 +1103,40 @@ prender(Microondas m)\{ \\
 \end{center}
 
 \end{figure}
+\declareCMod{Microondas}
+\declareCMod{Calentando}
+\declareCMod{PuertaAbierta}
 
+Siguiendo esta estructura modular, el módulo \Microondas provee un método para cada evento existente. De esta forma, cuando un método es invocado, delega la funcionalidad al estado actual, lo que permite modificar el comportamiento del microondas según su estado. Un ejemplo de cómo implementar este proceso se presenta en el Código \ref{ejemploReanudar}. Es necesario pasar una referencia del \Microondas a cada método del estado para permitir la transición entre estados. Una posible implementación de este comportamiento se observa en el Código \ref{cambioDeEstado}, donde el módulo \Calentando apaga el magnetrón para proteger al usuario y luego transiciona al estado \PuertaAbierta. Para realizar este cambio, el módulo \Calentando necesita una referencia a \PuertaAbierta, la cual fue almacenada previamente al ser pasada como argumento en su constructor.
+
+\begin{lstlisting}[caption=Ejemplo de implementación método reaundar del módulo Microondas, label=ejemploReanudar]
+reaundar(){
+    this.estado.reanudar(this)
+}
+\end{lstlisting}
+\begin{lstlisting}[caption=Ejemplo de implementación método abrir del módulo Calentando, label=cambioDeEstado]
+abrir(Microondas m){
+	...
+	magnetron.apagar()
+  m.cambiarEstado(this.stPuertaAbierta)
+}
+\end{lstlisting}
+
+Cuando el microondas se encuentra en un estado que no admite un evento específico, el sistema puede simplemente no realizar ninguna acción. Por ejemplo, en el estado \PuertaAbierta, el evento \textit{calentar} no puede desencadenar ningun comportamiento. En este caso, no se cumplen las condiciones para encender el magnetrón y calentar la comida. Por lo tanto, el evento es ignorado, lo cual puede implementarse como se muestra en el Código \ref{calentarPuerta}.
+\begin{lstlisting}[caption=Ejemplo de implementación método calentar del módulo PuertaAbierta, label=calentarPuerta]
+calentar(Microondas m){
+	return
+}
+\end{lstlisting}
+
+Como se explicó en la sección \nameref{secDocumentacion}, cada aplicación de un patrón de diseño debe ser acompañada de su correspondiente documentación. En este caso, podemos observarla en la Figura \ref{docState} en la misma se establece qué módulo cumple la función de cada participante, los cambios previstos y la justificación de su aplicación.
+
+\begin{figure}
+\label{docState}
+\caption{Documentación de la aplicación del patrón \textit{State}.}
 \begin{pattern}[]{Estados del microondas}{Algorithm}{idFigAlg}
 \based{Estado (State)}
-\why{\textbf{Cambios previstos}: En base al estado el microondas responde a diferentes eventos de múltiples maneras. Estos estados pueden modificarse, agregar nuevos o quitar otros.
+\why{\textbf{Cambios previstos}: En base a su estado, el microondas responde de diversas maneras a distintos eventos. Es posible modificar, agregar o eliminar estados.
 
 \textbf{Funcionalidad}: Cada método del módulo Microondas es un handler para un evento particular. La respuesta del sistema ante los eventos cambia en base al estado actual del mismo. Ademas, los eventos pueden desencadenar cambios de estado durante la ejecución de su handler.
 }
@@ -1120,23 +1150,25 @@ prender(Microondas m)\{ \\
 \is{Apagado}{EstadoConcreto}
 
 \end{pattern}
+\end{figure}
 
-Por lo tanto el módulo \textbf{PuertaAbierta} implementará el método \verb|puertaAbierta()|, completando en ella el comportamiento definido para la transición PuertaAbierta $\xrightarrow{}$ Calentando.
 
-\begin{lstlisting}[caption=Implementación  puertaAbierta, style=seudocode]
-puertaAbierta() {
-    magnetron.calentar()
-    microondas.changeEstate(calentando)
-}
-\end{lstlisting}
+Aplicando este patrón para el manejo de estados, se logra una solución más elegante y escalable para manejarlos, superando muchas de las limitaciones del enfoque basado en verificaciones de estado dentro de cada método.
 
-En cambio, en el caso del evento \textit{prender} no hará nada, pues no existe transición posible desde \textbf{PuertaAbierta} que involucre al evento \textit{prender}.
+\declareCMod{Descongelando}
+\declareCMod{EstadoMicroondas}
 
-De esta forma, se logra una solución más elegante y escalable para manejar estados, superando muchas de las limitaciones del enfoque basado en verificaciones de estado dentro de las funciones. Una de las principales ventajas de este patrón es que mejora significativamente la legibilidad y modularidad del código. En lugar de manejar el comportamiento de todos los estados en una misma función, cada estado tiene su propio módulo, lo que permite que el código esté mejor organizado y sea más fácil de entender. Los módulos encapsulan el comportamiento específico de cada estado, lo que elimina la necesidad de múltiples verificaciones condicionales y simplifica el flujo de ejecución. Otro beneficio importante es que facilita la adición de nuevos estados. Cuando se necesita agregar un nuevo estado, basta con definir un nuevo módulo que implemente el comportamiento correspondiente a ese estado, sin necesidad de modificar las funciones existentes que dependen de otros estados. Esto hace que el sistema sea mucho más flexible y escalable a medida que crece en complejidad. Además, el State elimina la duplicación de código, ya que cada módulo de estado gestiona su propio comportamiento. En el enfoque tradicional, muchas funciones deben realizar repetidas verificaciones del estado y aplicar el comportamiento adecuado, lo que conduce a código repetido y potencialmente inconsistente. Una ventaja clave que mencionamos es que permite cambiar el comportamiento del sistema dinámicamente. A medida que el estado cambia, el comportamiento del objeto principal también cambia automáticamente. 
+El uso de este patrón mejora significativamente la legibilidad y modularidad del código. En lugar de manejar el comportamiento de todos los estados en una misma función, cada estado tiene su propio módulo. Esto permite que el código esté mejor organizado y sea más fácil de entender, ya que cada módulo encapsula el comportamiento específico de su estado, eliminando la necesidad de múltiples verificaciones condicionales y simplificando el flujo de ejecución.
 
-Todo esto hace que el sistema sea más robusto y adaptable, ya que los cambios de estado y las transiciones se manejan de manera interna sin depender de verificaciones externas. Cuando es necesario modificar el comportamiento de un estado, simplemente se actualiza la implementación del módulo correspondiente, lo que facilita la localización y modificación del código relevante. Y como resultado es más fácil de mantener y reduce el riesgo de introducir errores al cambiar o extender el sistema.
+Otro beneficio importante es que facilita la \textbf{adición de nuevos estados}. Cuando se necesita agregar un nuevo estado, como \textit{Descongelando} (similar a \textit{Calentando}, pero con un ciclo de encendido y apagado del magnetrón), solo se debe definir un nuevo módulo homónimo que herede de \EstadoMicroondas. No es necesario modificar la implementación de ningún otro estado, ya que la nueva funcionalidad es independiente. De todas formas, este nuevo módulo debe ser añadido a los constructores de los estados que puedan precederlo. Esta facilidad hace que el sistema sea mucho más flexible y escalable a medida que aumenta su complejidad.
 
-Existen otros casos de usos del patrón, como en los ejemplos que se nombraron al principio, puede ser usado para cambiar el comportamiento de cierta parte del sistema o a modo de configuración del mismo. El concepto principal es el mismo, crear un módulo por cada estado posible y cambiar la implementación para que se ajuste a lo requerido.
+Además, el \textit{State} elimina la duplicación de código, ya que cada módulo de estado gestiona su propio comportamiento. En el enfoque tradicional, muchos métodos deben realizar repetidas verificaciones del estado y aplicar el comportamiento adecuado, lo que conduce a código duplicado y potencialmente inconsistente.
+
+Una ventaja clave es que permite cambiar el comportamiento del sistema dinámicamente. A medida que el estado cambia, el comportamiento del módulo principal también cambia dinamicamente. 
+
+Todo esto hace que el sistema sea más robusto y adaptable. Cuando es necesario modificar el comportamiento de un estado, simplemente se actualiza la implementación del módulo correspondiente, lo que facilita la localización y modificación del código relevante. Y como resultado es más fácil de mantener y reduce el riesgo de introducir errores al cambiar o extender el sistema.
+
+Existen otros casos de usos del patrón, como en los ejemplos que se verán más adelante, puede ser usado para cambiar el comportamiento de cierta parte del sistema o a modo de configuración del mismo. El concepto principal es el mismo, crear un módulo por cada estado posible y cambiar la implementación para que se ajuste a lo requerido.
 
 
 

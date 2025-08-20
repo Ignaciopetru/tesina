@@ -24,7 +24,7 @@
 \contentsline {section}{\numberline {6.2}Interfaces que no se ajustan perfectamente}{55}{section.6.2}%
 \contentsline {section}{\numberline {6.3}Obtención de información}{60}{section.6.3}%
 \contentsline {section}{\numberline {6.4}Máquinas de estado}{64}{section.6.4}%
-\contentsline {section}{\numberline {6.5}Control en conjunto de dispositivos}{71}{section.6.5}%
+\contentsline {section}{\numberline {6.5}Control en conjunto de dispositivos}{72}{section.6.5}%
 \contentsline {subsection}{\numberline {6.5.1}Subsistemas de control}{74}{subsection.6.5.1}%
 \contentsline {subsection}{\numberline {6.5.2}Ejemplo}{78}{subsection.6.5.2}%
 \contentsline {section}{\numberline {6.6}Control anti-rebote}{92}{section.6.6}%

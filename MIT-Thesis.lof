@@ -35,9 +35,9 @@
 \contentsline {figure}{\numberline {6.9}{\ignorespaces Estructura componentes para la lectura de un sensor activo.}}{61}{figure.caption.32}%
 \contentsline {figure}{\numberline {6.10}{\ignorespaces Ejemplo de la variación de voltaje producida por un sensor de efecto Hall al detectar un cambio del campo magnético. Cada pico de voltaje provoca que el microcontrolador genere una interrupción. Imagen extraída de \blx@tocontentsinit {0}\cite {disenioViejo2}.}}{62}{figure.caption.33}%
 \contentsline {figure}{\numberline {6.11}{\ignorespaces Ejemplo módulos para obtener la información referida a la velocidad.}}{63}{figure.caption.34}%
-\contentsline {figure}{\numberline {6.12}{\ignorespaces Máquina de estados extraída del libro \blx@tocontentsinit {0}\cite {douglass}}}{66}{figure.caption.35}%
+\contentsline {figure}{\numberline {6.12}{\ignorespaces Máquina de estados extraída del libro \blx@tocontentsinit {0}\cite {douglass}.}}{66}{figure.caption.35}%
 \contentsline {figure}{\numberline {6.13}{\ignorespaces Módulos participantes del patrón state en el ejemplo del horno microondas.}}{69}{figure.caption.36}%
-\contentsline {figure}{\numberline {6.14}{\ignorespaces Diagrama de flujo que explica el comportamiento de la función emergency \blx@tocontentsinit {0}\cite [pág. 82]{disenioViejo1}.}}{73}{figure.caption.37}%
+\contentsline {figure}{\numberline {6.14}{\ignorespaces Diagrama de flujo que explica el comportamiento de la función emergency \blx@tocontentsinit {0}\cite [pág. 82]{disenioViejo1}.}}{74}{figure.caption.37}%
 \contentsline {figure}{\numberline {6.15}{\ignorespaces Módulos de un subsistema de control.}}{75}{figure.caption.38}%
 \contentsline {figure}{\numberline {6.16}{\ignorespaces Estructura módulo \textbf {Control} extendida con estado.}}{77}{figure.caption.39}%
 \contentsline {figure}{\numberline {6.17}{\ignorespaces Documentacion de la aplicación del patrón State en el módulo Control.}}{78}{figure.caption.40}%
