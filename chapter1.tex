@@ -627,7 +627,7 @@ Tradicionalmente, esta tarea se centraliza en un único módulo que provee dos m
 
 Además, en muchos casos ni siquiera se construye este módulo, sino que cada cliente del dispositivo se encarga de capturar y procesar los datos provenientes, lo que provoca que, ante cualquier cambio, deba modificarse el código en diferentes módulos a lo largo del sistema.
 
-Es debido a las problemáticas mencionadas que resulta útil contar con una forma general de abordar este problema desde el punto de vista del diseño orientado al cambio. Para ello, tomaremos como referencia el trabajo realizado sobre el robot desmalezador en \cite{paperPomponio}, en el cual se empleó la estructura modular presentada en la Figura \ref{activo}, destinada a llevar a cabo las actividades necesarias para el uso de sensores que generan interrupciones en el sistema.
+Es debido a las problemáticas mencionadas que resulta útil contar con una forma general de abordar este problema desde el punto de vista del diseño orientado al cambio. Para ello, tomaremos como referencia el trabajo realizado sobre el robot desmalezador en \cite{paperPomponio}, en el cual se empleó la estructura modular presentada en la Figura \ref{activo}, destinada a llevar a cabo las actividades necesarias para el uso de sensores que generan interrupciones en el sistema. Replicaremos esta estructura, siguiendola casi como si fuera un patrón de diseño.
 
 \begin{figure}[H]
 \caption{Estructura componentes para la lectura de un sensor activo.}
@@ -1132,8 +1132,8 @@ calentar(Microondas m){
 Como se explicó en la sección \nameref{secDocumentacion}, cada aplicación de un patrón de diseño debe ser acompañada de su correspondiente documentación. En este caso, podemos observarla en la Figura \ref{docState} en la misma se establece qué módulo cumple la función de cada participante, los cambios previstos y la justificación de su aplicación.
 
 \begin{figure}
+\caption{Documentación de la aplicación del patrón \textit{State} para el manejo de los estados del microondas.}
 \label{docState}
-\caption{Documentación de la aplicación del patrón \textit{State}.}
 \begin{pattern}[]{Estados del microondas}{Algorithm}{idFigAlg}
 \based{Estado (State)}
 \why{\textbf{Cambios previstos}: En base a su estado, el microondas responde de diversas maneras a distintos eventos. Es posible modificar, agregar o eliminar estados.
@@ -1170,7 +1170,247 @@ Todo esto hace que el sistema sea más robusto y adaptable. Cuando es necesario 
 
 Existen otros casos de usos del patrón, como en los ejemplos que se verán más adelante, puede ser usado para cambiar el comportamiento de cierta parte del sistema o a modo de configuración del mismo. El concepto principal es el mismo, crear un módulo por cada estado posible y cambiar la implementación para que se ajuste a lo requerido.
 
+\section{Control anti-rebote}
+Muchos dispositivos de entrada para sistemas embebidos utilizan contacto metal con metal para indicar eventos de interés, como botones, interruptores y relés. A medida que el metal entra en contacto, se produce una deformación física que resulta en un contacto intermitente de las superficies. Esto genera señales que de no ser filtradas pueden causar una lectura errónea. 
 
+En el libro de Douglass \cite{douglass} encontramos una propuesta de solución más cerca de la implementación que del diseño, algo así como un patron idiomático. Esta consiste en utilizar un temporizador para permitir un tiempo de gracia antes de confirmar una transición en el estado. Esto es, al percibir un cambio en la entrada se inicia el \textit{timer} y se confirma el cambio de estado solo si el valor de la entrada sigue siendo distinto que antes de percibir la modificación. 
+
+\begin{lstlisting}[caption=Código ejemplo de una estrategia de deteccion de rebote extraído de \cite{douglass}.,label=deboun]
+void ButtonDriver_eventReceive(ButtonDriver* const me) {
+    Timer_delay(me->itsTimer, DEBOUNCE_TIME);
+    if (Button_getState(me->itsButton) != me->oldState) {
+        /* must be a valid button event */
+        
+        me->oldState = me->itsButton->deviceState;
+        
+        if (!me->oldState) {
+            
+            /* must be a button release, so update toggle value */
+            if (me->toggleOn) {
+                me->toggleOn = 0; /* toggle it off */
+                Button_backlight(me->itsButton, 0);
+                MicrowaveEmitter_stopEmitting(me->itsMicrowaveEmitter);
+            }
+            else {
+                me->toggleOn = 1; /* toggle it on */
+                Button_backlight(me->itsButton, 1);
+                MicrowaveEmitter_startEmitting(me->itsMicrowaveEmitter);
+            }
+        }
+        /* if it’s not a button release, then it must
+        be a button push, which we ignore.
+        */
+    }
+}
+\end{lstlisting}
+
+Desde el punto de vista de la \gls{IS}, podemos decir que se están combinando múltiples responsabilidades en un mismo módulo, lo cual dificulta el diseño orientado al cambio. El estado y la decisión de transicionar son responsabilidad de un solo módulo, lo que podría generar inconvenientes si se desea modificar el criterio de aceptación de la señal. Esto se evidencia en el código de ejemplo \ref{deboun}, donde encontramos múltiples sentencias \textit{if} anidadas, que, como ya se ha visto, no son un buen indicio. Por otro lado, al ocultar varias responsabilidades en un mismo módulo, se obtiene un software rígido a los cambios, donde cualquier modificación requiere editar la implementación. Esto, a su vez, puede generar la introducción de nuevos errores y la necesidad de volver a verificar el trabajo realizado.
+
+Una solución que se ajusta más a los principios de la \gls{IS} busca separar los puntos de cambio en módulos diferentes. En este caso, tenemos dos conceptos principales: el estado, por ejemplo, \textit{on} o \textit{of}, y el criterio de aceptación de la transición. Para el primer concepto, podemos utilizar el patrón de diseño \textit{State} \ref{anexoState} de Gamma, como vimos en el capítulo \ref{cap:state}. Para el segundo, podemos emplear otro patrón de Gamma, el \textit{Strategy} \ref{anexoStrategy}, que nos permite prepararnos para un cambio en el algoritmo de decisión.
+
+
+
+
+\section{Verificación de precondiciones.}
+El autor del libro \cite{douglass} comenta que uno de los problemas más grandes que observa en el desarrollo de sistemas embebidos es que muchas funciones tiene precondiciones para ejecutarse correctamente pero que rara vez se verifica que todas se cumplan. Además, el procedimiento común de informar precondiciones inadecuadas en una función en \textbf{C}\footnote{Lenguaje de programación comúnmente utilizado en sistemas embebidos.} es a traves del valor de retorno (-1 en caso de errores, 0 en el contrario). Por lo tanto, el encargado de manejar el error es la función que invocó a la segunda, generando así un acoplamiento extra en el código. Esto provoca una complicación que muchas veces deriva en un mal manejo de los errores. Por ejemplo, supongamos que se tiene un módulo que exporta una función que permite guardar un valor, \verb|setValor(i: Valor)|. Existen múltiples posibles implementaciones, estas son algunas:
+\begin{itemize}
+    \item Una posible implementación, consiste en que la función no realice ninguna verificación y simplemente guarde en una variable el valor pasado como argumento. Esto puede generar un error en el momento si el tipo no coincide o en el futuro, si el valor está por fuera de ciertos parámetros requeridos por el sistema. Por ejemplo, si se está almacenando un entero negativo pero algún función requiere como precondición que siempre sea positivo, se puede provocar un error en el futuro. Por otro lado, esta implementación obliga a que todos las funciones que usen este valor deban verificar que sea positivo. Escribiendo código repetido y que en caso de que el requisito cambie deba ser actualizado manualmente.
+    \item Otra, se basa en verificar si el valor es permitido, haciendo que la función retorne un valor inidicando el resultado de la validación, 0 en caso afirmativo o -1 en caso contrario. Este enfoque es mejor que no realizar manejo alguno, pero como se comentó en el principio, se está acoplando al usuario de la función con el módulo que la exporta, ya que este tiene que verificar el valor de retorno para determinar si existió un error o no.
+\end{itemize}
+
+La solución que se propone en el libro es una combinación de patrón y practica de programación, tiene los siguientes conceptos claves:
+
+\begin{itemize}
+    \item Construir tipos de auto-verificación siempre que sea posible.
+    \item Verificar los valores de los parámetros entrantes para un rango adecuado.
+    \item Verificar la consistencia y razonabilidad entre uno o un conjunto de parámetros.
+\end{itemize}
+
+No se ha planteado una solución de diseño general o un patrón, pero desde la \gls{IS} podemos ayudar a preparar el sistema para el cambio y, a la vez, realizar las verificaciones necesarias. Para ello, proponemos la aplicación del patrón \textit{Decorator} \ref{anexoDecorator} de Gamma. Este patrón permite añadir o eliminar funcionalidades a módulos de manera dinámica. En particular, lo que agregaremos será la verificación de cada argumento, manteniéndola separada del módulo que realiza la funcionalidad específica.
+
+\declareCmod{Mecanismo}
+
+Veamos un ejemplo en el cual se puede aplicar esta solución. Suponga que se tiene el módulo \Mecanismo cuya interfaz es la que se muestra en la Figura \ref{mecanismo}. Como se puede ver uno de los métodos es \verb|computar|, el cual debe verificar que el primer argumento sea siempre mayor a 0 y que el segundo sea par. En lugar de agregar el Código \ref{verificacion} al inicio de la implementación de \verb|computar|, proponemos usar dos módulos que actuen como decoradores.
+
+
+\begin{figure}[H]
+\caption{Interfaz del módulo Mecanismo.}
+\label{mecanismo}
+\begin{center}
+\begin{tikzpicture}\sf
+
+\umlclass[]{Mecanismo}
+{}
+{
+...\\
+computar(i: int, i: int)\\
+...\\
+}
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+\begin{lstlisting}[caption=Verificación de precondiciones en método Computar.,label=verificacion]
+computar(int primer, int segundo){
+	if (primer <= 0)
+		return -1
+	if (segundo % 2 != 0)
+		return -1
+	.
+	.
+	.
+\end{lstlisting}
+
+En la Figura \ref{estructuraDeco} se presenta la estructura de módulos conseguida aplicando el patrón.
+
+\begin{figure}[h]
+\caption{Ejemplo de aplicación del patrón \textit{Decorator} para garantizar el cumplimiento de precondiciones.}
+\label{estructuraDeco}
+\begin{center}
+\begin{tikzpicture}\sf
+\umlclass[type=abstract]{Mecanismo}{}
+{
+\umlvirt{...}\\
+\umlvirt{computar(i: int, i: int)}\\
+\umlvirt{...}
+}
+
+\umlclass[below left=2cm and -1cm of Mecanismo]{MecanismoConcreto}{}
+{
+...\\
+computar(i: int, i: int)\\
+...\\
+}
+
+\umlclass[below right=2cm and -1cm of Mecanismo,type=abstract]{Decorador}{}
+{
+\umlvirt{...}\\
+\umlvirt{computar(i: int, i: int)}\\
+\umlvirt{...}
+}
+
+\umlclass[below right=2cm and -1cm of Decorador]{PrimerArgPositivo}{}
+{
+...\\
+computar(i: int, i: int)\\
+...\\
+}
+
+\umlclass[below left=2cm and -1cm of Decorador]{SegundoArgPar}
+{
+}
+{
+...\\
+computar(i: int, i: int)\\
+...\\
+}
+
+
+
+\umlinherit[geometry=|-|]{MecanismoConcreto}{Mecanismo}
+\umlinherit[geometry=|-|]{Decorador}{Mecanismo}
+\umlinherit[geometry=|-|]{PrimerArgPositivo}{Decorador}
+\umlinherit[geometry=|-|]{SegundoArgPar}{Decorador}
+\umluniaggreg[geometry=-|-,arm1=2cm,anchor1=east,anchor2=east,arg1=mecanismo,
+pos1=0.5]{Decorador}{Mecanismo}
+\umlnote[left= 1cm of SegundoArgPar,width=7cm]{SegundoArgPar}{
+computar(primero, segundo)\{ \\
+if (segundo \% 2 != 0)\{\\
+\ \ \ \	...manejar error...\\
+\}else\{\\
+\ \ \ \	return mecanismo.computar(primero, segundo)\\
+\}\\
+}
+
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+
+
+
+
+
+Siguiendo esos conceptos, las precondiciones necesarias por las funciones son garantizadas desde los módulos que almacenan los datos utilizados por estas últimas. De esa manera se estaría separando la responsabilidad de verificar precondiciones de las funciones y de los clientes. Para conseguirlo se puede utilizar el patrón \textit{Proxy} al rededor de un tipo básico (un \textit{array} de \textit{ints}, por ejemplo), y de esa manera proveer múltiples funciones que permitan verificar los rangos, consistencia y demás de \textit{features} de los datos. Y en caso de detectar un problema se llamará a un módulo que cumple el rol de \textit{handler} de errores, responsable de decidir como continuar. Este uso del patrón es mencionado por Gamma en el capitulo del mismo como una posible aplicación. Es decir, realizar operaciones extras cuando se accede a un objeto. Además, comenta que se pueden agregar más funcionalidades que las que menciona Douglass, como contar la cantidad de referencias a cierto objeto con el fin de liberar la memoria si nadie lo esta referenciando, verificar si un objeto está bloqueado por otro (mutex) o controlar el acceso a la información mediante permisos.
+
+A continuación, se presenta un ejemplo en el que se dispone de un módulo denominado \textit{StockProducto}, encargado de almacenar información relacionada con el \textit{stock} de los productos. Dado que se trata de información relevante, es necesario incorporar validaciones tanto en el momento del almacenamiento como en la consulta de datos. Para el almacenamiento, se debe verificar que la cantidad ingresada no sea negativa, mientras que, al consultar, es fundamental asegurar que el usuario cuente con los permisos requeridos.
+
+\begin{figure}[H]
+\caption{Uso del patrón Proxy en el ejemplo del módulo stock y documentación del mismo.}
+\begin{center}
+\begin{tikzpicture}\sf
+\umlclass[type=abstract]{StockAbstracto}
+{
+}
+{
+    \umlvirt{getStock(): int} \\
+    \umlvirt{setStock(i: int)}
+}
+
+\umlclass[below left=2cm and -0.5cm of StockAbstracto]{StockProducto}
+{
+}
+{
+    getStock(): int \\
+    setStock(i: int)
+}
+
+\umlclass[below right=2cm and -0.5cm of StockAbstracto]{StockProxy}
+{
+}
+{
+    getStock(): int \\
+    setStock(i: int)
+}
+
+
+\umlclass[above right=1cm and 1.5cm of StockProxy]{ErrorHandler}
+{
+}
+{
+    manejarError(i: Error)
+}
+
+
+\umluniassoc{StockProxy}{StockProducto}
+\umlinherit[geometry=|-|]{StockProxy}{StockAbstracto}
+\umlinherit[geometry=|-|]{StockProducto}{StockAbstracto}
+\umluniassoc[geometry=-|-]{StockProxy}{ErrorHandler}
+
+\end{tikzpicture}
+\end{center}
+
+\begin{pattern}[]{Acceso seguro stock de productos}{Algorithm}{idFigAlg}
+\based{Proxy (Apoderado)}
+\why{\textbf{Cambios previstos}: Las diferentes precondiciones a cumplir pueden variar con el tiempo.
+
+\textbf{Funcionalidad}: Controlar el acceso al stock, en particular con el fin de preservar la integridad.
+}
+\assigns
+\is{StockAbstracto}{Sujeto}
+\is{StockProducto}{SujetoReal}
+\is{StockProxy}{Proxy}
+
+\end{pattern}
+
+\end{figure}
+\textbf{ErrorHandler} decide como manejar el error, esto puede ser desde loggearlo, terminar la ejecución del sistema, ignorarlo, etc. Dos tipos de estrategias comunes al tratar con errores son:
+\begin{itemize}
+    \item Reset de componentes: reiniciar o restablecer componentes defectuosos ayuda a borrar errores y restaurarlos a un estado funcional.
+    \item Degradación elegante \cite{glass2009graceful} permite que el sistema siga funcionando a una capacidad reducida en lugar de fallar por completo. Esto implica deshabilitar las funciones que funcionan mal o cambiar a copias de seguridad, por lo que el sistema continúa funcionando con una funcionalidad limitada en lugar de apagarse por completo.
+\end{itemize}
+
+
+Con este diseño añadimos una capa de verificación sin modificar el módulo original, ya que \verb|getStock| y \verb|setStock| de \textit{StockProxy} van a realizar la verificación indicada y luego si todo es correcto invocarán los métodos de \textit{StockProducto}. Con esto conseguimos las siguientes ventajas:
+
+\begin{itemize}
+    \item Encapsular la lógica de validación y control de acceso en un solo lugar, sin necesidad de modificar el módulo original que gestiona los datos. Facilitando la reutilización y la separación de responsabilidades.
+
+    \item Centraliza el control sobre cómo y cuándo se accede o modifica el dato sensible. Esto facilita la implementación de reglas de negocio más complejas, como la validación de entradas, sin tener que modificar cada parte del código que interactúa con \textbf{StockProducto}.
+
+    \item Extender funcionalidades, el proxy puede evolucionar independientemente del modulo SujetoReal (ver \ref{patronProxy}), añadiendo nuevas funciones o cambiando las reglas de validación sin afectar la implementación original del módulo que contiene los datos. Por ejemplo, se pueden implementar restricciones de acceso, límites en las operaciones permitidas o incluso operaciones en diferido, sin necesidad de modificar el objeto real.
+\end{itemize}
 
 \section{Control en conjunto de dispositivos}
 Muchas aplicaciones embebidas robóticas controlan \gls{actuadores} que deben trabajar en conjunto para lograr el efecto deseado. Por ejemplo, para conseguir mover de manera coordinada un brazo robótico con múltiples articulaciones, todos los motores deben trabajar a la par. De manera similar, el uso de propulsores en una nave espacial en tres dimensiones requiere que muchos de estos dispositivos actúen en el momento preciso y con la cantidad correcta de fuerza para lograr la estabilidad necesaria. En ambos casos existe comunicación entre todos los componentes, ya sea para encadenar la ejecución de ciertos movimientos o para avisar de restricciones. Esto no es tarea simple y requiere de muchas lineas de código, por lo que un diseño orientado al cambio resulta clave.
@@ -2027,43 +2267,6 @@ Además, se fomenta la reutilización del código, permitiendo aplicar las soluc
 
 
 
-\section{Control anti-rebote}
-Muchos dispositivos de entrada para sistemas embebidos utilizan contacto metal con metal para indicar eventos de interés, como botones, interruptores y relés. A medida que el metal entra en contacto, se produce una deformación física que resulta en un contacto intermitente de las superficies. Esto genera señales que de no ser filtradas pueden causar una lectura errónea. 
-
-En la bibliografía encontramos una propuesta de solución que desde mi punto de vista está más cerca de la implementación que del diseño. Esta consiste en utilizar un temporizador para dar un tiempo de gracia antes de confirmar una transición en el estado. Esto es, al percibir un cambio en la entrada se inicia el \textit{timer} y se confirma el cambio de estado solo si el valor de la entrada sigue siendo distinto que antes de percibir la modificación. 
-
-\begin{lstlisting}[caption=Código ejemplo]
-void ButtonDriver_eventReceive(ButtonDriver* const me) {
-    Timer_delay(me->itsTimer, DEBOUNCE_TIME);
-    if (Button_getState(me->itsButton) != me->oldState) {
-        /* must be a valid button event */
-        
-        me->oldState = me->itsButton->deviceState;
-        
-        if (!me->oldState) {
-            
-            /* must be a button release, so update toggle value */
-            if (me->toggleOn) {
-                me->toggleOn = 0; /* toggle it off */
-                Button_backlight(me->itsButton, 0);
-                MicrowaveEmitter_stopEmitting(me->itsMicrowaveEmitter);
-            }
-            else {
-                me->toggleOn = 1; /* toggle it on */
-                Button_backlight(me->itsButton, 1);
-                MicrowaveEmitter_startEmitting(me->itsMicrowaveEmitter);
-            }
-        }
-        /* if it’s not a button release, then it must
-        be a button push, which we ignore.
-        */
-    }
-}
-\end{lstlisting}
-
-Desde el punto de vista de la IS, creo que se están combinando múltiples responsabilidades en un mismo módulo, lo cual no ayuda a lograr el objetivo de diseñar para el cambio. El estado y la decisión de transicionar son responsabilidad de un módulo, lo que puede generar inconvenientes si se quiere cambiar el criterio de aceptación de la señal, por ejemplo. Esto se evidencia en el código ejemplo del libro de Douglass donde tenemos múltiples sentencias \textit{if} anidadas. Una solución que se ajusta más a nuestros principios involucraría el patrón \textit{State} de Gamma y otro módulo que cumpla la función de verificar el cambio.
-
-Parece ser un problema común, por ejemplo en \cite{ganssleDebouncing} se realiza un estudio de las diferentes formas en las que se manifiesta este inconveniente. Además, presenta algoritmos utilizados para determinar la ocurrencia y poder ignorarla.
 
 
 \section{Integridad de la información}
@@ -2171,102 +2374,6 @@ En la figura \ref{codDeco} se observa un ejemplo de implementación de los méto
 
 De esta forma, aplicando el patron \textit{decorator} se logra añadir una capa de protección a la integridad de la información, a su vez permite combinar diferentes técnicas usando este patrón.
 
-\section{Verificación de precondiciones.}
-El autor del libro \cite{douglass} comenta que uno de los problemas más grandes que observa en el desarrollo de sistemas embebidos es que muchas funciones tiene precondiciones para ejecutarse correctamente pero que rara vez se verifica que todas se cumplan. Además, el procedimiento común de informar precondiciones inadecuadas en una función en \textbf{C}\footnote{Lenguaje de programación comúnmente utilizado en sistemas embebidos.} es a traves del valor de retorno (-1 en caso de errores, 0 en el contrario). Por lo tanto, el encargado de manejar el error es la función que invocó a la segunda, generando así un acoplamiento extra en el código. Esto provoca una complicación que muchas veces deriva en un mal manejo de los errores. Por ejemplo, supongamos que se tiene un módulo que exporta una función que permite guardar un valor, \verb|setValor(i: Valor)|. Existen múltiples posibles implementaciones, estas son algunas:
-\begin{itemize}
-    \item Una posible implementación, consiste en que la función no realice ninguna verificación y simplemente guarde en una variable el valor pasado como argumento. Esto puede generar un error en el momento si el tipo no coincide o en el futuro, si el valor está por fuera de ciertos parámetros requeridos por el sistema. Por ejemplo, si se está almacenando un entero negativo pero algún función requiere como precondición que siempre sea positivo, se puede provocar un error en el futuro. Por otro lado, esta implementación obliga a que todos las funciones que usen este valor deban verificar que sea positivo. Escribiendo código repetido y que en caso de que el requisito cambie deba ser actualizado manualmente.
-    \item Otra, se basa en verificar si el valor es permitido, haciendo que la función retorne un valor inidicando el resultado de la validación, 0 en caso afirmativo o -1 en caso contrario. Este enfoque es mejor que no realizar manejo alguno, pero como se comentó en el principio, se está acoplando al usuario de la función con el módulo que la exporta, ya que este tiene que verificar el valor de retorno para determinar si existió un error o no.
-\end{itemize}
-
-Este enfoque es usado también para otro tipo de funciones como aquellas que requieren que sus argumentos cumplan cierta precondición para poder computar o realizar su trabajo. Y como Douglass comenta, esta es la realidad de la mayoría de las funciones.
-
-La solución que se propone en el libro es una combinación de patrón y practica de programación, tiene los siguientes conceptos claves:
-
-\begin{itemize}
-    \item Construir tipos de auto-verificación siempre que sea posible.
-    \item Verificar los valores de los parámetros entrantes para un rango adecuado.
-    \item Verificar la consistencia y razonabilidad entre uno o un conjunto de parámetros.
-\end{itemize}
-
-Siguiendo esos conceptos, las precondiciones necesarias por las funciones son garantizadas desde los módulos que almacenan los datos utilizados por estas últimas. De esa manera se estaría separando la responsabilidad de verificar precondiciones de las funciones y de los clientes. Para conseguirlo se puede utilizar el patrón \textit{Proxy} al rededor de un tipo básico (un \textit{array} de \textit{ints}, por ejemplo), y de esa manera proveer múltiples funciones que permitan verificar los rangos, consistencia y demás de \textit{features} de los datos. Y en caso de detectar un problema se llamará a un módulo que cumple el rol de \textit{handler} de errores, responsable de decidir como continuar. Este uso del patrón es mencionado por Gamma en el capitulo del mismo como una posible aplicación. Es decir, realizar operaciones extras cuando se accede a un objeto. Además, comenta que se pueden agregar más funcionalidades que las que menciona Douglass, como contar la cantidad de referencias a cierto objeto con el fin de liberar la memoria si nadie lo esta referenciando, verificar si un objeto está bloqueado por otro (mutex) o controlar el acceso a la información mediante permisos.
-
-A continuación, se presenta un ejemplo en el que se dispone de un módulo denominado \textit{StockProducto}, encargado de almacenar información relacionada con el \textit{stock} de los productos. Dado que se trata de información relevante, es necesario incorporar validaciones tanto en el momento del almacenamiento como en la consulta de datos. Para el almacenamiento, se debe verificar que la cantidad ingresada no sea negativa, mientras que, al consultar, es fundamental asegurar que el usuario cuente con los permisos requeridos.
-
-\begin{figure}[H]
-\caption{Uso del patrón Proxy en el ejemplo del módulo stock y documentación del mismo.}
-\begin{center}
-\begin{tikzpicture}\sf
-\umlclass[type=abstract]{StockAbstracto}
-{
-}
-{
-    \umlvirt{getStock(): int} \\
-    \umlvirt{setStock(i: int)}
-}
-
-\umlclass[below left=2cm and -0.5cm of StockAbstracto]{StockProducto}
-{
-}
-{
-    getStock(): int \\
-    setStock(i: int)
-}
-
-\umlclass[below right=2cm and -0.5cm of StockAbstracto]{StockProxy}
-{
-}
-{
-    getStock(): int \\
-    setStock(i: int)
-}
-
-
-\umlclass[above right=1cm and 1.5cm of StockProxy]{ErrorHandler}
-{
-}
-{
-    manejarError(i: Error)
-}
-
-
-\umluniassoc{StockProxy}{StockProducto}
-\umlinherit[geometry=|-|]{StockProxy}{StockAbstracto}
-\umlinherit[geometry=|-|]{StockProducto}{StockAbstracto}
-\umluniassoc[geometry=-|-]{StockProxy}{ErrorHandler}
-
-\end{tikzpicture}
-\end{center}
-
-\begin{pattern}[]{Acceso seguro stock de productos}{Algorithm}{idFigAlg}
-\based{Proxy (Apoderado)}
-\why{\textbf{Cambios previstos}: Las diferentes precondiciones a cumplir pueden variar con el tiempo.
-
-\textbf{Funcionalidad}: Controlar el acceso al stock, en particular con el fin de preservar la integridad.
-}
-\assigns
-\is{StockAbstracto}{Sujeto}
-\is{StockProducto}{SujetoReal}
-\is{StockProxy}{Proxy}
-
-\end{pattern}
-
-\end{figure}
-\textbf{ErrorHandler} decide como manejar el error, esto puede ser desde loggearlo, terminar la ejecución del sistema, ignorarlo, etc. Dos tipos de estrategias comunes al tratar con errores son:
-\begin{itemize}
-    \item Reset de componentes: reiniciar o restablecer componentes defectuosos ayuda a borrar errores y restaurarlos a un estado funcional.
-    \item Degradación elegante \cite{glass2009graceful} permite que el sistema siga funcionando a una capacidad reducida en lugar de fallar por completo. Esto implica deshabilitar las funciones que funcionan mal o cambiar a copias de seguridad, por lo que el sistema continúa funcionando con una funcionalidad limitada en lugar de apagarse por completo.
-\end{itemize}
-
-
-Con este diseño añadimos una capa de verificación sin modificar el módulo original, ya que \verb|getStock| y \verb|setStock| de \textit{StockProxy} van a realizar la verificación indicada y luego si todo es correcto invocarán los métodos de \textit{StockProducto}. Con esto conseguimos las siguientes ventajas:
-
-\begin{itemize}
-    \item Encapsular la lógica de validación y control de acceso en un solo lugar, sin necesidad de modificar el módulo original que gestiona los datos. Facilitando la reutilización y la separación de responsabilidades.
-
-    \item Centraliza el control sobre cómo y cuándo se accede o modifica el dato sensible. Esto facilita la implementación de reglas de negocio más complejas, como la validación de entradas, sin tener que modificar cada parte del código que interactúa con \textbf{StockProducto}.
-
-    \item Extender funcionalidades, el proxy puede evolucionar independientemente del modulo SujetoReal (ver \ref{patronProxy}), añadiendo nuevas funciones o cambiando las reglas de validación sin afectar la implementación original del módulo que contiene los datos. Por ejemplo, se pueden implementar restricciones de acceso, límites en las operaciones permitidas o incluso operaciones en diferido, sin necesidad de modificar el objeto real.
-\end{itemize}
 
 \section{Organización de la ejecución}
 \label{orgEjecucion}
