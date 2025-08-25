@@ -1451,10 +1451,10 @@ Los problemas de concurrencia de este tipo son difíciles de detectar y corregir
 
 Desde la \gls{IS}, resulta interesante proponer un diseño para evitar este problema. Para ello, se aplicará el patrón \textit{State} \ref{anexoState} para representar dos estados posibles en relación con el manejo de una interrupción: \textbf{Activo} (disponible para manejar la interrupción) e \textbf{Ignorar} (el estado responsable de ignorar interrupciones mientras una está siendo manejada). De este modo, cuando el manejo de una interrupción comience, el estado cambiará a \textbf{Ignorar}, lo que hará que cualquier nueva llamada al manejador resulte en un retorno rápido. Una vez que la ejecución del manejo finalice, el estado volverá a cambiar, permitiendo el manejo de nuevas llamadas a la interrupción.
 
-Veamos ahora la estrucura de módulos subyacente a esta solución en la Figura \ref{estructuraInterrup}.
+Veamos ahora la estrucura de módulos subyacente a esta solución en la Figura \ref{estructuraInterrup} y en la Figura \ref{docStateInt} la correspondiente documentación del uso del patrón en este ejemplo.
 
 \begin{figure}[H]
-\caption{Ejemplo de handler usando \textit{State} con su correspondiente documentación.}
+\caption{Ejemplo de manejador de interrupciones usando \textit{State} para prevenir inconvenientes en la ejecución.}
 \label{estructuraInterrup}
 \begin{center}
 \begin{tikzpicture}\sf
@@ -1499,7 +1499,8 @@ manejarInt(Manejador m) \{ \\
 \umlnote[left=1.5cm of Activo,width=5cm]{Activo}{
 manejarInt(Manejador m) \{ \\
 \ \ \ \ m.cambiarEstado(ignorar)\\
-\ \ \ \ \textit{manejo normal}\\
+\ \ \ \ \textit{...manejo normal o}\\
+\ \ \ \ \textit{ejecución de comando...}\\
 \ \ \ \ m.cambiarEstado(this) \\
 \}
 }
@@ -1507,75 +1508,69 @@ manejarInt(Manejador m) \{ \\
 
 \umluniaggreg{Manejador}{Estado}
 \umlinherit[geometry=|-|]{Ignorar}{Estado}
-\umlinherit[geometry=|-|,arm1=2.17cm]{Activo}{Estado}
+\umlinherit[geometry=|-|,arm1=2.165cm]{Activo}{Estado}
 
 
 
 \end{tikzpicture}
 \end{center}
 
-
-
 \end{figure}
 
 \begin{figure}
+\caption{Documentación de la aplicación del patron \textit{State} para el ejemplo del manejador de interrupciones.}
+\caption{docStateInt}
 
 \begin{pattern}[]{Control de manejo de interrupciones}{Algorithm}{idFigAlg}
 \based{State (Estado)}
 \why{\textbf{Cambios previstos}: Agregar, quitar o editar estados de manejo de la interrupción.
 
-\textbf{Funcionalidad}: Configura el estado actual de manejo de una interrupción a fin de que una interrupción corte la ejecución de otra.
+\textbf{Funcionalidad}: Configura el estado actual de manejo de una interrupción a fin de que una interrupción no pause la ejecución de otra del mismo tipo.
 }
 \assigns
-\is{InterruptionHandler}{Contexto}
-\is{State}{Estado}
-\is{Working}{EstadoConcreto}
-\is{Waiting}{EstadoConcreto}
+\is{Manjeador}{Contexto}
+\is{Estado}{Estado}
+\is{Ignorar}{EstadoConcreto}
+\is{Activo}{EstadoConcreto}
 
 \end{pattern}
 \end{figure}
 
 
-Notar que esta estrategia explota la capacidad de manejar interrupciones del microcontrolador, por lo tanto es necesario que este las soporte para llevarla a cabo.
-
-Al aplicar el suo de interrupciones junto con patrones de diseño como State, el sistema embebido de control robótico adquiere una estructura más robusta, eficiente y mantenible. Se logran superar las limitaciones del enfoque secuencial simple, evitando la pérdida de información crítica proveniente de sensores y eliminando los tiempos de espera bloqueantes. Además, la modularización del comportamiento en tareas bien definidas, combinada con la sincronización mediante interrupciones periódicas y específicas, permite un control más preciso y en tiempo real de los actuadores. Este enfoque no solo mejora la capacidad de respuesta del sistema, sino que también facilita la extensión y modificación del software frente a nuevos requerimientos, en línea con los principios del diseño orientado al cambio.
-
-
-
+Al aplicar el uso de interrupciones junto con patrones de diseño como \textit{State}, el sistema embebido de control robótico adquiere una estructura más robusta y mantenible. Se logran reducir el riesgo de problemas de concurrencia provocados por el manejo de interrupciones en tiempo real. Y le quita responsabilidades a los módulos que efectivamente hacen el manejo de la interrupción.
 
 
 
 \section{Control en conjunto de dispositivos}
 Muchas aplicaciones embebidas robóticas controlan \gls{actuadores} que deben trabajar en conjunto para lograr el efecto deseado. Por ejemplo, para conseguir mover de manera coordinada un brazo robótico con múltiples articulaciones, todos los motores deben trabajar a la par. De manera similar, el uso de propulsores en una nave espacial en tres dimensiones requiere que muchos de estos dispositivos actúen en el momento preciso y con la cantidad correcta de fuerza para lograr la estabilidad necesaria. En ambos casos existe comunicación entre todos los componentes, ya sea para encadenar la ejecución de ciertos movimientos o para avisar de restricciones. Esto no es tarea simple y requiere de muchas lineas de código, por lo que un diseño orientado al cambio resulta clave.
 
-\subsection*{Solución tradicional}
+\subsubsection*{Solución tradicional, ejemplo real}
 
-Antes de pasar a explicar la solución propuesta y analizar cómo aplicarla al ejemplo presentado por Douglass en su libro \cite{douglass}, se describirá cómo se aborda tradicionalmente esta problemática. Para ello, se tomará como ejemplo el software desarrollado para el robot desmalezador antes de la propuesta del nuevo diseño \cite{paperPomponio}. En particular, existieron dos desarrollos creados en conjunto por ingenieros electrónicos como parte del trabajo final de carrera \cite{disenioViejo1, disenioViejo2}. Los requerimientos son similares a los que se consideraron para el desarrollo del nuevo diseño.
+Antes de pasar a explicar la solución preparada para el cambio y analizar cómo aplicarla al ejemplo presentado por Douglass en su libro \cite{douglass}, se describirá cómo se aborda tradicionalmente esta problemática. Para ello, se tomará como ejemplo el software desarrollado para el robot desmalezador creado en conjunto por ingenieros electrónicos como parte del trabajo final de carrera \cite{disenioViejo1, disenioViejo2}. Los requerimientos son similares a los que se consideraron para el desarrollo del nuevo diseño orientado al cambio \cite{paperPomponio}.
 
 \subsubsection*{Estructura y funcionamiento general}
 
-El sistema desarrollado controla el siguiente hardware:
+El sistema desarrollado controla el siguiente hardware del robot. Se cuenta con cuatro ruedas y un dispositivo de dirección que les permite girar. Cada rueda tiene sensores \gls{hall}, que permiten medir su posición y velocidad, y un sistema asociado de medición de corriente. El dispositivo de dirección permite determinar su posición angular en cada momento. Tanto las ruedas como el dispositivo de dirección pueden ser operados de forma remota mediante un control remoto (RC), capaz de enviar señales de dirección y velocidad a un módulo receptor de radiofrecuencia (RF) situado en el robot. Además, una computadora (PC) situada en el robot envía órdenes al dispositivo de dirección y a las ruedas para la navegación autónoma del robot. Las órdenes provenientes tanto del RC como de la PC son procesadas por un microcontrolador ubicado en el robot.
 
-El robot cuenta con cuatro ruedas y un dispositivo de dirección que les permite girar. Cada rueda tiene sensores \gls{hall}¸, que permiten medir su posición y velocidad, y un sistema asociado de medición de corriente. El dispositivo de dirección permite determinar su posición angular en cada momento. Tanto las ruedas como el dispositivo de dirección pueden ser operados de forma remota mediante un control remoto (RC), capaz de enviar señales de dirección y velocidad a un módulo receptor de radiofrecuencia (RF) situado en el robot. Además, una computadora (PC) situada en el robot envía órdenes al dispositivo de dirección y a las ruedas para la navegación autónoma del robot. Las órdenes provenientes tanto del RC como de la PC son procesadas por un microcontrolador ubicado en el robot.
-
-El código que conforma el sistema de control se encuentra dividido en unos pocos archivos, concentrando todo el flujo de control en \verb|main.c|, el resto contienen métodos que son invocados desde este último y proveen utilidades. No se utiliza programación orientada a objetos, en cambio, como estructura de organización del código se utilizan las funciones clásicas de C. Estas parece que encapsulan operaciones específicas como:
+El código que conforma este sistema de control se encuentra dividido en unos pocos archivos, concentrando todo el flujo de control en \verb|main.c|, el resto contienen métodos que son invocados desde este último y proveen utilidades. No se utiliza programación orientada a objetos, en cambio, como estructura de organización del código se utilizan las funciones clásicas de C. Estas agrupan operaciones específicas como:
 \begin{itemize}
 \item Configuración de hardware.
 \item Lectura de entradas (sensores, botones, etc.).
 \item Control de salidas (motores, luces, etc.).
 \end{itemize}
 
-La información común entre muchas funciones se almacena en variables globales definidas en el mismo archivo. Entre las variables, encontramos algunas que se encargan de almacenar información referida al estado de operacion del sistema. Es decir, que los estados se manejan con sentencias \verb|if| o \verb|switch case| (se comenta sobre esta solución en la sección \nameref{cap:state}).
+La información común entre muchas funciones se almacena en variables globales definidas en el mismo archivo. Entre las variables, encontramos algunas que se encargan de almacenar información referida al estado de operacion del sistema. Es decir, que los estados se manejan con sentencias \verb|if| o \verb|switch case| (se comenta sobre esta solución en la Sección \nameref{cap:state}).
 
-La función principal del sistema es \verb|main|, la misma se encarga de inicializar y calibrar los sensores y actuadores, de realizar el ciclo de control y terminar la ejecución. Para las primeras dos tareas llama a dos funciones que realizan el trabajo. El ciclo dSolución orientada al cambio}e control se ve representado por un bucle infinito en el cual se realizan las siguientes tareas principales:
+La función principal del sistema es \verb|main|, la misma se encarga de inicializar y calibrar los sensores y actuadores, de realizar el ciclo de control \ref{sistControl} y terminar la ejecución. Para las primeras dos tareas llama a dos funciones que realizan el trabajo. El ciclo de control se ve representado por un bucle infinito en el cual se realizan las siguientes tareas principales:
 \begin{itemize}
+\item Lectura de entradas, es decir, valores de refecrencia a alcanzar.
 \item Lectura de información de los sensores, dirección, velocidad y corriente.
-\item En base al estado de ejecución actual, se realizan ciertas tareas.
+\item En base al estado de ejecución actual, se realizan ciertas tareas. Por ejemplo, en el estado \verb|DUTY_REMOTO|, cuando el sistema está recibiendo una orden a través del control remoto, se lleva a cabo el ciclo de control completo. Por otro lado, en el estado \verb|EMERGENCIA|, el robot debe detenerse, por lo que su comportamiento será diferente.
 \item Se aplican cambios a los actuadores, el ciclo de trabajo (\gls{PWM}) de los motores y la dirección.
 \end{itemize}
 
 \subsubsection*{Observaciones}
-El criterio de división del código parece ser funcional, tanto por el aspecto del código, como por la documentación adjunta en los informes \cite[pág. 78-85]{disenioViejo1}, \cite[pág. 110-149]{disenioViejo2}. Esta última, se centra es describir la funcionalidad de cada método y para hacerlo se muestra su comportamiento utilizando diagramas de flujo como el de la figura \ref{diagra}. 
+El criterio de división del código parece ser funcional, tanto por el aspecto del código, como por la documentación adjunta en los informes \cite[pág. 78-85]{disenioViejo1}, \cite[pág. 110-149]{disenioViejo2}. El criterio de división funcional, se centra es describir la funcionalidad de cada método y para hacerlo se muestra su comportamiento utilizando diagramas de flujo como el de la Figura \ref{diagra}. 
 
 \begin{figure}[h]
 \caption{Diagrama de flujo que explica el comportamiento de la función emergency \cite[pág. 82]{disenioViejo1}.}
@@ -1586,24 +1581,72 @@ El criterio de división del código parece ser funcional, tanto por el aspecto 
 \end{figure}
 
 
-Por otro lado, a lo largo del código se utilizan estructuras condicionales (if, switch, etc.) para determinar el flujo de ejecución. A su vez, las funciones que acceden directamente al hardware están directamente integradas en la lógica del control, lo que indica una baja separación entre la capa de abstracción del hardware y la lógica de ``alto'' nivel. Esto es acompañado con un diseño procedimental, con una serie de pasos secuenciales y un control centralizado en el flujo principal. Ademas, el hardware se encuentra integrado a la lógica, se aplican estructuras condicionales directamente a este.
+Por otro lado, a lo largo del código se utilizan estructuras condicionales (\textit{if, switch}, etc.) para determinar el flujo de ejecución. A su vez, las funciones que acceden directamente al hardware están integradas en la lógica del control (manejo del ciclo de control), lo que indica una baja separación entre la capa de abstracción del hardware y la gestion del cilo de control. Esto es acompañado con un diseño procedimental, con una serie de pasos secuenciales y un control centralizado en el flujo principal \verb|main|.
 
 Otros inconvenientes referidos al cambio que están presentes en el código:
 \begin{itemize}
-\item El código parece estar compuesto por funciones largas y bloques monolíticos sin modularidad clara. Esto dificulta la localización y modificación de funcionalidades específicas, ya que los cambios pueden propagarse a otras partes del sistema.
-\item Hay valores ``hardcodeados'' (constantes definidas fijas en el código). Si estos valores cambian, es necesario modificar el código fuente, aumentando el riesgo de introducir errores.
+\item El código parece estar compuesto por funciones largas y bloques monolíticos sin modularidad clara. Esto dificulta la localización y modificación de funcionalidades específicas, ya que los cambios pueden propagarse a otras partes del sistema que no son deseadas.
+\item Los estados se definen en variables y se utilizan sentencias \textit{if} o \textit{switch} para cambiar el comportamiento de las funciones. Como se vió en la Sección \ref{cap:state} esto no es una buena práctica cuando se prepara el sistema para el cambio.
+\item Hay valores ``hardcodeados'' (constantes definidas fijas en el código). Si estos valores cambian, es necesario modificar el código fuente, aumentando el riesgo de introducir errores. Además, se utilizan múltiples variables globales, las cuales añaden acoplamiento entre funciones y se debe ser cuidadoso al momento de introducir cambios que las afecten.
 \item Las dependencias entre funciones están estrechamente acopladas. Lo que provoca que los cambios puedan requerir modificaciones significativas en diferentes secciones de código.
-\item El manejo de errores parece ser inconsistente o inexistente en varias secciones. Esto puede llevar a comportamientos impredecibles y dificultar el diagnóstico de problemas.
+\item El manejo de errores parece ser inconsistente o inexistente en varias secciones. Es decir, no hay una decición de diseño que comtemple la existencia de posibles errores durante la ejecución. Esto puede llevar a comportamientos impredecibles y dificultar el diagnóstico de problemas.
 \end{itemize}
 
 \subsubsection*{Conclusión}
 
-El diseño del código parece estar orientado a cumplir con un objetivo específico mediante un flujo procedimental y un control directo de los periféricos del hardware. Este enfoque es funcional, pero carece de modularidad y abstracción, lo que lo hace menos flexible y más difícil de mantener. La estructura actual no parece diseñada para escalar con nuevas funcionalidades. Lo que tiene sentido, si se tiene en cuenta el contexto del desarrollo.
+El diseño del código parece estar orientado a cumplir con un objetivo específico mediante un flujo procedimental y un control directo de los periféricos del hardware. Este enfoque es funcional, pero carece de modularidad y abstracción, lo que lo hace menos flexible y más difícil de mantener. La estructura actual no parece diseñada para escalar con nuevas funcionalidades.
+
+\subsection*{Ejemplo}
+
+A continuación se describirá un ejemplo extraído de \cite[Sección. 3.4]{douglass},s e explicará la solución prouesta en el mismo libro y luego se propondrá una solución orientada al cambio.
+
+\subsubsection*{Requisitos del sistema de control de un brazo robótico}
+
+Se necesita desarrollar el software de control de un brazo robótico que consta de tres \gls{actuadores}, dos motores paso a paso (uno para rotar en su base y otro para extender o retraer el brazo) y una pinza que se puede cerrar o abrir. En le Figura \ref{brazoEsquema} podemos observar un esquema del hardware. Para controlar el comportamiento del brazo, se provee una función compleja la cual toma coordenadas en el espacio y devuelve una secuencia de pasos para que el brazo tome un objeto en la posición determinada por las coordenadas. Cada paso consta de una orden para cada actuador del brazo robótico. Estos se deben ejecutar de manera secuencial, es decir que el paso número dos empezará su ejecución solo si el primero culminó completamente y con éxito. En caso de que las coordenadas sean inalcanzables la función devuelve cero pasos. Si se produce un error durante la ejecución de un paso, se detiene la ejecución del sistema.
+
+Controlar motores paso a paso es más complejo de lo que parece. Habitualmente, se gestionan con dos funciones: una que define el sentido de giro y otra que ordena dar un solo paso. La longitud de cada paso viene determinada por el hardware del motor. Por lo tanto, para lograr movimientos más largos, se deben ejecutar múltiples pasos, lo que requiere un control exhaustivo del software. Este es un requerimiento implicito que el sistema tiene y debemos abarcar.
+
+\begin{figure}[h]
+\caption{Esquema del brazo robótico.}
+\label{brazoEsquema}
+\begin{centering}
+{\includegraphics[width=0.5\textwidth]{brazo3.png}\par}
+\end{centering}
+\end{figure}
+
+\subsubsection*{Solución propuesta en el libro de Douglass}
+
+El ejemplo que plantea el libro es similar al descrito, pero el brazo robótico tiene más actuadores. Como solución, se propone la creación de un módulo llamado \textbf{RobotArmManager}, cuya función es gestionar los actuadores y coordinar su comportamiento. Además, para cada tipo de articulación o actuador, se crea un módulo específico encargado de su control. Este módulo proporciona métodos para consultar el estado actual (posición, longitud, etc.) y otros para establecer un valor, similar a un \textit{set-point}. Dichos métodos desempeñan el rol de ejecutores de la acción, es decir, toman un valor \textit{set-point}, ejecutan la acción y retornan \verb|True| si fue satisfactoria, o \verb|False| en caso contrario.
+
+El comportamiento del sistema comienza con la generación de una lista de pasos a realizar. Luego, se itera sobre esta lista ejecutando las acciones definidas en cada paso. Como el sistema debe interrumpir la ejecución si encuentra un error, el \textbf{RobotArmManager} verifica el valor de retorno tras cada acción. La ejecución de un movimiento completo finaliza cuando se completan todos los pasos generados previamente por la función compleja que se mencionó en los requerimientos. En este caso es llamada \verb|graspAt(i: Coordenadas)|.
+
+La solución propuesta parece estar un nivel de abstracción por encima de lo que se esperaría para este caso. Aunque no hay suficiente información sobre el hardware del brazo robótico, sabemos que utilizar motores paso a paso no es tan simple como invocar un método. Este proceso suele requerir el control continuo, operando mediante pulsos que hacen que el motor avance un paso. Por lo tanto, los módulos encargados de los movimientos probablemente tengan más responsabilidades de las que se plantean en el libro. Esto va en contra de las prácticas de la \gls{IS}, que establecen que un módulo debe ocultar un solo elemento de cambio. Además, sería necesario implementar un sistema de control más complejo, utilizando algún tipo de \textit{timer} o espera, para garantizar que el motor paso a paso tenga el tiempo necesario para actuar.
+
+De todas formas, suponiendo que los módulos mencionados se adaptan al hardware subyacente, la manera en la que el \textbf{RobotArmManager} interactúa con ellos es rígida, tanto por la invocación directa como por la dependencia del valor de retorno. Esto se evidencia en el código resultante, que incluye múltiples sentencias if consecutivas \cite[Pág. 107]{douglass}. Esta estructura provoca que, ante un cambio en el comportamiento de los módulos que interactúan con el hardware, el \textbf{RobotArmManager} pueda verse afectado, lo que requeriría una modificación en su implementación.
+
+Por otro lado, un ítem de cambio común son las estructuras de datos, como se mencionó en la Sección \ref{listaItems}. Por ello, establecer el uso de una lista directamente en la interfaz de un módulo no responde a una buena práctica.
+
+Es posible que el problema haya sido simplificado con fines didácticos. La forma planteada parece alejarse de una implementación realista, dejando requisitos menos específicos que podrían dar lugar a diferentes interpretaciones.
+
+Douglass aplicar el patrón \textit{Mediator} \ref{anexoMediator} de Gamma. De manera que \textbf{RobotArmManager} cumple el rol de \textbf{Mediador} y cada módulo que se encarga de manejar cada actuador cumple el rol de \textbf{Colega}. Los autores en \cite{Gamma:1995:DPE:186897} establecen que el patrón es aplicable en los siguientes casos:
+\begin{itemize}
+\item Un conjunto de módulos se comunica de maneras bien definidas pero complejas. Las interdependencias resultantes son poco estructuradas y difíciles de comprender.
+
+\item Reutilizar un módulo resulta complicado porque este se refiere y se comunica con muchos otros módulos.
+
+\item Un comportamiento distribuido entre varios módulos debería ser personalizable sin requerir una gran cantidad de submódulos.
+\end{itemize}
+
+La estructura construida por Douglass es similar al patrón y logra el objetivo de reducir el acoplamiento, evitando que los módulos se refieran directamente entre ellos.
 
 
-\subsection{Subsistemas de control}
 
-Para dar la solucion orientada al cambio, primero se introducirá el concepto de \textbf{Subsistema de control}. Un subsistema de control es una estructura de módulos relacionados mediante herencia, composición o invocación, que responde al control de una propiedad física particular del sistema embebido de control en el que se va a aplicar. Para hacerlo lleva a cabo todas las tareas de la arquitectura de \nameref{arqControlProc} en el nivel conceptual de módulos. 
+\subsection*{Subsistemas de control}
+\addcontentsline{toc}{subsection}{Subsistemas de control}
+
+Para dar la solución orientada al cambio que se propone en este trabajo, primero se introducirá el concepto de \textbf{Subsistema de control}. El cual fue extraído del trabajo realizado en el robot desmalezador \citep{paperPomponio} y se utilizará como diseño de referencia.
+
+Un subsistema de control es una estructura de módulos relacionados mediante herencia, composición o invocación, que responde al control de una propiedad física particular del sistema embebido de control en el que se va a aplicar. Para hacerlo lleva a cabo todas las tareas de la arquitectura de \nameref{arqControlProc} en el nivel conceptual de módulos. 
 
 A fin de aplicar la arquitectura de software de control de procesos, se propone la creación de un \textit{subsistema de control} por cada variable a manipular\footnote{Ver tabla conceptos arquitectura Control de Procesos \ref{tab:conceptosArq}} que sea necesaria controlar por el sistema. Para permitir la interacción con un cliente externo debe proveer una interfaz que permita setear un valor al que se quiera llevar la propiedad (\textit{setPoint} (ver tabla \ref{tab:conceptosArq})) y que indique el comienzo de la tarea de control. Un subsistema tiene una estructura similar a la de la arquitectura \ref{fig:arqCtrlRobot}, pero su alcance estará restringido a la variable a manipular y las variables medidas relacionadas. En la figura \ref{modulosSub} se puede observar de manera concreta los módulos que forman parte de cada componente de un subsistema.
 
@@ -1769,45 +1812,7 @@ En el diseño del robot desmalezador \cite{paperPomponio} existe un \textit{time
 
 Antes de ver un ejemplo repasemos que conseguimos al usar los subsistemas de control. Principalmente encapsulamos el control de cada propiedad de manera independiente, permitiendo que cada una pueda modificarse de manera aislada. Además, se logra que agregar nuevas propiedades con su conjunto de actuadores y sensores conste únicamente en crear nuevos módulos. Se provee una capa de abstracción para construir sobre los sistemas un controlado general que involucre múltiples subsistemas. Este controlador general organizará los esfuerzos de cada uno con el fin de llevar a cabo comportamientos más complejos.
 
-\subsection{Ejemplo}
 
-Se utilizará como ejemplo el propuesto en el libro \cite{douglass} en la sección de 3.4 \textit{Mediator Pattern}.
-
-\subsubsection*{Requisitos}
-
-Se necesita desarrollar el software de control de un brazo robótico que consta de tres actuadores, dos servomotores (uno para rotar y otro para extender o retraer el brazo) y una pinza que se puede cerrar o abrir. Para ello, se provee una función compleja la cual toma coordenadas en el espacio y genera una secuencia de ordenes para que el brazo tome un objeto en la posición determinada por las coordenadas. La secuencia es una serie de pasos, y cada uno consta de una orden para cada actuador del brazo robótico. Estos se deben ejecutar de manera secuencial, es decir que el paso número 2 empezará su ejecución solo si el primero culmino completamente y con éxito. En caso de que las coordenadas sean inalcanzables devuelve 0 pasos. A su vez cada actuador puede informar un error al intentar ejecutar cada movimiento, y si esto pasa se requiere frenar la ejecución total del sistema.
-
-\begin{figure}[h]
-\caption{Esquema del brazo robótico.}
-\begin{centering}
-{\includegraphics[width=0.5\textwidth]{brazo3.png}\par}
-\end{centering}
-\end{figure}
-
-\subsubsection*{Solución propuesta en el libro de Douglass}
-
-El ejemplo que plantea el libro es similar al descrito, pero el brazo robótico tiene más articulaciones y actuadores. Como solución, se propone la creación de un módulo llamado \textbf{RobotArmManager}, cuya función es gestionar los actuadores y coordinar su comportamiento. Además, para cada tipo de articulación o actuador, se crea un módulo específico encargado de su control. Este módulo proporciona métodos para consultar el estado actual (posición, longitud, etc.) y otros para configurar un valor similar a un \textit{set-point}. Dichos métodos desempeñan el rol de ejecutores de la acción, es decir, toman un valor \textit{set-point}, ejecutan la acción y retornan \verb|True| si fue satisfactoria, o \verb|False| en caso contrario.
-
-El comportamiento del sistema comienza con la generación de una lista de pasos a realizar. Luego, se itera sobre esta lista ejecutando las acciones definidas en cada paso. Como el sistema debe interrumpir la ejecución si encuentra un error, el \textbf{RobotArmManager} verifica el valor de retorno tras cada acción. La ejecución de un movimiento completo finaliza cuando se completan todos los pasos generados previamente por el método \verb|graspAt(i: Coordenadas)|.
-
-La solución propuesta parece estar un nivel por encima de lo que se esperaría para este caso. Aunque no hay suficiente información sobre el hardware del brazo robótico, generalmente mover una articulación no es tan simple como invocar un método. Este proceso suele requerir el control continuo de un motor paso a paso, que opera mediante pulsos que avanzan un paso. Por lo tanto, los módulos encargados de los movimientos probablemente tengan más responsabilidades de las que se plantean en el libro. Además, sería necesario implementar un sistema de control más complejo, utilizando algún tipo de \textit{timer} o espera, para garantizar que el motor paso a paso tenga el tiempo necesario para actuar.
-
-De todas formas, suponiendo que los módulos mencionados se adaptan al hardware subyacente, la manera en la que el \textbf{RobotArmManager} interactúa con ellos resulta rígida, tanto por la invocación directa como por la dependencia del valor de retorno. Esto se evidencia en el código resultante, que incluye múltiples sentencias \textit{if} consecutivas.
-
-Por otro lado, un ítem de cambio común son las estructuras de datos, como se mencionó en \ref{listaItems}. Por ello, establecer el uso de una lista directamente en el diseño no responde a una buena práctica.
-
-Es posible que el problema haya sido simplificado con fines didácticos. Sin embargo, la forma planteada parece alejarse de una implementación realista, dejando requisitos menos específicos que podrían dar lugar a diferentes interpretaciones.
-
-Por le lado de la aplicación del patrón \textit{Mediator}, los autores en \cite{Gamma:1995:DPE:186897} establecen que es aplicable en los siguientes casos:
-\begin{itemize}
-\item Un conjunto de módulos se comunica de maneras bien definidas pero complejas. Las interdependencias resultantes son desestructuradas y difíciles de comprender.
-
-\item Reutilizar un módulo resulta complicado porque este se refiere y se comunica con muchos otros módulos.
-
-\item Un comportamiento distribuido entre varios módulos debería ser personalizable sin requerir una gran cantidad de submódulos.
-\end{itemize}
-
-La estructura lograda es similar al patrón, pero originalmente los módulos encargados de ejecutar tareas relacionadas con un actuador específico no necesitaban comunicarse entre sí. Según el propósito del patrón, el objetivo principal es reducir el acoplamiento, evitando que los módulos se refieran directamente entre ellos. Y este objetivo parece estar logrado en el diseño propuesto.
 
 \subsubsection*{Solución orientada al cambio}
 
@@ -2394,117 +2399,4 @@ El comportamiento está encapsulado en módulos. La máquina de estados que cont
 \end{table}
 
 Además, se fomenta la reutilización del código, permitiendo aplicar las soluciones existentes a distintos problemas. Cualquier modificación futura requerirá menos esfuerzo por parte de los desarrolladores, ya que el sistema será más fácil de comprender. La documentación también contribuye a esta facilidad de mantenimiento. Los cambios están encapsulados, por lo que el control de calidad se reduce a verificar módulos individuales y no secciones de código enteras.
-
-
-\newpage
-
-
-
-
-
-\section{Integridad de la información}
-
-Douglass en \cite{douglass}, afirma que cuando se intenta construir software embebido es importante poner esfuerzo en garantizar de alguna manera las siguientes propiedades:
-
-\begin{itemize}
-\item Reliability (confiabilidad) en los sistemas embebidos se refiere a la capacidad del sistema de operar de manera continua y correcta durante un período de tiempo determinado, sin fallos que interrumpan su funcionamiento. Es fundamental porque muchos sistemas embebidos, como los que controlan robots, vehículos o dispositivos médicos, deben garantizar la ejecución exitosa de sus tareas bajo condiciones normales o adversas. Una alta confiabilidad se traduce en una mayor disponibilidad del servicio, menor tasa de fallos y una experiencia más segura para los usuarios.
-
-\item Safety (seguridad) es igualmente crucial en sistemas embebidos, ya que garantiza que el sistema no genere riesgos inaceptables para personas, equipos o el entorno. No basta con que el sistema funcione correctamente; debe hacerlo de manera que prevenga accidentes, daños físicos o pérdidas. Esto implica identificar peligros potenciales, estimar su riesgo (producto de su severidad y probabilidad) y diseñar mecanismos de mitigación adecuados, como pasar a estados seguros ante fallos o suministrar información confiable a operadores. En aplicaciones críticas, como aeronáutica, medicina o automatización industrial, la seguridad es un requisito esencial porque cualquier error puede tener consecuencias graves e irreversibles.
-\end{itemize}
-
-Además, agrega que uno de los origenes más comunes de inconvenientes relacionados fallas de seguridad o confiabilidad es la corrupcion de la información. Un pulso electromagnético o fallas en el hardware pueden causar daños en la información dejándola comprometida, por ejemplo un \gls{bit} o perdida parcial de cierta zona de la memoria. Si los datos afectados son críticos el problema puede derivar en un error grave del sistema. Para hacer frente a esto existen diferentes técnicas, desde calcular \textit{checksums} con la intención de verificar integridad hasta almacenar la información múltiples veces creando \textbf{redundancia}. En el libro, Douglass propone el uso de dos estrategias, una para datos que ocupan mucha memoria y otra para pequeños valores.
-
-Estas estrategias suelen ser agregadas al código modificando la implementación de los métodos del módulo encargado de almacenar la informacion, o agregando verificaciones en las partes del código que la utilizan. Es decir, si por ejemplo se utiliza el módulo \textbf{Data} (ver figura \ref{dataInter}) se realiza \verb|data = data.getData()| para obtener el valor y luego se ejecutan las validaciones necesarias para verificar la integridad del mismo. 
-Esto último provoca código repetido en cada llamado a \verb|getData()| y a su vez ante cualquier cambio en el dato, la estrategia de validación utilizada puede dejar de ser aplicable, obligando a modificar múltiples porciones de código.
-
-\begin{figure}[H]
-\caption{Interfaz del módulo Data,}
-\label{dataInter}
-\begin{center}
-\begin{tikzpicture}\sf
-\umlclass[]{Data}
-{
-value: dato \\
-invertedValue: dato
-}
-{
-    getData(): dato \\
-    setData(i: dato) \\
-    invert()
-}
-
-\end{tikzpicture}
-\end{center}
-\end{figure}
-
-Desde el punto de vista del diseño de software se puede aportar una mirada crítica hacia las propuestas el libro \cite[pág. 357]{douglass}, dado que plantean modificar la interfaz e implementación de los módulos encargados de almacenar la información con el objetivo de añadir esta ``capa'' de verificación. Es decir que los módulos no solo oculten como se almacena la información sino que se encarguen de verificar su integridad. 
-
-En cambio, una posible forma de solucionar esto desde el diseño orientado al cambio es utilizar el patrón \textit{Decorator} que nos permite añadir y remover de manera dinámica funcionalidades. En este caso, la capacidad de verificar la información. Otra ventaja, además de poder hacerlo de manera dinámica, es que mantenemos separadas las responsabilidades de cada módulo. A diferencia de los propuesto en el libro, no se combina el almacenaje de la información con su verificación, de manera que cada porción puede ser implementada de manera independiente. La solución se muestra en el gráfico \ref{decorator} con su correspondiente documentación en \ref{docDecorator}.
-
-\begin{figure}[h]
-\caption{Ejemplo de aplicación del patrón \textit{Decorator} para garantizar la integridad de la información.}
-\label{decorator}
-\begin{center}
-\begin{tikzpicture}\sf
-\umlclass[]{Data}
-{}
-{
-    getData(): dato \\
-    setData(i: dato)
-}
-\umlclass[right=3cm of Data]{CRCData}
-{
-    calculatedCrc: crc
-    errorHandler: errorHandler
-}
-{
-    getData(): dato \\
-    setData(i: dato) \\
-    calcularCrc(i: dato) \\
-    setErrorHandler(i: errorHandler)
-}
-
-\umlinherit{Data}{CRCData}
-\umluniaggreg[anchor1=-170, anchor2=-24]{CRCData}{Data}
-
-\end{tikzpicture}
-\end{center}
-\end{figure}
-
-\begin{figure}[H]
-\caption{Documentación de la aplicación del patrón \textit{Decorator} al caso de verificación de la integridad de la información.}
-\label{docDecorator}
-\begin{pattern}[]{Modulo decorador que extiende dinámicamente las funcionalidades de otro módulo sin cambiar la implementación.}{Algorithm}{idFigAlg}
-\based{Decorador (Decorator)}
-\why{\textbf{Cambios previstos}: Pueden agregarse y quitarse métodos de verificación.
-
-\textbf{Funcionalidad}: Antes de devolver la información se realiza una verificación de la integridad de la información almacenada.
-}
-\assigns
-\is{Data}{ComponenteConcreto}
-\is{CRCData}{DecoradorConcreto}
-
-\end{pattern}
-\end{figure}
-
-
-\begin{lstlisting}[caption=Ejemplo de implementación métodos setData y getData del módulo CRCData.,label={codDeco},style=seudocode]
-setData(i: dato){
-    calculatedCrc = calcularCrc(i)
-    data.setData(dato)
-}
-
-getData() {
-    dato = data.getData()
-    if calculateCrc(dato) == calculatedCrc
-        return dato
-    else
-        errorHandler()
-}
-\end{lstlisting}
-
-En la figura \ref{codDeco} se observa un ejemplo de implementación de los métodos \verb|setData| y \verb|getData|. En el cual, se utiliza el método \verb|calcularCrc| para obtener el código de detección de errores de tamaño fijo basado en un polinomio cíclico. Entonces, comparando el código calculado cuando se guardo la información con el calculado en el momento de obtenerla se puede saber si la información está o no corrupta. 
-
-De esta forma, aplicando el patron \textit{decorator} se logra añadir una capa de protección a la integridad de la información, a su vez permite combinar diferentes técnicas usando este patrón.
-
 
