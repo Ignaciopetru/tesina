@@ -1211,14 +1211,14 @@ Una solución que se ajusta más a los principios de la \gls{IS} busca separar l
 
 
 
-\section{Verificación de precondiciones.}
-El autor del libro \cite{douglass} comenta que uno de los problemas más grandes que observa en el desarrollo de sistemas embebidos es que muchas funciones tiene precondiciones para ejecutarse correctamente pero que rara vez se verifica que todas se cumplan. Además, el procedimiento común de informar precondiciones inadecuadas en una función en \textbf{C}\footnote{Lenguaje de programación comúnmente utilizado en sistemas embebidos.} es a traves del valor de retorno (-1 en caso de errores, 0 en el contrario). Por lo tanto, el encargado de manejar el error es la función que invocó a la segunda, generando así un acoplamiento extra en el código. Esto provoca una complicación que muchas veces deriva en un mal manejo de los errores. Por ejemplo, supongamos que se tiene un módulo que exporta una función que permite guardar un valor, \verb|setValor(i: Valor)|. Existen múltiples posibles implementaciones, estas son algunas:
+\section{Verificación de precondiciones}
+El autor del libro \cite{douglass} comenta que uno de los problemas más grandes que observa en el desarrollo de sistemas embebidos es que muchas funciones tiene precondiciones para ejecutarse correctamente pero que rara vez se verifica que todas se cumplan. Además, el procedimiento común de informar precondiciones inadecuadas en una función en \textbf{C}\footnote{Lenguaje de programación comúnmente utilizado en sistemas embebidos.} es a traves del valor de retorno (-1 en caso de errores, 0 en el contrario). Por lo tanto, el encargado de manejar el error es la función que invocó a la segunda, generando así un acoplamiento extra en el código. Esto provoca una complicación que muchas veces deriva en un mal manejo de los errores. Por ejemplo, supongamos que se tiene un módulo que exporta un método que realiza cierto computo en base a dos argumentos, \verb|computar(i: int, i: int)|. Existen múltiples posibles implementaciones, estas son algunas:
 \begin{itemize}
-    \item Una posible implementación, consiste en que la función no realice ninguna verificación y simplemente guarde en una variable el valor pasado como argumento. Esto puede generar un error en el momento si el tipo no coincide o en el futuro, si el valor está por fuera de ciertos parámetros requeridos por el sistema. Por ejemplo, si se está almacenando un entero negativo pero algún función requiere como precondición que siempre sea positivo, se puede provocar un error en el futuro. Por otro lado, esta implementación obliga a que todos las funciones que usen este valor deban verificar que sea positivo. Escribiendo código repetido y que en caso de que el requisito cambie deba ser actualizado manualmente.
-    \item Otra, se basa en verificar si el valor es permitido, haciendo que la función retorne un valor inidicando el resultado de la validación, 0 en caso afirmativo o -1 en caso contrario. Este enfoque es mejor que no realizar manejo alguno, pero como se comentó en el principio, se está acoplando al usuario de la función con el módulo que la exporta, ya que este tiene que verificar el valor de retorno para determinar si existió un error o no.
+    \item Una posible implementación consiste en que la función no realice ninguna verificación y simplemente intente utilizar los valores pasados como argumento, lo cual puede generar un error inmediato si los tipos no coinciden, o un error futuro si el valor está fuera de los parámetros requeridos por el sistema. Por ejemplo, si se pasa un entero negativo, pero el método requiere como precondición que siempre sea positivo, se podría provocar un fallo más adelante; esta implementación obliga a que todos los clientes que utilizen este método deban verificar la validez de los valores a, lo que no solo genera código repetido, sino que también requiere una actualización manual en múltiples puntos si el requisito cambia, haciendo que la responsabilidad de la verificación de las precondiciones recaiga en el cliente que utiliza la función, en lugar de ser manejada internamente por la misma.
+    \item Otra opción se basa en verificar si el valor es permitido, haciendo que \verb|computar(i: int, i: int)| retorne un valor que indique el resultado de la validación (por ejemplo, 0 en caso afirmativo y -1 en caso contrario). Si bien este enfoque es una mejora respecto a no realizar validación alguna, continua con el acoplamiento entre el cliente de la función y el módulo que la exporta, ya que el cliente debe verificar el valor de retorno para determinar si ha ocurrido un error.
 \end{itemize}
 
-La solución que se propone en el libro es una combinación de patrón y practica de programación, tiene los siguientes conceptos claves:
+La solución propuesta en el libro de Douglass \cite{douglass} es más cercana a un patrón idiomático o a una práctica de programación que a un patrón de diseño. Sus conceptos clave son los siguientes:
 
 \begin{itemize}
     \item Construir tipos de auto-verificación siempre que sea posible.
@@ -1226,11 +1226,19 @@ La solución que se propone en el libro es una combinación de patrón y practic
     \item Verificar la consistencia y razonabilidad entre uno o un conjunto de parámetros.
 \end{itemize}
 
-No se ha planteado una solución de diseño general o un patrón, pero desde la \gls{IS} podemos ayudar a preparar el sistema para el cambio y, a la vez, realizar las verificaciones necesarias. Para ello, proponemos la aplicación del patrón \textit{Decorator} \ref{anexoDecorator} de Gamma. Este patrón permite añadir o eliminar funcionalidades a módulos de manera dinámica. En particular, lo que agregaremos será la verificación de cada argumento, manteniéndola separada del módulo que realiza la funcionalidad específica.
+Por lo tanto, la solución planteada no constituye un patrón de diseño general. No obstante, desde la perspectiva de la \gls{IS}, es posible preparar el sistema para futuros cambios y, al mismo tiempo, realizar las verificaciones necesarias. Para ello, proponemos la aplicación del patrón \textit{Decorator} \ref{anexoDecorator} de Gamma, el cual permite añadir o eliminar funcionalidades a módulos de manera dinámica. En particular, lo que se busca es agregar la verificación de cada argumento, manteniéndola separada del módulo que implementa la funcionalidad específica.
 
-\declareCmod{Mecanismo}
+\declareCMod{ErrorHandler}
 
-Veamos un ejemplo en el cual se puede aplicar esta solución. Suponga que se tiene el módulo \Mecanismo cuya interfaz es la que se muestra en la Figura \ref{mecanismo}. Como se puede ver uno de los métodos es \verb|computar|, el cual debe verificar que el primer argumento sea siempre mayor a 0 y que el segundo sea par. En lugar de agregar el Código \ref{verificacion} al inicio de la implementación de \verb|computar|, proponemos usar dos módulos que actuen como decoradores.
+Para la construcción de la solución, se tomará del libro \cite{douglass} el concepto de un módulo denominado \ErrorHandler, o manejador de errores. Esta es una técnica ampliamente utilizada e incorporada en ciertos lenguajes de programación, que se basa en delegar la gestión de un error a un módulo especializado. Dicho módulo, basándose en la lógica definida por el desarrollador, resolverá el inconveniente; por ejemplo, puede mostrar un error en pantalla y detener la ejecución, reintentar ejecutar un método o reiniciar ciertos componentes. Existen múltiples enfoques para este problema, algunos de los cuales se estudian en \cite{glass2009graceful}.
+
+Lo relevante de esta estrategia es que el módulo proporciona una interfaz clara para el manejo de errores, cuya estructura se detallará a continuación con un ejemplo.
+
+\declareAMod{Mecanismo}
+\declareCMod{MecanismoConcreto}
+
+
+Suponga que se tiene el módulo \Mecanismo cuya interfaz es la que se muestra en la Figura \ref{mecanismo}. Como se puede ver uno de los métodos es \verb|computar|, el cual para funcionar correctamente y sin errores, requiere que el primer argumento sea siempre mayor a cero y que el segundo sea par. En lugar de agregar el Código \ref{verificacion} al inicio de la implementación de \verb|computar|, proponemos usar dos módulos que actuen como decoradores y encapsulen esta funcionalidad.
 
 
 \begin{figure}[H]
@@ -1261,10 +1269,10 @@ computar(int primer, int segundo){
 	.
 \end{lstlisting}
 
-En la Figura \ref{estructuraDeco} se presenta la estructura de módulos conseguida aplicando el patrón.
+En la Figura \ref{estructuraDeco} se presenta la estructura de módulos conseguida a partir de la aplicando el patrón y el uso del módulo \ErrorHandler.
 
-\begin{figure}[h]
-\caption{Ejemplo de aplicación del patrón \textit{Decorator} para garantizar el cumplimiento de precondiciones.}
+\begin{figure}[H]
+\caption{Ejemplo de aplicación del patrón \textit{Decorator} \ref{anexoDecorator} para garantizar el cumplimiento de precondiciones.}
 \label{estructuraDeco}
 \begin{center}
 \begin{tikzpicture}\sf
@@ -1289,14 +1297,14 @@ computar(i: int, i: int)\\
 \umlvirt{...}
 }
 
-\umlclass[below right=2cm and -1cm of Decorador]{PrimerArgPositivo}{}
+\umlclass[below right=1.5cm and -1.5cm of Decorador]{SegundoArgPar}{}
 {
 ...\\
 computar(i: int, i: int)\\
 ...\\
 }
 
-\umlclass[below left=2cm and -1cm of Decorador]{SegundoArgPar}
+\umlclass[below left=1.5cm and -1.5cm of Decorador]{PrimerArgPositivo}
 {
 }
 {
@@ -1313,104 +1321,229 @@ computar(i: int, i: int)\\
 \umlinherit[geometry=|-|]{SegundoArgPar}{Decorador}
 \umluniaggreg[geometry=-|-,arm1=2cm,anchor1=east,anchor2=east,arg1=mecanismo,
 pos1=0.5]{Decorador}{Mecanismo}
-\umlnote[left= 1cm of SegundoArgPar,width=7cm]{SegundoArgPar}{
+
+\umlnote[below left= 1cm and -2cm of SegundoArgPar,width=8cm, geometry=-|,anchor2=-60]{SegundoArgPar}{
 computar(primero, segundo)\{ \\
 if (segundo \% 2 != 0)\{\\
-\ \ \ \	...manejar error...\\
+\ \ \ \	errorHandler.manejarError(error de argumento)\\
 \}else\{\\
 \ \ \ \	return mecanismo.computar(primero, segundo)\\
 \}\\
 }
 
-
-\end{tikzpicture}
-\end{center}
-\end{figure}
-
-
-
-
-
-
-Siguiendo esos conceptos, las precondiciones necesarias por las funciones son garantizadas desde los módulos que almacenan los datos utilizados por estas últimas. De esa manera se estaría separando la responsabilidad de verificar precondiciones de las funciones y de los clientes. Para conseguirlo se puede utilizar el patrón \textit{Proxy} al rededor de un tipo básico (un \textit{array} de \textit{ints}, por ejemplo), y de esa manera proveer múltiples funciones que permitan verificar los rangos, consistencia y demás de \textit{features} de los datos. Y en caso de detectar un problema se llamará a un módulo que cumple el rol de \textit{handler} de errores, responsable de decidir como continuar. Este uso del patrón es mencionado por Gamma en el capitulo del mismo como una posible aplicación. Es decir, realizar operaciones extras cuando se accede a un objeto. Además, comenta que se pueden agregar más funcionalidades que las que menciona Douglass, como contar la cantidad de referencias a cierto objeto con el fin de liberar la memoria si nadie lo esta referenciando, verificar si un objeto está bloqueado por otro (mutex) o controlar el acceso a la información mediante permisos.
-
-A continuación, se presenta un ejemplo en el que se dispone de un módulo denominado \textit{StockProducto}, encargado de almacenar información relacionada con el \textit{stock} de los productos. Dado que se trata de información relevante, es necesario incorporar validaciones tanto en el momento del almacenamiento como en la consulta de datos. Para el almacenamiento, se debe verificar que la cantidad ingresada no sea negativa, mientras que, al consultar, es fundamental asegurar que el usuario cuente con los permisos requeridos.
-
-\begin{figure}[H]
-\caption{Uso del patrón Proxy en el ejemplo del módulo stock y documentación del mismo.}
-\begin{center}
-\begin{tikzpicture}\sf
-\umlclass[type=abstract]{StockAbstracto}
-{
-}
-{
-    \umlvirt{getStock(): int} \\
-    \umlvirt{setStock(i: int)}
-}
-
-\umlclass[below left=2cm and -0.5cm of StockAbstracto]{StockProducto}
-{
-}
-{
-    getStock(): int \\
-    setStock(i: int)
-}
-
-\umlclass[below right=2cm and -0.5cm of StockAbstracto]{StockProxy}
-{
-}
-{
-    getStock(): int \\
-    setStock(i: int)
-}
-
-
-\umlclass[above right=1cm and 1.5cm of StockProxy]{ErrorHandler}
+\umlclass[left=1cm of PrimerArgPositivo]{ErrorHandler}
 {
 }
 {
     manejarError(i: Error)
 }
+\umluniassoc[geometry=|-|,anchor1=south,anchor2=south,arm1=-0.6cm]{SegundoArgPar}{ErrorHandler}
+\umluniassoc{PrimerArgPositivo}{ErrorHandler}
 
 
-\umluniassoc{StockProxy}{StockProducto}
-\umlinherit[geometry=|-|]{StockProxy}{StockAbstracto}
-\umlinherit[geometry=|-|]{StockProducto}{StockAbstracto}
-\umluniassoc[geometry=-|-]{StockProxy}{ErrorHandler}
+\end{tikzpicture}
+\end{center}
+\end{figure}
+\declareCMod{PrimerArgPositivo}
+\declareCMod{SegundoArgPar}
+
+
+Para utilizar el método \verb|computar| del módulo \MecanismoConcreto con la verificación de cada argumento, es necesario componerlo, en tiempo de ejecución, con todas las verificaciones de precondiciones deseadas; en este caso, \PrimerArgPositivo y \SegundoArgPar. De esta manera, el cliente ejecutará el método \verb|computar| de \PrimerArgPositivo, el cual realizará su verificación y, si es correcta, invocará el método computar del \Mecanismo que tiene compuesto, que en este caso es \SegundoArgPar. Este último hará lo mismo, pero invocando a \verb|computar| de \MecanismoConcreto. Así, se crea un encadenamiento de módulos de forma dinámica, lo que permite agregar y quitar funcionalidades con facilidad.
+
+En la solución aplicamos un patrón de diseño, por lo tanto debemos presentar la correspondiente documentación para que otros desarrolladores puedan comprender el diseño. Esta la podemos ver en la Figura \ref{docDecorator}.
+
+\begin{figure}[H]
+\caption{Documentación de la aplicación del patrón \textit{Decorator} al caso de verificación de la integridad de la información.}
+\label{docDecorator}
+\begin{pattern}[]{Módulo decorador que extiende dinámicamente las funcionalidades de otro módulo sin cambiar la implementación.}{Algorithm}{idFigAlg}
+\based{Decorador (Decorator)}
+\why{\textbf{Cambios previstos}: Pueden agregarse y quitarse métodos de verificación u otras funcionalidades.
+
+\textbf{Funcionalidad}: El módulo decorador es utilizado para extender la funcionalidad del módulo ComponenteConcreto. Antes de invocar al método de este úlitmo se ejecutan la homónima del decorador.
+}
+\assigns
+\is{Mecanismo}{Componente}
+\is{MecanismoConcreto}{ComponenteConcreto}
+\is{Decorador}{Decorador}
+\is{PrimerArgPositivo}{DecoradorConcreto}
+\is{SegundoArgPar}{DecoradorConcreto}
+
+\end{pattern}
+\end{figure}
+
+Con este diseño se añade una capa de verificación sin modificar el módulo original, lo que ofrece las siguientes ventajas:
+\begin{itemize}
+\item Se desacopla el cliente del módulo invocado, eliminando la necesidad de que el cliente verifique las precondiciones de un método antes de su ejecución.
+\item La lógica de cada verificación se encapsula en un solo módulo, manteniendo la separación de responsabilidades y facilitando su reutilización. De esta forma, la implementación del módulo original que realiza el comportamiento requerido no necesita ser modificado.
+\item El patrón \textit{decorador} permite que el sistema pueda evolucionar , permitiendo añadir nuevas funcionalidades o modificar las reglas de verificación sin afectar la implementación original. Esto hace posible, por ejemplo, implementar restricciones de acceso, límites en las operaciones sin alterar el módulo subyacente o verificaciones de integridad de la información mucho más complejas (ver Sección \ref{integridad} a continuacion).
+\end{itemize}
+
+\subsection*{Integridad de la información}
+\label{integridad}
+\declareCMod{Data}
+
+Como se ha señalado en otros ``\textit{Problemas comunes}'', el ejemplo propuesto es simplificado, pero las funcionalidades que se pueden agregar pueden ser mucho más complejas. un de ellas es la verificación la integridad de la información almacenada en el sistema.
+
+Douglass, en \cite{douglass}, sostiene que uno de los orígenes más comunes de inconvenientes relacionados con fallas de seguridad o confiabilidad es la corrupción de la información. Un pulso electromagnético o fallas en el hardware pueden causar daños en los datos, comprometiendo su integridad; por ejemplo, alterando un \gls{bit} o provocando la pérdida parcial de cierta zona de la memoria. Si los datos afectados son críticos, el problema puede derivar en un error grave del sistema. Para hacer frente a esto, existen diversas técnicas, desde el cálculo de checksums con el fin de verificar la integridad, hasta el almacenamiento de la información múltiples veces para crear redundancia.
+
+Estas técnicas suelen ser añadidas al código modificando la implementación de los métodos del módulo encargado de almacenar la información, o agregando verificaciones en las partes del código que la utilizan. Es decir, si se utiliza el módulo \Data (ver Figura \ref{dataInter}), se realiza una llamada al método \verb|getData()| para obtener la información almacenada y luego se ejecutan las validaciones necesarias para verificar su integridad. Este enfoque, sin embargo, provoca código repetido en cada llamada a \verb|getData()| y alto acomplamiento entre módulos. Por lo que, ante cualquier cambio en el formato de los datos, la estrategia de validación utilizada podría dejar de ser aplicable, lo que obligaría a modificar múltiples partes del código.
+
+\begin{figure}[H]
+\caption{Interfaz del módulo Data.}
+\label{dataInter}
+\begin{center}
+\begin{tikzpicture}\sf
+\umlclass[]{Data}
+{
+value: Dato \\
+}
+{
+    getData(): Dato \\
+    setData(i: Dato) \\
+}
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+Analizando el patrón \textit{decorator} \ref{anexoDecorator} aplicado a este \textit{problema común}, se puede intuir que es posible utilizarlo para agregar al módulo \Data la funcionalidad de verificar la integridad de la información almacenada. La solución consiste en crear un decorador para el módulo \Data que, en primer lugar, obtenga la información y luego aplique algún tipo de verificación de integridad, como el cálculo de un \gls{checksum}. En el código \ref{getData} se puede observar una posible implementación de los métodos \verb|getData()| y \verb|setData()| de este nuevo decorador, siguiendo el procedimiento mencionado.
+
+\begin{lstlisting}[caption=Implementación de los métodos getData y setData del decorador que se encarga de verificar la integridad de la información almacenada en el módulo \Data.,label={getData}]
+setData(Dato i){
+    checksum = calcularCheksum(i)
+    data.setData(dato)
+}
+
+getData() {
+    dato = data.getData()
+    if (calcularCheksum(dato) == checksum)
+        return dato
+    else
+        errorHandler(error de integridad)
+}
+\end{lstlisting}
+
+Este es otro ejemplo en el que el patrón \textit{decorator} permite la adicion de una funcionalidad a un módulo sin modificarlo.
+
+
+\section{Organización de la ejecución}
+\label{orgEjecucion}
+
+En un sistema robótico embebido se suelen ejecutar múltiples tareas para lograr un cierto objetivo. Ya sea, si se eligió seguir un estilo arquitectonico del tipo ``Control de procesos'' o no. Por lo general se debe verificar información recibida a través de sensores y otras fuentes (comunicación serial, web, etc), realizar cómputos y efectuar acciones con los actuadores presentes en el sistema en tiempo real.
+
+Una implementación simple para realizar el comportamiento mencionado, consite en crear funciones para cada parte del proceso y llamarlas en \textit{loop} desde la función \textit{main}, y si es necesario añadir un tiempo de espera entre cada ejecución mediante \textit{sleeps}. La principal desventaja que conlleva este enfoque es que los sistemas robóticos son en tiempo real, es decir, por ejemplo se pueden perder \textit{inputs} de sensores si no se los maneja de manera correcta. Además, los tiempos de espera son bloqueantes por lo que se desperdicia acceso a computo.
+
+Una estrategia para mejorar estos puntos consiste en utilizar las interrupciones del microcontrolador, lo que permite atender a todas las señales de entrada y a los eventos del entorno en tiempo real. En particular, en el diseño del robot desmalezador \cite{paperPomponio}, las interrupciones se utilizan en conjunto con un estilo arquitectónico de control de procesos \ref{arqControlProc}. El sistema resultante posee tres tareas principales:
+
+\begin{itemize}
+    \item Recibir información de los sensores y de la PC (por ejemplo, a traves del puerto serial).
+    \item Procesar la información recibida y decidir que valores aplicar en los actuadores.
+    \item Aplicar los nuevos valores a los actuadores. Notar que no es tan simple como configurar un número y dejar que actúe, en muchos casos se necesita un seguimiento durante el tiempo.
+\end{itemize}
+
+De las tareas que se tienen, dos deben ser llamadas por el sistema y la otra (recibir información) en muchos casos se dará en forma de interrupciones que el sistema debe atender. Ya se comentó de ese proceso en la sección \nameref{obtInfo}, solo es importante recordar que la estructura propuesta provee una interfaz la cual se puede invocar para obtener la información recibida de manera simple. Una vez resuelta esa cuestión ahora se deben atender las otras dos tareas, dado que se quieren hacer los ajustes cada determinado tiempo, se propone crear una nueva interrupción que sea disparada de manera periódica y que su manejador se encargue de realizar todo el proceso de control y cálculo. En el manejo de esa interrupción, se accederá a la interfaces propuestas para obtener información de los sensores. Y por último, para los actuadores que necesitan un seguimiento temporal para su control, se agrega una nueva interrupción que puede ser individual para el actuador y el tiempo de disparo puede estar determinado de manera particular.
+
+Como se puede deducir, el uso de interrupciones es abundante en sistemas de tiempo real y de control. Por lo tanto, resulta imprescindible tener un buen manejo de ellas. Las interrupciones, como su nombre indica, detienen la ejecución normal de un programa para atender a un evento. Una vez que este manejo finaliza, la ejecución continúa en el punto donde fue interrumpida (más información referida a interrupciones en la Sección \ref{secInterrupciones}).
+
+Cuando una interrupción es interrumpida por otra, el sistema prioriza la más reciente, ejecutándola primero y reanudando después las anteriores. Un problema común y evitable surge con las interrupciones periódicas: si el tiempo de manejo de una interrupción es mayor que el intervalo de su disparo, por ejemplo, si un temporizador la genera cada \textit{x} segundos, pero su manejo tarda más de \textit{x} segundos, se produce una situación en la que la ejecución nunca finaliza hasta que se desactive el \textit{timer} que lanza las interrupciones. Además de que la ejecución pueda no completarse, el sistema puede adoptar un estado inconsistente. Por ejemplo, en un ciclo de control, si el sistema lee información, la procesa y luego aplica un cambio en los actuadores, una nueva interrupción puede ocurrir antes de que el ciclo concluya. En tal caso, la etapa de aplicación nunca se ejecuta, lo que provoca que el sistema no haga nada.
+
+Los problemas de concurrencia de este tipo son difíciles de detectar y corregir, por lo que es útil contar con herramientas para evitarlos. Una forma común de hacerlo es apagando las interrupciones del \gls{MCU} al comenzar el manejo de una interrupción. No obstante, esto no es ideal, ya que se perderían interrupciones no periódicas que sí se desean manejar. Otra opción es eliminar o desuscribir el manejador de la interrupción al comenzar su ejecución, aunque es crucial recordar volver a agregarlo para que el próximo ciclo se ejecute.
+
+Desde la \gls{IS}, resulta interesante proponer un diseño para evitar este problema. Para ello, se aplicará el patrón \textit{State} \ref{anexoState} para representar dos estados posibles en relación con el manejo de una interrupción: \textbf{Activo} (disponible para manejar la interrupción) e \textbf{Ignorar} (el estado responsable de ignorar interrupciones mientras una está siendo manejada). De este modo, cuando el manejo de una interrupción comience, el estado cambiará a \textbf{Ignorar}, lo que hará que cualquier nueva llamada al manejador resulte en un retorno rápido. Una vez que la ejecución del manejo finalice, el estado volverá a cambiar, permitiendo el manejo de nuevas llamadas a la interrupción.
+
+Veamos ahora la estrucura de módulos subyacente a esta solución en la Figura \ref{estructuraInterrup}.
+
+\begin{figure}[H]
+\caption{Ejemplo de handler usando \textit{State} con su correspondiente documentación.}
+\label{estructuraInterrup}
+\begin{center}
+\begin{tikzpicture}\sf
+
+
+\umlclass[type=abstract]{Estado}
+{
+}
+{
+    \umlvirt{manejarInt(i: Manejador)} \\
+}
+
+\umlclass[left=2cm of Estado]{Manejador}
+{
+}
+{
+    manejarInt() \\
+    cambiarEstado(i: Estado)
+}
+
+\umlclass[below right=2cm and -2cm of Estado]{Ignorar}
+{
+}
+{
+    manejarInt(i: Manejador) \\
+}
+
+\umlclass[below left=2cm and -2cm of Estado]{Activo}
+{
+Activo(i: Ignorar)
+}
+{
+    manejarInt(i: Manejador) \\
+}
+
+\umlnote[below left=1cm and -1.5cm of Ignorar,width=5cm]{Ignorar}{
+manejarInt(Manejador m) \{ \\
+\ \ \ \ return\\
+\}
+}
+
+\umlnote[left=1.5cm of Activo,width=5cm]{Activo}{
+manejarInt(Manejador m) \{ \\
+\ \ \ \ m.cambiarEstado(ignorar)\\
+\ \ \ \ \textit{manejo normal}\\
+\ \ \ \ m.cambiarEstado(this) \\
+\}
+}
+
+
+\umluniaggreg{Manejador}{Estado}
+\umlinherit[geometry=|-|]{Ignorar}{Estado}
+\umlinherit[geometry=|-|,arm1=2.17cm]{Activo}{Estado}
+
+
 
 \end{tikzpicture}
 \end{center}
 
-\begin{pattern}[]{Acceso seguro stock de productos}{Algorithm}{idFigAlg}
-\based{Proxy (Apoderado)}
-\why{\textbf{Cambios previstos}: Las diferentes precondiciones a cumplir pueden variar con el tiempo.
 
-\textbf{Funcionalidad}: Controlar el acceso al stock, en particular con el fin de preservar la integridad.
-}
-\assigns
-\is{StockAbstracto}{Sujeto}
-\is{StockProducto}{SujetoReal}
-\is{StockProxy}{Proxy}
-
-\end{pattern}
 
 \end{figure}
-\textbf{ErrorHandler} decide como manejar el error, esto puede ser desde loggearlo, terminar la ejecución del sistema, ignorarlo, etc. Dos tipos de estrategias comunes al tratar con errores son:
-\begin{itemize}
-    \item Reset de componentes: reiniciar o restablecer componentes defectuosos ayuda a borrar errores y restaurarlos a un estado funcional.
-    \item Degradación elegante \cite{glass2009graceful} permite que el sistema siga funcionando a una capacidad reducida en lugar de fallar por completo. Esto implica deshabilitar las funciones que funcionan mal o cambiar a copias de seguridad, por lo que el sistema continúa funcionando con una funcionalidad limitada en lugar de apagarse por completo.
-\end{itemize}
+
+\begin{figure}
+
+\begin{pattern}[]{Control de manejo de interrupciones}{Algorithm}{idFigAlg}
+\based{State (Estado)}
+\why{\textbf{Cambios previstos}: Agregar, quitar o editar estados de manejo de la interrupción.
+
+\textbf{Funcionalidad}: Configura el estado actual de manejo de una interrupción a fin de que una interrupción corte la ejecución de otra.
+}
+\assigns
+\is{InterruptionHandler}{Contexto}
+\is{State}{Estado}
+\is{Working}{EstadoConcreto}
+\is{Waiting}{EstadoConcreto}
+
+\end{pattern}
+\end{figure}
 
 
-Con este diseño añadimos una capa de verificación sin modificar el módulo original, ya que \verb|getStock| y \verb|setStock| de \textit{StockProxy} van a realizar la verificación indicada y luego si todo es correcto invocarán los métodos de \textit{StockProducto}. Con esto conseguimos las siguientes ventajas:
+Notar que esta estrategia explota la capacidad de manejar interrupciones del microcontrolador, por lo tanto es necesario que este las soporte para llevarla a cabo.
 
-\begin{itemize}
-    \item Encapsular la lógica de validación y control de acceso en un solo lugar, sin necesidad de modificar el módulo original que gestiona los datos. Facilitando la reutilización y la separación de responsabilidades.
+Al aplicar el suo de interrupciones junto con patrones de diseño como State, el sistema embebido de control robótico adquiere una estructura más robusta, eficiente y mantenible. Se logran superar las limitaciones del enfoque secuencial simple, evitando la pérdida de información crítica proveniente de sensores y eliminando los tiempos de espera bloqueantes. Además, la modularización del comportamiento en tareas bien definidas, combinada con la sincronización mediante interrupciones periódicas y específicas, permite un control más preciso y en tiempo real de los actuadores. Este enfoque no solo mejora la capacidad de respuesta del sistema, sino que también facilita la extensión y modificación del software frente a nuevos requerimientos, en línea con los principios del diseño orientado al cambio.
 
-    \item Centraliza el control sobre cómo y cuándo se accede o modifica el dato sensible. Esto facilita la implementación de reglas de negocio más complejas, como la validación de entradas, sin tener que modificar cada parte del código que interactúa con \textbf{StockProducto}.
 
-    \item Extender funcionalidades, el proxy puede evolucionar independientemente del modulo SujetoReal (ver \ref{patronProxy}), añadiendo nuevas funciones o cambiando las reglas de validación sin afectar la implementación original del módulo que contiene los datos. Por ejemplo, se pueden implementar restricciones de acceso, límites en las operaciones permitidas o incluso operaciones en diferido, sin necesidad de modificar el objeto real.
-\end{itemize}
+
+
+
 
 \section{Control en conjunto de dispositivos}
 Muchas aplicaciones embebidas robóticas controlan \gls{actuadores} que deben trabajar en conjunto para lograr el efecto deseado. Por ejemplo, para conseguir mover de manera coordinada un brazo robótico con múltiples articulaciones, todos los motores deben trabajar a la par. De manera similar, el uso de propulsores en una nave espacial en tres dimensiones requiere que muchos de estos dispositivos actúen en el momento preciso y con la cantidad correcta de fuerza para lograr la estabilidad necesaria. En ambos casos existe comunicación entre todos los componentes, ya sea para encadenar la ejecución de ciertos movimientos o para avisar de restricciones. Esto no es tarea simple y requiere de muchas lineas de código, por lo que un diseño orientado al cambio resulta clave.
@@ -2374,103 +2507,4 @@ En la figura \ref{codDeco} se observa un ejemplo de implementación de los méto
 
 De esta forma, aplicando el patron \textit{decorator} se logra añadir una capa de protección a la integridad de la información, a su vez permite combinar diferentes técnicas usando este patrón.
 
-
-\section{Organización de la ejecución}
-\label{orgEjecucion}
-
-En un sistema robótico embebido se suelen ejecutar múltiples tareas para lograr un cierto objetivo. Ya sea, si se eligió una arquitectura de diseño de tipo ``Control de procesos'' o no, por lo general se debe verificar información recibida a través de sensores y otras fuentes (comunicación serial, web, etc), realizar cómputos y efectuar acciones con los actuadores presentes en el sistema en tiempo real.
-
-Una implementación simple para realizar el comportamiento mencionado, consite en crear funciones para cada parte del proceso y llamarlas en \textit{loop} desde la función \textit{main}, y si es necesario añadir un tiempo de espera entre cada ejecución mediante \textit{sleeps}. La principal desventaja que conlleva este enfoque es que los sistemas robóticos son en tiempo real, es decir, por ejemplo se pueden perder \textit{inputs} de sensores si no se los maneja de manera correcta. Además, los tiempos de espera son bloqueantes por lo que se desperdicia acceso a computo.
-
-Una estrategia que logra mejorar estos puntos consta de hacer uso de las interrupciones del microcontrolador permitiendo atender a todos los \textit{inputs} y eventos del mundo real. En el robot desmalezador \cite{paperPomponio} se utiliza esta estrategia en conjunto con una \nameref{arqControlProc}, por lo tanto existen 3 tareas principales:
-
-\begin{itemize}
-    \item Recibir información de los sensores y de la PC (por ejemplo, a traves del puerto serial).
-    \item Procesar la información recibida y decidir que valores aplicar en los actuadores.
-    \item Aplicar los nuevos valores a los actuadores. Notar que no es tan simple como configurar un número y dejar que actúe, en muchos casos se necesita un seguimiento durante el tiempo.
-\end{itemize}
-
-De las tareas que se tienen, dos deben ser llamadas por el sistema y la otra (recibir información) en muchos casos se dará en forma de interrupciones que el sistema debe atender. Ya se comentó de ese proceso en la sección \nameref{obtInfo}, solo es importante recordar que la estructura propuesta provee una interfaz la cual se puede invocar para obtener la información recibida de manera simple. Una vez resuelta esa cuestión ahora se debe ejecutar las otras dos tareas, dado que se quieren hacer los ajustes cada determinado tiempo, se propone crear una nueva interrupción que sea disparada de manera periódica y que su \textit{handler} se encargue de realizar todo el proceso de control y cálculo. En el manejo de esa interrupción, se accederá a la interfaces propuestas para obtener información de los sensores. Y por último, para los actuadores que necesitan un seguimiento temporal para su control, se agrega una nueva interrupción que puede ser individual para el actuador y el tiempo de disparo puede estar determinado de manera particular.
-
-Tener interrupciones periódicas puede general una bola de nieve de ejecución si el manejo de una tarda más que el tiempo entre disparos. Para prevenirlo se propone aplicar el patrón \textit{State}, haciendo que cuando se comience a manejar la interrupción cambie el estado y toda nueva llamada al \textit{handler} resulte en un retorno rápido (solo \textit{return}). Una vez terminada la ejecución de este ciclo se cambia el estado otra vez permitiendo la ejecución de nuevos llamados. Un ejemplo de la estructura de módulos subyacente a esta solución es la que se puede ver en la figura \ref{estructuraInterrup}, seguida de la documentación del uso del patrón \textit{State}.
-
-\begin{figure}[H]
-\caption{Ejemplo de handler usando \textit{State} con su correspondiente documentación.}
-\label{estructuraInterrup}
-\begin{center}
-\begin{tikzpicture}\sf
-
-
-\umlclass[type=abstract]{State}
-{
-}
-{
-    \umlvirt{handInterruption()} \\
-}
-
-\umlclass[left=2cm of State]{InterruptionHandler}
-{
-}
-{
-    handInterruption() \\
-    changeState(i: State)
-}
-
-\umlclass[below left=2cm and -1cm of State]{Working}
-{
-}
-{
-    handInterruption() \\
-}
-
-\umlclass[below right=2cm and -1cm of State]{Waiting}
-{
-}
-{
-    handInterruption() \\
-}
-
-\umlnote[above right=1cm and -1.5cm of Waiting]{Waiting}{
-handInterruption() \{ \\
-\ \ \ \ return()\\
-\}
-}
-
-\umlnote[left=1.5cm of Working,width=4cm]{Working}{
-handInterruption() \{ \\
-\ \ \ \ \textit{comportamiento}\\
-\}
-}
-
-
-\umluniaggreg{InterruptionHandler}{State}
-\umlinherit[geometry=|-|]{Working}{State}
-\umlinherit[geometry=|-|]{Waiting}{State}
-
-
-
-\end{tikzpicture}
-\end{center}
-
-
-\begin{pattern}[]{Control de manejo de interrupciones}{Algorithm}{idFigAlg}
-\based{State (Estado)}
-\why{\textbf{Cambios previstos}: Agregar, quitar o editar estados de manejo de la interrupción.
-
-\textbf{Funcionalidad}: Configura el estado actual de manejo de una interrupción a fin de que una interrupción corte la ejecución de otra.
-}
-\assigns
-\is{InterruptionHandler}{Contexto}
-\is{State}{Estado}
-\is{Working}{EstadoConcreto}
-\is{Waiting}{EstadoConcreto}
-
-\end{pattern}
-
-\end{figure}
-
-
-Notar que esta estrategia explota la capacidad de manejar interrupciones del microcontrolador, por lo tanto es necesario que este las soporte para llevarla a cabo.
-
-Al aplicar el suo de interrupciones junto con patrones de diseño como State, el sistema embebido de control robótico adquiere una estructura más robusta, eficiente y mantenible. Se logran superar las limitaciones del enfoque secuencial simple, evitando la pérdida de información crítica proveniente de sensores y eliminando los tiempos de espera bloqueantes. Además, la modularización del comportamiento en tareas bien definidas, combinada con la sincronización mediante interrupciones periódicas y específicas, permite un control más preciso y en tiempo real de los actuadores. Este enfoque no solo mejora la capacidad de respuesta del sistema, sino que también facilita la extensión y modificación del software frente a nuevos requerimientos, en línea con los principios del diseño orientado al cambio.
 
