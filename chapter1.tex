@@ -1601,10 +1601,11 @@ El diseño del código parece estar orientado a cumplir con un objetivo específ
 A continuación se describirá un ejemplo extraído de \cite[Sección. 3.4]{douglass},s e explicará la solución prouesta en el mismo libro y luego se propondrá una solución orientada al cambio.
 
 \subsubsection*{Requisitos del sistema de control de un brazo robótico}
+\label{requisitos}
 
-Se necesita desarrollar el software de control de un brazo robótico que consta de tres \gls{actuadores}, dos motores paso a paso (uno para rotar en su base y otro para extender o retraer el brazo) y una pinza que se puede cerrar o abrir. En le Figura \ref{brazoEsquema} podemos observar un esquema del hardware. Para controlar el comportamiento del brazo, se provee una función compleja la cual toma coordenadas en el espacio y devuelve una secuencia de pasos para que el brazo tome un objeto en la posición determinada por las coordenadas. Cada paso consta de una orden para cada actuador del brazo robótico. Estos se deben ejecutar de manera secuencial, es decir que el paso número dos empezará su ejecución solo si el primero culminó completamente y con éxito. En caso de que las coordenadas sean inalcanzables la función devuelve cero pasos. Si se produce un error durante la ejecución de un paso, se detiene la ejecución del sistema.
+Se necesita desarrollar el software de control de un brazo robótico que consta de tres \gls{actuadores}, dos \glspl{pasoapaso} (uno para rotar en su base y otro para extender o retraer el brazo) y una pinza que se puede cerrar o abrir. En le Figura \ref{brazoEsquema} podemos observar un esquema del hardware. Para controlar el comportamiento del brazo, se provee una función compleja la cual toma coordenadas en el espacio y devuelve una secuencia de pasos para que el brazo tome un objeto en la posición determinada por las coordenadas. Cada paso consta de una orden para cada actuador del brazo robótico. Estos se deben ejecutar de manera secuencial, es decir que el paso número dos empezará su ejecución solo si el primero culminó completamente y con éxito. En caso de que las coordenadas sean inalcanzables la función devuelve cero pasos. Si se produce un error durante la ejecución de un paso, se detiene la ejecución del sistema.
 
-Controlar motores paso a paso es más complejo de lo que parece. Habitualmente, se gestionan con dos funciones: una que define el sentido de giro y otra que ordena dar un solo paso. La longitud de cada paso viene determinada por el hardware del motor. Por lo tanto, para lograr movimientos más largos, se deben ejecutar múltiples pasos, lo que requiere un control exhaustivo del software. Este es un requerimiento implicito que el sistema tiene y debemos abarcar.
+Controlar \glspl{pasoapaso} es más complejo de lo que parece. Habitualmente, se gestionan con dos funciones: una que define el sentido de giro y otra que ordena dar un solo paso. La longitud de cada paso viene determinada por el hardware del motor. Por lo tanto, para lograr movimientos más largos, se deben ejecutar múltiples pasos, lo que requiere un control exhaustivo del software. Este es un requerimiento implicito que el sistema tiene y debemos abarcar.
 
 \begin{figure}[h]
 \caption{Esquema del brazo robótico.}
@@ -1620,7 +1621,7 @@ El ejemplo que plantea el libro es similar al descrito, pero el brazo robótico 
 
 El comportamiento del sistema comienza con la generación de una lista de pasos a realizar. Luego, se itera sobre esta lista ejecutando las acciones definidas en cada paso. Como el sistema debe interrumpir la ejecución si encuentra un error, el \textbf{RobotArmManager} verifica el valor de retorno tras cada acción. La ejecución de un movimiento completo finaliza cuando se completan todos los pasos generados previamente por la función compleja que se mencionó en los requerimientos. En este caso es llamada \verb|graspAt(i: Coordenadas)|.
 
-La solución propuesta parece estar un nivel de abstracción por encima de lo que se esperaría para este caso. Aunque no hay suficiente información sobre el hardware del brazo robótico, sabemos que utilizar motores paso a paso no es tan simple como invocar un método. Este proceso suele requerir el control continuo, operando mediante pulsos que hacen que el motor avance un paso. Por lo tanto, los módulos encargados de los movimientos probablemente tengan más responsabilidades de las que se plantean en el libro. Esto va en contra de las prácticas de la \gls{IS}, que establecen que un módulo debe ocultar un solo elemento de cambio. Además, sería necesario implementar un sistema de control más complejo, utilizando algún tipo de \textit{timer} o espera, para garantizar que el motor paso a paso tenga el tiempo necesario para actuar.
+La solución propuesta parece estar un nivel de abstracción por encima de lo que se esperaría para este caso. Aunque no hay suficiente información sobre el hardware del brazo robótico, sabemos que utilizar \glspl{pasoapaso} no es tan simple como invocar un método. Este proceso suele requerir el control continuo, operando mediante pulsos que hacen que el motor avance un paso. Por lo tanto, los módulos encargados de los movimientos probablemente tengan más responsabilidades de las que se plantean en el libro. Esto va en contra de las prácticas de la \gls{IS}, que establecen que un módulo debe ocultar un solo elemento de cambio. Además, sería necesario implementar un sistema de control más complejo, utilizando algún tipo de \textit{timer} o espera, para garantizar que el \gls{pasoapaso} tenga el tiempo necesario para actuar.
 
 De todas formas, suponiendo que los módulos mencionados se adaptan al hardware subyacente, la manera en la que el \textbf{RobotArmManager} interactúa con ellos es rígida, tanto por la invocación directa como por la dependencia del valor de retorno. Esto se evidencia en el código resultante, que incluye múltiples sentencias if consecutivas \cite[Pág. 107]{douglass}. Esta estructura provoca que, ante un cambio en el comportamiento de los módulos que interactúan con el hardware, el \textbf{RobotArmManager} pueda verse afectado, lo que requeriría una modificación en su implementación.
 
@@ -1644,20 +1645,80 @@ La estructura construida por Douglass es similar al patrón y logra el objetivo 
 \subsection*{Subsistemas de control}
 \addcontentsline{toc}{subsection}{Subsistemas de control}
 
-Para dar la solución orientada al cambio que se propone en este trabajo, primero se introducirá el concepto de \textbf{Subsistema de control}. El cual fue extraído del trabajo realizado en el robot desmalezador \citep{paperPomponio} y se utilizará como diseño de referencia.
+Para dar la solución orientada al cambio que se propone en este trabajo, primero se introducirá el concepto de lo que llamaremos \textbf{Subsistema de control}. El cual fue extraído del trabajo realizado en el robot desmalezador \citep{paperPomponio} y se utilizará como diseño de referencia.
 
-Un subsistema de control es una estructura de módulos relacionados mediante herencia, composición o invocación, que responde al control de una propiedad física particular del sistema embebido de control en el que se va a aplicar. Para hacerlo lleva a cabo todas las tareas de la arquitectura de \nameref{arqControlProc} en el nivel conceptual de módulos. 
+En un sistema complejo donde se controlan múltiples propiedades físicas, el sistema se divide en subsistemas. Cada subsistema controla una propiedad específica y se organiza según el estilo arquitectónico de control de procesos \ref{arqControlProc}. De esta manera, se logra independencia entre el control de cada propiedad, lo que prepara al sistema para cambios individuales en el control de cada una de ellas. Además, se promueve la reutilización del código, ya que un subsistema de control diseñado para manejar una propiedad específica puede aplicarse en diferentes escenarios o sistemas.
 
-A fin de aplicar la arquitectura de software de control de procesos, se propone la creación de un \textit{subsistema de control} por cada variable a manipular\footnote{Ver tabla conceptos arquitectura Control de Procesos \ref{tab:conceptosArq}} que sea necesaria controlar por el sistema. Para permitir la interacción con un cliente externo debe proveer una interfaz que permita setear un valor al que se quiera llevar la propiedad (\textit{setPoint} (ver tabla \ref{tab:conceptosArq})) y que indique el comienzo de la tarea de control. Un subsistema tiene una estructura similar a la de la arquitectura \ref{fig:arqCtrlRobot}, pero su alcance estará restringido a la variable a manipular y las variables medidas relacionadas. En la figura \ref{modulosSub} se puede observar de manera concreta los módulos que forman parte de cada componente de un subsistema.
-
+Estos subsistemas de control son una estructura de módulos relacionados mediante herencia, composición o invocación. Cuyo trabajo es lograr que cierta propiedad fisica alcance el valor deseado. Para hacerlo interactua con la variable a manipular y las variables medidas relacionadas. En la Figura \ref{modulosSub} se puede observar de manera concreta los módulos que forman parte de cada componente de un subsistema. Para permitir la interacción con un cliente externo deben proveer una interfaz que permita establecer un valor al que se quiera llevar la propiedad (ver \textit{setPoint} en la Tabla \ref{tab:conceptosArq}) y que indique el comienzo de la tarea de control.
 
 \begin{figure}[H]
-\caption{Módulos de un subsistema de control.}
+\caption{Módulos de un subsistema de control y el componente al que pertenencen.}
 \label{modulosSub}
 \begin{center}
 \begin{tikzpicture}\sf
 
-\umlclass[]{Control}
+\tikzstyle{moduloL}=[minimum width=3cm, minimum height=1.5cm,inner sep=2mm,above right,draw,align=center, font=\scshape] 
+
+\tikzstyle{supest}=[rounded corners=1.5mm, minimum width=2cm,inner sep=2mm,draw,text width=2cm]
+
+\tikzstyle{nombre}=[inner sep=0mm, font=\bfseries]
+
+\tikzstyle{pipe}=[-latex,thick,line width=4pt]
+
+\tikzstyle{nombreLogico}=[inner sep=0mm, font=\scshape, minimum width=1.5cm]
+
+%---figura control-----
+\tikzstyle{ctrl}=[shape=circle,draw,minimum width=2.5cm,text width=2cm, inner sep=2, align=center,font=\scshape];
+
+
+%----figura de sensor---
+\tikzstyle{sensor}=[draw,circle, minimum width=1cm,after node path={(\tikzlastnode) circle (0.2cm)}]
+% se usa así: \draw node[sensor]{};
+
+%---------------------------------------
+%---control del proceso rueda----
+\node[ctrl, text width=1.8cm] (0,0) (controlR){Control};
+%
+\node[moduloL, below=2cm of controlR, minimum width=3cm](procesoArq){Proceso};
+%%
+\draw node[sensor, below=2cm of procesoArq](sensorCte){};
+%%
+%%%puntos para hacer las flechas de las señales hacia los sensores
+\node[below=4.5cm of procesoArq](pto2){};
+%%
+\draw[dashed, -latex](procesoArq)--(pto2);
+%%
+\node[nombreLogico, below left=-0.1cm and 0.1cm of sensorCte, text width=1.5cm]{Sensor};
+%%
+%%%---pipes
+\draw[pipe] (sensorCte.west) -| (-2.3,-4) |- (controlR.west);
+
+%
+%%
+\path let \p1 = (controlR) in
+  \draw[-latex](\x1-4,\y1+1) -- node[at start, yshift=10pt, xshift=15pt]{\normalsize set point}(controlR.125);
+  
+\path let \p1 = (controlR) in
+  \draw[*-latex](\x1-4,\y1+0) -- node[at start, yshift=10pt, xshift=15pt]{\normalsize evento}(controlR.165);
+ 
+%\draw[-latex](controlR) -- node[midway, right] (procesoArq);
+\draw[-latex] (controlR) -- (procesoArq);
+
+
+%%
+\node[below left=0.7cm and -0.7cm of controlR, text width=1.3cm]{};
+\node[below right=0.7cm and -0.5cm of controlR, text width=1.3cm]{};
+%%
+%
+
+\draw[dash pattern=on 6pt off 2pt on 2pt off 2pt] (-3, -2.4) -- (13, -2.4);
+\draw[dash pattern=on 6pt off 2pt on 2pt off 2pt] (-3, -5.7) -- (13, -5.7);
+\draw[dash pattern=on 6pt off 2pt on 2pt off 2pt] (2, 3) -- (2, -10);
+
+
+
+
+\umlclass[right=1.25cm of controlR]{Control}
 {}
 {setPoint(i: Measure)\\
 control() \\
@@ -1666,49 +1727,43 @@ setAlgoritmo(i: Algoritmo) \\
 setConnection(i: Pipe)
 }
 
-\umlclass[below=6cm of Control]{Sensor}
+\umlclass[right=2cm of sensorCte]{Sensor}
 {}
 {setConnection(i: Pipe) \\
 signal()
 }
-\umlnote[below left=-1cm and 1cm of Sensor,width=4cm]{Sensor}{
+\umlnote[below=1cm of Sensor,width=4cm]{Sensor}{
 signal()\{ \\
 \ \ \ \ value = getValue()\\
 \ \ \ \ pipe.write(value)\\
 \}
 }
 
-\umlclass[below=3cm of Control]{Actuador}
-{}
-{actuar()
-}
-\umlclass[left=2cm of Actuador]{Pipe}
+
+\umlclass[right=1cm of procesoArq]{Pipe}
 {}
 {read(): Measure \\
 write(i: Measure)
 }
 
+\umlclass[right=3cm of Pipe]{Actuador}
+{}
+{actuar()
+}
 
-\umlnote[below right=0.5cm and 2cm of Actuador, width=5cm]{Actuador}{
+
+\umlnote[below=1.5cm of Actuador, width=5cm]{Actuador}{
 Por lo general se desacopla usando el patrón \textit{command} y su uso puede ser más complejo que solo ejecutar una función.
 }
 
 
 
-\umlclass[above right=-1cm and 2cm of Control]{Algoritmo}
+\umlclass[right=1.5cm of Control]{Algoritmo}
 {}
 {calcular(): Measure
 }
-\umlclass[below right=-1.5cm and 2cm of Control]{Data}
-{}
-{setSetPoint(i: Measure) \\
-getSetPoint(): Measure \\
-setCurrent(i: Measure) \\
-getCurrent(): Measure
-}
 
-\umluniaggreg[anchor1=10,anchor2=west]{Control}{Algoritmo}
-\umluniaggreg[anchor1=-10,anchor2=west]{Control}{Data}
+\umluniaggreg[]{Control}{Algoritmo}
 
 \end{tikzpicture}
 \end{center}
@@ -1716,76 +1771,128 @@ getCurrent(): Measure
 
 Los módulos principales son los siguientes:
 
+\declareCMod{Control}
+\declareCMod{Algoritmo}
+\declareCMod{Pipe}
+\declareCMod{Actuador}
+\declareCMod{Sensor}
+
+
 \begin{itemize}
-\item \textbf{Control}: encargado de proveer una interfaz a clientes desde la cual se realizan todas las tareas referidas al control.
-\item \textbf{Actuador}: encapsula el dispositivo de hardware que manipula la variable física.
-\item \textbf{Sensor}: encapsula el dispositivo de hardware utilizado para recibir información del mundo físico, pueden existir múltiples sensores.
-\item \textbf{Pipe}: módulo utilizado para desacoplar la comunicación entre \textbf{Control} y los sensores.
+\item \Control: encargado de proveer una interfaz a clientes desde la cual se realizan todas las tareas referidas al control.
+\item \Actuador: encapsula el dispositivo de hardware que manipula la variable física.
+\item \Sensor: encapsula el dispositivo de hardware utilizado para recibir información del mundo físico, pueden existir múltiples sensores.
+\item \Pipe: módulo que se ubica entre \Control y los sensores tiene un funcionamiento sencillo, ofrece dos métodos: uno para escribir y otro para leer. De esta manera, un módulo escribe y otro lee, lo que permite comunicación entre ellos sin necesidad de invocación directa. Encapsula la comunicación entre módulos.
 \end{itemize}
 
+Una vez decidido el valor deseado o \textit{set-point} al cual se busca aproximar la variable física, se puede comenzar a ejecutar el ciclo de control. Este será invocado de manera periódica mediante un temporizador. Siguiendo el estilo arquitectónico de control de procesos, se define que un ciclo de control consta de los pasos mostrados en el Código \ref{usoSubsistema}. En primer lugar, se establece el set-point utilizando el método \verb|setPoint(i: Measure)| de \Control. Luego, se indica a \Sensor que escriba en \Pipe el valor de la variable medida. En la línea 3, se solicita a \Control que lea dicho valor y, una vez recuperado, pueda decidir qué cambios aplicar en \Actuador. De esta manera, luego de una serie de iteraciones se espera que la variable física se encuentre más cerca del \textit{set-point}.
 
-La manera en la que un \textit{cliente} utiliza el subsistema para lograr que la propiedad que controla se ubique en el valor que se desea es de la indicada en el código \ref{usoSubsistema}. Primero se configura el \textit{set-point} deseado, luego se  una señal a los sensores para que escriban en el pipe los valores leídos, luego se lee la información y se indica el ciclo de control invocando \verb|control|.
-
-\begin{lstlisting}[caption=Ejemplo de uso del subsistema.,label={usoSubsistema},style=seudocode]
+\begin{lstlisting}[caption=Ejemplo de uso del subsistema.,label={usoSubsistema}]
 control.setPoint(valorDeseado)
 sensor.signal()
 control.connectionRead()
 control.control()
 \end{lstlisting}
 
-Notar que en \ref{modulosSub} aparecen algunos módulos que no fueron mencionados anteriormente, por un lado \textbf{Algoritmo} el cual se encarga de los cálculos necesario para determinar de que manera aplicar un cambio con el/los actuadores. Determina si se llego o no al \textit{set-point} y a su vez define qué cambio es necesario aplicar para llegar al mismo. En el ámbito de la robótica se aplican diferentes técnicas de estabilización\footnote{La estabilización es crucial para evitar oscilaciones, reducir el tiempo de respuesta y minimizar sobrepasos, garantizando un control preciso y eficiente. Un sistema bien ajustado responde de manera estable ante perturbaciones externas y optimiza el consumo energético, mejorando la fiabilidad y el desempeño en aplicaciones como robótica y automatización.} de variables físicas, las cuales permiten alcanzar un cierto \textit{set-point} y mantenerse en el, por ejemplo, los controladores \gls{PID}\cite{pidlibro} (controlador proporcional, integral y derivativo). Los cuales representan un mecanismo de control que, a través de un lazo de retroalimentación, permiten manejar una variable física. Este tipo de técnicas puede ser usada siguiendo la arquitectura propuesta y, en particular, los cálculos asociados se definirían en este módulo \textbf{Algoritmo}.
+Notar que en la Figura \ref{modulosSub} aparece un módulo que no fue mencionado anteriormente, \Algoritmo el cual se encarga de los cálculos necesarios para determinar de qué manera accionar sobre el o los actuadores. \Control delega en \Algoritmo la tarea de realizar los computos. Si el algoritmo cambia (recordar que es un item de cambio probable \ref{listaItems}) solo ese módulo se ve afectado. Si se definió correctamente la interfaz, solo se agrega otro módulo con el nuevo algoritmo. No es necesario modificar el módulo \Control.
 
-Por otro lado, \textbf{Data} desacopla el almacenamiento de información relacionada al subsistema. En el caso más básico solo se almacena el \textit{set-point}, pero puede agregarse todo lo necesario, incluso llevar registro de los valores actuales y pasados de cada variable de interés.
+En el ámbito de la robótica se aplican diferentes técnicas de estabilización\footnote{La estabilización es crucial para evitar oscilaciones, reducir el tiempo de respuesta y minimizar sobrepasos, garantizando un control preciso y eficiente. Un sistema bien ajustado responde de manera estable ante perturbaciones externas y optimiza el consumo energético, mejorando la fiabilidad y el desempeño en aplicaciones como robótica y automatización.} de variables físicas, las cuales permiten alcanzar un cierto \textit{set-point} y mantenerse en el, por ejemplo, los controladores \gls{PID}\cite{pidlibro} (controlador proporcional, integral y derivativo). Este tipo de técnicas puede ser usada siguiendo la estructura módular propuesta y, en particular, los cálculos asociados se definirían en este módulo \Algoritmo.
 
-Ahora, para brindar un comportamiento más complejo, es posible que el control necesite realizar múltiples ciclos para ajustar la variable al valor deseador, como pasa cuando se manejan motores paso a paso (luego se expandirá esto en un ejemplo). ¿Cómo se puede adaptar la estructura propuesta para dar soporte a esta característica? Se necesitan dos modificaciones/adiciones, por un lado, una interrupción de control que llame a cierto método del módulo \textbf{Control} cada determinado tiempo (tiempo del ciclo), generalmente resuelto con una interrupción \textit{temporizada} y por el otro, se debe añadir la noción de estado al módulo de control. De modo que existan dos estados básico, en espera, cuando no se esta realizando un ciclo de control y trabajando, cuando se haya establecido un \textit{set-point} y se este activamente trabajando para llegar a él. Para hacerlo se hace uso de un nuevo método y el patrón \textit{state}\footnote{El uso de este patrón está explicada en la sección \nameref{cap:state}.} y se obtiene el esquema \ref{controlState} (en \ref{docStateControl} se encuentra la documentación de la aplicación del patrón).
+\declareCMod{ControlSeguimiento}
+
+Como se mencionó previamente, cuando se presentó el ejemplo extraído de \citep{douglass}, los \glspl{pasoapaso} requieren de un seguimiento en tiempo real para cumplir su cometido. Por ejemplo, suponga que \Control decidió que es necesario que el motor gire 30\degree, y que un paso del motor representa solo 5\degree. En ese caso, deberíamos aplicar múltiples cambios en el actuador (motor) para alcanzar el objetivo. Además, si el motor requiere menos tiempo que el intervalo entre ciclos de control para completar un paso, estaríamos desperdiciando una parte significativa de tiempo. Es por esto que se presenta una modificación del módulo \Control para manejar actuadores que necesitan un seguimiento entre ciclos de control. A este módulo modificado lo llamaremos \ControlSeguimiento.
+
+Por un lado, se agrega una nueva interrupción periódica que invocará al método \verb|cicle| del módulo \ControlSeguimiento cada determinado tiempo. El periodo es menor al del ciclo de control y puede variar en base al actuador que se utilice.
+Además, es necesario dotar al módulo de un estado. De modo que existan dos estados básicos, en espera, cuando no se está realizando un ciclo de control y trabajando, cuando se haya establecido un \textit{set-point} y se esté activamente trabajando para llegar a él. Para hacerlo se hace uso de un nuevo método y del patrón \textit{state}\footnote{El uso de este patrón está explicada en la Sección \nameref{cap:state}.}. La estructura de módulos obtenida de aplicar el patron y extender \Control se puede observar en la Figura \ref{controlState}.
 
 \begin{figure}[H]
-\caption{Estructura módulo \textbf{Control} extendida con estado.}
+\caption{Estructura módulo \ControlSeguimiento.}
 \label{controlState}
 \begin{center}
 \begin{tikzpicture}\sf
-\umlclass[x=-4]{Control}
+\umlclass[x=-4]{ControlSeguimiento}
 {}
 {setPoint()\\
 control() \\
 cicle() \\
-leer() \\
+connectionRead() \\
 setAlgoritmo(i: Algoritmo) \\
 changeState(i: State)
 }
-\umlnote[x=-5, y=5, width=4cm]{Control}{
-Delega al estado interno tanto control() como cicle()
+\umlnote[above right=1cm and -4cm of ControlSeguimiento, width=4cm]{ControlSeguimiento}{
+control()\{\\
+\ \ \ \ return st.control(this) \\
+\}\\
+cicle()\{\\
+\ \ \ \ return st.cicle(this) \\
+\}\\
 }
 
 \umlclass[x=4, y=3,type=abstract]{State}
 {}
 {
-\umlvirt{control()} \\
-\umlvirt{cicle()} \\
+\umlvirt{control(i: Control)} \\
+\umlvirt{cicle(i: Control)} \\
 }
 
 \umlclass[x=2,y=-2]{Waiting}
 {}
 {
-control() \\
-cicle() \\
+control(i: Control) \\
+cicle(i: Control) \\
 }
 
 
 \umlclass[x=6,y=-2]{Working}
 {}
 {
-control() \\
-cicle() \\
+control(i: Control) \\
+cicle(i: Control) \\
 }
+
+\umlnote[below left=1cm and -4cm of ControlSeguimiento, width=4cm]{ControlSeguimiento}{
+control cada 100 ms\\
+cicle cada 1.5 ms\\
+}
+
+\umlnote[below left=1cm and -3cm of Waiting, width=5cm]{Waiting}{
+control(Control c)\{\\
+\ \ \ \ controlar... \\
+\ \ \ \ c.changeState(working)\\
+\}\\
+cicle()\{\\
+\ \ \ \ return \\
+\}\\
+}
+}
+
+\umlnote[below left=1cm and -5cm of Working, width=5cm]{Working}{
+control(Control c)\{\\
+\ \ \ \ return \\
+\}\\
+cicle()\{\\
+\ \ \ \ controlar... \\
+\ \ \ \ si se llegó al setpoint \{\\
+\ \ \ \ \ \ \ \ c.changeState(waiting)\\
+\ \ \ \ \}\\
+\}\\
+}
+}
+
 
 \umlinherit[geometry=|-|]{Waiting}{State}
 \umlinherit[geometry=|-|]{Working}{State}
-\umluniaggreg[geometry=-|-]{Control}{State}
+\umluniaggreg[geometry=-|-,arg1=st, pos1=0.5]{ControlSeguimiento}{State}
 
 \end{tikzpicture}
 \end{center}
 \end{figure}
+
+\declareCMod{Waiting}
+
+En consecuencia, cuando se ejecuta un ciclo de control y se determina la necesidad de aplicar un cambio en los actuadores controlados por \ControlSeguimiento, su estado interno cambiará. De este modo, comenzará a atender la interrupción periódica de menor periodo. Al ejecutarse esta interrupción, se verificará nuevamente si se ha alcanzado el \textit{set-point}. De ser así, el sistema transicionará al estado de espera \Waiting, donde se ignorará la interrupción de menor período, pero se continuará atendiendo la interrupción que marca el inicio del ciclo de control. En caso contrario, aplicará el cambio en el actuador sin transcicionar, con el fin de que en una invocación futura la variable física se encuentre cerca del valor esperado. La estructura presnetada permite un seguimiento preciso en la aplicación de cambios a los actuadores que lo requieran, como los \glspl{pasoapaso}.
+
+La documentación de la aplicación del patrón \textit{State} en este caso esta presente en la Figura \ref{docStateControl}.
 
 \begin{figure}
 \caption{Documentacion de la aplicación del patrón State en el módulo Control.}
@@ -1797,7 +1904,7 @@ cicle() \\
 \textbf{Funcionalidad}: Dependiendo del estado, los métodos control y cicle deben comportarse de manera diferente. A su vez, pueden cambiar de manera dinámica. En caso de que no se esté realizando una acción sobre alguno de los actuadores que 
 }
 \assigns
-\is{Control}{Contexto}
+\is{ControlSeguimiento}{Contexto}
 \is{State}{Estado}
 \is{Waiting}{EstadoConcreto}
 \is{Working}{EstadoConcreto}
@@ -1805,33 +1912,80 @@ cicle() \\
 \end{figure}
 
 
-El cliente ejecuta \verb|control()| y la interrupción que marca el ciclo de trabajo ejecuta \verb|cicle()|. De esta manera, cuando el estado es \textit{waiting}, \verb|cicle()| no hace nada y cuando está en \textit{working} \verb|control()| no hace nada y la otra función se encarga de realizar el ciclo de control.
-Por supuesto, estas dos funciones son las encargadas de llamar a \verb|changeState()| cuando sea necesario. \verb|control()| cambia a \textit{working} y cuando se alcanza el \textit{set-point}, \verb|cicle()| cambia el estado a \textit{waiting}.
-
-En el diseño del robot desmalezador \cite{paperPomponio} existe un \textit{timer} que desencadena una interrupción cada 1.5\textit{ms} la cual ejecuta el ciclo de control del subsistema de dirección del robot. Este consta de un motor paso a paso, por lo que cada ciclo verifica la diferencia de posición actual con la deseada y si no se llego al mínimo de diferencia deseado se envía un pulso al motor para que avance.
-
-Antes de ver un ejemplo repasemos que conseguimos al usar los subsistemas de control. Principalmente encapsulamos el control de cada propiedad de manera independiente, permitiendo que cada una pueda modificarse de manera aislada. Además, se logra que agregar nuevas propiedades con su conjunto de actuadores y sensores conste únicamente en crear nuevos módulos. Se provee una capa de abstracción para construir sobre los sistemas un controlado general que involucre múltiples subsistemas. Este controlador general organizará los esfuerzos de cada uno con el fin de llevar a cabo comportamientos más complejos.
+Por último, repasemos los beneficios de utilizar subsistemas de control. Este diseño permite el control de una variable específica del proceso, como la velocidad de giro de una rueda o la posición de un \gls{pasoapaso}. Si se requiere controlar otra propiedad de forma independiente, se hará con otro subsistema. El enfoque principal es encapsular el control de cada propiedad de manera individual. Esto permite que cada una pueda cambiar de forma aislada sin afectar al resto del sistema. Además, facilita la extensibilidad, ya que añadir nuevas propiedades físicas con sus respectivos actuadores y sensores solo requiere la creación de nuevos módulos. Este diseño proporciona una capa de abstracción que permite construir sobre los subsistemas un controlador general, el cual se encarga de involucrar y sincronizar a cada uno para llevar a cabo comportamientos más complejos.
 
 
 
 \subsubsection*{Solución orientada al cambio}
 
-Se aplica el concepto de subsistemas que se introdujo previamente, para ello primero se debe identificar las propiedades del mundo físico a controlar. Claramente, lo que se requiere es modificar la posición y el estado de la pinza del brazo, para hacerlo se cuenta con distintos actuadores que intervienen diferentes propiedades físicas. Además, en los requisitos se especifica que se cuenta con una función que genera una orden para cada actuador. De esta manera se define un subsistema de control por cada actuador que serán los encargados de llevar a cabo las ordenes generadas. Un ejemplo de orden es rotar 30\textdegree, es claro el \textit{set-point} que se está indicando. Para coordinar los subsistemas se propone un controlador principal llamado \textbf{MainController}, el cual provee el método \verb|graspAt(i: Coordenadas)| al cliente, realiza la generación de los pasos y controla su ejecución. La estructura es como la que se describe en la figura \ref{diagramaRobotico}.
+Esta solución se basa en aquella dada al problema del robot desmalezador en \citep{paperPomponio}, pero aplicada al brazo robotico descripto en \ref{requisitos}. Por lo tanto, se aplica el concepto de subsistemas que se introdujo previamente. Para ello primero se debe identificar las propiedades del mundo físico a controlar. Lo que se requiere es modificar la posición y el estado (abierto o cerrado) de la pinza del brazo. Para hacerlo se cuenta con distintos actuadores que intervienen diferentes propiedades físicas. En particular dos \gls{pasoapaso} y la pinza. Además, en los requisitos se especifica que se cuenta con una función que genera una lista de pasos con ordenes para cada actuador. De esta manera se define un subsistema de control por cada actuador que serán los encargados de llevar a cabo las ordenes generadas. Un ejemplo de orden es rotar brazo a 30\textdegree, esta hace referencia a actuar sobre el \gls{pasoapaso} de la base del brazo. En particular, estableciendo un \textit{set-point} de posición igual a 30\textdegree. 
+
+\declareCMod{MainController}
+
+Para coordinar los subsistemas se propone un controlador principal llamado \MainController, el cual provee el método \verb|graspAt(i: Coordenadas)| al cliente, realiza la generación de los pasos y controla su ejecución. La estructura es como la que se describe en la Figura \ref{diagramaRobotico}.
 
 
-\begin{figure}[h]
+\begin{figure}[H]
 \caption{Diagrama de los componentes del sistema brazo robótico.}
 \label{diagramaRobotico}
 \begin{center}
-\includegraphics[scale=0.6]{componentes.png}
+
+\begin{tikzpicture}\sf
+
+
+\umlsimpleclass{MainController}
+\umlsimpleclass[left=2cm of MainController]{Cliente}
+
+\umlsimpleclass[below left=3cm and 2cm of MainController]{RotorCtrl}
+\umlsimpleclass[below=0.5cm of RotorCtrl]{PipeR}
+\umlsimpleclass[below=0.5cm of PipeR]{Rotor}
+\umlsimpleclass[below=0.5cm of Rotor]{SensorPosRotor}
+
+\umlsimpleclass[below=3cm of MainController]{PinzaCtrl}
+\umlsimpleclass[below=0.5cm of PinzaCtrl]{PipeP}
+\umlsimpleclass[below=0.5cm of PipeP]{Pinza}
+\umlsimpleclass[below=0.5cm of Pinza]{SensorPosPinza}
+
+\umlsimpleclass[below right=3cm and 2cm of MainController]{ExtensorCtrl}
+\umlsimpleclass[below=0.5cm of ExtensorCtrl]{PipeE}
+\umlsimpleclass[below=0.5cm of PipeE]{Extensor}
+\umlsimpleclass[below=0.5cm of Extensor]{SensorPosExtensor}
+
+
+
+\node[draw, rounded corners, inner sep=10pt, fit=(RotorCtrl) (PipeR) (Rotor) (SensorPosRotor)] (RotorGroup) {};
+\node[above=0pt of RotorGroup.north, xshift=-1cm] {Subsistema Rotor};
+
+\node[draw, rounded corners, inner sep=10pt, fit=(PinzaCtrl) (PipeP) (Pinza) (SensorPosPinza)] (PinzaGroup) {};
+\node[above=0pt of PinzaGroup.north, xshift=-0.5cm] {Subsistema Pinza};
+
+\node[draw, rounded corners, inner sep=10pt, fit=(ExtensorCtrl) (PipeE) (Extensor) (SensorPosExtensor)] (ExtensorGroup) {};
+\node[above=0pt of ExtensorGroup.north, xshift=1cm] {Subsistema Extensor};
+
+
+\umluniassoc{Cliente}{MainController}
+\umluniassoc{MainController}{RotorCtrl}
+\umluniassoc{MainController}{PinzaCtrl}
+\umluniassoc{MainController}{ExtensorCtrl}
+\umluniassoc{RotorCtrl}{MainController}
+\umluniassoc{PinzaCtrl}{MainController}
+\umluniassoc{ExtensorCtrl}{MainController}
+
+\end{tikzpicture}
+
 \end{center}
 \end{figure}
 
+\declareCMod{Mediator}
+\declareCMod{College}
 
+Se puede pensar que el gráfico guarda cierta similitud conceptual con el patrón \textit{mediator} \ref{anexoMediator}. Este patrón encapsula cómo interactúan los módulos entre sí, con el fin de permitir variar su interacción de manera independiente. Un módulo \Mediator coordina el trabajo de los \College, en este caso los subsistemas. Gamma, en \cite{Gamma:1995:DPE:186897}, indica que el patrón puede aplicarse cuando se tiene un conjunto de módulos que se comunican de manera compleja pero fija. En este caso, la comunicación no es demaciado compleja, pero sí lo suficiente como para justificar el uso del patrón. En particular, el \MainController establece los \textit{set-points} de cada subsistema y desencadena el proceso de control en cada uno. A la inversa, los subsistemas informan cuándo alcanzan el \textit{set-point} o cuándo encuentran un error. A su vez, los subsistemas no se comunican directamente entre sí: toda la interacción pasa por el \MainController. Esto permite, por ejemplo, que la pinza pueda cerrarse únicamente cuando el brazo esté extendido, sin necesidad de que los módulos se comuniquen entre sí. Tradicionalmente, el módulo encargado de manejar el rotor le avisaría al módulo encargado de controlar la pinza que finalizó su tarea. Esto, sin embargo, genera un acoplamiento entre módulos, problema que ya se comentó previamente en esta tesina. En cambio, con este patrón, \RotorCtrl no sabe ni tiene noción de la existencia de \PinzaCtrl o \ExtensorCtrl. Toda la comunicación pasa a través de \MainController, lo que desacopla los módulos controladores.
 
-Se puede pensar que el gráfico tiene cierta similaridad conceptual con el patrón \textit{mediator}, donde un módulo \textbf{Mediator} coordina el trabajo de los \textbf{College} en este caso los subsistemas. Gamma en \cite{Gamma:1995:DPE:186897} indica que el patrón suele ser apropiado para casos en lo que se tiene un conjunto de objetos que se comunican de manera compleja pero fija. En este caso la comunicación no es tan compleja, pero puede considerarse lo suficiente como para implementar el patrón. En particular, el \textbf{MainController} indica los \textit{set-point} de cada subsistema y desencadena el proceso de control en cada uno. Y viceversa, los subsistemas indican cuando llegan al \textit{set-point} o cuando se encuentran un error. A su vez, los subsistemas no se comunican de manera directa entre si, todo pasa por el \textbf{MainController}.
+Ahora, se detallarán los módulos que conforman cada componente comenzando por los módulos básicos que debemos crear para representar el hardware dado. Los módulos de la Figura \ref{estructuraActuadores} representan \glspl{pasoapaso}\footnote{Se utiliza el mismo diseño propuesto para el robot desmalezador\cite{paperPomponio}.}, los cuales para ser controlados se deben primero hablitar el dispositivo utilizando \verb|enable| y configurar su dirección invocando a los métodos \verb|right| o \verb|left| para luego avanzar un paso llamando al método \verb|pulse|. Claramente para que lleguen a la posición deseada puede ser necesario invocar reiteradas veces al método \verb|pulse|. Esto será importante a la hora de diseñar el subsistema que controlará cada dispositivo.
 
-\begin{figure}[h]
+En cambio, en el caso de la pinza (ver Figura \ref{moduloPinza}) se utiliza un dispositivo que tiene dos estados, abierto o cerrado, por lo que solo se tienen dos métodos para abrir o cerrar la pinza.
+
+\begin{figure}[H]
 \caption{Actuadores paso a paso.}
 \label{estructuraActuadores}
 \begin{center}
@@ -1846,24 +2000,16 @@ Se puede pensar que el gráfico tiene cierta similaridad conceptual con el patr�
 \umlvirt{pulse()}
 }
 
-\umlclass[below left=1cm and -0.3cm of StepDevice]{Rotor}
+\umlclass[below left=2cm and -0.3cm of StepDevice]{Rotor}
 {}
 {
-right() \\
-left() \\
-disable() \\
-enable() \\
-pulse()
+...\\
 }
 
-\umlclass[below right=1cm and -0.3cm of StepDevice]{Extensor}
+\umlclass[below right=2cm and -0.3cm of StepDevice]{Extensor}
 {}
 {
-right() \\
-left() \\
-disable()\\
-enable() \\
-pulse()
+...\\
 }
 
 \umlinherit[geometry=|-|]{Rotor}{StepDevice}
@@ -1872,9 +2018,7 @@ pulse()
 \end{tikzpicture}
 \end{center}
 \end{figure}
-Ahora, se detallarán los módulos que conforman cada componente comenzando por los módulos básicos que debemos crear para representar el hardware dado. Los módulos del gráfico \ref{estructuraActuadores} representan motores paso a paso\footnote{Se utiliza el mismo diseño propuesto para el robot desmalezador\cite{paperPomponio}.}, los cuales para ser controlados se deben primero configurar su dirección invocando a los métodos \verb|right| o \verb|left| para luego avanzar un paso llamando al método \verb|pulse|. Claramente para que lleguen a la posición deseada puede ser necesario invocar reiteradas veces al método \verb|pulse|. Esto será importante a la hora de diseñar el subsistema que controlará cada dispositivo.
 
-En cambio, en el caso de la pinza (ver \ref{moduloPinza}) se utiliza un dispositivo que tiene dos estados, abierto o cerrado, por lo que solo se tienen dos métodos para cambiar entre estados.
 
 \begin{figure}[h!]
 \caption{Interfaz módulo Pinza.}
@@ -1892,7 +2036,7 @@ cerrar()
 \end{center}
 \end{figure}
 
-En \ref{sensores} se encuentran definidos los sensores asociados a cada actuador, estos heredan del módulo sensor pasivo el cual provee dos funciones, \verb|setConnection(i: Pipe)| la cual configura el \textbf{Pipe} por el cual se enviará la información obtenida del sensor cuando la otra funciones, \verb|signal()| sea invocada.
+En la Figura \ref{sensores} se encuentran definidos los sensores asociados a cada actuador, estos heredan del módulo sensor pasivo el cual provee dos funciones, \verb|setConnection(i: Pipe)| la cual configura el \Pipe por el cual se enviará la información obtenida del sensor cuando la otra funciones, \verb|signal()| sea invocada.
 
 \begin{figure}[h]
 \caption{Sensores del brazo robótico.}
@@ -1927,6 +2071,13 @@ setConnection(i: Pipe) \\
 signal() \\
 }
 
+\umlnote[above left=1cm and -4cm of SensorEstadoPinza,width=5cm]{SensorEstadoPinza}{
+signal()\{\\
+\ \ \ \ leer estado pinza \\
+\ \ \ \ pipe.write(estadoPinza)\\
+\}
+}
+
 \umlinherit[geometry=|-|]{SensorEstadoPinza}{PasiveSensor}
 \umlinherit[geometry=--]{SensorPosRotor}{PasiveSensor}
 \umlinherit[geometry=|-|]{SensorPosExtensor}{PasiveSensor}
@@ -1936,7 +2087,7 @@ signal() \\
 \end{center}
 \end{figure}
 
-Para completar los módulos que conforman a un subsistema de control falta mostrar como se define el \textbf{Controller}. Se diferencian dos tipos de \textbf{Controllers}, uno para los actuadores que requieren un control durante un determinado lapso de tiempo para poder llegar a su \textit{set-point} y los que no. En este ejemplo, tenemos dos motores paso a paso que representan el primer tipo y la pinza que corresponde al segundo. Vemos primero el caso más ``complejo'', como el proceso de control se extiende en el tiempo necesitamos añadir al sistema un mecanismo por el cual cada cierto intervalo ejecute un ciclo de control, es decir, lea la posición actual, decida y actúe. Para eso, en el diseño del robot desmalezador \cite{paperPomponio} se propuso la creación de una interrupción temporizada, la cual se ejecuta cada 1.5\textit{ms} y desencadena el control de los subestimas necesarios. El módulo encargado de esta tarea es \textbf{Timer} y su interfaz se puede ver en la figura \ref{moduloTimer}.
+Para completar los módulos que conforman a un subsistema de control falta mostrar como se define el \textbf{Controller}. Se diferencian dos tipos de \textbf{Controllers}, uno para los actuadores que requieren un control durante un determinado lapso de tiempo para poder llegar a su \textit{set-point} y los que no. En este ejemplo, tenemos dos \glspl{pasoapaso} que representan el primer tipo y la pinza que corresponde al segundo. Vemos primero el caso más ``complejo'', como el proceso de control se extiende en el tiempo necesitamos añadir al sistema un mecanismo por el cual cada cierto intervalo ejecute un ciclo de control, es decir, lea la posición actual, decida y actúe. Para eso, en el diseño del robot desmalezador \cite{paperPomponio} se propuso la creación de una interrupción temporizada, la cual se ejecuta cada 1.5\textit{ms} y desencadena el control de los subestimas necesarios. El módulo encargado de esta tarea es \textbf{Timer} y su interfaz se puede ver en la figura \ref{moduloTimer}.
 
 
 \begin{figure}[h!]
