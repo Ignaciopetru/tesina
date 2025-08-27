@@ -37,5 +37,5 @@
 \contentsline {section}{\numberline {A.5}Decorator}{110}{section.Alph1.5}%
 \contentsline {section}{\numberline {A.6}Proxy}{111}{section.Alph1.6}%
 \contentsline {section}{\numberline {A.7}Iterator}{112}{section.Alph1.7}%
-\contentsline {chapter}{Glosario}{117}{appendix*.74}%
-\contentsline {backmatter}{Referencias}{119}{appendix*.75}%
+\contentsline {chapter}{Glosario}{117}{appendix*.75}%
+\contentsline {backmatter}{Referencias}{119}{appendix*.76}%
