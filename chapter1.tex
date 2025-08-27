@@ -886,26 +886,31 @@ El ejemplo propuesto consiste en el sistema de control de un microondas. Para re
 \caption{Máquina de estados extraída del libro \cite{douglass}.}
 \label{maquinaMicroondas}
 \begin{center}
-\begin{tikzpicture}
+\begin{tikzpicture}[umlstate/.style={
+    circle,
+    draw,
+    minimum size=2.3cm,
+    fill=red!20,
+    font=\sffamily
+}]
 
-\umlsimpleclass[fill=red!20, x=-3]{Apagado}
-\umlsimpleclass[fill=red!20, x=3]{Preparado}
-\umlsimpleclass[fill=red!20, x=-3, y=-3]{PuertaAbierta}
-\umlsimpleclass[fill=red!20, x=3, y=-3]{Calentando}
-\umlsimpleclass[fill=red!20, x=0, y=-6]{Pausa}
+\node[umlstate] (Apagado) at (-3,0) {Apagado};
+\node[umlstate] (Preparado) at (3,0) {Preparado};
+\node[umlstate] (PuertaAbierta) at (-3,-4) {\shortstack{Puerta\\Abierta}};
+\node[umlstate] (Calentando) at (3,-4) {Calentando};
+\node[umlstate] (Pausa) at (0,-8) {Pausa};
 
 \umltrans[arg=prender, pos=0.5] {Apagado}{Preparado}
-\umltrans[arg=cancelar, pos=1.5, geometry=|-|, anchor2=-150] {PuertaAbierta}{Preparado}
-\umltrans[arg=calentarTemp, anchor1=-30, anchor2=30, pos=0.3] {Preparado}{Calentando}
+\umltrans[arg=cancelar, pos=1.5, geometry=|-|, anchor2=-120] {PuertaAbierta}{Preparado}
+\umltrans[arg=calentarTemp, anchor1=-60, anchor2=60, pos=0.3] {Preparado}{Calentando}
 \umltrans[arg=tempListo, pos=0.3] {Calentando}{Preparado}
-\umltrans[arg=cerrar, pos=0.5,anchor1=8, anchor2=170] {PuertaAbierta}{Calentando}
-\umltrans[arg=abrir, pos=0.5,anchor1=-170, anchor2=-8] {Calentando}{PuertaAbierta}
+\umltrans[arg=cerrar, pos=0.5,anchor1=10, anchor2=170] {PuertaAbierta}{Calentando}
+\umltrans[arg=abrir, pos=0.5,anchor1=-170, anchor2=-10] {Calentando}{PuertaAbierta}
 \umltrans[arg=abrir, pos=1.2,geometry=-|] {Pausa}{PuertaAbierta}
-\umltrans[arg=reanudar, pos=1.3,geometry=-|,anchor1=13, anchor2=-130] {Pausa}{Calentando}
-\umltrans[arg=pausar, pos=0.7,geometry=|-,anchor1=-30, anchor2=0] {Calentando}{Pausa}
+\umltrans[arg=reanudar, pos=1.3,geometry=-|,anchor1=13, anchor2=south] {Pausa}{Calentando}
+\umltrans[arg=pausar, pos=0.7,geometry=|-,anchor1=-60, anchor2=0] {Calentando}{Pausa}
 \umltrans[arg=cancelar, pos=1.3,anchor1=-13,anchor2=13,arm1=7cm,geometry=-|-]{Pausa}{Preparado}
 \umltrans[arg=cancelar, pos=1.4,arm1=4cm,anchor2=-10,geometry=-|-]{Calentando}{Preparado}
-
 
 \end{tikzpicture}
 \end{center}
@@ -1002,7 +1007,7 @@ cambiarEstado(i: Estado)\\
 \umlvirt{pausar(i: Microondas)} \\
 }
 
-\umlclass[below right=3cm and 2.2cm of EstadoMicroondas]{Apagado}
+\umlclass[below right=3cm and -1cm of EstadoMicroondas]{Apagado}
 {
 Apagado(i: Preparado)
 }
@@ -1015,7 +1020,7 @@ cancelar(i: Microondas) \\
 }
 
 
-\umlclass[below left=3cm and 7cm of EstadoMicroondas]{Preparado}
+\umlclass[below left=3cm and 3.5cm of EstadoMicroondas]{Preparado}
 {
 Preparado(i: Calentando)
 }
@@ -1027,7 +1032,7 @@ cancelar(i: Microondas) \\
 .\\
 }
 
-\umlclass[below left=3cm and 1.6cm of EstadoMicroondas]{PuertaAbierta}
+\umlclass[below left=8.5cm and 0cm of EstadoMicroondas]{PuertaAbierta}
 {
 PuertaAbierta(i: Calentando,\\ i: Preparado)
 }
@@ -1051,7 +1056,7 @@ cancelar(i: Microondas) \\
 .\\
 }
 
-\umlclass[below right=3cm and -2.3cm of EstadoMicroondas]{Pausa}
+\umlclass[below right=8.5cm and -4cm of EstadoMicroondas]{Pausa}
 {
 Pausa(i: Calentando,\\ i: PuertaAbierta)
 }
@@ -1064,12 +1069,12 @@ cancelar(i: Microondas) \\
 }
 
 \umlinherit[geometry=|-|, arm1=3.75cm]{Preparado}{EstadoMicroondas}
-\umlinherit[geometry=|-|, arm1=4cm]{PuertaAbierta}{EstadoMicroondas}
-\umlinherit[arm1=4cm,anchor1=84]{Calentando}{EstadoMicroondas}\umlinherit[geometry=|-|, arm1=4cm]{Pausa}{EstadoMicroondas}
-\umlinherit[geometry=|-|, arm1=3.802cm]{Apagado}{EstadoMicroondas}
+\umlinherit[geometry=|-|, arm1=9.5cm]{PuertaAbierta}{EstadoMicroondas}
+\umlinherit[geometry=|-|,arm1=4cm]{Calentando}{EstadoMicroondas}\umlinherit[geometry=|-|, arm1=9.5cm]{Pausa}{EstadoMicroondas}
+\umlinherit[geometry=|-|, arm1=3.78cm]{Apagado}{EstadoMicroondas}
 \umluniaggreg{Microondas}{EstadoMicroondas}
 
-\umlnote[below=1cm of PuertaAbierta,width=3cm]{PuertaAbierta}{
+\umlnote[left=1cm of PuertaAbierta,width=3cm]{PuertaAbierta}{
 calentarTemp()\{ \\
 \ \ \ \ return \\
 \}
@@ -1085,7 +1090,7 @@ cambiarEstado(Estado e)\{ \\
 \}
 }
 
-\umlnote[above=3cm of Apagado,width=5.5cm]{Apagado}{
+\umlnote[above right=2cm and -2cm of Apagado,width=5.5cm]{Apagado}{
 Apagado(Preparado st)\{ \\
 \ \ \ \ this.stPrep = st \\
 \}\\
@@ -2200,7 +2205,7 @@ move(RotorCtrl c)\{\\
 \end{figure}
 \declareCMod{Algoritmo}
 
-Siguiendo con la propuesta de creación de subsistemas, también se define el módulo \Algoritmo que encapsula los cálculos necesarios para determinar cómo accionar sobre los actuadores. Su interfaz se puede observar en la Figura \ref{complementariosController}.
+Siguiendo con la propuesta de creación de subsistemas, también se define el módulo \Algoritmo que encapsula los cálculos necesarios para determinar cómo accionar sobre los actuadores. Su interfaz se puede observar en la Figura \ref{complementariosController}. Se puede aplicar el patrón \textit{Strategy} \ref{patronStrategy} de Gamma para preparase ante cambios en el algoritmo. Es por eso que componeremos el módulo \Algoritmo en el controlador.
 
 \begin{figure}[H]
 \caption{Módulos complementarios a Controller.}

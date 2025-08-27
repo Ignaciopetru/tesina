@@ -35,8 +35,8 @@
 \contentsline {figure}{\numberline {6.9}{\ignorespaces Estructura componentes para la lectura de un sensor activo.}}{61}{figure.caption.32}%
 \contentsline {figure}{\numberline {6.10}{\ignorespaces Ejemplo de la variación de voltaje producida por un sensor de efecto Hall al detectar un cambio del campo magnético. Cada pico de voltaje provoca que el microcontrolador genere una interrupción. Imagen extraída de \blx@tocontentsinit {0}\cite {disenioViejo2}.}}{62}{figure.caption.33}%
 \contentsline {figure}{\numberline {6.11}{\ignorespaces Ejemplo módulos para obtener la información referida a la velocidad.}}{63}{figure.caption.34}%
-\contentsline {figure}{\numberline {6.12}{\ignorespaces Máquina de estados extraída del libro \blx@tocontentsinit {0}\cite {douglass}.}}{66}{figure.caption.35}%
-\contentsline {figure}{\numberline {6.13}{\ignorespaces Módulos participantes del patrón state en el ejemplo del horno microondas.}}{69}{figure.caption.36}%
+\contentsline {figure}{\numberline {6.12}{\ignorespaces Máquina de estados extraída del libro \blx@tocontentsinit {0}\cite {douglass}.}}{67}{figure.caption.35}%
+\contentsline {figure}{\numberline {6.13}{\ignorespaces Módulos participantes del patrón state en el ejemplo del horno microondas.}}{70}{figure.caption.36}%
 \contentsline {figure}{\numberline {6.14}{\ignorespaces Documentación de la aplicación del patrón \textit {State} para el manejo de los estados del microondas.}}{71}{figure.caption.37}%
 \contentsline {figure}{\numberline {6.15}{\ignorespaces Interfaz del módulo Mecanismo.}}{75}{figure.caption.38}%
 \contentsline {figure}{\numberline {6.16}{\ignorespaces Ejemplo de aplicación del patrón \textit {Decorator} \ref {anexoDecorator} para garantizar el cumplimiento de precondiciones.}}{76}{figure.caption.39}%
@@ -75,3 +75,4 @@
 \contentsline {figure}{\numberline {A.5}{\ignorespaces Estructura patrón \textbf {Decorator}}}{111}{figure.caption.71}%
 \contentsline {figure}{\numberline {A.6}{\ignorespaces Estructura patrón \textbf {Proxy}}}{113}{figure.caption.72}%
 \contentsline {figure}{\numberline {A.7}{\ignorespaces Estructura patrón \textbf {Iterador}}}{114}{figure.caption.73}%
+\contentsline {figure}{\numberline {A.8}{\ignorespaces Estructura patrón \textbf {Estrategia}}}{115}{figure.caption.74}%

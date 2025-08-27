@@ -25,15 +25,20 @@ Convierte la interfaz de una clase en otra interfaz que los clientes esperan, pe
 
 \subsection*{Participantes}
 
+\declareCMod{Objetivo}
+\declareCMod{Clientes}
+\declareCMod{Adaptable}
+\declareCMod{Adaptador}
+
 \begin{itemize}
-\item \textbf{Objetivo}\\
+\item \Objetivo\\
 Define la interfaz específica del dominio que el cliente utiliza.
-\item \textbf{Clientes}\\
-Colabora con objetos que cumplen con la interfaz del \textbf{Objetivo}.
-\item \textbf{Adaptable}\\
+\item \Clientes\\
+Colabora con objetos que cumplen con la interfaz del \Objetivo.
+\item \Adaptable\\
 Define una interfaz existente que necesita ser adaptada.
-\item \textbf{Adaptador}\\
-Adapta la interfaz del \textbf{Adaptable} para que cumpla con la interfaz del \textbf{Objetivo}.
+\item \Adaptador\\
+Adapta la interfaz del \Adaptable para que cumpla con la interfaz del \Objetivo.
 \end{itemize}
 
 \subsection*{Estructura}
@@ -93,21 +98,27 @@ El patrón encapsula una solicitud como un módulo, permitiendo parametrizar cli
 
 \subsection*{Participantes}
 
+\declareCMod{Orden}
+\declareCMod{OrdenConcreta}
+\declareCMod{Cliente}
+\declareCMod{Invocador}
+\declareCMod{Receptor}
+
 \begin{itemize}
-\item \textbf{Orden}\\
+\item \Orden\\
 Declara una interfaz para ejecutar una operación.
 
-\item \textbf{OrdenConcreta}\\
+\item \OrdenConcreta\\
 Define una asociación entre un módulo receptor (Receiver) y una acción.
 Implementa el método Execute invocando las operaciones correspondientes en el receptor.
 
-\item \textbf{Cliente}\\
+\item \Cliente\\
 Utiliza OrdenConcreta y configura su receptor.
 
-\item \textbf{Invocador}\\
+\item \Invocador\\
 Solicita al comando que lleve a cabo la solicitud.
 
-\item \textbf{Receptor}\\
+\item \Receptor\\
 Conoce cómo realizar las operaciones asociadas con la ejecución de una solicitud. Cualquier clase puede actuar como un receptor.
 \end{itemize}
 
@@ -162,14 +173,17 @@ Permitir que un módulo altere su comportamiento cuando su estado interno cambia
 
 \subsection*{Participantes}
 
+\declareCMod{Contexto}
+\declareCMod{Estado}
+\declareCMod{EstadoConcreto}
 \begin{itemize}
-\item \textbf{Contexto}\\
+\item \Contexto\\
 Define la interfaz de interés para los clientes. Mantiene una instancia de una subclase de EstadoConcreto que define el estado actual.
 
-\item \textbf{Estado}\\
+\item \Estado\\
 Define una interfaz para encapsular el comportamiento asociado con un estado particular del contexto.
 
-\item \textbf{EstadoConcreto}\\
+\item \EstadoConcreto\\
 Cada subclase implementa un comportamiento asociado con un estado del contexto.
 \end{itemize}
 
@@ -231,10 +245,14 @@ Define un modulo que encapsula cómo interactúa un conjunto de módulos. Foment
 
 \subsection*{Participantes}
 
+\declareCMod{Mediador}
+\declareCMod{MediadorConcreto}
+\declareCMod{Colega}
+
 \begin{itemize}
-\item \textbf{Mediador} Define una interfaz para comunicarse con los módulos Colega.
-\item \textbf{MediadorConcreto} Implementa un comportamiento cooperativo coordinando los módulos Colega. Conoce y mantiene a sus colegas.
-\item \textbf{Colega} Conoce a su objeto Mediator y se comunica con se siempre que, de otra forma, se habría comunicado con otro Colega.
+\item \Mediador Define una interfaz para comunicarse con los módulos Colega.
+\item \MediadorConcreto Implementa un comportamiento cooperativo coordinando los módulos Colega. Conoce y mantiene a sus colegas.
+\item \Colega Conoce a su objeto Mediator y se comunica con se siempre que, de otra forma, se habría comunicado con otro Colega.
 \end{itemize}
 
 \subsection*{Estructura}
@@ -280,11 +298,16 @@ Agregar responsabilidades adicionales a un objeto de manera dinámica. Los decor
 \end{itemize}
 
 \subsection*{Participantes}
+\declareCMod{Componente}
+\declareCMod{ComponenteConcreto}
+\declareCMod{Decorador}
+\declareCMod{DecoradorConcreto}
+
 \begin{itemize}
-\item \textbf{Componente} Define la interfaz para módulos a los que se les pueden agregar responsabilidades de manera dinámica.
-\item \textbf{ComponenteConcreto} Define un módulo al que se le pueden adjuntar responsabilidades adicionales.
-\item \textbf{Decorador} Mantiene una referencia a un módulo \textbf{Componente} y define una interfaz que se ajusta a la interfaz del \textbf{Componente}.
-\item \textbf{DecoradorConcreto} Agrega responsabilidades al componente.
+\item \Componente Define la interfaz para módulos a los que se les pueden agregar responsabilidades de manera dinámica.
+\item \ComponenteConcreto Define un módulo al que se le pueden adjuntar responsabilidades adicionales.
+\item \Decorador Mantiene una referencia a un módulo \Componente y define una interfaz que se ajusta a la interfaz del \Componente
+\item \DecoradorConcreto Agrega responsabilidades al componente.
 \end{itemize}
 
 
@@ -372,6 +395,7 @@ Es útil cuando las instancias necesitan diferentes derechos de acceso.
 
 Es un reemplazo para un puntero básico que realiza acciones adicionales cuando se accede a un objeto.
 Usos típicos incluyen:
+
 \begin{itemize}
 \item Contar el número de referencias a la instancia real para que pueda ser liberado automáticamente cuando no queden más referencias (también llamado punteros inteligentes).
 \item Cargar una instancia persistente en memoria cuando se referencia por primera vez.
@@ -384,15 +408,18 @@ Este patrón ofrece flexibilidad, seguridad y eficiencia en la gestión de inter
 
 
 \subsection*{Participantes}
+\declareCMod{Proxy}
+\declareCMod{Sujeto}
+\declareCMod{RealSubject}
 
 \begin{itemize}
-\item \textbf{Proxy} Mantiene una referencia que permite al proxy acceder al sujeto real. El Proxy puede referirse a un \textbf{Sujuteo} si las interfaces de \textbf{SujetoReal} y \textbf{Sujeto} son las mismas.
-Proporciona una interfaz idéntica a la de \textbf{Sujeto}, de manera que un proxy puede ser sustituido por el sujeto real.
+\item \Proxy Mantiene una referencia que permite al proxy acceder al sujeto real. El Proxy puede referirse a un \Sujuteo si las interfaces de \SujetoRea y \Sujeto son las mismas.
+Proporciona una interfaz idéntica a la de \Sujeto, de manera que un proxy puede ser sustituido por el sujeto real.
 Controla el acceso al sujeto real y puede ser responsable de crearlo y eliminarlo.
 
-\item \textbf{Sujeto} Define la interfaz común para \textbf{SujetoReal} y \textbf{Proxy}, de modo que un \textbf{Proxy} se pueda usar en cualquier lugar donde se espere un \textbf{SujetoReal}.
+\item \Sujeto Define la interfaz común para \SujetoReal y \textbf{Proxy}, de modo que un \Proxy se pueda usar en cualquier lugar donde se espere un \SujetoReal.
 
-\item \textbf{RealSubject} Define el objeto real que el proxy representa.
+\item \RealSubject Define el objeto real que el proxy representa.
 
 \end{itemize}
 
@@ -458,14 +485,19 @@ Proporcionar un modo de acceder secuencialmente a elementos de un módulo sin ex
 
 \subsection*{Participantes}
 
+\declareCMod{Iterador}
+\declareCMod{IteradorConcreto}
+\declareCMod{Agregado}
+\declareCMod{AgregadoConcreto}
+
 \begin{itemize}
-\item \textbf{Iterador} Define una interfaz para recorrer los elementos y acceder a ellos.
+\item \Iterador Define una interfaz para recorrer los elementos y acceder a ellos.
 
-\item \textbf{IteradorConcreto} Implementa la interfaz de \textbf{Iterator}.
+\item \IteradorConcreto Implementa la interfaz de \Iterator.
 
-\item \textbf{Agregado} Define una interfaz para crear una instancia de \textbf{Iterator}.
+\item \Agregado Define una interfaz para crear una instancia de \Iterator
 
-\item \textbf{AgregadoConcreto} Implementa la interaz de Agregado.
+\item \AgregadoConcreto Implementa la interaz de Agregado.
 
 \end{itemize}
 
@@ -521,6 +553,95 @@ return new IteradorConcreto()
 \end{figure}
 
 
+
+\section{Strategy}
+\label{patronStrategy}
+
+\subsection*{Intención}
+Define una familia de algoritmos, encapsula cada uno de ellos y hace que sean intercambiables. Strategy permite que el algoritmo varíe independientemente de los clientes que lo usan.
+
+\subsection*{Aplicabilidad}
+
+Use el patrón Strategy cuando:
+
+\begin{itemize}
+
+\item Muchos módulos relacionadas que solo difieren en su comportamiento. Las estrategias ofrecen una manera de configurar una clase con uno de varios comportamientos.
+
+\item Cuando se necesita diferentes variantes de un algoritmo. Por ejemplo, se podría definir algoritmos que reflejen diferentes compromisos entre espacio y tiempo. Las estrategias pueden usarse cuando estas variantes se implementan como una jerarquía de clases de algoritmos.
+
+\item Un algoritmo utiliza datos que los clientes no deberían conocer. El patrón evita exponer estructuras de datos complejas y específicas del algoritmo.
+
+\item Un módulo define muchos comportamientos que aparecen como múltiples sentencias condicionales en sus operaciones.
+
+\end{itemize}
+
+
+\subsection*{Participantes}
+
+\declareCMod{Estrategia}
+\declareCMod{EstrategiaConcreta}
+\declareCMod{Contexto}
+
+\begin{itemize}
+\item \Estrategia Declara una interfaz común para todos los algoritmos soportados. El \Contexto utiliza esta interfaz para invocar el algoritmo definido por una \EstrategiaConcreta.
+
+\item \EstrategiaConcreta Implementa el algoritmo utilizando la interfaz \Estrategia.
+
+\item  \Contexto \begin{itemize}
+		\item Está compuesto con un módulo \EstrategiaConcreta
+		\item Mantiene una referencia a un módulo \Estrategia.
+		\item Puede definir una interfaz que permita a \Estrategia acceder a sus datos.
+
+		\end{itemize}
+
+
+\end{itemize}
+
+
+\subsection*{Estructura}
+
+
+\begin{figure}[h]
+\caption{Estructura patrón \textbf{Estrategia}}
+\begin{center}
+\begin{tikzpicture}\sf
+\umlclass[]{Contexto}
+{}
+{
+interfazAlgoritmo()
+}
+
+\umlclass[right=4cm of Contexto,type=abstract]{Estrategia}
+{}
+{
+\umlvirt{interfazAlgoritmo()}
+}
+\umlclass[below left=1.5cm and 0.5cm of Estrategia]{EstrategiaConcretaA}
+{}
+{
+interfazAlgoritmo()
+}
+\umlclass[below=1.5cm of Estrategia]{EstrategiaConcretaB}
+{}
+{
+interfazAlgoritmo()
+}
+
+\umlclass[below right=1.5cm and 0.5cm of Estrategia]{EstrategiaConcretaC}
+{}
+{
+interfazAlgoritmo()
+}
+
+\umlinherit[geometry=|-|]{EstrategiaConcretaA}{Estrategia}
+\umlinherit[geometry=|-|]{EstrategiaConcretaB}{Estrategia}
+\umlinherit[geometry=|-|]{EstrategiaConcretaC}{Estrategia}
+\umluniaggreg[]{Contexto}{Estrategia}
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
 
 
 
