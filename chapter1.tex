@@ -1191,9 +1191,16 @@ Todo esto hace que el sistema sea más robusto y adaptable. Cuando es necesario 
 Existen otros casos de usos del patrón, como en los ejemplos que se verán más adelante, puede ser usado para cambiar el comportamiento de cierta parte del sistema o a modo de configuración del mismo. El concepto principal es el mismo, crear un módulo por cada estado posible y cambiar la implementación para que se ajuste a lo requerido.
 
 \section{Control anti-rebote}
-Muchos dispositivos de entrada para sistemas embebidos utilizan contacto metal con metal para indicar eventos de interés, como botones, interruptores y relés. A medida que el metal entra en contacto, se produce una deformación física que resulta en un contacto intermitente de las superficies. Esto genera señales que de no ser filtradas pueden causar una lectura errónea. 
+Muchos dispositivos de entrada para sistemas embebidos utilizan contacto metal con metal para indicar eventos de interés, como botones, interruptores y relés. A medida que el metal entra en contacto, se produce una deformación física que resulta en un contacto intermitente entre las superficies. Esto genera señales que, de no ser filtradas, pueden causar lecturas erróneas. El comportamiento resultante puede observarse en la Figura \ref{botonReboteD}, donde se muestra la señal generada por un botón al ser presionado. Si nuestro sistema, por ejemplo, generara un evento por cada transición, estaríamos contabilizando falsos positivos provocados por el fenómeno descrito.
 
-En el libro de Douglass \cite{douglass} encontramos una propuesta de solución más cerca de la implementación que del diseño, algo así como un patron idiomático. Esta consiste en utilizar un temporizador para permitir un tiempo de gracia antes de confirmar una transición en el estado. Esto es, al percibir un cambio en la entrada se inicia el \textit{timer} y se confirma el cambio de estado solo si el valor de la entrada sigue siendo distinto que antes de percibir la modificación. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{antirebote.png}
+    \caption{Ejemplo de señal de un botón siendo afectada por el fenómeno de rebote, extraída de \citep{douglass}.}
+    \label{botonReboteD}
+\end{figure}
+
+En el libro de Douglass \cite{douglass} encontramos una propuesta de solución más cerca de la implementación que del diseño, algo así como un patron idiomático. En el Código \ref{deboun} se puede ver un extracto del libro, en donde se muestra la función que lleva a cabo la solución del autor. Esta consiste en utilizar un temporizador para permitir un tiempo de gracia antes de confirmar una transición en el estado. Esto es, al percibir un cambio en la entrada se inicia el \textit{timer} y se confirma el cambio de estado solo si el valor de la entrada sigue siendo distinto que antes de percibir la modificación. 
 
 \begin{lstlisting}[caption=Código ejemplo de una estrategia de deteccion de rebote extraído de \cite{douglass}.,label=deboun]
 void ButtonDriver_eventReceive(ButtonDriver* const me) {
