@@ -90,7 +90,7 @@ El patrón encapsula una solicitud como un módulo, permitiendo parametrizar cli
 
 \item Soportar la funcionalidad de deshacer (``undo''). El método \textbf{Execute} del \textbf{Command} puede almacenar el estado necesario para revertir sus efectos. La interfaz del \textbf{Command} debe incluir una operación \textbf{Unexecute} para revertir los efectos de una ejecución previa. Los comandos ejecutados se almacenan en una lista de historial, lo que permite deshacer y rehacer a múltiples niveles navegando hacia adelante y hacia atrás en la lista mientras se llaman a \textbf{Unexecute} y \textbf{Execute}.
 
-\item Registrar cambios para que puedan reaplicarse en caso de una falla del sistema. Al ampliar la interfaz del \textbf{Command} con operaciones de carga y almacenamiento, puedes mantener un registro persistente de los cambios. Recuperar un sistema tras una falla implica recargar los comandos registrados desde el disco y reejecutarlos mediante la operación \textbf{Execute}.
+\item Registrar cambios para que puedan replicarse en caso de una falla del sistema. Al ampliar la interfaz del \textbf{Command} con operaciones de carga y almacenamiento, puedes mantener un registro persistente de los cambios. Recuperar un sistema tras una falla implica recargar los comandos registrados desde el disco y re-ejecutarlos mediante la operación \textbf{Execute}.
 
 \item Estructurar un sistema en torno a operaciones de alto nivel basadas en operaciones primitivas. Esta estructura es común en sistemas de información que admiten transacciones. Una transacción encapsula un conjunto de cambios a los datos. El patrón \textbf{Command} proporciona una forma de modelar transacciones, ya que los comandos tienen una interfaz común, lo que permite invocar todas las transacciones de la misma manera. Además, el patrón facilita la extensión del sistema con nuevas transacciones.
 \end{itemize}
@@ -232,7 +232,7 @@ manejar()
 \label{anexoMediator}
 
 \subsection*{Intención}
-Define un modulo que encapsula cómo interactúa un conjunto de módulos. Fomenta un acoplamiento débil al evitar que los objetos se refieran explícitamente entre sí, y permite variar sus interacciones de manera independiente.
+Define un módulo que encapsula cómo interactúa un conjunto de módulos. Fomenta un acoplamiento débil al evitar que los objetos se refieran explícitamente entre sí, y permite variar sus interacciones de manera independiente.
 
 \subsection*{Aplicabilidad}
 \begin{itemize}
@@ -252,7 +252,7 @@ Define un modulo que encapsula cómo interactúa un conjunto de módulos. Foment
 \begin{itemize}
 \item \Mediador Define una interfaz para comunicarse con los módulos Colega.
 \item \MediadorConcreto Implementa un comportamiento cooperativo coordinando los módulos Colega. Conoce y mantiene a sus colegas.
-\item \Colega Conoce a su objeto Mediator y se comunica con se siempre que, de otra forma, se habría comunicado con otro Colega.
+\item \Colega Conoce a su objeto Mediator y se comunica con sé siempre que, de otra forma, se habría comunicado con otro Colega.
 \end{itemize}
 
 \subsection*{Estructura}
@@ -399,7 +399,7 @@ Usos típicos incluyen:
 \begin{itemize}
 \item Contar el número de referencias a la instancia real para que pueda ser liberado automáticamente cuando no queden más referencias (también llamado punteros inteligentes).
 \item Cargar una instancia persistente en memoria cuando se referencia por primera vez.
-\item Verificar que la instancia real esté bloqueado antes de acceder a ella, para asegurar que ningún otra instancia pueda modificarlo.
+\item Verificar que la instancia real esté bloqueado antes de acceder a ella, para asegurar que ninguna otra instancia pueda modificarlo.
 \item 
 Este patrón ofrece flexibilidad, seguridad y eficiencia en la gestión de interacciones entre instancias.
 \end{itemize}
@@ -497,7 +497,7 @@ Proporcionar un modo de acceder secuencialmente a elementos de un módulo sin ex
 
 \item \Agregado Define una interfaz para crear una instancia de \Iterator
 
-\item \AgregadoConcreto Implementa la interaz de Agregado.
+\item \AgregadoConcreto Implementa la interfaz de Agregado.
 
 \end{itemize}
 
@@ -566,7 +566,7 @@ Use el patrón Strategy cuando:
 
 \begin{itemize}
 
-\item Muchos módulos relacionadas que solo difieren en su comportamiento. Las estrategias ofrecen una manera de configurar una clase con uno de varios comportamientos.
+\item Muchos módulos relacionados que solo difieren en su comportamiento. Las estrategias ofrecen una manera de configurar una clase con uno de varios comportamientos.
 
 \item Cuando se necesita diferentes variantes de un algoritmo. Por ejemplo, se podría definir algoritmos que reflejen diferentes compromisos entre espacio y tiempo. Las estrategias pueden usarse cuando estas variantes se implementan como una jerarquía de clases de algoritmos.
 

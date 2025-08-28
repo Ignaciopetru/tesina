@@ -27,12 +27,12 @@ En este capítulo se abordan conceptos centrales a la \gls{IS} y que resultan es
 La arquitectura y el diseño del software se consideran herramientas esenciales para lograr atributos importantes de calidad del software, como la modificabilidad, reusabilidad, mantenibilidad, etc.\cite{ShawGarlan1996, ghezzi2003, bass2003, DBLP:books/daglib/0030743}
 Tradicionalmente, el software para robots tiende a desarrollarse de manera monolítica, con pocas funciones de gran tamaño y numerosas sentencias condicionales anidadas, o mediante una descomposición funcional básica que resulta ineficiente para mantener y reutilizar componentes \cite{code-1,code-2}. Frente a esto, se propone un diseño sistemático basado en principios de la \gls{IS}, aplicados para anticipar y manejar los cambios \cite{Gamma:1995:DPE:186897, DBLP:books/lib/BuschmannHS07}.
 
-El \textit{diseño para el cambio}, como principio fundamental, se centra en prever modificaciones probables en el software \cite{Parnas1972, ShawGarlan1996, ghezzi2003, bass2003, DBLP:books/daglib/0030743}. Ya sean probocadas cambios en los objetivos de comportamiento, en el hardware o en los algoritmos de control, entre otros. Para esto, cuando se diseña se tiene en ceunta aquello que probablemente cambiará y se piensa cómo debe ser el diseño para que los cambios impliquen modificar porciones minimas y aisaldas del software \cite{ghezzi2003}.
+El \textit{diseño para el cambio}, como principio fundamental, se centra en prever modificaciones probables en el software \cite{Parnas1972, ShawGarlan1996, ghezzi2003, bass2003, DBLP:books/daglib/0030743}. Ya sean provocadas cambios en los objetivos de comportamiento, en el hardware o en los algoritmos de control, entre otros. Para esto, cuando se diseña se tiene en cuenta aquello que probablemente cambiará y se piensa cómo debe ser el diseño para que los cambios impliquen modificar porciones mínimas y aisladas del software \cite{ghezzi2003}.
 
 Diseñar anticipando los cambios permite reducir los esfuerzos necesarios para implementar ajustes y facilita la reutilización de componentes entre distintos sistemas \cite{Parnas02, DBLP:books/daglib/0019719}.
 
 Para abordar el reto que implica anticiparse al cambio, el diseño modular es clave \cite{Parnas1972}.
-Un \textbf{módulo} es un elemento de diseño que, en un lenguaje de programación orientado a objetos, suele implementarse como una \textbf{clase}. A su vez, una \textbf{instancia} de un módulo, en este tipo de lenguajes, corresponde a un \textbf{objeto}. Sin embargo, cuando se habla de diseño, el término adecuado es módulo e instancia, ya que la implementación podría realizarse en un lenguaje que no sea orientado a objetos. Este enfoque de diseño organiza el software como un conjunto de módulos simples con responsabilidades claramente definidas y relaciones tambien bien definidas entre ellos. Cada módulo se diseña para ocultar aquello que puede cambiar, lo que minimiza el impacto de las modificaciones en el resto del sistema. Por ejemplo, si un sensor de velocidad es reemplazada y por tanto cambia su forma de reportar datos, el ajuste del software debería limitarse al módulo que encapsula ese sensor físico.
+Un \textbf{módulo} es un elemento de diseño que, en un lenguaje de programación orientado a objetos, suele implementarse como una \textbf{clase}. A su vez, una \textbf{instancia} de un módulo, en este tipo de lenguajes, corresponde a un \textbf{objeto}. Sin embargo, cuando se habla de diseño, el término adecuado es módulo e instancia, ya que la implementación podría realizarse en un lenguaje que no sea orientado a objetos. Este enfoque de diseño organiza el software como un conjunto de módulos simples con responsabilidades claramente definidas y relaciones también bien definidas entre ellos. Cada módulo se diseña para ocultar aquello que puede cambiar, lo que minimiza el impacto de las modificaciones en el resto del sistema. Por ejemplo, si un sensor de velocidad es reemplazada y, por tanto, cambia su forma de reportar datos, el ajuste del software debería limitarse al módulo que encapsula ese sensor físico.
 
 Además, el principio de diseño abierto-cerrado \cite{DBLP:books/ph/Meyer97} se implementa para garantizar que el sistema pueda extenderse mediante nuevos módulos en lugar de modificar los existentes, reduciendo el riesgo de introducir errores al alterar componentes ya probados. Es decir, que un sistema debe estar abierto a extensiones pero cerrado a modificaciones. Esto se complementa con la aplicación de patrones de diseño y estilos arquitectónicos, que aportan soluciones probadas para manejar cambios recurrentes en dominios específicos \cite{Gamma:1995:DPE:186897, DBLP:books/lib/BuschmannHS07}. Por ejemplo, en sistemas robóticos, un estilo arquitectónico basado en bucles de control puede destacar las características esenciales del sistema y facilitar decisiones de diseño óptimas \cite{ShawGarlan1996}.
 
@@ -49,7 +49,7 @@ Existen esencialmente dos tipos de herencia:
 A parir de esta relación entre módulos podemos definir dos tipos de módulos, los abstractos y los concretos. Un módulo abstracto define un conjunto de operaciones que pueden ser utilizadas por otros módulos. Este tipo establece un contrato de uso, permitiendo a otros módulos interactuar con él sin conocer sus detalles internos. Su función principal es favorecer la flexibilidad y extensibilidad del sistema, ya que distintos módulos pueden cumplir con ese mismo contrato ofreciendo implementaciones diferentes (en la Sección \ref{Accesoalhardware} se estudia caso de aplicación). Un módulo concreto, en cambio, es aquel que proporciona una implementación específica del comportamiento definido por un módulo abstracto. En los diseños que aplican patrones, se busca que los módulos consumidores dependan solo de las abstracciones y no directamente de las implementaciones concretas. Esta separación permite modificar, reemplazar o extender funcionalidades sin afectar el resto del sistema, y facilita la aplicación de técnicas como la composición (que veremos a continuación).
 
 \subsubsection*{Composición y delegación}
-La composición consiste en estructurar sistemas combinando módulos a través de sus interfaces en lugar de depender de relaciones de herencia. Esto se logra mediante la inclusión de referencias a otros módulos dentro de un módulo, lo que permite que las instancias deleguen tareas a estos módulos asociados. En lugar de que un módulo herede directamente un comportamiento específico, como un tipo particular de algoritmo de ordenamiento, la composición propone que el módulo mantenga una referencia a otro que se encargue de esa tarea. Por ejemplo, en vez de que una módulo de procesamiento de datos herede una forma fija de ordenar elementos, con lo cual debe contener un método \verb|ordenar(lista)|, puede delegar esa responsabilidad a un componente intercambiable que implemente distintas estrategias. De marnera que cuando el módulo principar necesite ordenar una lista simplemente llame a un método del módulo compuesto, delegando esa tarea.
+La composición consiste en estructurar sistemas combinando módulos a través de sus interfaces en lugar de depender de relaciones de herencia. Esto se logra mediante la inclusión de referencias a otros módulos dentro de un módulo, lo que permite que las instancias deleguen tareas a estos módulos asociados. En lugar de que un módulo herede directamente un comportamiento específico, como un tipo particular de algoritmo de ordenamiento, la composición propone que el módulo mantenga una referencia a otro que se encargue de esa tarea. Por ejemplo, en vez de que un módulo de procesamiento de datos herede una forma fija de ordenar elementos, con lo cual debe contener un método \verb|ordenar(lista)|, puede delegar esa responsabilidad a un componente intercambiable que implemente distintas estrategias. De manera que cuando el módulo principal necesite ordenar una lista simplemente llame a un método del módulo compuesto, delegando esa tarea.
 
  La composición es una solución que favorece la flexibilidad, ya que evita el acoplamiento jerárquico y permite reemplazar componentes sin afectar el resto del sistema. Además, este enfoque está alineado con el principio de diseño ``preferir la composición sobre la herencia'' \cite{Gamma:1995:DPE:186897}, que enfatiza la modularidad y la apertura al cambio.
 
@@ -62,11 +62,11 @@ Dado que la herencia de clases tiende a ser rígida, los patrones de diseño la 
 La metodología de \textbf{Parnas}\cite{Parnas1972}, conocida como Diseño Basado en Ocultación de la Información (\gls{dboi}), es una estrategia de diseño modular que tiene como objetivo preparar los sistemas de software para gestionar el cambio de manera eficiente y con el menor costo posible. Esta metodología parte del principio de que los requerimientos de un sistema no son inmutables, sino que evolucionarán durante su vida útil. Por ello, el diseño debe anticipar y facilitar la incorporación de cambios sin comprometer la integridad del sistema.
 
 \noindent\fbox{\begin{minipage}{\textwidth}
-Principio de Ocultación de la Información: Los ítem con alta probabilidad de cambio son el fundamento para descomponer un sistema en módulos. Cada módulo de la descomposición debe ocultar un \textbf{único} ítem con alta probabilidad de cambio, y debe ofrecer a los demás módulos una interfaz insensible a los cambios anticipados. \cite{Parnas1972, cristia2022diseno}
+Principio de Ocultación de la Información: Los ítems con alta probabilidad de cambio son el fundamento para descomponer un sistema en módulos. Cada módulo de la descomposición debe ocultar un \textbf{único} ítem con alta probabilidad de cambio, y debe ofrecer a los demás módulos una interfaz insensible a los cambios anticipados. \cite{Parnas1972, cristia2022diseno}
 \end{minipage}} 
 \\\\
 \indent
-El núcleo de esta metodología es la identificación de los ítems con alta probabilidad de cambio dentro del sistema. Estos ítems representan aspectos de diseño o implementación susceptibles de modificaciones futuras, como algoritmos, estructuras de datos, interfaces con hardware o incluso requerimientos del usuario (ver lista extendida en Sección \ref{listaItems}). Una vez identificados, Parnas sugiere ocultar y aislar cada item de cambio en un módulo independiente, asegurando que cada módulo oculte las decisiones de diseño específicas que podrían cambiar. Esto se logra diseñando interfaces que expongan tan poco como sea imposible sobre sus detalles de implementación, permitiendo que los módulos interactúen sin conocer su trabajo internos. 
+El núcleo de esta metodología es la identificación de los ítems con alta probabilidad de cambio dentro del sistema. Estos ítems representan aspectos de diseño o implementación susceptibles de modificaciones futuras, como algoritmos, estructuras de datos, interfaces con hardware o incluso requerimientos del usuario (ver lista extendida en Sección \ref{listaItems}). Una vez identificados, Parnas sugiere ocultar y aislar cada ítem de cambio en un módulo independiente, asegurando que cada módulo oculte las decisiones de diseño específicas que podrían cambiar. Esto se logra diseñando interfaces que expongan tan poco como sea imposible sobre sus detalles de implementación, permitiendo que los módulos interactúen sin conocer su trabajo interno. 
 
 La razón por la que queremos aplicar esta metodología es clara: minimizar los costos asociados al desarrollo y mantenimiento del software. Al aislar las áreas susceptibles de cambio, cualquier modificación futura afectará únicamente al módulo correspondiente, sin propagarse al resto del sistema. Además, esta aproximación mejora la capacidad de escalar el sistema, facilita la colaboración en equipos de desarrollo grandes y permite que diferentes programadores trabajen en módulos específicos de manera independiente.
 
@@ -76,10 +76,10 @@ La metodología de Parnas nos ayuda a diseñar para el cambio porque impone una 
 Los pasos de la metodología son \cite{Parnas02, cristia2022diseno}:
 
 \begin{enumerate}
-	\item Identificar los ítem con probabilidad de cambio presentes en los requerimientos.
-	\item Analizar la diversas formas en que cada ítem puede cambiar.
+	\item Identificar los ítems con probabilidad de cambio presentes en los requerimientos.
+	\item Analizar las diversas formas en que cada ítem puede cambiar.
 	\item Se asigna una probabilidad de cambio a cada variación analizada.
-	\item Aislar en módulos separados los ítem cuya probabilidad de cambio sea alta. Implícitamente este punto indica que en cada módulo se debe aislar un único ítem con alta probabilidad de cambio.
+	\item Aislar en módulos separados los ítems cuya probabilidad de cambio sea alta. Implícitamente, este punto indica que en cada módulo se debe aislar un único ítem con alta probabilidad de cambio.
 	\item Diseñar las interfaces de los módulos de manera que resulten insensibles a los cambios anticipados.
 
 \end{enumerate}
@@ -88,30 +88,30 @@ Los pasos de la metodología son \cite{Parnas02, cristia2022diseno}:
 \section{Items de cambio comunes}
 \label{listaItems}
 
-Cuando se diseña pensando en el cambio, una tarea que se agrega es identificar las características o requerimientos del sistema que pueden variar en el tiempo. Naturalmente existen elementos que son mas probables a cambiar que otros, por lo que resulta importante anticiparse a esos cambios en particular. Algunos autores mencionaron algunos items de cambio comunes entre múltiples sistemas \cite{Parnas02, cristia2022diseno}.
+Cuando se diseña pensando en el cambio, una tarea que se agrega es identificar las características o requerimientos del sistema que pueden variar en el tiempo. Naturalmente, existen elementos que son más probables a cambiar que otros, por lo que resulta importante anticiparse a esos cambios en particular. Algunos autores mencionaron algunos ítems de cambio comunes entre múltiples sistemas \cite{Parnas02, cristia2022diseno}.
 
 \begin{itemize}
-	\item Contracción o extension de requisitos (agregar, quitar o editar funcionalidades).
+	\item Contracción o extensión de requisitos (agregar, quitar o editar funcionalidades).
 	\item Configuraciones de hardware (cambio de \gls{MCU}, plataforma, etc.).
 	\item Formato de los datos de entrada y salida (protocolos de comunicación, etc).
 	\item Estructuras de datos (listas, tablas hash, queues, stacks, etc.).
-	\item Algoritmos (de control, de decición, ordenamiento, etc.).
+	\item Algoritmos (de control, de decisión, ordenamiento, etc.).
 	\item Algunos usuarios pueden requerir solo un subconjunto de los servicios o características que otros usuarios necesitan (limitar las funcionalidades, por ejemplo).
 	\item Dispositivos periféricos (actuadores, sensores, etc.).
-	\item Entorno socio-cultural (moneda, impuestos, fechas, idioma, etc.).
+	\item Entorno sociocultural (moneda, impuestos, fechas, idioma, etc.).
 	\item Cambios propios del dominio de aplicación.
 	\item Cambios propios del negocio de la compañía desarrolladora.
 	\item Interconexión con otros sistemas (\gls{API}, por ejemplo).
 \end{itemize}
 
-Es útil consultar estos items a la hora de diseñar siguiendo los criterios de modularización de \cite{Parnas1972}.
+Es útil consultar estos ítems a la hora de diseñar siguiendo los criterios de modularización de \cite{Parnas1972}.
 
 
 
 
 \section{Patrones de Diseño}
 
-A la hora de estructurar código podemos distinguir dos niveles, uno se tratará en esa sub-sección y el otro en Sección \ref{secArq}. Los patrones de diseño se aplican en el nivel de diseño. En este los elementos son módulos y la comunicación se lleva a cabo mediante llamadas a procedimiento. Además de las llamadas, se aplican dos conceptos previamente mencionados en la Sección \ref{ingso}, la composición y la herencia de interfaces. Estas son las herramientas con las se cuenta en el nivel de diseño para estructurar el código.
+A la hora de estructurar código podemos distinguir dos niveles, uno se tratará en esa subsección y el otro en Sección \ref{secArq}. Los patrones de diseño se aplican en el nivel de diseño. En este los elementos son módulos y la comunicación se lleva a cabo mediante llamadas a procedimiento. Además de las llamadas, se aplican dos conceptos previamente mencionados en la Sección \ref{ingso}, la composición y la herencia de interfaces. Estas son las herramientas con las se cuenta en el nivel de diseño para estructurar el código.
 
 En \cite{Gamma:1995:DPE:186897}, los autores traen a colación la definición de patrón de diseño que dio Christopher Alexander:
 
@@ -123,7 +123,7 @@ Un patrón tiene tres elementos principales:
 
 \begin{itemize}
 	\item El \textbf{problema} al que se intenta dar solución. Posee una explicación del mismo, con el fin de que el usuario pueda saber si aplica o no a su situación en cuestión.
-	\item La \textbf{solución} al problema dada como los elementos de diseño (módulos), sus relacipnes responsabilidades y colaboraciones. Es una plantilla que puede ser aplicada en diferentes condiciones.
+	\item La \textbf{solución} al problema dada como los elementos de diseño (módulos), sus relaciones responsabilidades y colaboraciones. Es una plantilla que puede ser aplicada en diferentes condiciones.
 	\item Las \textbf{consecuencias}, que son los resultados de aplicar esta solución. Es decir, qué beneficios y costos obtenemos de la aplicación. Así como las formas que el patrón provee para anticiparse a los posibles cambios futuros.
 \end{itemize}
 
@@ -148,7 +148,7 @@ Se destaca que la arquitectura de software no solo se trata de la estructura del
 \section{Documentación}
 \label{secDocumentacion}
 
-Quienes diseñan un sistema no serán necesariamente quienes lo implementen e incluso es deseable que no lo sean, por lo que sus decisiones deben estar disponibles para que diversos interesados en el sistema puedan revisarlas y comprenderlas. Por ello, documentar o describir el diseño de manera adecuada es tan importante como el diseño mismo. En este sentido, Parnas, Clements y Weiss introducen en el concepto de ``\textit{design through documentation}'' (diseño a través de la documentación), lo que nos lleva a enunciar el siguiente principio de diseño: \textit{Un diseño sin documentación carece de utilidad práctica.} Ese enfoque de diseño de software que consiste en avanzar en el desarrollo estructurando y escribiendo documentación técnica precisa desde las primeras etapas del proyecto. En lugar de centrarse inicialmente en el código o en representaciones informales, se propone utilizar documentos (que más adelante en esta Sección veremos) como la guía de módulos, las especificaciones de interfaces y los requisitos formales como herramientas fundamentales para organizar, analizar y comunicar las decisiones de diseño. Permiiendo identificar inconsistencias, delegar responsabilidades claramente entre módulos y facilitar el mantenimiento y la incorporación de nuevos desarrolladores al proyecto. Según los autores, diseñar mediante documentación no solo clarifica el proceso, sino que mejora la calidad y reutilización del software resultante.
+Quienes diseñan un sistema no serán necesariamente quienes lo implementen e incluso es deseable que no lo sean, por lo que sus decisiones deben estar disponibles para que diversos interesados en el sistema puedan revisarlas y comprenderlas. Por ello, documentar o describir el diseño de manera adecuada es tan importante como el diseño mismo. En este sentido, Parnas, Clements y Weiss introducen en el concepto de ``\textit{design through documentation}'' (diseño a través de la documentación), lo que nos lleva a enunciar el siguiente principio de diseño: \textit{Un diseño sin documentación carece de utilidad práctica.} Ese enfoque de diseño de software que consiste en avanzar en el desarrollo estructurando y escribiendo documentación técnica precisa desde las primeras etapas del proyecto. En lugar de centrarse inicialmente en el código o en representaciones informales, se propone utilizar documentos (que más adelante en esta Sección veremos) como la guía de módulos, las especificaciones de interfaces y los requisitos formales como herramientas fundamentales para organizar, analizar y comunicar las decisiones de diseño. Permitiendo identificar inconsistencias, delegar responsabilidades claramente entre módulos y facilitar el mantenimiento y la incorporación de nuevos desarrolladores al proyecto. Según los autores, diseñar mediante documentación no solo clarifica el proceso, sino que mejora la calidad y reutilización del software resultante.
 
 Para lograr una buena descripción del diseño se utilizan múltiples documentos que aportan información sobre distintos aspectos a tener en cuenta \cite{ClementsEtAl2010}, entre ellos se encuentran:
 
@@ -207,7 +207,7 @@ metodo3()\\}
 \end{center}
 \end{figure}
 
-Además, es posible indicar el tipo de los parámetros de entrada de un método así como el tipo del valor de retorno del mismo. Para eso utilizamos la gramática presentada en la Figura \ref{parametros}. Recordar que asumimos que un módulo es, genera o define un tipo. Es decir que para tipar nuestros métodos usamos módulos.
+Además, es posible indicar el tipo de los parámetros de entrada de un método así como el tipo del valor de retorno del mismo. Para eso utilizamos la gramática presentada en la Figura \ref{parametros}. Recordar que asumimos que un módulo es, genera o define un tipo. Es decir que para dotar de tipos nuestros métodos usamos módulos.
 
 Este formato gráfico de documentación puede ser extendido haciendo uso de los símbolos definidos en la Figura \ref{simbolos}. 
 
@@ -245,7 +245,7 @@ metodo2(): Tipo\\
 \umlsimpleclass{A}
 \umlsimpleclass[right=1cm of A]{B}
 \umluniaggreg{A}{B}
-\end{tikzpicture} & {\modFCFont A} está compuesto por un elemento del tipo {\modFCFont B}. En el extremo de la flecha pueden  aparecer los siguientes símbolos: *, \textit{n}; o ninguno. En el primer caso indica que en la composición hay \textbf{0 o más elementos}, el segundo caso significa que hay \textbf{al menos un elemento} y en el último caso, la flecha sin símbolos adicionales indica que la composición tiene \textbf{exactamente un elemento}.\\\hline
+\end{tikzpicture} & {\modFCFont A} está compuesto por un elemento del tipo {\modFCFont B}. En el extremo de la flecha pueden aparecer los siguientes símbolos: *, \textit{n}; o ninguno. En el primer caso, indica que en la composición hay \textbf{0 o más elementos}, el segundo caso significa que hay \textbf{al menos un elemento} y en el último caso, la flecha sin símbolos adicionales indica que la composición tiene \textbf{exactamente un elemento}.\\\hline
 &\\
 \begin{tikzpicture}\sf
 \umlsimpleclass{A}
@@ -267,20 +267,20 @@ metodo2(): Tipo\\
 \umlclass[below=0.5cm of ModuloAbstracto]{ModuloConcreto}{}
 {metodo2()\\}
 \umlVHVinherit{ModuloConcreto}{ModuloAbstracto}
-\end{tikzpicture} & \vspace{-2cm}Los módulos \textit{abstractos} presentan sus nombres en letra \textit{itálica}, como así también los nombres de los métodos que no implementan. Aquellos métodos que son implementados, se presentan en letra \textbf{normal}. Por ejemplo, \ModuloAbstracto no implementa {\modFAFont metodo2()} ni {\modFAFont metodo3()} pero sí implementa  ~\mbox{{\modFCFont metodo1()}}. Los módulos \textbf{concretos} que hereden métodos de un padre, solo presentarán los métodos que implementen y estos serán mostrados en letra \textbf{normal}. Por ej, \ModuloConcreto hereda toda la interfaz del padre pero solo implementa {\modFCFont metodo2()}.\\\hline
+\end{tikzpicture} & \vspace{-2cm}Los módulos \textit{abstractos} presentan sus nombres en letra \textit{itálica}, como así también los nombres de los métodos que no implementan. Aquellos métodos que son implementados, se presentan en letra \textbf{normal}. Por ejemplo, \ModuloAbstracto no implementa {\modFAFont metodo2()} ni {\modFAFont metodo3()}, pero sí implementa  ~\mbox{{\modFCFont metodo1()}}. Los módulos \textbf{concretos} que hereden métodos de un padre, solo presentarán los métodos que implementen y estos serán mostrados en letra \textbf{normal}. Por ej., \ModuloConcreto hereda toda la interfaz del padre, pero solo implementa {\modFCFont metodo2()}.\\\hline
 \end{tabular}\\\vspace{0.5cm}
 
 
 \end{figure}
 
-Por otro lado, la aplicación de patrones de diseño también debe ser documentada. Para hacerlo se utiliza de igual forma el lenguade \textbf{2MIL} de la manera indicada en la Figura \ref{docPatron}. En este formato se establece el patrón que se está aplicando y se da una breve descripción del caso de aplicación. Además, se enumeran los cambios previstos y comó el patrón funciona en el caso particular. Por último, se define qué módulo de nuestro sistema cumple el rol de cada participante del patrón.
+Por otro lado, la aplicación de patrones de diseño también debe ser documentada. Para hacerlo se utiliza de igual forma el lenguaje \textbf{2MIL} de la manera indicada en la Figura \ref{docPatron}. En este formato se establece el patrón que se está aplicando y se da una breve descripción del caso de aplicación. Además, se enumeran los cambios previstos y como el patrón funciona en el caso particular. Por último, se define qué módulo de nuestro sistema cumple el rol de cada participante del patrón.
 
 \begin{figure}[H]
-\caption{Documentación aplicación de patrón.}
+\caption{Documentación de la aplicación del patrón.}
 \label{docPatron}
 \begin{pattern}[]{Breve descripción}{Algorithm}{idFigAlg}
 \based{Patrón (Pattern)}
-\why{\textbf{Cambios previstos}: Descripción de los cambios previstos relacionados al patrón.
+\why{\textbf{Cambios previstos}: Descripción de los cambios previstos relacionados con el patrón.
 
 \textbf{Funcionalidad}: Explicación de la aplicación del patrón en el caso particular.
 }
@@ -291,7 +291,7 @@ Por otro lado, la aplicación de patrones de diseño también debe ser documenta
 \end{figure}
 
 
-A fines didácticos en esta tesina utilizaremos solo la representacion grafica para dpcumentar módulos y sus relaciones. Para documentar patrones si se mostrará utilizando \textbf{2MIL}. Información adicional sobre cómo documentar utilizando este lenguaje puede encontrarse en \cite{cristia2022diseno, cristiaDocu, isStyDoc}.
+A fines didácticos, en esta tesina utilizaremos solo la representación gráfica para documentar módulos y sus relaciones. Para documentar patrones si se mostrará utilizando \textbf{2MIL}. Información adicional sobre cómo documentar utilizando este lenguaje puede encontrarse en \cite{cristia2022diseno, cristiaDocu, isStyDoc}.
 
 
 
@@ -300,9 +300,9 @@ A fines didácticos en esta tesina utilizaremos solo la representacion grafica p
 \section{Un estilo arquitectonico para sistemas embebidos}
 \label{arqControlProc}
 
-Si nos centramos en los sistemas embebidos de control como los que se definieron en la Sección \ref{sistControl}, encontramos que existen trabajos sobre estilos arquitectonicos de software orientados al control de procesos; por ejemplo el estilo arquitectónico de \textit{Control del Procesos} presentado en \cite{ShawGarlan1996}. El mismo está definido para ser aplicado en sistemas de control de procesos físicos donde se quiere mantener ciertas propiedades de la salida del proceso, cerca de valores de referencia. Algunos ejemplos son el control de la velocidad de giro de una rueda, la posición del extrusor de una impresora 3D, la temperatura del agua en una caldera, etc.
+Si nos centramos en los sistemas embebidos de control como los que se definieron en la Sección \ref{sistControl}, encontramos que existen trabajos sobre estilos arquitectónicos de software orientados al control de procesos; por ejemplo el estilo arquitectónico de \textit{Control de Procesos} presentado en \cite{ShawGarlan1996}. El mismo está definido para ser aplicado en sistemas de control de procesos físicos donde se quiere mantener ciertas propiedades de la salida del proceso, cerca de valores de referencia. Algunos ejemplos son el control de la velocidad de giro de una rueda, la posición del extrusor de una impresora 3D, la temperatura del agua en una caldera, etc.
 
-Antes de explicar en que se basa el estilo veamos las definiciones presentes en el Cuadro \ref{tab:conceptosArq}. Los tres conceptos hacen referencia al mundo físico, no son definiciones de software. Podemos decir entonces, que nuestro sistema de control se relacionará con estas variables físicas para lograr el objetivo.
+Antes de explicar en que se basa el estilo, veamos las definiciones presentes en el Cuadro \ref{tab:conceptosArq}. Los tres conceptos hacen referencia al mundo físico, no son definiciones de software. Podemos decir entonces, que nuestro sistema de control se relacionará con estas variables físicas para lograr el objetivo.
 
 \begin{table}[H]
 
@@ -334,7 +334,7 @@ Supóngase que se está trabajando con un robot móvil y, en particular, con una
 
 Siguiendo los pasos descriptos, el sistema leerá primero el valor de velocidad configurado por el usuario y luego el valor medido por el velocímetro. Con estos dos datos, decidirá qué tensión aplicar. Por ejemplo, si el usuario solicita 30  \gls{RPM} y el velocímetro mide 20  \gls{RPM}, el sistema incrementará la tensión. En una iteración futura, si se alcanza la velocidad deseada, se ajustará nuevamente la tensión para no sobrepasar el valor configurado.
 
-Para llevar este comportamiento a cabo, el estilo arquitectonico propone los componentes de software que se muestran en la Figura \ref{fig:arqCtrlRobot}.
+Para llevar este comportamiento a cabo, el estilo arquitectónico propone los componentes de software que se muestran en la Figura \ref{fig:arqCtrlRobot}.
 
 
 \begin{figure}[H]
@@ -439,7 +439,7 @@ Para llevar este comportamiento a cabo, el estilo arquitectonico propone los com
 \end{figure}
 
 
-Como se puede observar el estilo se basa en tres componenes básicos \textbf{Control}, \textbf{Proceso} y \textbf{Sensores}. Cada uno de ellos trabaja de manera independiente y se comunican mediante dos mecanismos principales, llamadas a prodedimientos y tubos (\textit{pipes}). Veamos qué información oculta cada uno:
+Como se puede observar el estilo se basa en tres componentes básicos \textbf{Control}, \textbf{Proceso} y \textbf{Sensores}. Cada uno de ellos trabaja de manera independiente y se comunican mediante dos mecanismos principales, llamadas a procedimientos y tubos (\textit{pipes}). Veamos qué información oculta cada uno:
 
 \begin{itemize}
 \item \textbf{Proceso}: encapsula los mecanismos y dispositivos que permiten modificar las variables manipuladas del proceso físico. Por ejemplo, el hardware y los drivers que permiten ajustar la tensión que se entrega al motor de una rueda. Nótese que este es un componente de software; no debe confundirse con el proceso físico que ocurre en el mundo real.
@@ -449,10 +449,10 @@ Como se puede observar el estilo se basa en tres componenes básicos \textbf{Con
 \item \textbf{Sensores}: encapsulan los dispositivos y mecanismos necesarios para obtener los valores de las variables controladas. Por ejemplo, el funcionamiento del velocímetro.
 \end{itemize}
 
-Además, el estilo cuenta con otro tipo de componente importante: los \textbf{tubos}. Estos se utilizan para transmitir los valores de las variables controladas desde los sensores al algoritmo de control de manera desacoplada. El objetivo es que el \textbf{Control} pueda operar sin conocer directamente los sensores, logrando así una mayor independencia. Comúnmente, cada \textbf{tubo} es un módulo que provee un método para escribir y otro para leer. En este esquema, los \textbf{Sensores} escriben los valores obtenidos del entorno físico, y el \textbf{Control} los recupera utilizando el método de lectura del \textbf{tubo}.
+Además, el estilo cuenta con otro tipo de componente importante: los \textbf{tubos}. Estos se utilizan para transmitir los valores de las variables controladas desde los sensores al algoritmo de control de manera desacoplada. El objetivo es que el \textbf{Control} pueda operar sin conocer directamente los sensores, logrando así una mayor independencia. Comúnmente, cada \textbf{tuvo} es un módulo que provee un método para escribir y otro para leer. En este esquema, los \textbf{Sensores} escriben los valores obtenidos del entorno físico, y el \textbf{Control} los recupera utilizando el método de lectura del \textbf{tuvo}.
 
 
-La ventaja de este estilo arquiectónico es que brinda un enfoque modular con independencia entre componentes. Por ejemplo, un sensor emite información colocándola en un tubo sin conocer al destinatario. Esto permite que los sensores puedan ser modificado o reemplazado sin afectar al controlador, así como agregar nuevos sensores. De manera similar, existe una separación clara entre el algoritmo de control, que realiza los cálculos para alcanzar los valores de referencia, y el proceso, que se encarga de aplicar dichos cálculos. Este desacople permite que cambios en el algoritmo de control no impacten directamente en el proceso y viceversa. En conclusión se facilita la incorporación de nuevos sensores, actualizaciones en el algoritmo de control y cambios en el hardware, promoviendo flexibilidad y escalabilidad.
+La ventaja de este estilo arquitectónico es que brinda un enfoque modular con independencia entre componentes. Por ejemplo, un sensor emite información colocándola en un tubo sin conocer al destinatario. Esto permite que los sensores puedan ser modificados o reemplazados sin afectar al controlador, así como agregar nuevos sensores. De manera similar, existe una separación clara entre el algoritmo de control, que realiza los cálculos para alcanzar los valores de referencia, y el proceso, que se encarga de aplicar dichos cálculos. Este desacople permite que cambios en el algoritmo de control no impacten directamente en el proceso y viceversa. En conclusión se facilita la incorporación de nuevos sensores, actualizaciones en el algoritmo de control y cambios en el hardware, promoviendo flexibilidad y escalabilidad.
 
 
 
@@ -463,7 +463,7 @@ Parnas en \cite{Parnas1972} establece que desacoplar se refiere a la idea de red
 
 A lo largo de los ejemplos del documento, veremos repetidas veces el uso de la noción de \textit{orden} o \textit{comando}. Cada vez que sea nombrado haremos referencia a la aplicación de un patrón de diseño de Gamma \cite{Gamma:1995:DPE:186897}, llamdo \textit{Command}. Este patrón es el que más veces se aplicó en el trabajo del robot desmalezador \cite{laura}, por lo que es importante conocerlo.
 
-La función principal que cumple este patrón es la de desacoplar el módulo que invoca una orden, la orden en si y aquel que sabe como llevarla a cabo. En particular, este patrón puede ser utilizado para reemplazar las \textit{callbacks} entre módulos. Es común utilizar \textit{callbacks} para mantener los niveles de abstracción, en donde módulos de bajo nivel de abstracción desconocen la existencia de módulos más abstractos.
+La función principal que cumple este patrón es la de desacoplar el módulo que invoca una orden, la orden en sí y aquel que sabe como llevarla a cabo. En particular, este patrón puede ser utilizado para reemplazar las \textit{callbacks} entre módulos. Es común utilizar \textit{callbacks} para mantener los niveles de abstracción, en donde módulos de bajo nivel de abstracción desconocen la existencia de módulos más abstractos.
 
 En la Figura \ref{commandEst} podemos observar la estructura de módulos del mismo.
 
@@ -473,7 +473,7 @@ En la Figura \ref{commandEst} podemos observar la estructura de módulos del mis
 \declareCMod{Receptor}
 
 \begin{figure}[H]
-\caption{Estructura patrón \textit{Command}}
+\caption{Estructura del patrón \textit{Command}}
 \label{commandEst}
 \begin{center}
 \begin{tikzpicture}\sf
@@ -510,7 +510,7 @@ ejecutar()
     \item \Receptor: cualquier módulo sobre la cual se realiza la acción.
 \end{itemize}
 
-Como objetivo fundamental, buscamos no tener que modificar la implementación del módulo invocador en caso de un cambio en el módulo que se encarga de realizar las tareas. Ademas, se le quita la responsabilidad de saber exactamente qué acciones realizar para llevar a cabo un procedimiento particular. Por ejemplo, un módulo necesita que otro se inicie, pero este último para hacerlo requiere que se invoque una serie de sus métodos de manera ordenada. Si se lo hace de la forma clásica, el primer módulo debe ajustar su implementación al segundo. En cambio, con una orden se mueve la responsabilidad a un nuevo módulo.
+Como objetivo fundamental, buscamos no tener que modificar la implementación del módulo invocador en caso de un cambio en el módulo que se encarga de realizar las tareas. Además, se le quita la responsabilidad de saber exactamente qué acciones realizar para llevar a cabo un procedimiento particular. Por ejemplo, un módulo necesita que otro se inicie, pero este último para hacerlo requiere que se invoque una serie de sus métodos de manera ordenada. Si se lo hace de la forma clásica, el primer módulo debe ajustar su implementación al segundo. En cambio, con una orden se mueve la responsabilidad a un nuevo módulo.
 
 Al encapsular cada solicitud de una operación dentro de un módulo, el patrón permite que los módulos que invocan acciones no necesiten conocer los detalles de implementación de los módulos que las ejecutan. Esto reduce significativamente las dependencias y hace que el sistema sea más fácil de mantener, ya que cada módulo se concentra en su propia responsabilidad, sin acoplarse a los detalles del resto de módulos. Esta estructura es particularmente útil cuando se necesita modificar o añadir funcionalidades de manera frecuente. Al mismo tiempo, los comandos encapsulados pueden almacenarse, reutilizarse y combinarse en secuencias, lo que facilita la implementación de operaciones complejas que se repiten o que requieren ser acumuladas para un procesamiento posterior. Por otro lado, como la orden es un módulo puede ser extendido para implementar múltiples funcionalidades, como deshacer operaciones o registrar cambios. 
 
@@ -565,9 +565,9 @@ ejecutar() \{ \\
 
 \begin{pattern}[]{Orden para controlar motor paso a paso}{Algorithm}{idFigAlg}
 \based{Orden (Command)}
-\why{\textbf{Cambios previstos}: Se pueden agregar o modificar ordenes.
+\why{\textbf{Cambios previstos}: Se pueden agregar o modificar órdenes.
 
-\textbf{Funcionalidad}: Desacoplar al que invoca una orden de que la lleva a cabo, proporcionando flexibilidad ante cambios en las ordenes o el receptor.
+\textbf{Funcionalidad}: Desacoplar al que invoca una orden de que la lleva a cabo, proporcionando flexibilidad ante cambios en las órdenes o el receptor.
 }
 \assigns
 \is{Orden}{Orden}
@@ -577,7 +577,7 @@ ejecutar() \{ \\
 \end{pattern}
 
 \end{figure}
-Un módulo \Controller, necesita manejar un \gls{pasoapaso} reprensentado en el diseño por el módulo \Motor. Para hacerlo se deben ejecutar una serie de métodos de la interfaz del \Motor. En particular, primero se debe habilitar el giro del motor llamando al método \verb|enable|, luego configurar el sentido de giro con el método \verb|left| o \verb|right| (izquierda o derecha) y por ultimo avanzar un paso de giro invocando \verb|pulse|. Tradicionalmente esto seria realizado desde el módulo \Controller agregando el código en cierto método de este (ver ejemplo en Código \ref{notCommand}), provocando así, un fuerte acoplamiento entre \Controller y \Motor. Esto es, ante cualquier cambio de la interfaz de \Motor, se debe actualizar la implementación del módulo \Controller, es decir, hay que modificar dos módulos y como dijimos el sistema debe estar cerrado a cambios y abierto a extensiones. Reduciendo al mínimo la modificación de código existente lo que podría traer como resultado la introducción de errores.
+Un módulo \Controller, necesita manejar un \gls{pasoapaso} representado en el diseño por el módulo \Motor. Para hacerlo se deben ejecutar una serie de métodos de la interfaz del \Motor. En particular, primero se debe habilitar el giro del motor llamando al método \verb|enable|, luego configurar el sentido de giro con el método \verb|left| o \verb|right| (izquierda o derecha) y por último avanzar un paso de giro invocando \verb|pulse|. Tradicionalmente, esto sería realizado desde el módulo \Controller agregando el código en cierto método de este (ver ejemplo en Código \ref{notCommand}), provocando así, un fuerte acoplamiento entre \Controller y \Motor. Esto es, ante cualquier cambio de la interfaz de \Motor, se debe actualizar la implementación del módulo \Controller, es decir, hay que modificar dos módulos y como dijimos el sistema debe estar cerrado a cambios y abierto a extensiones. Reduciendo al mínimo la modificación de código existente lo que podría traer como resultado la introducción de errores.
 
 
 \begin{lstlisting}[label={notCommand}, caption=Ejemplo de implementación sin usar el patrón \textit{Command}.]
@@ -601,4 +601,4 @@ En caso de que la interfaz de \Motor cambie por cualquier motivo, se puede crear
 
 Otro uso interesante del patrón surge cuando se define una cierta estructura conceptual en el sistema. Esta puede responder a la naturaleza de la aplicación. Por ejemplo, en un sistema de control, se puede definir que los módulos que toman decisiones sobre el control sean quienes invoquen a los sensores para obtener información, generando así una jerarquía en la que los sensores no deben invocar métodos de módulos superiores. En caso de ser necesaria la comunicación en sentido inverso, se puede utilizar el patrón \textit{Command} para reemplazar el uso de \textit{callbacks}.
 
-Este uso del patrón \textit{Command} será aplicado en varias de las soluciones a problemas comunes en sistemas embebidos que se proponen más adelante en esta tesina.
+Este empleo del patrón \textit{Command} será aplicado en varias de las soluciones a problemas comunes en sistemas embebidos que se proponen más adelante en esta tesina.

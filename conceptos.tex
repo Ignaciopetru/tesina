@@ -66,17 +66,17 @@ En resumen, el software de un sistema embebido actúa como el cerebro que dirige
 Otros autores \cite{lee2017introduction} describen sistemas \textit{ciber-físicos} (\Ac{CSP}\footnote{por sus siglas en inglés (cyber-physical system)}) como la integración de la computación con procesos físicos. Esta integración usualmente se lleva a cabo utilizando sistemas embebidos con ciclos de retroalimentación; en los cuales la parte computacional afecta al ámbito físico y viceversa. Los componentes que permiten la comunicación entre ambos mundos son sensores y actuadores.
 Además, si tomamos en cuenta los ejemplos que se presentan tanto en \cite{noergaard2005embedded} como en \cite{lee2017introduction}, podemos decir que la mayoría de los sistemas embebidos realizan tareas de \textbf{control} sobre el mundo físico.
 
-Con respecto al hardware en donde corren los sistemas embebidos podemos descatar que suele consistir en una placa o chip compacto que incluye:
+Con respecto al hardware en donde corren los sistemas embebidos podemos destacar que suele consistir en una placa o chip compacto que incluye:
 \begin{itemize}
     \item \textbf{Unidad de Microcontrolador (MCU):} Un microcontrolador que integra un procesador, memoria y perif\'ericos en un solo chip. Es el componente principal que ejecuta el software.
-    \item \textbf{Memoria Flash:} Utilizada para almacenar el programa y los datos no vol\'atiles.
-    \item \textbf{Memoria RAM:} Proporciona almacenamiento temporal para datos en tiempo de ejecuci\'on.
+    \item \textbf{Memoria Flash:} Utilizada para almacenar el programa y los datos no voátiles.
+    \item \textbf{Memoria RAM:} Proporciona almacenamiento temporal para datos en tiempo de ejecución.
     \item \textbf{Interfaces de entrada/salida:} Puertos \gls{GPIO}, \gls{ADC}, \gls{PWM} y otros para interactuar con sensores, actuadores y otros dispositivos externos.
     \item \textbf{Fuente de Energ\'ia:} Puede provenir de bater\'ias, adaptadores de corriente o incluso energ\'ia recolectada del entorno.
 \end{itemize}
-El tama\~no compacto y la integraci\'on de componentes distinguen a los sistemas embebidos de otros sistemas m\'as grandes como las computadoras de escritorio o los servidores. Se diferencian, además, en su poder de cómputo limitado tanto por el hardware (baja disponibilidad de memoria RAM, \gls{clock} de la CPU bajo, etc) como por la disponibilidad de energía eléctrica.
+El tama\~no compacto y la integracón de componentes distinguen a los sistemas embebidos de otros sistemas más grandes como las computadoras de escritorio o los servidores. Se diferencian, además, en su poder de cómputo limitado tanto por el hardware (baja disponibilidad de memoria RAM, \gls{clock} de la CPU bajo, etc) como por la disponibilidad de energía eléctrica.
 
-Existen varios microcontroladores multipropósito de uso comercial, tales como los producidos por la empresa Arduino \cite{arduinoMicro} o los similares de la familia  Raspberry Pi \cite{raspMicro}. La presentación de los mismos suele ser en forma de una placa preparada para conectar los inputs y outputs, como las que se observan en Figuras \ref{arduinoUNO} y \ref{raspberry}.
+Existen varios microcontroladores multipropósito de uso comercial, tales como los producidos por la empresa Arduino \cite{arduinoMicro} o los similares de la familia Raspberry Pi \cite{raspMicro}. La presentación de los mismos suele ser en forma de una placa preparada para conectar los inputs y outputs, como las que se observan en Figuras \ref{arduinoUNO} y \ref{raspberry}.
 
 Por defecto, el microcontrolador ejecuta el software almacenado en su unidad flash, la cual debe ser grabada cada vez que se actualice el código. Dado esto y las limitaciones de hardware ya mencionadas, se deben tener ciertas consideraciones a la hora de escribir el código. En particular, se debe prestar atención a la performance del sistema, a la cantidad de librerías a utilizar, al uso de memoria RAM, etc.
 
@@ -105,7 +105,7 @@ Cuando ocurre una interrupción (por ejemplo, un cambio en un sensor o una solic
 \begin{figure}[H]
 	\centering
     \includegraphics[width=0.7\linewidth]{components_interrupt.png}
-    \caption{Diagrama interrupción extraído de \cite{imgInterrupciones}.}
+    \caption{Diagrama del manejo de una interrupción extraído de \cite{imgInterrupciones}.}
     \label{interrupt}
 \end{figure}
 
@@ -122,7 +122,7 @@ Gracias a las interrupciones, el microcontrolador puede realizar tareas en tiemp
 \section{Sistemas Embebidos de Control Robótico}
 \label{sistControl}
 
-Un sistema embebido de control robótico es una unidad de procesamiento diseñada para gestionar el funcionamiento de un robot, integrando sensores, actuadores y algoritmos de control. Por lo general estos sistemas están diseñados para operar en tiempo real y ejecutar tareas específicas llevando a cabo comportamientos básicos del robot relacionados al movimiento o adquisición de información. Por ejemplo, en \cite{paperPomponio} el sistema se encarga realizar las ordenes provenientes de una PC, las cuales pueden establecer el desplazamiento en cuanto a velocidad y giro. Para concretar las acciones se necesita llevar un control en tiempo real de los componenetes físicos y para hacerlo se hace uso de todo el hardware disponible (sensores, actuadores, sistemas de comunicación, etc.).
+Un sistema embebido de control robótico es una unidad de procesamiento diseñada para gestionar el funcionamiento de un robot, integrando sensores, actuadores y algoritmos de control. Por lo general estos sistemas están diseñados para operar en tiempo real y ejecutar tareas específicas llevando a cabo comportamientos básicos del robot relacionados al movimiento o adquisición de información. Por ejemplo, en \cite{paperPomponio} el sistema se encarga realizar las órdenes provenientes de una PC, las cuales pueden establecer el desplazamiento en cuanto a velocidad y giro. Para concretar las acciones se necesita llevar un control en tiempo real de los componentes físicos y para hacerlo se hace uso de todo el hardware disponible (sensores, actuadores, sistemas de comunicación, etc.).
 
 Existen dos enfoques básicos para llevar a cabo el control, lazo cerrado y lazo abierto.
 
@@ -141,6 +141,6 @@ Para implementar un control por lazo cerrado se pueden aplicar la noción de cic
 \item Actuación: envío de comandos a motores, \gls{servomecanismos} u otros actuadores para ejecutar las acciones calculadas.
 \end{itemize}
 
-De esta manera, luego de una serie de iteraciones, si los valores de referencia son aclcanzables, se tiende a obtener los resultados deseados.
+De esta manera, luego de una serie de iteraciones, si los valores de referencia son alcanzables, se tiende a obtener los resultados deseados.
 \\\\
-Los sistemas embebidos constituyen el núcleo escencial de numerosos dispositivos que interactúan con el mundo físico. A lo largo del capítulo se abordaron sus fundamentos, desde la definición y el hardware involucrado hasta conceptos clave como las interrupciones y los ciclos de control. Este conocimiento resulta fundamental para enfrentar los desafíos del diseño y la programación en entornos donde la respuesta en tiempo real y la interacción con el entorno son requisitos centrales.
+Los sistemas embebidos constituyen el núcleo esencial de numerosos dispositivos que interactúan con el mundo físico. A lo largo del capítulo se abordaron sus fundamentos, desde la definición y el hardware involucrado hasta conceptos clave como las interrupciones y los ciclos de control. Este conocimiento resulta fundamental para enfrentar los desafíos del diseño y la programación en entornos donde la respuesta en tiempo real y la interacción con el entorno son requisitos centrales.

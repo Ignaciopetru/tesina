@@ -8,7 +8,7 @@
 \contentsline {xchapter}{Sistemas embebidos}{21}{chapter.3}%
 \contentsline {figure}{\numberline {3.1}{\ignorespaces Arduino UNO}}{24}{figure.caption.10}%
 \contentsline {figure}{\numberline {3.2}{\ignorespaces Raspberry Pico 2}}{24}{figure.caption.11}%
-\contentsline {figure}{\numberline {3.3}{\ignorespaces Diagrama interrupción extraído de \blx@tocontentsinit {0}\cite {imgInterrupciones}.}}{25}{figure.caption.12}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Diagrama del manejo de una interrupción extraído de \blx@tocontentsinit {0}\cite {imgInterrupciones}.}}{25}{figure.caption.12}%
 \addvspace {10\p@ }
 \contentsline {xchapter}{Ingeniería de Software}{27}{chapter.4}%
 \contentsline {figure}{\numberline {4.1}{\ignorespaces Documentación de un módulo utilizando 2MIL.}}{33}{figure.caption.13}%
@@ -16,11 +16,11 @@
 \contentsline {figure}{\numberline {4.3}{\ignorespaces Documentación gráfica de un módulo y su heredero.}}{34}{figure.caption.15}%
 \contentsline {figure}{\numberline {4.4}{\ignorespaces Documentación de un módulo indicando el tipo de sus parámetros.}}{34}{figure.caption.16}%
 \contentsline {figure}{\numberline {4.5}{\ignorespaces Significado de los símbolos}}{35}{figure.caption.17}%
-\contentsline {figure}{\numberline {4.6}{\ignorespaces Documentación aplicación de patrón.}}{36}{figure.caption.18}%
+\contentsline {figure}{\numberline {4.6}{\ignorespaces Documentación de la aplicación del patrón.}}{36}{figure.caption.18}%
 \addvspace {10\p@ }
 \contentsline {xchapter}{Soluciones útiles}{37}{chapter.5}%
 \contentsline {figure}{\numberline {5.1}{\ignorespaces Diagrama de la arquitectura control de procesos}}{39}{figure.caption.20}%
-\contentsline {figure}{\numberline {5.2}{\ignorespaces Estructura patrón \textit {Command}}}{41}{figure.caption.21}%
+\contentsline {figure}{\numberline {5.2}{\ignorespaces Estructura del patrón \textit {Command}}}{41}{figure.caption.21}%
 \contentsline {figure}{\numberline {5.3}{\ignorespaces Ejemplo de aplicación básica del patrón \textit {Command}}}{42}{figure.caption.22}%
 \addvspace {10\p@ }
 \contentsline {xchapter}{Problemas comunes}{45}{chapter.6}%
@@ -28,7 +28,7 @@
 \contentsline {figure}{\numberline {6.2}{\ignorespaces Interfaz MotorDC}}{53}{figure.caption.25}%
 \contentsline {figure}{\numberline {6.3}{\ignorespaces Módulo MotorDC abstracto y estructura de herencia.}}{54}{figure.caption.26}%
 \contentsline {figure}{\numberline {6.4}{\ignorespaces Display 7 segmentos 4 digitos}}{55}{figure.caption.27}%
-\contentsline {figure}{\numberline {6.5}{\ignorespaces Diseño tradicional del uso de la libreria del fabricante.}}{57}{figure.caption.28}%
+\contentsline {figure}{\numberline {6.5}{\ignorespaces Diseño tradicional del uso de la librería del fabricante.}}{57}{figure.caption.28}%
 \contentsline {figure}{\numberline {6.6}{\ignorespaces Introducción del nuevo módulo abstracto\mbox {\itshape \sffamily Display}\xspace .}}{58}{figure.caption.29}%
 \contentsline {figure}{\numberline {6.7}{\ignorespaces Diseño aplicando el patrón \textit {Adapter}.}}{58}{figure.caption.30}%
 \contentsline {figure}{\numberline {6.8}{\ignorespaces Documentación de la aplicación del patrón Adapter al ejemplo del display.}}{59}{figure.caption.31}%
@@ -47,7 +47,7 @@
 \contentsline {figure}{\numberline {6.21}{\ignorespaces docStateInt}}{82}{figure.caption.43}%
 \contentsline {figure}{\numberline {6.22}{\ignorespaces Diagrama de flujo que explica el comportamiento de la función emergency \blx@tocontentsinit {0}\cite [pág. 82]{disenioViejo1}.}}{84}{figure.caption.44}%
 \contentsline {figure}{\numberline {6.23}{\ignorespaces Esquema del brazo robótico.}}{86}{figure.caption.45}%
-\contentsline {figure}{\numberline {6.24}{\ignorespaces Módulos de un subsistema de control y el componente al que pertenencen.}}{88}{figure.caption.46}%
+\contentsline {figure}{\numberline {6.24}{\ignorespaces Módulos de un subsistema de control y el componente al que pertenecen.}}{88}{figure.caption.46}%
 \contentsline {figure}{\numberline {6.25}{\ignorespaces Estructura módulo \mbox {\sffamily ControlSeguimiento}\xspace .}}{90}{figure.caption.47}%
 \contentsline {figure}{\numberline {6.26}{\ignorespaces Documentacion de la aplicación del patrón State en el módulo Control.}}{91}{figure.caption.48}%
 \contentsline {figure}{\numberline {6.27}{\ignorespaces Diagrama de los componentes del sistema brazo robótico.}}{92}{figure.caption.49}%
@@ -63,16 +63,18 @@
 \contentsline {figure}{\numberline {6.37}{\ignorespaces Documentación de aplicación del patrón \textit {Iterator}.}}{99}{figure.caption.59}%
 \contentsline {figure}{\numberline {6.38}{\ignorespaces Interfaces de las ordenes de ejecución para cada subsistema.}}{99}{figure.caption.60}%
 \contentsline {figure}{\numberline {6.41}{\ignorespaces Documentación de la aplicación del patrón \textit {State} para el manejo de ejecución de pasos completos.}}{100}{figure.caption.64}%
-\contentsline {figure}{\numberline {6.39}{\ignorespaces Documentación de la aplicación del patrón Command para el desacople de ordenes a ejecutar en cada actuador del brazo en un paso.}}{101}{figure.caption.62}%
+\contentsline {figure}{\numberline {6.39}{\ignorespaces Documentación de la aplicación del patrón Command para el desacople de órdenes a ejecutar en cada actuador del brazo en un paso.}}{101}{figure.caption.62}%
 \contentsline {figure}{\numberline {6.40}{\ignorespaces Diagrama del módulo MainController.}}{102}{figure.caption.63}%
 \contentsline {figure}{\numberline {6.42}{\ignorespaces Transiciones de estados del MainController}}{102}{figure.caption.65}%
 \addvspace {10\p@ }
-\contentsline {xchapter}{Patrones de diseño de Gamma}{105}{appendix.Alph1}%
-\contentsline {figure}{\numberline {A.1}{\ignorespaces Estructura patrón \textbf {Adapter}}}{106}{figure.caption.67}%
-\contentsline {figure}{\numberline {A.2}{\ignorespaces Estructura patrón \textbf {Command}}}{108}{figure.caption.68}%
-\contentsline {figure}{\numberline {A.3}{\ignorespaces Estructura patrón \textbf {State}}}{109}{figure.caption.69}%
-\contentsline {figure}{\numberline {A.4}{\ignorespaces Estructura patrón \textbf {Mediator}}}{110}{figure.caption.70}%
-\contentsline {figure}{\numberline {A.5}{\ignorespaces Estructura patrón \textbf {Decorator}}}{111}{figure.caption.71}%
-\contentsline {figure}{\numberline {A.6}{\ignorespaces Estructura patrón \textbf {Proxy}}}{113}{figure.caption.72}%
-\contentsline {figure}{\numberline {A.7}{\ignorespaces Estructura patrón \textbf {Iterador}}}{114}{figure.caption.73}%
-\contentsline {figure}{\numberline {A.8}{\ignorespaces Estructura patrón \textbf {Estrategia}}}{115}{figure.caption.74}%
+\contentsline {xchapter}{Conlusion y trabajos futuros}{105}{chapter.7}%
+\addvspace {10\p@ }
+\contentsline {xchapter}{Patrones de diseño de Gamma}{107}{appendix.Alph1}%
+\contentsline {figure}{\numberline {A.1}{\ignorespaces Estructura patrón \textbf {Adapter}}}{108}{figure.caption.67}%
+\contentsline {figure}{\numberline {A.2}{\ignorespaces Estructura patrón \textbf {Command}}}{110}{figure.caption.68}%
+\contentsline {figure}{\numberline {A.3}{\ignorespaces Estructura patrón \textbf {State}}}{111}{figure.caption.69}%
+\contentsline {figure}{\numberline {A.4}{\ignorespaces Estructura patrón \textbf {Mediator}}}{112}{figure.caption.70}%
+\contentsline {figure}{\numberline {A.5}{\ignorespaces Estructura patrón \textbf {Decorator}}}{113}{figure.caption.71}%
+\contentsline {figure}{\numberline {A.6}{\ignorespaces Estructura patrón \textbf {Proxy}}}{115}{figure.caption.72}%
+\contentsline {figure}{\numberline {A.7}{\ignorespaces Estructura patrón \textbf {Iterador}}}{116}{figure.caption.73}%
+\contentsline {figure}{\numberline {A.8}{\ignorespaces Estructura patrón \textbf {Estrategia}}}{117}{figure.caption.74}%
