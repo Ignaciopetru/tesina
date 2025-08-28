@@ -1,21 +1,21 @@
 \babel@toc {spanish}{}\relax 
 \addvspace {10\p@ }
-\contentsline {xchapter}{Introducción}{11}{chapter.1}%
+\contentsline {xchapter}{Introducción}{13}{chapter.1}%
 \addvspace {10\p@ }
-\contentsline {xchapter}{Estado del arte}{15}{chapter.2}%
+\contentsline {xchapter}{Estado del arte}{17}{chapter.2}%
 \addvspace {10\p@ }
-\contentsline {xchapter}{Sistemas embebidos}{21}{chapter.3}%
-\contentsline {table}{\numberline {3.1}{\ignorespaces Ejemplos sistemas embebidos.}}{22}{table.caption.9}%
+\contentsline {xchapter}{Sistemas embebidos}{23}{chapter.3}%
+\contentsline {table}{\numberline {3.1}{\ignorespaces Ejemplos sistemas embebidos.}}{24}{table.caption.9}%
 \addvspace {10\p@ }
-\contentsline {xchapter}{Ingeniería de Software}{27}{chapter.4}%
+\contentsline {xchapter}{Ingeniería de Software}{29}{chapter.4}%
 \addvspace {10\p@ }
-\contentsline {xchapter}{Soluciones útiles}{37}{chapter.5}%
-\contentsline {table}{\numberline {5.1}{\ignorespaces Conceptos clave de un proceso físico.}}{37}{table.caption.19}%
+\contentsline {xchapter}{Soluciones útiles}{39}{chapter.5}%
+\contentsline {table}{\numberline {5.1}{\ignorespaces Conceptos clave de un proceso físico.}}{39}{table.caption.18}%
 \addvspace {10\p@ }
-\contentsline {xchapter}{Problemas comunes}{45}{chapter.6}%
-\contentsline {table}{\numberline {6.1}{\ignorespaces Funciones de cada pin del módulo DRV8838}}{47}{table.caption.24}%
-\contentsline {table}{\numberline {6.2}{\ignorespaces Anticipos al cambio del diseño propuesto para el brazo robótico.}}{103}{table.caption.66}%
+\contentsline {xchapter}{Problemas comunes}{47}{chapter.6}%
+\contentsline {table}{\numberline {6.1}{\ignorespaces Funciones de cada pin del módulo DRV8838}}{49}{table.caption.23}%
+\contentsline {table}{\numberline {6.2}{\ignorespaces Anticipos al cambio del diseño propuesto para el brazo robótico.}}{105}{table.caption.68}%
 \addvspace {10\p@ }
-\contentsline {xchapter}{Conlusion y trabajos futuros}{105}{chapter.7}%
+\contentsline {xchapter}{Conlusión}{107}{chapter.7}%
 \addvspace {10\p@ }
-\contentsline {xchapter}{Patrones de diseño de Gamma}{107}{appendix.Alph1}%
+\contentsline {xchapter}{Patrones de diseño de Gamma}{109}{appendix.Alph1}%

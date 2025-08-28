@@ -2548,7 +2548,8 @@
     <bcf:citekey order="139" intorder="1">paperPomponio</bcf:citekey>
     <bcf:citekey order="140" intorder="1">paperPomponio</bcf:citekey>
     <bcf:citekey order="141" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
-    <bcf:citekey order="142" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
+    <bcf:citekey order="142" intorder="1">paperPomponio</bcf:citekey>
+    <bcf:citekey order="143" intorder="1">Gamma:1995:DPE:186897</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">

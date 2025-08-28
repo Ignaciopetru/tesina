@@ -582,15 +582,11 @@ Un módulo \Controller, necesita manejar un \gls{pasoapaso} representado en el d
 
 \begin{lstlisting}[label={notCommand}, caption=Ejemplo de implementación sin usar el patrón \textit{Command}.]
 control() {
-    .
-    .
-    .
+    ...
     motor.enable()
     motor.left()
     motor.pulse()
-    .
-    .
-    .  
+    ... 
 }
 \end{lstlisting}
 Para aplicar el patrón \textit{Command} se debe crear el módulo heredero de \Orden que representa el comando en cuestión, en este caso, \MotorGirarIzq. Este encapsula cómo deben invocarse los métodos del módulo \Motor para que este realice un paso de giro hacia la izquierda. Por lo tanto, \Controller invocará el método ejecutar de \MotorGirarIzq para realizar dicha acción.

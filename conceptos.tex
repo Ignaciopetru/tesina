@@ -81,18 +81,23 @@ Existen varios microcontroladores multipropósito de uso comercial, tales como l
 Por defecto, el microcontrolador ejecuta el software almacenado en su unidad flash, la cual debe ser grabada cada vez que se actualice el código. Dado esto y las limitaciones de hardware ya mencionadas, se deben tener ciertas consideraciones a la hora de escribir el código. En particular, se debe prestar atención a la performance del sistema, a la cantidad de librerías a utilizar, al uso de memoria RAM, etc.
 
 \begin{figure}[h!]
-	\caption{Arduino UNO}
-	\label{arduinoUNO}
-	\centering
-    \includegraphics[width=0.5\linewidth]{arduinoUNO.jpeg}
-\end{figure}
-
-
-\begin{figure}[h!]
-	\caption{Raspberry Pico 2}
-	\label{raspberry}
-	\centering
-    \includegraphics[width=0.6\linewidth]{raspberry_pico2.jpg}
+    \centering
+    % Primer subentorno minipage (para Arduino)
+    \begin{minipage}{0.4\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{arduinoUNO.jpeg}
+        \caption{Arduino UNO}
+        \label{arduinoUNO}
+    \end{minipage}\hfill
+    % Segundo subentorno minipage (para Raspberry)
+    \begin{minipage}{0.4\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{raspberry_pico2.jpg}
+        \caption{Raspberry Pico 2}
+        \label{raspberry}
+    \end{minipage}
+    % Pie de figura para todo el conjunto (opcional)
+    \label{fig:comparacion_placas}
 \end{figure}
 
 
@@ -104,7 +109,7 @@ Cuando ocurre una interrupción (por ejemplo, un cambio en un sensor o una solic
 
 \begin{figure}[H]
 	\centering
-    \includegraphics[width=0.7\linewidth]{components_interrupt.png}
+    \includegraphics[width=0.65\linewidth]{components_interrupt.png}
     \caption{Diagrama del manejo de una interrupción extraído de \cite{imgInterrupciones}.}
     \label{interrupt}
 \end{figure}

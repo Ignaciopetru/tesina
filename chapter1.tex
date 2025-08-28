@@ -8,7 +8,7 @@
     commentstyle=\color{Red3},
     numberstyle=\tiny\color{gray},
     stringstyle=\color{Blue3},
-    basicstyle=\small\ttfamily,
+    basicstyle=\footnotesize\ttfamily,
     breakatwhitespace=false,         
     breaklines=true,                 
     numbers=left,                    
@@ -18,10 +18,10 @@
     showtabs=false,                  
     tabsize=2,
     language=Python,
-    basicstyle=\ttfamily,
-	keywordstyle=\color{blue}\ttfamily,
-	stringstyle=\color{red}\ttfamily,
-    commentstyle=\color{green}\ttfamily,
+    basicstyle=\footnotesize\ttfamily,
+	keywordstyle=\color{blue}\footnotesize\ttfamily,
+	stringstyle=\color{red}\footnotesize\ttfamily,
+    commentstyle=\color{green}\footnotesize\ttfamily,
     morecomment=[l][\color{magenta}]{\#}
 }%
 \lstset{language=Python,style={mystyle}}%
@@ -297,6 +297,7 @@ Un motor \gls{DC} siempre recibirá órdenes para definir su sentido y velocidad
 \caption{Interfaz MotorDC}
 \label{interfazMotor}
 \begin{center}
+\scalebox{.90}{
 \begin{tikzpicture}\sf
 \umlclass[x=-3]{MotorDC}
 {
@@ -308,6 +309,7 @@ MotorDC(i: Pin, i: Pin)
     setVel(i: Vel) \\
 }
 \end{tikzpicture}
+}
 \end{center}
 \end{figure}
 
@@ -366,6 +368,7 @@ Sin embargo, haciendo uso del concepto de herencia de interfaz y la noción de a
 \caption{Módulo MotorDC abstracto y estructura de herencia.}
 \label{estructuraHerencia}
 \begin{center}
+\scalebox{.90}{
 \begin{tikzpicture}\sf
 \umlclass[x=0,type=abstract]{MotorDC}
 {}
@@ -393,6 +396,7 @@ Sin embargo, haciendo uso del concepto de herencia de interfaz y la noción de a
 \umlinherit[geometry=|-|]{MotorDCDVR8838}{MotorDC}
 \umlinherit[geometry=|-|]{MotorDCG2}{MotorDC}
 \end{tikzpicture}
+}
 \end{center}
 \end{figure}
 
@@ -420,7 +424,7 @@ Suponga el siguiente ejemplo: en un cierto sistema embebido se utiliza un displa
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\linewidth]{display.png}
+    \includegraphics[width=0.4\linewidth]{display.png}
     \caption{Display 7 segmentos 4 digitos}
     \label{fig:enter-label}
 \end{figure}
@@ -466,6 +470,7 @@ Además, este es un ejemplo simple; en el mundo real, los cambios pueden ser muc
 \caption{Diseño tradicional del uso de la librería del fabricante.}
 \label{configOri}
 \begin{center}
+\scalebox{.90}{
 \begin{tikzpicture}\sf
 \umlsimpleclass[]{Cliente}
 
@@ -485,6 +490,7 @@ Librería externa.
 
 
 \end{tikzpicture}
+}
 \end{center}
 \end{figure}
 
@@ -498,6 +504,7 @@ Para encapsular el hardware sin modificar todo el sistema se creará un módulo 
 \caption{Introducción del nuevo módulo abstracto\Display.}
 \label{configUsando}
 \begin{center}
+\scalebox{.90}{
 \begin{tikzpicture}\sf
 \umlsimpleclass[]{Cliente}
 
@@ -520,6 +527,7 @@ limpiar()
 
 
 \end{tikzpicture}
+}
 \end{center}
 \end{figure}
 \declareCMod{DisplayEmca}
@@ -529,6 +537,7 @@ Como mencionamos, \LibEmca se utiliza para controlar el nuevo display, pero su i
 \caption{Diseño aplicando el patrón \textit{Adapter}.}
 \label{configNueva}
 \begin{center}
+\scalebox{.90}{
 \begin{tikzpicture}\sf
 \umlsimpleclass[x=-4.5,y=1]{Cliente}
 
@@ -566,6 +575,7 @@ umluniassoc
 Librería externa.
 }
 \end{tikzpicture}
+}
 \end{center}
 \end{figure}
 
@@ -633,6 +643,7 @@ Es debido a las problemáticas mencionadas que resulta útil contar con una form
 \caption{Estructura componentes para la lectura de un sensor activo.}
 \label{activo}
 \centering
+\scalebox{.90}{
 \begin{tikzpicture}\hypertarget{fig:ConnectBufferToMCU}{}
 %-------------Estilos para dibujar-----
 \tikzstyle{módulo}=[minimum width=1cm,inner sep=2mm,above right,draw,align=center,minimum width=2cm, font=\bfseries]
@@ -691,6 +702,7 @@ Es debido a las problemáticas mencionadas que resulta útil contar con una form
 \node[supest, fit=(mod)(hand)(llp)]{};
 
 \end{tikzpicture}
+}
 \label{fig:ConnectBufferToMCU}
 \end{figure}
 
@@ -720,6 +732,7 @@ Con los imanes colocados a una distancia conocida, para calcular la velocidad es
 \begin{figure}[H]
 \caption{Ejemplo módulos para obtener la información referida a la velocidad.}
 \label{estructuraHall}
+\centering
 \begin{center}
 \scalebox{.90}{
 \begin{tikzpicture}\sf
@@ -759,22 +772,22 @@ execute() \{ \\
 {
 addEventTime() \\
 getLastEventTime() \\
-getSecondLastEventTime() \\
+getSndLastEventTime() \\
 }
 
 \umlclass[left=2cm of Colector]{SensorVelocidad}
 {
-Buffer(i: Collector)
+Buffer(i: Colector)
 }
 {
 getVelocidad()
 }
 
-\umlnote[below=1cm of SensorVelocidad,width=8cm]{SensorVelocidad}
+\umlnote[below=1cm of SensorVelocidad,width=7.5cm]{SensorVelocidad}
 {
 getVelocidad() \{ \\
 \ \ \ last = colector.getLastEventTime() \\
-\ \ \ second = colector.getSecondLastEventTime() \\
+\ \ \ second = colector.getSndLastEventTime() \\
 \ \ \ return DISTANCIA / (last - second) \\
 \}
 }
@@ -788,7 +801,7 @@ addEventTime() \{ \\
 
 }
 
-\umluniaggreg{SensorVelocidad}{Colector}
+\umluniaggreg[arg1=colector,pos1=0.5]{SensorVelocidad}{Colector}
 \umluniaggreg[geometry=-|]{SensorHall}{Count}
 
 \end{tikzpicture}
@@ -886,6 +899,7 @@ El ejemplo propuesto consiste en el sistema de control de un microondas. Para re
 \caption{Máquina de estados extraída del libro \cite{douglass}.}
 \label{maquinaMicroondas}
 \begin{center}
+\scalebox{.90}{
 \begin{tikzpicture}[umlstate/.style={
     circle,
     draw,
@@ -913,6 +927,7 @@ El ejemplo propuesto consiste en el sistema de control de un microondas. Para re
 \umltrans[arg=cancelar, pos=1.4,arm1=4cm,anchor2=-10,geometry=-|-]{Calentando}{Preparado}
 
 \end{tikzpicture}
+}
 \end{center}
 \end{figure}
 
@@ -922,7 +937,7 @@ A simple vista parece un comportamiento complejo y eso que solo es un ejemplo si
 
 En \cite{douglass}, el autor construye un módulo encargado de mantener el estado, el cual sabe qué funciones ejecutar cuando se da una transición. Esto es, recibe el evento, verifica si corresponde a un cambio de estado y de ser así ejecuta el método de ``salida'' del estado actual, ejecuta el método de ``entrada'' del nuevo estado y actualiza el valor del estado actual. Además, propone una implementación utilizando una tabla bidimensional lo cual lo hace un sistema eficiente computacionalmente hablando. En el caso de querer modificar estados, agregarlos o quitarlo es necesario cambiar la implementación de este módulo. 
 
-\begin{lstlisting}[caption=Código ejemplo Douglass State Table, label={ifsanidados}]
+\begin{lstlisting}[caption=Código ejemplo extraído de libro de Douglass State Table Pág. 305., label={ifsanidados}]
 void TokenizerStateTable_eventDispatch(TokenizerStateTable* const me, Event e) {
 int takeTransition = 0;
 Mutex_lock(me->itsMutex);
@@ -1209,10 +1224,209 @@ void ButtonDriver_eventReceive(ButtonDriver* const me) {
 }
 \end{lstlisting}
 
-Desde el punto de vista de la \gls{IS}, podemos decir que se están combinando múltiples responsabilidades en un mismo módulo, lo cual dificulta el diseño orientado al cambio. El estado y la decisión de transicionar son responsabilidad de un solo módulo, lo que podría generar inconvenientes si se desea modificar el criterio de aceptación de la señal. Esto se evidencia en el código de ejemplo \ref{deboun}, donde encontramos múltiples sentencias \textit{if} anidadas, que, como ya se ha visto, no son un buen indicio. Por otro lado, al ocultar varias responsabilidades en un mismo módulo, se obtiene un software rígido a los cambios, donde cualquier modificación requiere editar la implementación. Esto, a su vez, puede generar la introducción de nuevos errores y la necesidad de volver a verificar el trabajo realizado.
+Desde el punto de vista de la \gls{IS}, podemos decir que se está aplicando una mala práctica si queremos anticiparnos al cambio. El estado del botón se almacena en una variable y las funciones modifican su comportamiento mediante sentencias \textit{if}. Como vimos en el Capítulo \ref{cap:state}, este enfoque puede conllevar múltiples inconvenientes al momento de expandir o modificar los estados. Si se debe agregar uno nuevo, todas las sentencias \textit{if} deben actualizarse, lo que implica modificar la implementación de, en este caso, la función \verb|ButtonDriver_eventReceive|.
 
-Una solución que se ajusta más a los principios de la \gls{IS} busca separar los puntos de cambio en módulos diferentes. En este caso, tenemos dos conceptos principales: el estado, por ejemplo, \textit{on} o \textit{of}, y el criterio de aceptación de la transición. Para el primer concepto, podemos utilizar el patrón de diseño \textit{State} \ref{anexoState} de Gamma, como vimos en el capítulo \ref{cap:state}. Para el segundo, podemos emplear otro patrón de Gamma, el \textit{Strategy} \ref{anexoStrategy}, que nos permite prepararnos para un cambio en el algoritmo de decisión.
+Una solución más alineada con los principios de la \gls{IS} consiste en aplicar el patrón de diseño \textit{State} \ref{anexoState} de Gamma, como vimos en el Capítulo \ref{cap:state}. Podemos identificar dos estados principales: \textit{On} y \textit{Off}. Sin embargo, como veremos más adelante, será necesario añadir dos estados adicionales para poder representar el comportamiento deseado.
 
+Volviendo al ejemplo del libro, ante la detección de actividad en el botón se recibe un evento. A continuación, se da un tiempo de gracia y luego se vuelve a verificar el valor que adopta la señal proveniente del botón en el registro. Este valor determina si la señal indica que el botón está encendido o no. Haciendo uso de estos recursos, utilizaremos el patrón \textit{State} para representar cuatro posibles estados: \textit{On}, \textit{Off}, \textit{OnWait} y \textit{OffWait}. Los dos primeros reflejan que el botón se encuentra encendido o apagado, respectivamente, mientras que los otros dos corresponden a la etapa de espera durante el tiempo de gracia, necesaria para determinar si existió o no una transición. Esta máquina de estados es la definida en la Figura \ref{maquinaBoton}.
+
+\begin{figure}[H]
+\caption{Máquina de estados propuesta para el control antirebote.}
+\label{maquinaBoton}
+\begin{center}
+\scalebox{.90}{
+\begin{tikzpicture}[umlstate/.style={
+    circle,
+    draw,
+    minimum size=2.3cm,
+    fill=red!20,
+    font=\sffamily
+}]
+
+\node[umlstate] (On) at (-4,0) {On};
+\node[umlstate] (Off) at (4,0) {Off};
+\node[umlstate] (OnWait) at (0,3) {OffWait};
+\node[umlstate] (OffWait) at (0,-3) {OnWait};
+
+\umltrans[arg=evento, pos=0.5, anchor1=60, anchor2=-160] {On}{OnWait}
+\umltrans[arg=time, pos=0.5, anchor1=-125, anchor2=25] {OnWait}{On}
+\umltrans[arg=time, pos=0.5] {OnWait}{Off}
+\umltrans[arg=evento, pos=0.5, anchor1=-125, anchor2=25] {Off}{OffWait}
+\umltrans[arg=time, pos=0.5, anchor1=60, anchor2=-160] {OffWait}{Off}
+\umltrans[arg=time, pos=0.5] {OffWait}{On}
+
+
+\end{tikzpicture}
+}
+\end{center}
+\end{figure}
+
+\declareCMod{Temporizador}
+
+Por otro lado, para gestionar el tiempo de gracia utilizaremos un módulo llamado \Temporizador, el cual permite suscribir un método que será invocado luego de transcurridos \textit{x} segundos. Todos estos módulos pueden observarse en el diagrama de la Figura \ref{modulosBoton}.
+
+\begin{figure}[H]
+\caption{Módulos encargados de gestionar el comportamiento del temporizador utilizado en la transiscion de estados del módulo Boton.}
+\label{modulosBoton}
+\begin{center}
+\scalebox{.90}{
+\begin{tikzpicture}\sf
+
+\umlclass[]{Temporizador}
+{}
+{
+setTiempo(i: Real) \\
+start() \\
+}
+
+\umlnote[above right=-1cm and 1cm of Temporizador,width=3cm]{Temporizador}{
+tickHandler() \{ \\
+\ \ \ \ botonTime.execute() \\
+\}
+}
+
+
+\umlsimpleclass[below right=-1cm and 3cm of Temporizador]{BotonTime}
+\umluniassoc[arg1=botonTime,pos1=0.5,anchor1=-18]{Temporizador}{BotonTime}
+\umlnote[below=1cm of BotonTime,width=5cm]{BotonTime}{
+execute() \{ \\
+\ \ \ \ boton.time() \\
+\}
+}
+
+
+\end{tikzpicture}
+}
+\end{center}
+\end{figure}
+
+\declareCMod{Boton}
+
+Resuelto el funcionamiento del temporizador, veamos ahora el módulo \Boton, que será el utilizado por los clientes para conocer el estado del botón físico. Para ello, definimos también el estado y el módulo que encapsula el acceso al registro donde se almacena el valor de la señal proveniente del botón. Todos estos módulos pueden observarse en la Figura \ref{botonCompleto}.
+
+
+\begin{figure}[H]
+\caption{Diagrama de módulos relacionados al boton.}
+\label{botonCompleto}
+\begin{center}
+\scalebox{.90}{
+\begin{tikzpicture}\sf
+
+\umlclass[x=-4]{Boton}
+{}
+{prendido(): Bool\\
+evento() \\
+time() \\
+changeState(i: EstadoBoton)
+}
+
+\umlclass[right=2cm of EstadoBoton,type=abstract]{EstadoBoton}
+{}
+{
+\umlvirt{prendido()} \\
+\umlvirt{evento(i: Boton)} \\
+\umlvirt{time(i: Boton)} \\
+
+}
+
+\umlclass[below left=2cm and 1cm of EstadoBoton]{On}
+{}
+{
+...
+}
+
+
+\umlclass[below left=2cm and -1.5cm of EstadoBoton]{Off}
+{}
+{
+...
+}
+
+\umlclass[below right=2cm and -1.5cm of EstadoBoton]{WaitOn}
+{}
+{
+...
+}
+
+\umlclass[below right=2cm and 1cm of EstadoBoton]{WaitOff}
+{}
+{
+...
+}
+
+\umlclass[above=1cm of EstadoBoton]{RegistroBoton}
+{}
+{
+getValor(): Bool
+}
+
+\umlnote[below left=1cm and -5cm of Boton, width=4.5cm]{Boton}{
+prendido() \{\\
+\ \ \ \ return st.prendido() \\
+\}\\
+\\
+evento() \{\\
+\ \ \ \ return st.evento(this) \\
+\}\\
+\\
+time() \{\\
+\ \ \ \ return st.time(this) \\
+\}\\
+
+}
+
+\umlnote[below=3cm of On, width=5cm]{On}{
+evento(Boton b)\{\\
+\ \ \ \ timer.start() \\
+\ \ \ \ b.changeState(WaitOff) \\
+\}
+\\
+prendido()\{\\
+\ \ \ \ return True\\
+\}
+}
+
+\umlnote[below left=1cm and -2cm of WaitOff, width=5cm]{WaitOff}{
+evento(Boton b)\{\\
+\ \ \ \ return \\
+\}\\
+\\
+time(Boton b)\{\\
+if not registro.getValor()\{ \\
+\ \ \ \ b.changeState(Off)\\
+\}else\{\\
+\ \ \ \ b.changeState(On)\\
+\}\\
+\\
+prendido()\{\\
+\ \ \ \ return True\\
+\}
+}
+
+
+\umlinherit[geometry=|-|]{On}{EstadoBoton}
+\umlinherit[geometry=|-|]{Off}{EstadoBoton}
+\umlinherit[geometry=|-|]{WaitOn}{EstadoBoton}
+\umlinherit[geometry=|-|]{WaitOff}{EstadoBoton}
+\umluniaggreg[geometry=-|-,arg1=st, pos1=0.5]{Boton}{EstadoBoton}
+
+
+\end{tikzpicture}
+}
+\end{center}
+\end{figure}
+
+\declareCMod{On}
+\declareCMod{Of}
+\declareCMod{OnWait}
+\declareCMod{OffWait}
+
+Repasemos cómo funciona el sistema con la estructura propuesta. Supongamos que el botón se encuentra encendido, por lo tanto, su estado es \On. Cuando se produce un evento, es decir, se detecta algún tipo de cambio en la señal proveniente del botón, se ejecuta el método \verb|evento| del módulo \Boton. Este último delega su funcionamiento al estado. Como dijimos que el botón estaba prendido, el encargado de manejar el evento será \On. Este iniciará el temporizador con el tiempo configurado y cambiará el estado del módulo \Boton a \WaitOff. Estando el botón encendido, solo puede apagarse; es por eso que se transiciona al estado \WaitOff, el cual decidirá, una vez transcurrido cierto tiempo, si corresponde pasar a \Off. Esto lo hace verificando el valor presente en el registro del botón cuando el temporizador ejecuta el método \verb|time()| de \Boton. En caso de que el registro muestre que el botón está apagado, efectivamente se cambiará el estado a \Off; en caso contrario, se volverá a \On, ya que se trató de una detección errónea, probablemente provocada por el efecto rebote. 
+
+Todos los estados deben implementar el método \verb|prendido():Bool|, que es el utilizado por los clientes para conocer el verdadero estado del botón. Si el estado es \On o \WaitOff, \verb|prendido():Bool| devolverá \verb|True|; en caso contrario, devolverá \verb|False|.
+
+
+De esta manera, logramos encapsular cada estado en un módulo independiente, que puede ser modificado sin afectar al resto. Además, agregar nuevos estados resulta sencillo: basta con crear un nuevo módulo.
 
 
 
@@ -1220,7 +1434,7 @@ Una solución que se ajusta más a los principios de la \gls{IS} busca separar l
 El autor del libro \cite{douglass} comenta que uno de los problemas más grandes que observa en el desarrollo de sistemas embebidos es que muchas funciones tiene precondiciones para ejecutarse correctamente, pero que rara vez se verifica que todas se cumplan. Además, el procedimiento común de informar precondiciones inadecuadas en una función en \textbf{C}\footnote{Lenguaje de programación comúnmente utilizado en sistemas embebidos.} es a través del valor de retorno (-1 en caso de errores, 0 en el contrario). Por lo tanto, el encargado de manejar el error es la función que invocó a la segunda, generando así un acoplamiento extra en el código. Esto provoca una complicación que muchas veces deriva en un mal manejo de los errores. Por ejemplo, supongamos que se tiene un módulo que exporta un método que realiza cierto cómputo en base a dos argumentos, \verb|computar(i: int, i: int)|. Existen múltiples posibles implementaciones, estas son algunas:
 \begin{itemize}
     \item Una posible implementación consiste en que la función no realice ninguna verificación y simplemente intente utilizar los valores pasados como argumento, lo cual puede generar un error inmediato si los tipos no coinciden, o un error futuro si el valor está fuera de los parámetros requeridos por el sistema. Por ejemplo, si se pasa un entero negativo, pero el método requiere como precondición que siempre sea positivo, se podría provocar un fallo más adelante; esta implementación obliga a que todos los clientes que utilicen este método deban verificar la validez de los valores a, lo que no solo genera código repetido, sino que también requiere una actualización manual en múltiples puntos si el requisito cambia, haciendo que la responsabilidad de la verificación de las precondiciones recaiga en el cliente que utiliza la función, en lugar de ser manejada internamente por la misma.
-    \item Otra opción se basa en verificar si el valor es permitido, haciendo que \verb|computar(i: int, i: int)| retorne un valor que indique el resultado de la validación (por ejemplo, 0 en caso afirmativo y -1 en caso contrario). Si bien este enfoque es una mejora respecto a no realizar validación alguna, continua con el acoplamiento entre el cliente de la función y el módulo que la exporta, ya que el cliente debe verificar el valor de retorno para determinar si ha ocurrido un error.
+    \item Otra opción se basa en verificar si el valor es permitido, haciendo que \\ \verb|computar(i: int, i: int)| retorne un valor que indique el resultado de la validación (por ejemplo, 0 en caso afirmativo y -1 en caso contrario). Si bien este enfoque es una mejora respecto a no realizar validación alguna, continua con el acoplamiento entre el cliente de la función y el módulo que la exporta, ya que el cliente debe verificar el valor de retorno para determinar si ha ocurrido un error.
 \end{itemize}
 
 La solución propuesta en el libro de Douglass \cite{douglass} es más cercana a un patrón idiomático o a una práctica de programación que a un patrón de diseño. Sus conceptos clave son los siguientes:
@@ -1250,16 +1464,18 @@ Suponga que se tiene el módulo \Mecanismo cuya interfaz es la que se muestra en
 \caption{Interfaz del módulo Mecanismo.}
 \label{mecanismo}
 \begin{center}
+\scalebox{.90}{
 \begin{tikzpicture}\sf
 
-\umlclass[]{Mecanismo}
+\umlclass[type=abstract]{Mecanismo}
 {}
 {
 ...\\
-computar(i: int, i: int)\\
+\umlvirt{computar(i: int, i: int)}\\
 ...\\
 }
 \end{tikzpicture}
+}
 \end{center}
 \end{figure}
 
@@ -1280,6 +1496,7 @@ En la Figura \ref{estructuraDeco} se presenta la estructura de módulos consegui
 \caption{Ejemplo de aplicación del patrón \textit{Decorator} \ref{anexoDecorator} para garantizar el cumplimiento de precondiciones.}
 \label{estructuraDeco}
 \begin{center}
+\scalebox{.90}{
 \begin{tikzpicture}\sf
 \umlclass[type=abstract]{Mecanismo}{}
 {
@@ -1347,6 +1564,7 @@ if (segundo \% 2 != 0)\{\\
 
 
 \end{tikzpicture}
+}
 \end{center}
 \end{figure}
 \declareCMod{PrimerArgPositivo}
@@ -1462,6 +1680,7 @@ Veamos ahora la estructura de módulos subyacente a esta solución en la Figura 
 \caption{Ejemplo de manejador de interrupciones usando \textit{State} para prevenir inconvenientes en la ejecución.}
 \label{estructuraInterrup}
 \begin{center}
+\scalebox{.90}{
 \begin{tikzpicture}\sf
 
 
@@ -1518,13 +1737,14 @@ manejarInt(Manejador m) \{ \\
 
 
 \end{tikzpicture}
+}
 \end{center}
 
 \end{figure}
 
 \begin{figure}
 \caption{Documentación de la aplicación del patron \textit{State} para el ejemplo del manejador de interrupciones.}
-\caption{docStateInt}
+\label{docStateInt}
 
 \begin{pattern}[]{Control de manejo de interrupciones}{Algorithm}{idFigAlg}
 \based{State (Estado)}
@@ -1616,7 +1836,7 @@ Controlar \glspl{pasoapaso} es más complejo de lo que parece. Habitualmente, se
 \caption{Esquema del brazo robótico.}
 \label{brazoEsquema}
 \begin{centering}
-{\includegraphics[width=0.5\textwidth]{brazo3.png}\par}
+{\includegraphics[width=0.4\textwidth]{brazo3.png}\par}
 \end{centering}
 \end{figure}
 
@@ -1995,6 +2215,7 @@ En cambio, en el caso de la pinza (ver Figura \ref{moduloPinza}) se utiliza un d
 \caption{Actuadores paso a paso.}
 \label{estructuraActuadores}
 \begin{center}
+\scalebox{.90}{
 \begin{tikzpicture}\sf
 \umlclass[type=abstract]{StepDevice}
 {}
@@ -2022,6 +2243,7 @@ En cambio, en el caso de la pinza (ver Figura \ref{moduloPinza}) se utiliza un d
 \umlinherit[geometry=|-|]{Extensor}{StepDevice}
 
 \end{tikzpicture}
+}
 \end{center}
 \end{figure}
 
@@ -2048,6 +2270,7 @@ En la Figura \ref{sensores} se encuentran definidos los sensores asociados a cad
 \caption{Sensores del brazo robótico.}
 \label{sensores}
 \begin{center}
+\scalebox{.90}{
 \begin{tikzpicture}\sf
 \umlclass[type=abstract]{PasiveSensor}
 {}
@@ -2090,6 +2313,7 @@ signal()\{\\
 
 
 \end{tikzpicture}
+}
 \end{center}
 \end{figure}
 \declarCMod{RotorCtrl}
@@ -2104,6 +2328,7 @@ Como tambien fue mencionado en la Sección \ref{subsistema}, es necesario añadi
 \caption{Módulo Timer}
 \label{moduloTimer}
 \begin{center}
+\scalebox{.90}{
 \begin{tikzpicture}\sf
 \umlclass[]{Timer}
 {}
@@ -2111,18 +2336,19 @@ Como tambien fue mencionado en la Sección \ref{subsistema}, es necesario añadi
 setPeriod(i: Real) \\
 start() \\
 stop() \\
-tickHandler()
+tickHandler(i: Command)
 }
 
-\umlnote[above right=-2cm and 1cm of Timer,width=7cm]{Timer}{
+\umlnote[above right=-2cm and 1cm of Timer,width=4cm]{Timer}{
 tickHandler() \{ \\
 cmdRotorCicle.execute() \\
 \}
 }
 
 \umlsimpleclass[below right=-1cm and 3cm of Timer]{Command}
-\umluniassoc[arg1=cmdRotorCicle,pos1=0.5, anchor1=-32]{Timer}{Command}
+\umluniassoc[arg1=cmdRotorCicle,pos1=0.5, anchor1=-25]{Timer}{Command}
 \end{tikzpicture}
+}
 \end{center}
 \end{figure}
 
@@ -2152,6 +2378,7 @@ Una vez solucionada la invocación, introduciremos un nuevo módulo que será ut
 \caption{Módulos que forman parte del patrón \textit{State} que son necesarios para complementar al módulo RotorCtrl.}
 \label{operationState}
 \begin{center}
+\scalebox{.90}{
 \begin{tikzpicture}\sf
 \umlclass[type=abstract]{OperationState}
 {}
@@ -2201,6 +2428,7 @@ move(RotorCtrl c)\{\\
 }
 
 \end{tikzpicture}
+}
 \end{center}
 \end{figure}
 \declareCMod{Algoritmo}
@@ -2211,6 +2439,7 @@ Siguiendo con la propuesta de creación de subsistemas, también se define el m�
 \caption{Módulos complementarios a Controller.}
 \label{complementariosController}
 \begin{center}
+\scalebox{.90}{
 \begin{tikzpicture}\sf
 \umlclass[x=3]{Algoritmo}
 {}
@@ -2219,15 +2448,17 @@ compute(i: Data): Measure
 }
 
 \end{tikzpicture}
+}
 \end{center}
 \end{figure}
 
 Con todos los módulos necesarios ya definidos, veamos ahora en la Figura \ref{estructuraController} el diagrama de \{RotorCtrl}.
 
 \begin{figure}[H]
-\caption{Diagrama del módulo RotorCtrl}
+\caption{Diagrama del módulo RotorCtrl.}
 \label{estructuraController}
 \begin{center}
+\scalebox{.90}{
 \begin{tikzpicture}\sf
 \umlclass[]{RotorCtrl}
 {}
@@ -2255,18 +2486,19 @@ move()\{\\
 \}
 }
 
-\umlnote[above=1cm of Algoritmo]{Algoritmo}{
-Patrón Strategy
+\umlnote[above=1cm of Algoritmo,width=3.5cm]{Algoritmo}{
+Patrón Strategy \ref{patronStrategy}
 }
 
 \umlnote[below right=1.5cm and -2cm of OperationState,anchor2=-20]{OperationState}{
 Patrón State
 }
 \end{tikzpicture}
+}
 \end{center}
 \end{figure}
 
-Suponga que un cliente desea utilizar este subsistema que controla el rotor, ¿qué métodos debe ejecutar si este ya se encuentra inicializado?
+Suponga que un cliente desea utilizar este subsistema que controla el rotor, ¿qué métodos debe ejecutar si ya se encuentra inicializado?
 En primer lugar, debe indicarle al sensor de posición que escriba el valor de lectura en \Pipe. Para ello, se ejecuta el método \verb|signal| del módulo \SensorPosRotor. A continuación, \RotorCtrl debe leer esta información desde \Pipe y almacenarla; para esto se utiliza el método \verb|readConnection|. Luego, se establece el \textit{set-point} deseado y, finalmente, se invoca el método \verb|control|, el cual delega su funcionamiento al \verb|control| de su estado interno. Si el estado actual es \Waiting, el método \verb|control| tomará los valores actuales junto con el \textit{set-point} y decidirá, utilizando el módulo \Algoritmo, qué cambios aplicar en los actuadores, en este caso sobre \Rotor. Dado que agregar todo el código para manejar un \gls{pasoapaso} puede requerir la ejecución de múltiples métodos, se puede construir un módulo que implemente el patrón \textit{Command} \ref{anexoCommand}, encapsulando qué métodos deben invocarse. Este comando permitirá tanto cambiar la dirección de giro como avanzar un paso mediante la ejecución de \verb|pulse()|. Como el motor puede girar en ambos sentidos, es posible definir dos comandos: uno para cada dirección (\CmdRotorLeft y \CmdRotorRight). Un ejemplo del método \verb|control()| para el caso del subsistema del rotor en el estado de operación \Waiting se muestra en el Código \ref{impControl} (recordando que el \textit{set-point} del subsistema del rotor corresponde a una medida en grados).
 
 \begin{lstlisting}[caption=Ejemplo de implementación del método control del módulo Waiting.,label={impControl}]
@@ -2301,6 +2533,7 @@ Para esto, debemos definir el iterador, al que llamaremos \Steps, cuya interfaz 
 \caption{Interfaz módulo Steps.}
 \label{iterator}
 \begin{center}
+\scalebox{.90}{
 \begin{tikzpicture}\sf
 \umlclass[]{Steps}
 {}
@@ -2313,6 +2546,7 @@ haTerminado(): Bool\\
 
 
 \end{tikzpicture}
+}
 \end{center}
 \end{figure}
 \begin{figure}
