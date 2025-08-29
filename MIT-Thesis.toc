@@ -29,15 +29,15 @@
 \contentsline {section}{\numberline {6.7}Organización de la ejecución}{82}{section.6.7}%
 \contentsline {section}{\numberline {6.8}Control en conjunto de dispositivos}{85}{section.6.8}%
 \contentsline {subsection}{Subsistemas de control}{90}{figure.caption.48}%
-\contentsline {chapter}{\numberline {7}Conlusión}{107}{chapter.7}%
-\contentsline {chapter}{\numberline {A}Patrones de diseño de Gamma}{109}{appendix.Alph1}%
-\contentsline {section}{\numberline {A.1}Adapter}{109}{section.Alph1.1}%
-\contentsline {section}{\numberline {A.2}Command}{110}{section.Alph1.2}%
-\contentsline {section}{\numberline {A.3}State}{111}{section.Alph1.3}%
-\contentsline {section}{\numberline {A.4}Mediator}{113}{section.Alph1.4}%
-\contentsline {section}{\numberline {A.5}Decorator}{114}{section.Alph1.5}%
-\contentsline {section}{\numberline {A.6}Proxy}{115}{section.Alph1.6}%
-\contentsline {section}{\numberline {A.7}Iterator}{116}{section.Alph1.7}%
-\contentsline {section}{\numberline {A.8}Strategy}{117}{section.Alph1.8}%
-\contentsline {chapter}{Glosario}{123}{appendix*.79}%
-\contentsline {backmatter}{Referencias}{125}{appendix*.80}%
+\contentsline {chapter}{\numberline {7}Conclusión}{109}{chapter.7}%
+\contentsline {chapter}{\numberline {A}Patrones de diseño de Gamma}{111}{appendix.Alph1}%
+\contentsline {section}{\numberline {A.1}Adapter}{111}{section.Alph1.1}%
+\contentsline {section}{\numberline {A.2}Command}{112}{section.Alph1.2}%
+\contentsline {section}{\numberline {A.3}State}{113}{section.Alph1.3}%
+\contentsline {section}{\numberline {A.4}Mediator}{115}{section.Alph1.4}%
+\contentsline {section}{\numberline {A.5}Decorator}{116}{section.Alph1.5}%
+\contentsline {section}{\numberline {A.6}Proxy}{117}{section.Alph1.6}%
+\contentsline {section}{\numberline {A.7}Iterator}{118}{section.Alph1.7}%
+\contentsline {section}{\numberline {A.8}Strategy}{119}{section.Alph1.8}%
+\contentsline {chapter}{Glosario}{125}{appendix*.79}%
+\contentsline {backmatter}{Referencias}{127}{appendix*.80}%

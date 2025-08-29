@@ -49,35 +49,35 @@
 \contentsline {figure}{\numberline {6.24}{\ignorespaces Documentación de la aplicación del patron \textit {State} para el ejemplo del manejador de interrupciones.}}{84}{figure.caption.46}%
 \contentsline {figure}{\numberline {6.23}{\ignorespaces Ejemplo de manejador de interrupciones usando \textit {State} para prevenir inconvenientes en la ejecución.}}{84}{figure.caption.45}%
 \contentsline {figure}{\numberline {6.25}{\ignorespaces Diagrama de flujo que explica el comportamiento de la función emergency \blx@tocontentsinit {0}\cite [pág. 82]{disenioViejo1}.}}{87}{figure.caption.47}%
-\contentsline {figure}{\numberline {6.26}{\ignorespaces Esquema del brazo robótico.}}{89}{figure.caption.48}%
-\contentsline {figure}{\numberline {6.27}{\ignorespaces Módulos de un subsistema de control y el componente al que pertenecen.}}{91}{figure.caption.49}%
-\contentsline {figure}{\numberline {6.28}{\ignorespaces Estructura módulo \mbox {\sffamily ControlSeguimiento}\xspace .}}{93}{figure.caption.50}%
-\contentsline {figure}{\numberline {6.29}{\ignorespaces Documentacion de la aplicación del patrón State en el módulo Control.}}{94}{figure.caption.51}%
-\contentsline {figure}{\numberline {6.30}{\ignorespaces Diagrama de los componentes del sistema brazo robótico.}}{95}{figure.caption.52}%
-\contentsline {figure}{\numberline {6.31}{\ignorespaces Actuadores paso a paso.}}{96}{figure.caption.53}%
+\contentsline {figure}{\numberline {6.26}{\ignorespaces Esquema del brazo robótico.}}{88}{figure.caption.48}%
+\contentsline {figure}{\numberline {6.27}{\ignorespaces Módulos de un subsistema de control y el componente arquitectónico al que pertenecen.}}{91}{figure.caption.49}%
+\contentsline {figure}{\numberline {6.28}{\ignorespaces Estructura módulo \mbox {\sffamily ControlSeguimiento}\xspace .}}{94}{figure.caption.50}%
+\contentsline {figure}{\numberline {6.29}{\ignorespaces Documentacion de la aplicación del patrón State en el módulo Control.}}{95}{figure.caption.51}%
+\contentsline {figure}{\numberline {6.30}{\ignorespaces Diagrama de los componentes del sistema brazo robótico.}}{96}{figure.caption.52}%
+\contentsline {figure}{\numberline {6.31}{\ignorespaces Actuadores paso a paso.}}{97}{figure.caption.53}%
 \contentsline {figure}{\numberline {6.32}{\ignorespaces Interfaz módulo Pinza.}}{97}{figure.caption.54}%
-\contentsline {figure}{\numberline {6.33}{\ignorespaces Sensores del brazo robótico.}}{97}{figure.caption.55}%
+\contentsline {figure}{\numberline {6.33}{\ignorespaces Sensores del brazo robótico.}}{98}{figure.caption.55}%
 \contentsline {figure}{\numberline {6.34}{\ignorespaces Módulo Timer}}{98}{figure.caption.56}%
-\contentsline {figure}{\numberline {6.35}{\ignorespaces Documentación de la aplicación del patrón \textit {Command} para el desacople de ejecuciones que invoca el Timer.}}{98}{figure.caption.57}%
-\contentsline {figure}{\numberline {6.36}{\ignorespaces Módulos que forman parte del patrón \textit {State} que son necesarios para complementar al módulo RotorCtrl.}}{99}{figure.caption.58}%
-\contentsline {figure}{\numberline {6.37}{\ignorespaces Módulos complementarios a Controller.}}{99}{figure.caption.59}%
-\contentsline {figure}{\numberline {6.38}{\ignorespaces Diagrama del módulo RotorCtrl.}}{100}{figure.caption.60}%
-\contentsline {figure}{\numberline {6.39}{\ignorespaces Interfaz módulo Steps.}}{101}{figure.caption.61}%
-\contentsline {figure}{\numberline {6.40}{\ignorespaces Documentación de aplicación del patrón \textit {Iterator}.}}{102}{figure.caption.62}%
-\contentsline {figure}{\numberline {6.41}{\ignorespaces Interfaces de las ordenes de ejecución para cada subsistema.}}{102}{figure.caption.63}%
-\contentsline {figure}{\numberline {6.44}{\ignorespaces Documentación de la aplicación del patrón \textit {State} para el manejo de ejecución de pasos completos.}}{103}{figure.caption.67}%
+\contentsline {figure}{\numberline {6.35}{\ignorespaces Documentación de la aplicación del patrón \textit {Command} para el desacople de ejecuciones que invoca el Timer.}}{99}{figure.caption.57}%
+\contentsline {figure}{\numberline {6.36}{\ignorespaces Módulos que forman parte del patrón \textit {State} que son necesarios para complementar al módulo RotorCtrl.}}{100}{figure.caption.58}%
+\contentsline {figure}{\numberline {6.37}{\ignorespaces Módulos complementarios a Controller.}}{100}{figure.caption.59}%
+\contentsline {figure}{\numberline {6.38}{\ignorespaces Diagrama del módulo RotorCtrl.}}{101}{figure.caption.60}%
+\contentsline {figure}{\numberline {6.39}{\ignorespaces Interfaz módulo Steps.}}{102}{figure.caption.61}%
+\contentsline {figure}{\numberline {6.40}{\ignorespaces Documentación de aplicación del patrón \textit {Iterator}.}}{103}{figure.caption.62}%
+\contentsline {figure}{\numberline {6.41}{\ignorespaces Interfaces de las ordenes de ejecución para cada subsistema.}}{103}{figure.caption.63}%
 \contentsline {figure}{\numberline {6.42}{\ignorespaces Documentación de la aplicación del patrón Command para el desacople de órdenes a ejecutar en cada actuador del brazo en un paso.}}{104}{figure.caption.65}%
 \contentsline {figure}{\numberline {6.43}{\ignorespaces Diagrama del módulo MainController.}}{105}{figure.caption.66}%
-\contentsline {figure}{\numberline {6.45}{\ignorespaces Transiciones de estados del MainController}}{105}{figure.caption.68}%
+\contentsline {figure}{\numberline {6.44}{\ignorespaces Documentación de la aplicación del patrón \textit {State} para el manejo de ejecución de pasos completos.}}{105}{figure.caption.67}%
+\contentsline {figure}{\numberline {6.45}{\ignorespaces Transiciones de estados del MainController}}{106}{figure.caption.68}%
 \addvspace {10\p@ }
-\contentsline {xchapter}{Conlusión}{107}{chapter.7}%
+\contentsline {xchapter}{Conclusión}{109}{chapter.7}%
 \addvspace {10\p@ }
-\contentsline {xchapter}{Patrones de diseño de Gamma}{109}{appendix.Alph1}%
-\contentsline {figure}{\numberline {A.1}{\ignorespaces Estructura patrón \textbf {Adapter}}}{110}{figure.caption.70}%
-\contentsline {figure}{\numberline {A.2}{\ignorespaces Estructura patrón \textbf {Command}}}{112}{figure.caption.71}%
-\contentsline {figure}{\numberline {A.3}{\ignorespaces Estructura patrón \textbf {State}}}{113}{figure.caption.72}%
-\contentsline {figure}{\numberline {A.4}{\ignorespaces Estructura patrón \textbf {Mediator}}}{114}{figure.caption.73}%
-\contentsline {figure}{\numberline {A.5}{\ignorespaces Estructura patrón \textbf {Decorator}}}{115}{figure.caption.74}%
-\contentsline {figure}{\numberline {A.6}{\ignorespaces Estructura patrón \textbf {Proxy}}}{117}{figure.caption.75}%
-\contentsline {figure}{\numberline {A.7}{\ignorespaces Estructura patrón \textbf {Iterador}}}{118}{figure.caption.76}%
-\contentsline {figure}{\numberline {A.8}{\ignorespaces Estructura patrón \textbf {Estrategia}}}{119}{figure.caption.77}%
+\contentsline {xchapter}{Patrones de diseño de Gamma}{111}{appendix.Alph1}%
+\contentsline {figure}{\numberline {A.1}{\ignorespaces Estructura patrón \textbf {Adapter}}}{112}{figure.caption.70}%
+\contentsline {figure}{\numberline {A.2}{\ignorespaces Estructura patrón \textbf {Command}}}{114}{figure.caption.71}%
+\contentsline {figure}{\numberline {A.3}{\ignorespaces Estructura patrón \textbf {State}}}{115}{figure.caption.72}%
+\contentsline {figure}{\numberline {A.4}{\ignorespaces Estructura patrón \textbf {Mediator}}}{116}{figure.caption.73}%
+\contentsline {figure}{\numberline {A.5}{\ignorespaces Estructura patrón \textbf {Decorator}}}{117}{figure.caption.74}%
+\contentsline {figure}{\numberline {A.6}{\ignorespaces Estructura patrón \textbf {Proxy}}}{119}{figure.caption.75}%
+\contentsline {figure}{\numberline {A.7}{\ignorespaces Estructura patrón \textbf {Iterador}}}{120}{figure.caption.76}%
+\contentsline {figure}{\numberline {A.8}{\ignorespaces Estructura patrón \textbf {Estrategia}}}{121}{figure.caption.77}%
