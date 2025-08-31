@@ -1291,7 +1291,7 @@ setTiempo(i: Real) \\
 start() \\
 }
 
-\umlnote[above right=-1cm and 1cm of Temporizador,width=3cm]{Temporizador}{
+\umlnote[above right=-1cm and 1cm of Temporizador,width=5cm]{Temporizador}{
 tickHandler() \{ \\
 \ \ \ \ botonTime.execute() \\
 \}
@@ -1377,10 +1377,14 @@ prendido() \{\\
 \ \ \ \ return st.prendido() \\
 \}\\
 \\
+\rule{0.5\linewidth}{0.3pt}\\
+\vspace{1mm}
 evento() \{\\
 \ \ \ \ return st.evento(this) \\
 \}\\
 \\
+\rule{0.5\linewidth}{0.3pt}\\
+\vspace{1mm}
 time() \{\\
 \ \ \ \ return st.time(this) \\
 \}\\
@@ -1391,8 +1395,9 @@ time() \{\\
 evento(Boton b)\{\\
 \ \ \ \ timer.start() \\
 \ \ \ \ b.changeState(WaitOff) \\
-\}
-\\
+\}\\
+\rule{0.5\linewidth}{0.3pt}\\
+\vspace{1mm}
 prendido()\{\\
 \ \ \ \ return True\\
 \}
@@ -1403,6 +1408,8 @@ evento(Boton b)\{\\
 \ \ \ \ return \\
 \}\\
 \\
+\rule{0.5\linewidth}{0.3pt}\\
+\vspace{1mm}
 time(Boton b)\{\\
 if not registro.getValor()\{ \\
 \ \ \ \ b.changeState(Off)\\
@@ -1410,6 +1417,8 @@ if not registro.getValor()\{ \\
 \ \ \ \ b.changeState(On)\\
 \}\\
 \\
+\rule{0.5\linewidth}{0.3pt}\\
+\vspace{1mm}
 prendido()\{\\
 \ \ \ \ return True\\
 \}
@@ -1437,6 +1446,29 @@ Repasemos cómo funciona el sistema con la estructura propuesta. Supongamos que 
 
 Todos los estados deben implementar el método \verb|prendido():Bool|, que es el utilizado por los clientes para conocer el verdadero estado del botón. Si el estado es \On o \WaitOff, \verb|prendido():Bool| devolverá \verb|True|; en caso contrario, devolverá \verb|False|.
 
+Dado que la solución propuesta es una aplicación del patrón \textit{State}, debe ser documentada con el método 2MIL, tal como se presenta en la sección \ref{docDeboun}.
+
+\begin{figure}
+\caption{Documentacion de la aplicación del patrón State para el control del estado del botón.}
+\label{docDeboun}
+\scalebox{.90}{
+\begin{pattern}[]{Estados del botón}{Algorithm}{idFigAlg}
+\based{Estado (State)}
+\why{\textbf{Cambios previstos}: Pueden mofificarse los estados de cotrol del botón en base a nuevos requerimientos o cambios en el hardware.
+
+\textbf{Funcionalidad}: La interfaz de usuario mostrará el botón como encendido o apagado según su estado interno. Para crear un retardo en las transiciones, es necesario añadir estados intermedios que gestionen esa demora.
+}
+\assigns
+\is{Boton}{Contexto}
+\is{EstadoBoton}{Estado}
+\is{On}{EstadoConcreto}
+\is{Off}{EstadoConcreto}
+\is{OnWaiting}{EstadoConcreto}
+\is{OffWaiting}{EstadoConcreto}
+\end{pattern}
+}
+\end{figure}
+
 
 De esta manera, logramos encapsular cada estado en un módulo independiente, que puede ser modificado sin afectar al resto. Además, agregar nuevos estados resulta sencillo: basta con crear un nuevo módulo.
 
@@ -1445,7 +1477,7 @@ De esta manera, logramos encapsular cada estado en un módulo independiente, que
 \section{Verificación de precondiciones}
 El autor del libro \cite{douglass} comenta que uno de los problemas más grandes que observa en el desarrollo de sistemas embebidos es que muchas funciones tiene precondiciones para ejecutarse correctamente, pero que rara vez se verifica que todas se cumplan. Además, el procedimiento común de informar precondiciones inadecuadas en una función en \textbf{C}\footnote{Lenguaje de programación comúnmente utilizado en sistemas embebidos.} es a través del valor de retorno (-1 en caso de errores, 0 en el contrario). Por lo tanto, el encargado de manejar el error es la función que invocó a la segunda, generando así un acoplamiento extra en el código. Esto provoca una complicación que muchas veces deriva en un mal manejo de los errores. Por ejemplo, supongamos que se tiene un módulo que exporta un método que realiza cierto cómputo en base a dos argumentos, \verb|computar(i: int, i: int)|. Existen múltiples posibles implementaciones, estas son algunas:
 \begin{itemize}
-    \item Una posible implementación consiste en que la función no realice ninguna verificación y simplemente intente utilizar los valores pasados como argumento, lo cual puede generar un error inmediato si los tipos no coinciden, o un error futuro si el valor está fuera de los parámetros requeridos por el sistema. Por ejemplo, si se pasa un entero negativo, pero el método requiere como precondición que siempre sea positivo, se podría provocar un fallo más adelante; esta implementación obliga a que todos los clientes que utilicen este método deban verificar la validez de los valores a, lo que no solo genera código repetido, sino que también requiere una actualización manual en múltiples puntos si el requisito cambia, haciendo que la responsabilidad de la verificación de las precondiciones recaiga en el cliente que utiliza la función, en lugar de ser manejada internamente por la misma.
+    \item Una posible implementación consiste en que la función no realice ninguna verificación y simplemente intente utilizar los valores pasados como argumento, lo cual puede generar un error inmediato si los tipos no coinciden, o un error futuro si el valor está fuera de los parámetros requeridos por el sistema. Por ejemplo, si se pasa un entero negativo, pero el método requiere como precondición que siempre sea positivo, se podría provocar un error división por cero más adelante en la ejecución; esta implementación obliga a que todos los clientes que utilicen este método deban verificar la validez de los valores, lo que no solo genera código repetido, sino que también requiere una actualización manual en múltiples puntos si el requisito cambia, haciendo que la responsabilidad de la verificación de las precondiciones recaiga en el cliente que utiliza la función, en lugar de ser manejada internamente por la misma.
     \item Otra opción se basa en verificar si el valor es permitido, haciendo que \\ \verb|computar(i: int, i: int)| retorne un valor que indique el resultado de la validación (por ejemplo, 0 en caso afirmativo y -1 en caso contrario). Si bien este enfoque es una mejora respecto a no realizar validación alguna, continua con el acoplamiento entre el cliente de la función y el módulo que la exporta, ya que el cliente debe verificar el valor de retorno para determinar si ha ocurrido un error.
 \end{itemize}
 
@@ -1619,7 +1651,7 @@ Con este diseño se añade una capa de verificación sin modificar el módulo or
 \label{integridad}
 \declareCMod{Data}
 
-Como se ha señalado en otros ``\textit{Problemas comunes}'', el ejemplo propuesto es simplificado, pero las funcionalidades que se pueden agregar pueden ser mucho más complejas. Una de ellas es la verificación la integridad de la información almacenada en el sistema.
+Como se ha señalado en otros \textit{problemas comunes}, el ejemplo propuesto es una versión simplificada, pero es posible agregar funcionalidades mucho más complejas. Una de ellas es la verificación de la integridad de la información almacenada en el sistema.
 
 Douglass, en \cite{douglass}, sostiene que uno de los orígenes más comunes de inconvenientes relacionados con fallas de seguridad o confiabilidad es la corrupción de la información. Un pulso electromagnético o fallas en el hardware pueden causar daños en los datos, comprometiendo su integridad; por ejemplo, alterando un \gls{bit} o provocando la pérdida parcial de cierta zona de la memoria. Si los datos afectados son críticos, el problema puede derivar en un error grave del sistema. Para hacer frente a esto, existen diversas técnicas, desde el cálculo de checksums con el fin de verificar la integridad, hasta el almacenamiento de la información múltiples veces para crear redundancia.
 
@@ -1647,13 +1679,13 @@ Analizando el patrón \textit{decorator} \ref{anexoDecorator} aplicado a este \t
 
 \begin{lstlisting}[caption=Implementación de los métodos getData y setData del decorador que se encarga de verificar la integridad de la información almacenada en el módulo \Data.,label={getData}]
 setData(Dato i){
-    checksum = calcularCheksum(i)
+    this.checksum = calcularChecksum(i)
     data.setData(dato)
 }
 
 getData() {
     dato = data.getData()
-    if (calcularCheksum(dato) == checksum)
+    if (calcularChecksum(dato) == this.checksum)
         return dato
     else
         errorHandler(error de integridad)
@@ -1666,7 +1698,7 @@ Este es otro ejemplo en el que el patrón \textit{decorator} permite la adicion 
 \section{Organización de la ejecución}
 \label{orgEjecucion}
 
-En un sistema robótico embebido se suelen ejecutar múltiples tareas para lograr un cierto objetivo. Ya sea, si se eligió seguir un estilo arquitectónico del tipo ``Control de procesos'' o no. Por lo general se debe verificar información recibida a través de sensores y otras fuentes (comunicación serial, web, etc.), realizar cómputos y efectuar acciones con los actuadores presentes en el sistema en tiempo real.
+En un sistema robótico embebido se suelen ejecutar múltiples tareas para lograr un cierto objetivo. Ya sea, si se eligió seguir un estilo arquitectónico del tipo ``Control de procesos''(recordar Sección \ref{arqControlProc}) o no. Por lo general se debe verificar información recibida a través de sensores y otras fuentes (comunicación serial, web, etc.), realizar cómputos y efectuar acciones con los actuadores presentes en el sistema en tiempo real.
 
 Una implementación simple para realizar el comportamiento mencionado, consiste en crear funciones para cada parte del proceso y llamarlas en \textit{loop} desde la función \textit{main}, y si es necesario añadir un tiempo de espera entre cada ejecución mediante \textit{sleeps}. La principal desventaja que conlleva este enfoque es que los sistemas robóticos son en tiempo real, es decir, por ejemplo se pueden perder \textit{inputs} de sensores si no se los maneja de manera correcta. Además, los tiempos de espera son bloqueantes por lo que se desperdicia acceso a cómputo.
 
@@ -1682,7 +1714,7 @@ De las tareas que se tienen, dos deben ser llamadas por el sistema y la otra (re
 
 Como se puede deducir, el uso de interrupciones es abundante en sistemas de tiempo real y de control. Por lo tanto, resulta imprescindible tener un buen manejo de ellas. Las interrupciones, como su nombre indica, detienen la ejecución normal de un programa para atender a un evento. Una vez que este manejo finaliza, la ejecución continúa en el punto donde fue interrumpida (más información referida a interrupciones en la Sección \ref{secInterrupciones}).
 
-Cuando una interrupción es interrumpida por otra, el sistema prioriza la más reciente, ejecutándola primero y reanudando después las anteriores. Un problema común y evitable surge con las interrupciones periódicas: si el tiempo de manejo de una interrupción es mayor que el intervalo de su disparo, por ejemplo, si un temporizador la genera cada \textit{x} segundos, pero su manejo tarda más de \textit{x} segundos, se produce una situación en la que la ejecución nunca finaliza hasta que se desactive el \textit{timer} que lanza las interrupciones. Además de que la ejecución pueda no completarse, el sistema puede adoptar un estado inconsistente. Por ejemplo, en un ciclo de control, si el sistema lee información, la procesa y luego aplica un cambio en los actuadores, una nueva interrupción puede ocurrir antes de que el ciclo concluya. En tal caso, la etapa de aplicación nunca se ejecuta, lo que provoca que el sistema no haga nada.
+Cuando una interrupción es interrumpida por otra, el sistema prioriza la más reciente, ejecutándola primero y reanudando después las anteriores. Un problema común y evitable surge con las interrupciones periódicas: si el tiempo de manejo de una interrupción es mayor que el intervalo de su disparo, por ejemplo, si un temporizador la genera cada \textit{x} segundos, pero su manejo tarda \textit{x} + 2 segundos, se produce una situación en la que la ejecución nunca finaliza hasta que se desactive el \textit{timer} que lanza las interrupciones. Además de que la tarea no se complete, el sistema puede quedar en un estado inconsistente. Por ejemplo, en un ciclo de control (lectura, procesamiento y actuación), una nueva interrupción puede ocurrir antes de que el ciclo concluya, provocando que la etapa de actuación sobre los actuadores nunca se ejecute y el sistema no realice ninguna acción.
 
 Los problemas de concurrencia de este tipo son difíciles de detectar y corregir, por lo que es útil contar con herramientas para evitarlos. Una forma común de hacerlo es apagando las interrupciones del \gls{MCU} al comenzar el manejo de una interrupción. No obstante, esto no es ideal, ya que se perderían interrupciones no periódicas que sí se desean manejar. Otra opción es eliminar o desuscribir el manejador de la interrupción al comenzar su ejecución, aunque es crucial recordar volver a agregarlo para que el próximo ciclo se ejecute.
 
@@ -1784,7 +1816,7 @@ Al aplicar el uso de interrupciones junto con patrones de diseño como \textit{S
 \section{Control en conjunto de dispositivos}
 Muchas aplicaciones embebidas robóticas controlan \gls{actuadores} que deben trabajar en conjunto para lograr el efecto deseado. Por ejemplo, para conseguir mover de manera coordinada un brazo robótico con múltiples articulaciones, todos los motores deben trabajar a la par. De manera similar, el uso de propulsores en una nave espacial en tres dimensiones requiere que muchos de estos dispositivos actúen en el momento preciso y con la cantidad correcta de fuerza para lograr la estabilidad necesaria. En ambos casos existe comunicación entre todos los componentes, ya sea para encadenar la ejecución de ciertos movimientos o para avisar de restricciones. Esto no es tarea simple y requiere de muchas líneas de código, por lo que un diseño orientado al cambio resulta clave.
 
-\subsection*{Solución tradicional, ejemplo real}
+\subsection*{Enfoque de diseño tradicional}
 
 Antes de pasar a explicar la solución preparada para el cambio y analizar cómo aplicarla al ejemplo presentado por Douglass en su libro \cite{douglass}, se describirá cómo se aborda tradicionalmente esta problemática. Para ello, se tomará como ejemplo el software desarrollado para el robot desmalezador creado en conjunto por ingenieros electrónicos como parte del trabajo final de carrera \cite{disenioViejo1, disenioViejo2}. Los requerimientos son similares a los que se consideraron para el desarrollo del nuevo diseño orientado al cambio en \cite{paperPomponio}.
 
@@ -1836,7 +1868,7 @@ Estos son otros inconvenientes referidos al cambio que están presentes en el c�
 
 El diseño del código parece estar orientado a cumplir con un objetivo específico mediante un flujo procedimental y un control directo de los periféricos del hardware. Este enfoque es funcional, pero carece de modularidad y abstracción, lo que lo hace menos flexible y más difícil de mantener. La estructura no parece diseñada para escalar con nuevas funcionalidades.
 
-\subsection*{Ejemplo de Douglass}
+\subsection*{Enfoque mejorado pero deficiente}
 
 A continuación se describirá un ejemplo extraído de \cite[Sección. 3.4]{douglass}, se explicará la solución propuesta en el mismo libro para luego proponer una solución orientada al cambio.
 
@@ -1880,13 +1912,13 @@ Es posible que el problema haya sido simplificado con fines didácticos. Con el 
 
 
 
-\subsection*{Subsistemas de control}
+\subsection*{Enfoque para el cambio: Subsistemas de control}
 \label{subsistema}
 \addcontentsline{toc}{subsection}{Subsistemas de control}
 
 Para dar la solución orientada al cambio y completa que se propone en este trabajo, primero se introducirá el concepto de lo que llamaremos \textbf{Subsistema de control}. El cual fue extraído del trabajo realizado en el robot desmalezador \citep{paperPomponio} y se utilizará como diseño de referencia.
 
-En un sistema complejo donde se controlan múltiples propiedades físicas, el sistema se divide en subsistemas. Cada subsistema controla una propiedad específica y se organiza según el estilo arquitectónico de control de procesos \ref{arqControlProc}. De esta manera, se logra independencia entre el control de cada propiedad, lo que prepara al sistema para cambios individuales en el control de cada una de ellas. Además, se promueve la reutilización del código, ya que un subsistema de control diseñado para manejar una propiedad específica puede aplicarse en diferentes escenarios o sistemas.
+En un sistema complejo donde se controlan múltiples propiedades físicas, el sistema se divide en subsistemas. Cada subsistema controla \textbf{una} propiedad específica y se organiza según el estilo arquitectónico de control de procesos \ref{arqControlProc}. De esta manera, se logra independencia entre el control de cada propiedad, lo que prepara al sistema para cambios individuales en el control de cada una de ellas. Además, se promueve la reutilización del código, ya que un subsistema de control diseñado para manejar una propiedad específica puede aplicarse en diferentes escenarios o sistemas.
 
 Estos subsistemas de control son una estructura de módulos relacionados mediante herencia, composición o invocación. Cuyo trabajo es lograr que cierta propiedad física alcance el valor deseado. Para hacerlo interactúa con la variable a manipular y las variables medidas relacionadas (recordar Tabla \ref{tab:conceptosArq}). En la Figura \ref{modulosSub} se puede observar de manera concreta los módulos que forman parte de cada componente de un subsistema. Para permitir la interacción con un cliente externo deben proveer una interfaz que permita establecer un valor al que se quiera llevar la propiedad (ver \textit{setPoint} en la Tabla \ref{tab:conceptosArq}) y que indique el comienzo de la tarea de control.
 
@@ -2160,7 +2192,7 @@ Por último, repasemos los beneficios de utilizar subsistemas de control. Este d
 
 
 
-\subsubsection*{Solución orientada al cambio}
+\subsubsection*{Solución para el cambio}
 
 Esta solución se basa en aquella dada al problema del robot desmalezador en \citep{paperPomponio}, pero aplicada al brazo robótico descripto en \ref{requisitos}. Por lo tanto, se aplica el concepto de subsistemas que se introdujo previamente. Para ello primero se debe identificar las propiedades del mundo físico a controlar. Lo que se requiere es modificar la posición y el estado (abierto o cerrado) de la pinza del brazo. Para hacerlo se cuenta con distintos actuadores que intervienen diferentes propiedades físicas. En particular dos \gls{pasoapaso} y la pinza. Además, en los requisitos se especifica que se cuenta con una función que genera una lista de pasos con órdenes para cada actuador. De esta manera se define un subsistema de control por cada actuador que serán los encargados de llevar a cabo las órdenes generadas. Un ejemplo de orden es rotar brazo a 30\textdegree, esta hace referencia a actuar sobre el \gls{pasoapaso} de la base del brazo. En particular, estableciendo un \textit{set-point} de posición igual a 30\textdegree. 
 

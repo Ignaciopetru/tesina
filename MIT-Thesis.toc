@@ -26,9 +26,9 @@
 \contentsline {section}{\numberline {6.4}Máquinas de estado}{65}{section.6.4}%
 \contentsline {section}{\numberline {6.5}Control anti-rebote}{72}{section.6.5}%
 \contentsline {section}{\numberline {6.6}Verificación de precondiciones}{77}{section.6.6}%
-\contentsline {section}{\numberline {6.7}Organización de la ejecución}{82}{section.6.7}%
-\contentsline {section}{\numberline {6.8}Control en conjunto de dispositivos}{85}{section.6.8}%
-\contentsline {subsection}{Subsistemas de control}{90}{figure.caption.48}%
+\contentsline {section}{\numberline {6.7}Organización de la ejecución}{83}{section.6.7}%
+\contentsline {section}{\numberline {6.8}Control en conjunto de dispositivos}{86}{section.6.8}%
+\contentsline {subsection}{Subsistemas de control}{91}{figure.caption.49}%
 \contentsline {chapter}{\numberline {7}Conclusión}{109}{chapter.7}%
 \contentsline {chapter}{\numberline {A}Patrones de diseño de Gamma}{111}{appendix.Alph1}%
 \contentsline {section}{\numberline {A.1}Adapter}{111}{section.Alph1.1}%
@@ -39,5 +39,5 @@
 \contentsline {section}{\numberline {A.6}Proxy}{117}{section.Alph1.6}%
 \contentsline {section}{\numberline {A.7}Iterator}{118}{section.Alph1.7}%
 \contentsline {section}{\numberline {A.8}Strategy}{119}{section.Alph1.8}%
-\contentsline {chapter}{Glosario}{125}{appendix*.79}%
-\contentsline {backmatter}{Referencias}{127}{appendix*.80}%
+\contentsline {chapter}{Glosario}{125}{appendix*.80}%
+\contentsline {backmatter}{Referencias}{127}{appendix*.81}%
