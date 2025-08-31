@@ -33,11 +33,11 @@
 \contentsline {chapter}{\numberline {A}Patrones de diseño de Gamma}{111}{appendix.Alph1}%
 \contentsline {section}{\numberline {A.1}Adapter}{111}{section.Alph1.1}%
 \contentsline {section}{\numberline {A.2}Command}{112}{section.Alph1.2}%
-\contentsline {section}{\numberline {A.3}State}{113}{section.Alph1.3}%
+\contentsline {section}{\numberline {A.3}State}{114}{section.Alph1.3}%
 \contentsline {section}{\numberline {A.4}Mediator}{115}{section.Alph1.4}%
 \contentsline {section}{\numberline {A.5}Decorator}{116}{section.Alph1.5}%
 \contentsline {section}{\numberline {A.6}Proxy}{117}{section.Alph1.6}%
-\contentsline {section}{\numberline {A.7}Iterator}{118}{section.Alph1.7}%
-\contentsline {section}{\numberline {A.8}Strategy}{119}{section.Alph1.8}%
-\contentsline {chapter}{Glosario}{125}{appendix*.80}%
-\contentsline {backmatter}{Referencias}{127}{appendix*.81}%
+\contentsline {section}{\numberline {A.7}Iterator}{119}{section.Alph1.7}%
+\contentsline {section}{\numberline {A.8}Strategy}{120}{section.Alph1.8}%
+\contentsline {chapter}{Glosario}{125}{appendix*.79}%
+\contentsline {backmatter}{Referencias}{127}{appendix*.80}%

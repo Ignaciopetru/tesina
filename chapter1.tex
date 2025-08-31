@@ -861,7 +861,7 @@ calentar():
 
 Cuando el comportamiento de un estado debe cambiar, es posible que se necesiten modificaciones en múltiples métodos. Esto puede llevar a la duplicación de código o dificultar la identificación de las partes que requieren cambios, complicando el proceso y aumentando el riesgo de errores. 
 
-Otra desventaja clave es la baja modularidad, ya que el comportamiento asociado a cada estado no está claramente delimitado. Si cada estado requiere comportamientos complejos, el código se vuelve monolítico y difícil de extender sin alterar los métodos existentes. Por ejemplo, al agregar un estado ``EnPausa'', sería necesario modificar la lógica de múltiples métodos para verificar este nuevo estado y ajustar el comportamiento de manera apropiada. Todas estas deficiencias dificultan la reutilización del código y hacen que la verificación del correcto funcionamiento del sistema sea cada vez más compleja.
+Otra desventaja clave es la baja modularidad, ya que el comportamiento asociado a cada estado no está claramente delimitado. Si cada estado requiere comportamientos complejos, el código se vuelve monolítico y difícil de extender sin alterar los métodos existentes. Por ejemplo, al agregar un estado \textit{EnPausa}, sería necesario modificar la lógica de múltiples métodos para verificar este nuevo estado y ajustar el comportamiento de manera apropiada. Todas estas deficiencias dificultan la reutilización del código y hacen que la verificación del correcto funcionamiento del sistema sea cada vez más compleja.
 
 Este tipo de solución es ampliamente utilizado. Un ejemplo relevante se encuentra en el software original del robot desmalezador, como se describe en el informe \cite{informe1}. En particular, se definen diferentes estados de operación del robot y se utiliza una gran estructura de control \textit{switch-case} dentro del bucle principal. Esta estructura decide la acción a ejecutar en función del estado actual, como se detalla en el Código \ref{codigoLoopMain}.
 
@@ -934,7 +934,7 @@ El ejemplo propuesto consiste en el sistema de control de un microondas. Para re
 \end{center}
 \end{figure}
 
-El funcionamiento principal del sistema se representa mediante estados y transiciones, donde cada transición implica un comportamiento específico relacionado con la salida del estado actual y la entrada al siguiente. Por ejemplo, si el sistema se encuentra en el estado \textit{PuertaAbierta} y se recibe el evento \textit{puertaCerrada}, se realizará una transición al estado \textit{Calentando}. Durante este proceso, el magnetrón será activado para emitir las ondas necesarias que calentarán la comida.
+El funcionamiento principal del sistema se representa mediante estados y transiciones, donde cada transición implica un comportamiento específico relacionado con la salida del estado actual y la entrada al siguiente. Por ejemplo, si el sistema se encuentra en el estado \textit{PuertaAbierta} y se recibe el evento \textit{puertaCerrada}, se realizará una transición al estado \textit{Calentando}. Durante este proceso, el \gls{magnetron} será activado para emitir las ondas necesarias que calentarán la comida.
 
 A simple vista parece un comportamiento complejo y eso que solo es un ejemplo simplificado, por lo que en la vida real los casos pueden ser mucho más extensos. Este es uno de los motivos por los cuales es útil contar con un buen diseño. El desarrollador debe tener en cuenta que sea fácil modificar las transiciones y también agregar y quitar estados.
 
@@ -1130,7 +1130,7 @@ prender(Microondas m)\{ \\
 \declareCMod{Calentando}
 \declareCMod{PuertaAbierta}
 
-Siguiendo esta estructura modular, el módulo \Microondas provee un método para cada evento existente. De esta forma, cuando un método es invocado, delega la funcionalidad al estado actual, lo que permite modificar el comportamiento del microondas según su estado. Un ejemplo de cómo implementar este proceso se presenta en el Código \ref{ejemploReanudar}. Es necesario pasar una referencia del \Microondas a cada método del estado para permitir la transición entre estados. Una posible implementación de este comportamiento se observa en el Código \ref{cambioDeEstado}, donde el módulo \Calentando apaga el magnetrón para proteger al usuario y luego transiciona al estado \PuertaAbierta. Para realizar este cambio, el módulo \Calentando necesita una referencia a \PuertaAbierta, la cual fue almacenada previamente al ser pasada como argumento en su constructor.
+Siguiendo esta estructura modular, el módulo \Microondas provee un método para cada evento existente. De esta forma, cuando un método es invocado, delega la funcionalidad al estado actual, lo que permite modificar el comportamiento del microondas según su estado. Un ejemplo de cómo implementar este proceso se presenta en el Código \ref{ejemploReanudar}. Es necesario pasar una referencia del \Microondas a cada método del estado para permitir la transición entre estados. Una posible implementación de este comportamiento se observa en el Código \ref{cambioDeEstado}, donde el módulo \Calentando apaga el \gls{magnetron} para proteger al usuario y luego transiciona al estado \PuertaAbierta. Para realizar este cambio, el módulo \Calentando necesita una referencia a \PuertaAbierta, la cual fue almacenada previamente al ser pasada como argumento en su constructor.
 
 \begin{lstlisting}[caption=Ejemplo de implementación método reaundar del módulo Microondas, label=ejemploReanudar]
 reaundar(){
@@ -1145,7 +1145,7 @@ abrir(Microondas m){
 }
 \end{lstlisting}
 
-Cuando el microondas se encuentra en un estado que no admite un evento específico, el sistema puede simplemente no realizar ninguna acción. Por ejemplo, en el estado \PuertaAbierta, el evento \textit{calentar} no puede desencadenar ningún comportamiento. En este caso, no se cumplen las condiciones para encender el magnetrón y calentar la comida. Por lo tanto, el evento es ignorado, lo cual puede implementarse como se muestra en el Código \ref{calentarPuerta}.
+Cuando el microondas se encuentra en un estado que no admite un evento específico, el sistema puede simplemente no realizar ninguna acción. Por ejemplo, en el estado \PuertaAbierta, el evento \textit{calentar} no puede desencadenar ningún comportamiento. En este caso, no se cumplen las condiciones para encender el \gls{magnetron} y calentar la comida. Por lo tanto, el evento es ignorado, lo cual puede implementarse como se muestra en el Código \ref{calentarPuerta}.
 \begin{lstlisting}[caption=Ejemplo de implementación método calentar del módulo PuertaAbierta, label=calentarPuerta]
 calentar(Microondas m){
 	return
@@ -1182,19 +1182,17 @@ Aplicando este patrón para el manejo de estados, se logra una solución más el
 
 \declareCMod{Descongelando}
 \declareCMod{EstadoMicroondas}
+El uso de este patrón mejora significativamente la legibilidad y la modularidad del código. En lugar de manejar el comportamiento de todos los estados en un mismo método, cada estado cuenta con su propio módulo. Esto permite que el código esté mejor organizado y sea más fácil de comprender, ya que cada módulo encapsula el comportamiento específico de su estado, eliminando la necesidad de múltiples verificaciones condicionales y simplificando el flujo de ejecución.
 
-El uso de este patrón mejora significativamente la legibilidad y modularidad del código. En lugar de manejar el comportamiento de todos los estados en una misma función, cada estado tiene su propio módulo. Esto permite que el código esté mejor organizado y sea más fácil de entender, ya que cada módulo encapsula el comportamiento específico de su estado, eliminando la necesidad de múltiples verificaciones condicionales y simplificando el flujo de ejecución.
+Otro beneficio importante es que facilita la adición de nuevos estados. Cuando se requiere incorporar un nuevo estado, como \textit{Descongelando} (similar a \textit{Calentando}, pero con un ciclo de encendido y apagado del \gls{magnetron}), basta con definir un nuevo módulo homónimo que herede de \EstadoMicroondas. No es necesario modificar la implementación de los demás estados, ya que la nueva funcionalidad es independiente. Únicamente será necesario añadir este nuevo módulo a los constructores de aquellos estados que puedan precederlo. Esta facilidad hace que el sistema sea mucho más flexible y escalable a medida que aumenta su complejidad.
 
-Otro beneficio importante es que facilita la \textbf{adición de nuevos estados}. Cuando se necesita agregar un nuevo estado, como \textit{Descongelando} (similar a \textit{Calentando}, pero con un ciclo de encendido y apagado del magnetrón), solo se debe definir un nuevo módulo homónimo que herede de \EstadoMicroondas. No es necesario modificar la implementación de ningún otro estado, ya que la nueva funcionalidad es independiente. De todas formas, este nuevo módulo debe ser añadido a los constructores de los estados que puedan precederlo. Esta facilidad hace que el sistema sea mucho más flexible y escalable a medida que aumenta su complejidad.
+Además, el patrón \textit{State} elimina la duplicación de código, ya que cada módulo de estado gestiona su propio comportamiento. En el enfoque tradicional, muchos métodos deben realizar verificaciones repetidas del estado y aplicar el comportamiento correspondiente, lo que conduce a duplicación e inconsistencias en el código.
 
-Además, el \textit{State} elimina la duplicación de código, ya que cada módulo de estado gestiona su propio comportamiento. En el enfoque tradicional, muchos métodos deben realizar repetidas verificaciones del estado y aplicar el comportamiento adecuado, lo que conduce a código duplicado y potencialmente inconsistente.
+Una ventaja clave es que permite cambiar dinámicamente el comportamiento del sistema. A medida que el estado evoluciona, también cambia dinámicamente el comportamiento del módulo principal.
 
-Una ventaja clave es que permite cambiar el comportamiento del sistema dinámicamente. A medida que el estado cambia, el comportamiento del módulo principal también cambia dinámicamente. 
+Todo esto contribuye a que el sistema sea más robusto y adaptable. Cuando se necesita modificar el comportamiento de un estado, basta con actualizar la implementación del módulo correspondiente, lo que facilita la localización y modificación del código relevante. Como resultado, el sistema se vuelve más fácil de mantener y se reduce el riesgo de introducir errores al cambiar o extender sus funcionalidades.
 
-Todo esto hace que el sistema sea más robusto y adaptable. Cuando es necesario modificar el comportamiento de un estado, simplemente se actualiza la implementación del módulo correspondiente, lo que facilita la localización y modificación del código relevante. Y como resultado es más fácil de mantener y reduce el riesgo de introducir errores al cambiar o extender el sistema.
-
-Existen otros casos de usos del patrón, como en los ejemplos que se verán más adelante, puede ser usado para cambiar el comportamiento de cierta parte del sistema o a modo de configuración del mismo. El concepto principal es el mismo, crear un módulo por cada estado posible y cambiar la implementación para que se ajuste a lo requerido.
-
+Existen, además, otros casos de uso del patrón. Como se mostrará en los ejemplos posteriores, puede emplearse para modificar el comportamiento de ciertas partes del sistema o incluso como mecanismo de configuración del mismo. El concepto central permanece invariable: crear un módulo por cada estado posible y ajustar la implementación para que se adecúe a lo requerido.
 \section{Control anti-rebote}
 Muchos dispositivos de entrada para sistemas embebidos utilizan contacto metal con metal para indicar eventos de interés, como botones, interruptores y relés. A medida que el metal entra en contacto, se produce una deformación física que resulta en un contacto intermitente entre las superficies. Esto genera señales que, de no ser filtradas, pueden causar lecturas erróneas. El comportamiento resultante puede observarse en la Figura \ref{botonReboteD}, donde se muestra la señal generada por un botón al ser presionado. Si nuestro sistema, por ejemplo, generara un evento por cada transición, estaríamos contabilizando falsos positivos provocados por el fenómeno descrito.
 
@@ -1893,7 +1891,7 @@ Como solución, el autor propone la creación de un módulo llamado \textbf{Robo
 
 El comportamiento del sistema comienza con la generación de una lista de pasos a realizar. Luego, se itera sobre esta lista ejecutando las acciones definidas en cada paso. Como el sistema debe interrumpir la ejecución si encuentra un error, el \textbf{RobotArmManager} verifica el valor de retorno tras cada acción. La ejecución de un movimiento completo finaliza cuando se completan todos los pasos generados previamente por la función que se mencionó en los requerimientos. En este caso es llamada \verb|graspAt(i: Coordenadas)|.
 
-La solución propuesta parece estar un nivel de abstracción por encima de lo que se esperaría para este caso. Aunque no hay suficiente información sobre el hardware del brazo robótico, sabemos que utilizar \glspl{pasoapaso} no es tan simple como invocar un método. Este proceso suele requerir el control continuo, operando mediante pulsos que hacen que el motor avance un paso. Por lo tanto, los módulos encargados de los movimientos probablemente tengan más responsabilidades de las que se plantean en el libro. Esto va en contra de las prácticas de la \gls{IS}, que establecen que un módulo debe ocultar un solo elemento de cambio. Además, sería necesario implementar un sistema de control más complejo, utilizando algún tipo de \textit{timer} o espera, para garantizar que el \gls{pasoapaso} tenga el tiempo necesario para actuar.
+La solución propuesta parece estar un nivel de abstracción por encima de lo que se esperaría para este caso. Aunque no hay suficiente información sobre el hardware del brazo robótico, sabemos que utilizar \glspl{pasoapaso} no es tan simple como invocar un método. Este proceso suele requerir control continuo, operando mediante pulsos que hacen que el motor avance de a un paso. Por lo tanto, los módulos encargados de los movimientos probablemente tengan más responsabilidades de las que se plantean en el libro. Esto va en contra de las prácticas de la \gls{IS}, que establecen que un módulo debe ocultar un solo elemento de cambio. Además, sería necesario implementar un sistema de control más complejo, utilizando algún tipo de \textit{timer} o espera, para garantizar que el \gls{pasoapaso} tenga el tiempo necesario para actuar.
 
 De todas formas, suponiendo que los módulos mencionados se adaptan al hardware subyacente, Douglass aplicar el patrón \textit{Mediator} \ref{anexoMediator} de Gamma. De manera que \textbf{RobotArmManager} cumple el rol de \textbf{Mediador} y cada módulo que se encarga de manejar cada actuador cumple el rol de \textbf{Colega}. Los autores en \cite{Gamma:1995:DPE:186897} establecen que el patrón es aplicable en los siguientes casos:
 \begin{itemize}
@@ -1904,7 +1902,7 @@ De todas formas, suponiendo que los módulos mencionados se adaptan al hardware 
 \item Un comportamiento distribuido entre varios módulos debería ser personalizable sin requerir una gran cantidad de submódulos.
 \end{itemize}
 
-La estructura construida por Douglass es similar al patrón y logra el objetivo de reducir el acoplamiento entre colegas, evitando que los módulos se refieran directamente entre ellos. Podemos decir desde la perspectiva de la \textit{IS} que la aplicación del patron ayuda a preparar el sistema ante el cambio en su solución.
+La estructura construida por Douglass es similar al patrón y logra el objetivo de reducir el acoplamiento entre colegas, evitando que los módulos se refieran directamente entre ellos. Podemos decir desde la perspectiva de la \gls{IS} que la aplicación del patrón ayuda a preparar el sistema ante un cambio en los colegas o su forma de comunicación.
 
 Por otro lado, un ítem de cambio común son las estructuras de datos, como se mencionó en la Sección \ref{listaItems}. Por ello, establecer el uso de una lista directamente en la interfaz de un módulo no responde a una buena práctica.
 
@@ -2260,56 +2258,55 @@ Ahora, se detallarán los módulos que conforman cada componente comenzando por 
 En cambio, en el caso de la pinza (ver Figura \ref{moduloPinza}) se utiliza un dispositivo que tiene dos estados, abierto o cerrado, por lo que solo se tienen dos métodos para abrir o cerrar la pinza.
 
 \begin{figure}[H]
-\caption{Actuadores paso a paso.}
-\label{estructuraActuadores}
-\begin{center}
-\scalebox{.90}{
-\begin{tikzpicture}\sf
-\umlclass[type=abstract]{StepDevice}
-{}
-{
-\umlvirt{right()} \\
-\umlvirt{left()} \\
-\umlvirt{disable()}\\
-\umlvirt{enable()} \\
-\umlvirt{pulse()}
-}
+    % Minipage para la primera figura (alineada al centro)
+    \begin{minipage}[c]{0.48\textwidth}
+        \centering
+        \scalebox{.90}{
+            \begin{tikzpicture}\sf
+                \umlclass[type=abstract]{StepDevice}
+                {}
+                {
+                    \umlvirt{right()} \\
+                    \umlvirt{left()} \\
+                    \umlvirt{disable()}\\
+                    \umlvirt{enable()} \\
+                    \umlvirt{pulse()}
+                }
 
-\umlclass[below left=2cm and -0.3cm of StepDevice]{Rotor}
-{}
-{
-...\\
-}
+                \umlclass[below left=2cm and -0.3cm of StepDevice]{Rotor}
+                {}
+                {
+                ...\\
+                }
 
-\umlclass[below right=2cm and -0.3cm of StepDevice]{Extensor}
-{}
-{
-...\\
-}
+                \umlclass[below right=2cm and -0.3cm of StepDevice]{Extensor}
+                {}
+                {
+                ...\\
+                }
 
-\umlinherit[geometry=|-|]{Rotor}{StepDevice}
-\umlinherit[geometry=|-|]{Extensor}{StepDevice}
-
-\end{tikzpicture}
-}
-\end{center}
-\end{figure}
-
-
-\begin{figure}[h!]
-\caption{Interfaz módulo Pinza.}
-\label{moduloPinza}
-\begin{center}
-\begin{tikzpicture}\sf
-\umlclass[]{Pinza}
-{}
-{
-abrir() \\
-cerrar()
-}
-
-\end{tikzpicture}
-\end{center}
+                \umlinherit[geometry=|-|]{Rotor}{StepDevice}
+                \umlinherit[geometry=|-|]{Extensor}{StepDevice}
+            \end{tikzpicture}
+        }
+        \caption{Actuadores paso a paso.}
+        \label{estructuraActuadores}
+    \end{minipage}
+    \hfill % Espacio flexible para empujar las figuras a los extremos
+    % Minipage para la segunda figura (alineada al centro)
+    \begin{minipage}[c]{0.48\textwidth}
+        \centering
+        \begin{tikzpicture}\sf
+            \umlclass[]{Pinza}
+            {}
+            {
+                abrir() \\
+                cerrar()
+            }
+        \end{tikzpicture}
+        \caption{Interfaz módulo Pinza.}
+        \label{moduloPinza}
+    \end{minipage}
 \end{figure}
 
 En la Figura \ref{sensores} se encuentran definidos los sensores asociados a cada actuador, estos heredan del módulo sensor pasivo el cual provee dos métodos, \verb|setConnection(i: Pipe)| el cual configura el \Pipe por el cual se enviará la información obtenida del sensor cuando el otro método, \verb|signal()| sea invocada.

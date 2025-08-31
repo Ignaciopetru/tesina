@@ -43,9 +43,10 @@ Adapta la interfaz del \Adaptable para que cumpla con la interfaz del \Objetivo.
 
 \subsection*{Estructura}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \caption{Estructura patrón \textbf{Adapter}}
 \begin{center}
+\scalebox{.90}{
 \begin{tikzpicture}\sf
 \umlsimpleclass[x=-4.5,y=1]{Cliente}
 
@@ -69,6 +70,7 @@ umluniassoc
 \umluniassoc[]{Cliente}{Objetivo}
 \umluniassoc[geometry=-|-]{Adaptador}{Adaptable}
 \end{tikzpicture}
+}
 \end{center}
 \end{figure}
 
@@ -125,9 +127,10 @@ Conoce cómo realizar las operaciones asociadas con la ejecución de una solicit
 
 \subsection*{Estructura}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \caption{Estructura patrón \textbf{Command}}
 \begin{center}
+\scalebox{.90}{
 \begin{tikzpicture}\sf
 \umlsimpleclass[]{Invocador}
 \umlclass[right=2cm of Invocador,type=abstract]{Orden}
@@ -152,6 +155,7 @@ ejecutar()
 \umluniaggreg{Invocador}{Orden}
 
 \end{tikzpicture}
+}
 \end{center}
 \end{figure}
 
@@ -190,9 +194,10 @@ Cada subclase implementa un comportamiento asociado con un estado del contexto.
 
 \subsection*{Estructura}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \caption{Estructura patrón \textbf{State}}
 \begin{center}
+\scalebox{.90}{
 \begin{tikzpicture}\sf
 \umlclass[]{Contexto}
 {}
@@ -225,6 +230,7 @@ manejar()
 \umluniaggreg[]{Contexto}{Estado}
 
 \end{tikzpicture}
+}
 \end{center}
 \end{figure}
 
@@ -257,9 +263,10 @@ Define un módulo que encapsula cómo interactúa un conjunto de módulos. Fomen
 
 \subsection*{Estructura}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \caption{Estructura patrón \textbf{Mediator}}
 \begin{center}
+\scalebox{.90}{
 \begin{tikzpicture}\sf
 \umlsimpleclass[type=abstract]{Mediador}
 
@@ -277,10 +284,8 @@ Define un módulo que encapsula cómo interactúa un conjunto de módulos. Fomen
 \umluniassoc[]{Colega}{Mediador}
 \umluniassoc[]{MediadorConcreto}{ColegaConcretoA}
 \umluniassoc[geometry=|-|,arm1=-0.7cm,anchor1=-30,anchor2=-150]{MediadorConcreto}{ColegaConcretoB}
-
-
-
 \end{tikzpicture}
+}
 \end{center}
 \end{figure}
 
@@ -313,9 +318,10 @@ Agregar responsabilidades adicionales a un objeto de manera dinámica. Los decor
 
 \subsection*{Estructura}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \caption{Estructura patrón \textbf{Decorator}}
 \begin{center}
+\scalebox{.90}{
 \begin{tikzpicture}\sf
 \umlclass[type=abstract]{Componente}{}
 {
@@ -361,6 +367,7 @@ operacion \{\\
 
 
 \end{tikzpicture}
+}
 \end{center}
 \end{figure}
 
@@ -427,9 +434,10 @@ Controla el acceso al sujeto real y puede ser responsable de crearlo y eliminarl
 \subsection*{Estructura}
 
 
-\begin{figure}[h]
+\begin{figure}[H]
 \caption{Estructura patrón \textbf{Proxy}}
 \begin{center}
+\scalebox{.90}{
 \begin{tikzpicture}\sf
 \umlclass[type=abstract]{Sujeto}{}
 {
@@ -460,6 +468,7 @@ sujetoReal.peticion()\\
 
 
 \end{tikzpicture}
+}
 \end{center}
 \end{figure}
 
@@ -505,9 +514,10 @@ Proporcionar un modo de acceder secuencialmente a elementos de un módulo sin ex
 \subsection*{Estructura}
 
 
-\begin{figure}[h]
+\begin{figure}[H]
 \caption{Estructura patrón \textbf{Iterador}}
 \begin{center}
+\scalebox{.90}{
 \begin{tikzpicture}\sf
 \umlsimpleclass{Cliente}
 
@@ -549,6 +559,7 @@ return new IteradorConcreto()
 
 
 \end{tikzpicture}
+}
 \end{center}
 \end{figure}
 
@@ -602,9 +613,10 @@ Use el patrón Strategy cuando:
 \subsection*{Estructura}
 
 
-\begin{figure}[h]
+\begin{figure}[H]
 \caption{Estructura patrón \textbf{Estrategia}}
 \begin{center}
+\scalebox{.90}{
 \begin{tikzpicture}\sf
 \umlclass[]{Contexto}
 {}
@@ -640,6 +652,7 @@ interfazAlgoritmo()
 \umluniaggreg[]{Contexto}{Estrategia}
 
 \end{tikzpicture}
+}
 \end{center}
 \end{figure}
 
