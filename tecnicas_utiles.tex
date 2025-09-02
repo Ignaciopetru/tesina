@@ -164,15 +164,18 @@ Para lograr una buena descripción del diseño se utilizan múltiples documentos
 
 Esta documentación debe estar bien estructurada con un formato bien definido. Los autores establecen cómo se define cada tipo de documento. En particular para documentar módulos de manera estructurada se utiliza un lenguaje llamado \textbf{2MIL} basado en TDN presentado en \cite{ghezzi2003}. Por ejemplo, un módulo llamado \ModuloA que exporta dos métodos se documenta de la forma mostrada en la Figura \ref{docModulo}.
 
+
 \begin{figure}[H]
 \caption{Documentación de un módulo utilizando 2MIL.}
 \label{docModulo}
+\scalebox{.90}{
 \begin{module}[]{ModuloA}{}{docModulo}
   \exports
   \proc{metodo1}
   \proc{metodo2}
   \comm{En esta sección se muestra comentarios relevantes al usuario.}
 \end{module}
+}
 \end{figure}
 
 Y un heredero de \ModuloA llamado \ModuloB se documenta como en la Figura \ref{docModuloHere}.
@@ -180,11 +183,13 @@ Y un heredero de \ModuloA llamado \ModuloB se documenta como en la Figura \ref{d
 \begin{figure}[H]
 \caption{Documentación de un módulo heredero utilizando 2MIL.}
 \label{docModuloHere}
+\scalebox{.90}{
 \begin{hmodule}[]{ModuloB}{ModuloA}{}{docModuloB}
   \exports
   \proc{metodo3}
   \comm{Este módulo hereda el comportamiento de \ModuloA y lo extiende con funcionalidades adicionales (metodo3).}
 \end{hmodule}
+}
 \end{figure}
 
 Esto puede ser a su vez documentado de manera gráfica siguiendo el diagrama mostrado en la Figura \ref{moduloGraf}.
@@ -279,6 +284,7 @@ Por otro lado, la aplicación de patrones de diseño también debe ser documenta
 \begin{figure}[H]
 \caption{Documentación de la aplicación del patrón.}
 \label{docPatron}
+\scalebox{.90}{
 \begin{pattern}[]{Breve descripción}{Algorithm}{idFigAlg}
 \based{Patrón (Pattern)}
 \why{\textbf{Cambios previstos}: Descripción de los cambios previstos relacionados con el patrón.
@@ -289,6 +295,7 @@ Por otro lado, la aplicación de patrones de diseño también debe ser documenta
 \is{ModuloParticipante1}{Participante1}
 \is{ModuloParticipante2}{Participante2}
 \end{pattern}
+}
 \end{figure}
 
 
@@ -478,6 +485,7 @@ En la Figura \ref{commandEst} podemos observar la estructura de módulos del mis
 \caption{Estructura del patrón \textit{Command}}
 \label{commandEst}
 \begin{center}
+\scalebox{.90}{
 \begin{tikzpicture}\sf
 \umlsimpleclass[]{Invocador}
 \umlclass[right=2cm of Invocador,type=abstract]{Orden}
@@ -502,6 +510,7 @@ ejecutar()
 \umluniaggreg{Invocador}{Orden}
 
 \end{tikzpicture}
+}
 \end{center}
 \end{figure}
 
@@ -526,6 +535,7 @@ Al encapsular cada solicitud de una operación dentro de un módulo, el patrón 
 \begin{figure}[H]
 \caption{Ejemplo de aplicación básica del patrón \textit{Command}}
 \begin{center}
+\scalebox{.90}{
 \begin{tikzpicture}\sf
 \umlsimpleclass[]{Controller}
 \umlclass[right=2cm of Controller]{MotorGirarIzq}
@@ -563,9 +573,10 @@ ejecutar() \{ \\
 \umluniassoc[geometry=-|-]{MotorGirarIzq}{Motor}
 
 \end{tikzpicture}
+}
 \end{center}
-
-\begin{pattern}[]{Orden para controlar motor paso a paso}{Algorithm}{idFigAlg}
+\scalebox{.90}{
+\begin{pattern}[]{Orden para controlar un motor paso a paso}{Algorithm}{idFigAlg}
 \based{Orden (Command)}
 \why{\textbf{Cambios previstos}: Se pueden agregar o modificar órdenes.
 
@@ -577,6 +588,7 @@ ejecutar() \{ \\
 \is{Motor}{Receptor}
 \is{Controller}{Invocador}
 \end{pattern}
+}
 
 \end{figure}
 Un módulo \Controller, necesita manejar un \gls{pasoapaso} representado en el diseño por el módulo \Motor. Para hacerlo se deben ejecutar una serie de métodos de la interfaz del \Motor. En particular, primero se debe habilitar el giro del motor llamando al método \verb|enable|, luego configurar el sentido de giro con el método \verb|left| o \verb|right| (izquierda o derecha) y por último avanzar un paso de giro invocando \verb|pulse|. Tradicionalmente, esto sería realizado desde el módulo \Controller agregando el código en cierto método de este (ver ejemplo en Código \ref{notCommand}), provocando así, un fuerte acoplamiento entre \Controller y \Motor. Esto es, ante cualquier cambio de la interfaz de \Motor, se debe actualizar la implementación del módulo \Controller, es decir, hay que modificar dos módulos y como dijimos el sistema debe estar cerrado a cambios y abierto a extensiones. Reduciendo al mínimo la modificación de código existente lo que podría traer como resultado la introducción de errores.

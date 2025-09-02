@@ -21,10 +21,10 @@
 \contentsline {subsubsection}{\numberline {5.2.0.1}Ejemplo}{44}{subsubsection.5.2.0.1}%
 \contentsline {chapter}{\numberline {6}Problemas comunes}{47}{chapter.6}%
 \contentsline {section}{\numberline {6.1}Acceso al hardware}{47}{section.6.1}%
-\contentsline {section}{\numberline {6.2}Interfaces que no se ajustan perfectamente}{56}{section.6.2}%
+\contentsline {section}{\numberline {6.2}Interfaces que no se ajustan perfectamente}{57}{section.6.2}%
 \contentsline {section}{\numberline {6.3}Obtención de información}{61}{section.6.3}%
 \contentsline {section}{\numberline {6.4}Máquinas de estado}{65}{section.6.4}%
-\contentsline {section}{\numberline {6.5}Control anti-rebote}{72}{section.6.5}%
+\contentsline {section}{\numberline {6.5}Control anti-rebote}{73}{section.6.5}%
 \contentsline {section}{\numberline {6.6}Verificación de precondiciones}{77}{section.6.6}%
 \contentsline {section}{\numberline {6.7}Organización de la ejecución}{83}{section.6.7}%
 \contentsline {section}{\numberline {6.8}Control en conjunto de dispositivos}{86}{section.6.8}%
