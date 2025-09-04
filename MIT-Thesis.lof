@@ -40,15 +40,15 @@
 \contentsline {figure}{\numberline {6.14}{\ignorespaces Documentación de la aplicación del patrón \textit {State} para el manejo de los estados del microondas.}}{72}{figure.caption.36}%
 \contentsline {figure}{\numberline {6.15}{\ignorespaces Ejemplo de señal de un botón siendo afectada por el fenómeno de rebote, extraída de {douglass}.}}{73}{figure.caption.37}%
 \contentsline {figure}{\numberline {6.16}{\ignorespaces Máquina de estados propuesta para el control antirebote.}}{75}{figure.caption.38}%
-\contentsline {figure}{\numberline {6.17}{\ignorespaces Módulos encargados de gestionar el comportamiento del temporizador utilizado en la transisción de estados del módulo Boton.}}{75}{figure.caption.39}%
-\contentsline {figure}{\numberline {6.18}{\ignorespaces Diagrama de módulos relacionados al boton.}}{76}{figure.caption.40}%
+\contentsline {figure}{\numberline {6.17}{\ignorespaces Módulos encargados de gestionar el comportamiento del temporizador utilizado en la transisción de estados del módulo \mbox {\sffamily Boton}\xspace .}}{75}{figure.caption.39}%
+\contentsline {figure}{\numberline {6.18}{\ignorespaces Diagrama de módulos relacionados al botón.}}{76}{figure.caption.40}%
 \contentsline {figure}{\numberline {6.19}{\ignorespaces Documentación de la aplicación del patrón \textit {State} para el control del estado del botón.}}{77}{figure.caption.41}%
 \contentsline {figure}{\numberline {6.20}{\ignorespaces Interfaz del módulo \mbox {\itshape \sffamily Mecanismo}\xspace .}}{79}{figure.caption.42}%
 \contentsline {figure}{\numberline {6.21}{\ignorespaces Ejemplo de aplicación del patrón \textit {Decorator} \ref {anexoDecorator} para garantizar el cumplimiento de precondiciones.}}{80}{figure.caption.43}%
 \contentsline {figure}{\numberline {6.22}{\ignorespaces Documentación de la aplicación del patrón \textit {Decorator} al caso de verificación de la integridad de la información.}}{81}{figure.caption.44}%
 \contentsline {figure}{\numberline {6.23}{\ignorespaces Interfaz del módulo \mbox {\sffamily Data}\xspace .}}{82}{figure.caption.45}%
-\contentsline {figure}{\numberline {6.25}{\ignorespaces Documentación de la aplicación del patron \textit {State} para el ejemplo del manejador de interrupciones.}}{85}{figure.caption.47}%
 \contentsline {figure}{\numberline {6.24}{\ignorespaces Ejemplo de manejador de interrupciones usando \textit {State} para prevenir inconvenientes en la ejecución.}}{85}{figure.caption.46}%
+\contentsline {figure}{\numberline {6.25}{\ignorespaces Documentación de la aplicación del patron \textit {State} para el ejemplo del manejador de interrupciones.}}{85}{figure.caption.47}%
 \contentsline {figure}{\numberline {6.26}{\ignorespaces Diagrama de flujo que explica el comportamiento de la función emergency \blx@tocontentsinit {0}\cite [pág. 82]{disenioViejo1}.}}{88}{figure.caption.48}%
 \contentsline {figure}{\numberline {6.27}{\ignorespaces Esquema del brazo robótico.}}{89}{figure.caption.49}%
 \contentsline {figure}{\numberline {6.28}{\ignorespaces Módulos de un subsistema de control y el componente arquitectónico al que pertenecen.}}{92}{figure.caption.50}%

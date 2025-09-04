@@ -219,11 +219,11 @@ def controlar_motor(motor)
 	if (valor > 100)
         if (motor = IDMotor1)
             Serial.write(0xAA)
-                Serial.write(0x0C)
-                Serial.write(0x85)
-                Serial.write(0x7F)
+            Serial.write(0x0C)
+            Serial.write(0x85)
+            Serial.write(0x7F)
         else if (motor = IDMotor2)
-                digitalWrite(DIR_pin2, HIGH)
+            digitalWrite(DIR_pin2, HIGH)
             analogWrite(VEL_pin2, 0)
             .
             .
@@ -1274,11 +1274,12 @@ Volviendo al ejemplo del libro, ante la detección de actividad en el botón se 
 \end{figure}
 
 \declareCMod{Temporizador}
+\declareCMod{Boton}
 
 Por otro lado, para gestionar el tiempo de gracia utilizaremos un módulo llamado \Temporizador, el cual permite suscribir un método que será invocado luego de transcurridos \textit{x} segundos. Todos estos módulos pueden observarse en el diagrama de la Figura \ref{modulosBoton}.
 
 \begin{figure}[H]
-\caption{Módulos encargados de gestionar el comportamiento del temporizador utilizado en la transisción de estados del módulo Boton.}
+\caption{Módulos encargados de gestionar el comportamiento del temporizador utilizado en la transisción de estados del módulo \Boton.}
 \label{modulosBoton}
 \begin{center}
 \scalebox{.90}{
@@ -1318,7 +1319,7 @@ Resuelto el funcionamiento del temporizador, veamos ahora el módulo \Boton, que
 
 
 \begin{figure}[H]
-\caption{Diagrama de módulos relacionados al boton.}
+\caption{Diagrama de módulos relacionados al botón.}
 \label{botonCompleto}
 \begin{center}
 \scalebox{.90}{
@@ -1644,7 +1645,7 @@ Con este diseño se añade una capa de verificación sin modificar el módulo or
 \begin{itemize}
 \item Se desacopla el cliente del módulo invocado, eliminando la necesidad de que el cliente verifique las precondiciones de un método antes de su ejecución.
 \item La lógica de cada verificación se encapsula en un solo módulo, manteniendo la separación de responsabilidades y facilitando su reutilización. De esta forma, la implementación del módulo original que realiza el comportamiento requerido no necesita ser modificado.
-\item El patrón \textit{decorador} permite que el sistema pueda evolucionar, permitiendo añadir nuevas funcionalidades o modificar las reglas de verificación sin afectar la implementación original. Esto hace posible, por ejemplo, implementar restricciones de acceso, límites en las operaciones sin alterar el módulo subyacente o verificaciones de integridad de la información mucho más complejas (ver Sección \ref{integridad} a continuación).
+\item El patrón \textit{decorator} permite que el sistema pueda evolucionar, permitiendo añadir nuevas funcionalidades o modificar las reglas de verificación sin afectar la implementación original. Esto hace posible, por ejemplo, implementar restricciones de acceso, límites en las operaciones sin alterar el módulo subyacente o verificaciones de integridad de la información mucho más complejas (ver Sección \ref{integridad} a continuación).
 \end{itemize}
 
 \subsection*{Integridad de la información}
@@ -1718,7 +1719,7 @@ Cuando una interrupción es interrumpida por otra, el sistema prioriza la más r
 
 Los problemas de concurrencia de este tipo son difíciles de detectar y corregir, por lo que es útil contar con herramientas para evitarlos. Una forma común de hacerlo es apagando las interrupciones del \gls{MCU} al comenzar el manejo de una interrupción. No obstante, esto no es ideal, ya que se perderían interrupciones no periódicas que sí se desean manejar. Otra opción es eliminar o desuscribir el manejador de la interrupción al comenzar su ejecución, aunque es crucial recordar volver a agregarlo para que el próximo ciclo se ejecute.
 
-Desde la \gls{IS}, resulta interesante proponer un diseño para evitar este problema. Para ello, se aplicará el patrón \textit{State} \ref{anexoState} para representar dos estados posibles en relación con el manejo de una interrupción: \textbf{Activo} (disponible para manejar la interrupción) e \textbf{Ignorar} (el estado responsable de ignorar interrupciones mientras una está siendo manejada). De este modo, cuando el manejo de una interrupción comience, el estado cambiará a \textbf{Ignorar}, lo que hará que cualquier nueva llamada al manejador resulte en un retorno rápido. Una vez que la ejecución del manejo finalice, el estado volverá a cambiar, permitiendo el manejo de nuevas llamadas a la interrupción.
+Desde la \gls{IS}, resulta interesante proponer un diseño para evitar este problema. Para ello, se aplicará el patrón \textit{State} \ref{anexoState} para representar dos estados posibles en relación con el manejo de una interrupción: \textit{Activo} (disponible para manejar la interrupción) e \textit{Ignorar} (el estado responsable de ignorar interrupciones mientras una está siendo manejada). De este modo, cuando el manejo de una interrupción comience, el estado cambiará a \textit{Ignorar}, lo que hará que cualquier nueva llamada al manejador resulte en un retorno rápido. Una vez que la ejecución del manejo finalice, el estado volverá a cambiar, permitiendo el manejo de nuevas llamadas a la interrupción.
 
 Veamos ahora la estructura de módulos subyacente a esta solución en la Figura \ref{estructuraInterrup} y en la Figura \ref{docStateInt} la correspondiente documentación del uso del patrón en este ejemplo.
 
@@ -1788,7 +1789,7 @@ manejarInt(Manejador m) \{ \\
 
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
 \caption{Documentación de la aplicación del patron \textit{State} para el ejemplo del manejador de interrupciones.}
 \label{docStateInt}
 \scalebox{.90}{
@@ -1814,7 +1815,7 @@ Al aplicar el uso de interrupciones junto con patrones de diseño como \textit{S
 
 
 \section{Control en conjunto de dispositivos}
-Muchas aplicaciones embebidas robóticas controlan \gls{actuadores} que deben trabajar en conjunto para lograr el efecto deseado. Por ejemplo, para conseguir mover de manera coordinada un brazo robótico con múltiples articulaciones, todos los motores deben trabajar a la par. De manera similar, el uso de propulsores en una nave espacial en tres dimensiones requiere que muchos de estos dispositivos actúen en el momento preciso y con la cantidad correcta de fuerza para lograr la estabilidad necesaria. En ambos casos existe comunicación entre todos los componentes, ya sea para encadenar la ejecución de ciertos movimientos o para avisar de restricciones. Esto no es tarea simple y requiere de muchas líneas de código, por lo que un diseño orientado al cambio resulta clave.
+Muchas aplicaciones embebidas robóticas controlan \gls{actuadores} que deben trabajar en conjunto para lograr el efecto deseado. Por ejemplo, para conseguir cicler de manera coordinada un brazo robótico con múltiples articulaciones, todos los motores deben trabajar a la par. De manera similar, el uso de propulsores en una nave espacial en tres dimensiones requiere que muchos de estos dispositivos actúen en el momento preciso y con la cantidad correcta de fuerza para lograr la estabilidad necesaria. En ambos casos existe comunicación entre todos los componentes, ya sea para encadenar la ejecución de ciertos movimientos o para avisar de restricciones. Esto no es tarea simple y requiere de muchas líneas de código, por lo que un diseño orientado al cambio resulta clave.
 
 \subsection*{Enfoque de diseño tradicional}
 
@@ -2431,21 +2432,21 @@ Una vez solucionada la invocación, introduciremos un nuevo módulo que será ut
 {}
 {
 \umlvirt{control(i: RotorCtrl)} \\
-\umlvirt{move(i: RotorCtrl)} \\
+\umlvirt{cicle(i: RotorCtrl)} \\
 }
 
 \umlclass[x=-3,y=-4]{Moving}
 {}
 {
 control(i: RotorCtrl) \\
-move(i: RotorCtrl) \\
+cicle(i: RotorCtrl) \\
 }
 
 \umlclass[x=3,y=-4]{Waiting}
 {}
 {
 control(i: RotorCtrl) \\
-move(i: RotorCtrl) \\
+cicle(i: RotorCtrl) \\
 }
 
 \umlinherit[geometry=|-|]{Moving}{OperationState}
@@ -2455,7 +2456,7 @@ move(i: RotorCtrl) \\
 control(RotorCtrl c)\{\\
 \ \ \ \ return\\
 \}\\
-move(RotorCtrl c)\{\\
+cicle(RotorCtrl c)\{\\
 \ \ \ \ if se llegó al setpoint \{\\
 \ \ \ \ c.changeOpState(waiting)\\
 \ \ \ \ \}else\{\\
@@ -2469,7 +2470,7 @@ control(RotorCtrl c)\{\\
 ...\\
 
 \}\\
-move(RotorCtrl c)\{\\
+cicle(RotorCtrl c)\{\\
 \ \ \ \ return\\
 \}
 }
@@ -2515,7 +2516,7 @@ readConnection() \\
 setSetPoint(i: Measure) \\
 getAlgoritmo(): Algoritmo \\
 changeOpState(i: OperationState) \\
-move() \\
+cicle() \\
 control()
 }
 
@@ -2528,8 +2529,8 @@ control()
 \umluniaggreg[anchor1=-29]{RotorCtrl}{Pipe}
 
 \umlnote[below left=1cm and -2cm of RotorCtrl]{RotorCtrl}{
-move()\{\\
-\ \ \ \ st.move(this)\\
+cicle()\{\\
+\ \ \ \ st.cicle(this)\\
 \}
 }
 
@@ -2538,7 +2539,7 @@ Patrón Strategy \ref{patronStrategy}
 }
 
 \umlnote[below right=1.5cm and -2cm of OperationState,anchor2=-20]{OperationState}{
-Patrón State
+Patrón State \ref{anexoState}
 }
 \end{tikzpicture}
 }
@@ -2566,10 +2567,10 @@ control(Controller controller) {
 }
 \end{lstlisting}
 
-El método \verb|move| tendrá un comportamiento similar, pero en el caso de cambiar de estado lo hará a \Waiting.
+El método \verb|cicle| tendrá un comportamiento similar, pero en el caso de cambiar de estado lo hará a \Waiting.
 
 Con la presentación del módulo \RobotCtrl finalizamos la definición del subsistema rotor. Además de este, deben crearse los módulos correspondientes al subsistema extensor, el cual resulta similar al del rotor.
-Por último, se debe definir el subsistema pinza, que es más simple que los anteriores, ya que no requiere de un seguimiento entre ejecuciones del ciclo de control. En consecuencia, puede emplear el controlador básico presentado en la Sección \ref{subsistema}, sin necesidad de incorporar estados, nuevas interrupciones ni el método \verb|move|.
+Por último, se debe definir el subsistema pinza, que es más simple que los anteriores, ya que no requiere de un seguimiento entre ejecuciones del ciclo de control. En consecuencia, puede emplear el controlador básico presentado en la Sección \ref{subsistema}, sin necesidad de incorporar estados, nuevas interrupciones ni el método \verb|cicle|.
 \declareCMod{MainController}
 
 Ya definidos los subsistemas, podemos continuar con la construcción de los módulos que conforman la Figura \ref{diagramaRobotico}. En este punto, resta abordar el módulo \MainController, encargado de proveer una interfaz al cliente y, al mismo tiempo, coordinar el funcionamiento de cada subsistema. Recordando los requerimientos, sabemos que debe existir una función capaz de generar una secuencia de pasos, donde cada paso implique una acción sobre los tres actuadores. ¿Cómo diseñar este comportamiento? Una alternativa consiste en utilizar un iterador siguiendo el patrón \textit{Iterator} \ref{patronIterator} para recorrer los pasos generados por la función, y combinarlo con el patrón \textit{Command} \ref{anexoCommand} para la ejecución de cada uno de ellos. En particular, se adopta una de las variantes mencionadas por Gamma \cite{Gamma:1995:DPE:186897}, en la cual la ejecución de un comando desencadena automáticamente la ejecución de los siguientes, permitiendo encadenar acciones de manera ordenada y desacoplada.
