@@ -27,7 +27,7 @@ En este capítulo se abordan conceptos centrales a la \gls{IS} y que resultan es
 La arquitectura y el diseño del software se consideran herramientas esenciales para lograr atributos importantes de calidad del software, como la modificabilidad, reusabilidad, mantenibilidad, etc.\cite{ShawGarlan1996, ghezzi2003, bass2003, DBLP:books/daglib/0030743}
 Tradicionalmente, el software para robots tiende a desarrollarse de manera monolítica, con pocas funciones de gran tamaño y numerosas sentencias condicionales anidadas, o mediante una descomposición funcional básica que resulta ineficiente para mantener y reutilizar componentes \cite{code-1,code-2}. Frente a esto, se propone un diseño sistemático basado en principios de la \gls{IS}, aplicados para anticipar y manejar los cambios \cite{Gamma:1995:DPE:186897, DBLP:books/lib/BuschmannHS07}.
 
-El \textit{diseño para el cambio}, como principio fundamental, se centra en prever modificaciones probables en el software \cite{Parnas1972, ShawGarlan1996, ghezzi2003, bass2003, DBLP:books/daglib/0030743}. Ya sean provocadas cambios en los objetivos de comportamiento, en el hardware o en los algoritmos de control, entre otros. Para esto, cuando se diseña se tiene en cuenta aquello que probablemente cambiará y se piensa cómo debe ser el diseño para que los cambios impliquen modificar porciones mínimas y aisladas del software \cite{ghezzi2003}.
+El \textit{diseño para el cambio}, como principio fundamental, se centra en prever modificaciones probables en el software \cite{Parnas1972, ShawGarlan1996, ghezzi2003, bass2003, DBLP:books/daglib/0030743}. Estas pueden ser provocadas por cambios en los objetivos de comportamiento, en el hardware o en los algoritmos de control, entre otros. Para esto, cuando se diseña se tiene en cuenta aquello que probablemente cambiará y se piensa cómo debe ser el diseño para que los cambios impliquen modificar porciones mínimas y aisladas del software \cite{ghezzi2003}.
 
 Diseñar anticipando los cambios permite reducir los esfuerzos necesarios para implementar ajustes y facilita la reutilización de componentes entre distintos sistemas \cite{Parnas02, DBLP:books/daglib/0019719}.
 
@@ -37,7 +37,7 @@ Un \textbf{módulo} es un elemento de diseño que, en un lenguaje de programaci�
 Además, el principio de diseño abierto-cerrado \cite{DBLP:books/ph/Meyer97} se implementa para garantizar que el sistema pueda extenderse mediante nuevos módulos en lugar de modificar los existentes, reduciendo el riesgo de introducir errores al alterar componentes ya probados. Es decir, un sistema debe estar abierto a extensiones pero cerrado a modificaciones. Esto se complementa con la aplicación de patrones de diseño y estilos arquitectónicos, que aportan soluciones probadas para preveer cambios recurrentes en dominios específicos \cite{Gamma:1995:DPE:186897, DBLP:books/lib/BuschmannHS07}. Por ejemplo, en sistemas robóticos, un estilo arquitectónico basado en bucles de control puede destacar las características esenciales del sistema y facilitar decisiones de diseño óptimas \cite{ShawGarlan1996}.
 
 \subsubsection*{Herencia de Interfaz}
-En el diseño modular, un módulo consta de una parte visible llamada \textit{interfaz} y una oculta la \textit{implementación}. La interfaz define el conjunto de métodos accesibles externamente, mientras que la implementación gestiona cómo el módulo lleva a cabo los comportamientos de cada método definido en la interfaz. Se dice que la implementación es invisible para el resto de módulos de sistema.
+En el diseño modular, un módulo consta de una parte visible llamada \textit{interfaz} y una oculta la llamada \textit{implementación}. La interfaz define el conjunto de métodos accesibles externamente, mientras que la implementación gestiona cómo el módulo lleva a cabo los comportamientos de cada método definido en la interfaz. Se dice que la implementación es invisible para el resto de módulos de sistema.
 
 Existen esencialmente dos tipos de herencia:
 
@@ -46,7 +46,7 @@ Existen esencialmente dos tipos de herencia:
 \item \textbf{Herencia de interfaces}: En este caso, un módulo hijo solo hereda la interfaz, permitiendo que cada módulo implemente su propio comportamiento. Este enfoque es más flexible y facilita la adaptabilidad del sistema. Cuando hablemos de herencia en el resto de la tesina nos referiremos a este enfoque, herencia de interfaces.
 \end{itemize}
 
-A parir de esta relación entre módulos podemos definir dos tipos de módulos, los abstractos y los concretos. Un módulo abstracto define un conjunto de operaciones que pueden ser utilizadas por otros módulos. Este tipo establece un contrato de uso, permitiendo a otros módulos interactuar con él sin conocer sus detalles internos. Su función principal es favorecer la flexibilidad y extensibilidad del sistema, ya que distintos módulos pueden cumplir con ese mismo contrato ofreciendo implementaciones diferentes (en la Sección \ref{Accesoalhardware} se estudia caso de aplicación). Un módulo concreto, en cambio, es aquel que proporciona una implementación específica del comportamiento definido por un módulo abstracto. En los diseños que aplican patrones, se busca que los módulos consumidores dependan solo de las abstracciones y no directamente de las implementaciones concretas. Esta separación permite modificar, reemplazar o extender funcionalidades sin afectar el resto del sistema, y facilita la aplicación de técnicas como la composición (que veremos a continuación).
+A parir de esta relación entre módulos podemos definir dos tipos de módulos, los abstractos y los concretos. Un módulo abstracto define un conjunto de operaciones que pueden ser utilizadas por otros módulos. Este tipo establece un contrato de uso, permitiendo a otros módulos interactuar con él sin conocer sus detalles internos. Su función principal es favorecer la flexibilidad y extensibilidad del sistema, ya que distintos módulos pueden cumplir con ese mismo contrato ofreciendo implementaciones diferentes (en la Sección \ref{Accesoalhardware} se estudia caso de aplicación). Un módulo concreto, en cambio, es aquel que proporciona una implementación específica del comportamiento definido por un módulo abstracto. En los diseños que aplican patrones, se busca que los módulos clientes (aquellos otros módulos que usan el que se está definiendo) dependan solo de las abstracciones y no directamente de las implementaciones concretas. Esta separación permite modificar, reemplazar o extender funcionalidades sin afectar el resto del sistema, y facilita la aplicación del concepto de composición, como veremos a continuación.
 
 \subsubsection*{Composición y delegación}
 La composición consiste en estructurar sistemas combinando módulos a través de sus interfaces en lugar de depender de relaciones de herencia. Esto se logra mediante la inclusión de referencias a otros módulos dentro de un módulo, lo que permite que las instancias deleguen tareas a estos módulos asociados. En lugar de que un módulo herede directamente un comportamiento específico, como un tipo particular de algoritmo de ordenamiento, la composición propone que el módulo mantenga una referencia a otro que se encargue de esa tarea. Por ejemplo, en vez de que un módulo de procesamiento de datos herede una forma fija de ordenar elementos, con lo cual debe contener un método \verb|ordenar(lista)|, puede delegar esa responsabilidad a un componente intercambiable que implemente distintas estrategias. De manera que cuando el módulo principal necesite ordenar una lista simplemente llame a un método del módulo compuesto, delegando esa tarea.
@@ -149,12 +149,12 @@ Se destaca que la arquitectura de software no solo se trata de la estructura del
 \section{Documentación}
 \label{secDocumentacion}
 
-Quienes diseñan un sistema no serán necesariamente quienes lo implementen e incluso es deseable. Por lo que sus decisiones deben estar disponibles para que diversos interesados en el sistema puedan revisarlas y comprenderlas. Por ello, documentar o describir el diseño de manera adecuada es tan importante como el diseño mismo. En este sentido, Parnas, Clements y Weiss introducen en el concepto de ``\textit{design through documentation}'' (diseño a través de la documentación), lo que nos lleva a enunciar el siguiente principio de diseño: \textit{Un diseño sin documentación carece de utilidad práctica.} Ese enfoque de diseño de software consiste en avanzar en el desarrollo estructurando y redactando documentación técnica precisa desde las primeras etapas del proyecto. En lugar de centrarse inicialmente en el código o en representaciones informales, se propone utilizar documentos, como la guía de módulos, las especificaciones de interfaces y los requisitos formales, que se describirán más adelante en esta sección, como herramientas fundamentales para organizar, analizar y comunicar las decisiones de diseño. De esta manera, es posible identificar inconsistencias, delegar responsabilidades de manera clara entre los módulos y facilitar tanto el mantenimiento como la incorporación de nuevos desarrolladores al proyecto. Según los autores, diseñar a través de la documentación no solo clarifica el proceso, sino que también mejora la calidad y la reutilización del software resultante.
+Quienes diseñan un sistema no serán necesariamente quienes lo implementen e incluso esto sería deseable. Por lo que sus decisiones deben estar disponibles para que diversos interesados en el sistema puedan revisarlas y comprenderlas. Por ello, documentar o describir el diseño de manera adecuada es tan importante como el diseño mismo. En este sentido, Parnas, Clements y Weiss introducen en el concepto de ``\textit{design through documentation}'' (diseño a través de la documentación), lo que nos lleva a enunciar el siguiente principio de diseño: \textit{Un diseño sin documentación carece de utilidad práctica.} Ese enfoque de diseño de software consiste en avanzar en el desarrollo estructurando y redactando documentación técnica precisa desde las primeras etapas del proyecto. En lugar de centrarse inicialmente en el código o en representaciones informales, se propone utilizar documentos, como la guía de módulos, las especificaciones de interfaces y los requisitos formales, que se describirán más adelante en esta sección, como herramientas fundamentales para organizar, analizar y comunicar las decisiones de diseño. De esta manera, es posible identificar inconsistencias, delegar responsabilidades de manera clara entre los módulos y facilitar tanto el mantenimiento como la incorporación de nuevos desarrolladores al proyecto. Según los autores, diseñar a través de la documentación no solo clarifica el proceso, sino que también mejora la calidad y la reutilización del software resultante.
 
 Para lograr una buena descripción del diseño se utilizan múltiples documentos que aportan información sobre distintos aspectos a tener en cuenta \cite{ClementsEtAl2010}, entre ellos se encuentran:
 
 \begin{itemize}
-\item \textbf{Documentos de módulos}. Los elementos de estos documentos son módulos. Los módulos representan una forma basada en el código de considerar al sistema. Cada módulo tiene asignada y es responsable de llevar adelante una función. Estos son: Especificación de Interfaces, Estructura de Módulos, Guía de Módulos, Estructura de Herencia y Estructura de Uso.
+\item \textbf{Documentos de módulos}. Los elementos de estos documentos son módulos.  Los módulos son una representación  cuyo correlato y consecuencia el es código. Cada módulo tiene asignada y es responsable de llevar adelante una función. Esto debe ser descripto por medio de los siguientes documentos: Especificación de Interfaces, Estructura de Módulos, Guía de Módulos, Estructura de Herencia y Estructura de Uso.
 \item \textbf{Documentos de aspectos dinámicos}. En estos documentos los elementos son componentes presentes en tiempo de ejecución y los conectores que permiten que los componentes interactúen entre sí. Los documentos que conforman este tipo son: Estructura de Procesos, Estructura de Objetos, Diagrama.
 \item \textbf{Documentos con referencias externas}. Estos documentos muestran la relación entre las partes en que fue descompuesto el sistema y elementos externos (tales como archivos, procesadores, personas, etc.). Enre ellos: Estructura Física o de Despliegue.
 \end{itemize}
@@ -162,7 +162,7 @@ Para lograr una buena descripción del diseño se utilizan múltiples documentos
 \declareCMod{ModuloA}
 \declareCMod{ModuloB}
 
-Esta documentación debe estar bien estructurada con un formato bien definido. Los autores establecen cómo se define cada tipo de documento. En particular para documentar módulos de manera estructurada se utiliza un lenguaje llamado \textbf{2MIL} basado en TDN presentado en \cite{ghezzi2003}. Por ejemplo, un módulo llamado \ModuloA que exporta dos métodos se documenta de la forma mostrada en la Figura \ref{docModulo}.
+Esta documentación debe estar bien estructurada con un formato bien definido. Los autores establecen cómo se define cada tipo de documento. En particular para documentar módulos de manera estructurada se utiliza un lenguaje llamado \textbf{2MIL}\cite{cristia2022diseno, laura2mil} basado en TDN presentado en \cite{ghezzi2003}. Por ejemplo, un módulo llamado \ModuloA que exporta dos métodos se documenta de la forma mostrada en la Figura \ref{docModulo}.
 
 
 \begin{figure}[H]
@@ -171,8 +171,8 @@ Esta documentación debe estar bien estructurada con un formato bien definido. L
 \scalebox{.90}{
 \begin{module}[]{ModuloA}{}{docModulo}
   \exports
-  \proc{metodo1}
-  \proc{metodo2}
+  \proc{metodo1()}
+  \proc{metodo2()}
   \comm{En esta sección se muestra comentarios relevantes al usuario.}
 \end{module}
 }
@@ -186,7 +186,7 @@ Y un heredero de \ModuloA llamado \ModuloB se documenta como en la Figura \ref{d
 \scalebox{.90}{
 \begin{hmodule}[]{ModuloB}{ModuloA}{}{docModuloB}
   \exports
-  \proc{metodo3}
+  \proc{metodo3()}
   \comm{Este módulo hereda el comportamiento de \ModuloA y lo extiende con funcionalidades adicionales (metodo3).}
 \end{hmodule}
 }
@@ -213,7 +213,7 @@ metodo3()\\}
 \end{center}
 \end{figure}
 
-Además, es posible indicar el tipo de los parámetros de entrada de un método así como el tipo del valor de retorno del mismo. Para eso utilizamos la gramática presentada en la Figura \ref{parametros}. Recordar que asumimos que un módulo es, genera o define un tipo. Es decir que para dotar de tipos nuestros métodos usamos módulos.
+Además, es posible indicar el tipo de los parámetros de entrada de un método así como el tipo del valor de retorno del mismo, como presenta el diagrama de Figura 4.4. Asumimos que un módulo es, genera o define un tipo. Es decir que para dotar de tipos nuestros métodos usamos módulos.
 
 Este formato gráfico de documentación puede ser extendido haciendo uso de los símbolos definidos en la Figura \ref{simbolos}. 
 
@@ -279,7 +279,7 @@ metodo2(): Tipo\\
 
 \end{figure}
 
-Por otro lado, la aplicación de patrones de diseño también debe ser documentada. Para hacerlo se utiliza de igual forma el lenguaje \textbf{2MIL} de la manera indicada en la Figura \ref{docPatron}. En este formato se establece el patrón que se está aplicando y se da una breve descripción del caso de aplicación. Además, se enumeran los cambios previstos y como el patrón funciona en el caso particular. Por último, se define qué módulo de nuestro sistema cumple el rol de cada participante del patrón.
+Por otro lado, la aplicación de patrones de diseño también debe ser documentada. Para hacerlo se utiliza de igual forma el lenguaje \textbf{2MIL} de la manera indicada en la Figura \ref{docPatron}. En este formato se establece el patrón que se está aplicando y se da una breve descripción del caso de aplicación. Además, se enumeran los cambios previstos y cómo el patrón funciona en el caso particular. Por último, se define qué módulo de nuestro sistema cumple el rol de cada participante del patrón.
 
 \begin{figure}[H]
 \caption{Documentación de la aplicación del patrón.}
@@ -299,7 +299,7 @@ Por otro lado, la aplicación de patrones de diseño también debe ser documenta
 \end{figure}
 
 
-A fines didácticos, en esta tesina utilizaremos solo la representación gráfica para documentar módulos y sus relaciones. Para documentar patrones si se utilizará \textbf{2MIL}. Información adicional sobre cómo documentar utilizando este lenguaje puede encontrarse en \cite{cristia2022diseno, cristiaDocu, isStyDoc}.
+A fines didácticos, en esta tesina utilizaremos solo la representación gráfica para documentar módulos y sus relaciones. Para documentar patrones sí se utilizará \textbf{2MIL}. Información adicional sobre cómo documentar utilizando este lenguaje puede encontrarse en \cite{cristia2022diseno, cristiaDocu, isStyDoc, laura2mil}.
 
 
 
@@ -311,7 +311,7 @@ A fines didácticos, en esta tesina utilizaremos solo la representación gráfic
 
 Si nos centramos en los sistemas embebidos de control como los que se definieron en la Sección \ref{sistControl}, encontramos que existen trabajos sobre estilos arquitectónicos de software orientados al control de procesos; por ejemplo el estilo arquitectónico de \textit{Control de Procesos} presentado en \cite{ShawGarlan1996}. El mismo está definido para ser aplicado en sistemas de control de procesos físicos donde se quiere mantener ciertas propiedades de la salida del proceso, cerca de valores de referencia. Algunos ejemplos son el control de la velocidad de giro de una rueda, la posición del extrusor de una impresora 3D, la temperatura del agua en una caldera, etc.
 
-Antes de explicar en que se basa el estilo, veamos las definiciones presentes en el Cuadro \ref{tab:conceptosArq}. Los tres conceptos hacen referencia al mundo físico, no son definiciones de software. Podemos decir entonces, que nuestro sistema de control se relacionará con estas variables físicas para lograr el objetivo.
+Antes de explicar en qué se basa el estilo, veamos las definiciones presentes en el Cuadro \ref{tab:conceptosArq}. Los tres conceptos hacen referencia al mundo físico, no son definiciones de software. Podemos decir entonces, que nuestro sistema de control se relacionará con estas variables físicas para lograr el objetivo.
 
 \begin{table}[H]
 
@@ -470,7 +470,7 @@ La ventaja de este estilo arquitectónico es que brinda un enfoque modular con i
 
 Parnas en \cite{Parnas1972} establece que desacoplar se refiere a la idea de reducir la dependencia entre módulos en un sistema de software. Un sistema está acoplado cuando los cambios en un módulo requieren modificaciones en otros módulos. Desacoplar significa diseñar los módulos de manera que puedan funcionar y cambiar independientemente.
 
-A lo largo de los ejemplos del documento, veremos repetidas veces el uso de la noción de \textit{orden} o \textit{comando}. Cada vez que sea nombrado haremos referencia a la aplicación de un patrón de diseño de Gamma \cite{Gamma:1995:DPE:186897}, llamdo \textit{Command} \ref{anexoCommand}. Este patrón es el que más veces se aplicó en el trabajo del robot desmalezador \cite{laura}, por lo que es importante conocerlo.
+A lo largo de los ejemplos del documento, veremos repetidas veces el uso de la noción de \textit{orden} o \textit{comando}. Cada vez que sea nombrado haremos referencia a la aplicación de un patrón de diseño de Gamma \cite{Gamma:1995:DPE:186897}, llamdo \textit{Command} \ref{anexoCommand}. Este patrón es el que más veces se aplicó en el trabajo del robot desmalezador \cite{paperPomponio}, por lo que es importante conocerlo.
 
 La función principal que cumple este patrón es la de desacoplar el módulo que invoca una orden, la orden en sí y aquel que sabe como llevarla a cabo. En particular, este patrón puede ser utilizado para reemplazar las \textit{callbacks} entre módulos. Es común utilizar \textit{callbacks} para mantener los niveles de abstracción, en donde módulos de bajo nivel de abstracción desconocen la existencia de módulos más abstractos.
 
@@ -553,15 +553,14 @@ enable() \\
 pulse()
 }
 
-\umlnote[below=1cm of MotorGirarIzq]{MotorGirarIzq}{
+\umlnote[below=1cm of MotorGirarIzq]{MotorIniciarGiroIzq}{
 ejecutar() \{ \\
 \ \ \ \ motor.enable() \\
 \ \ \ \ motor.left() \\
-\ \ \ \ motor.pulse() \\
 \}
 }
 
-\umlclass[above=1.3cm of MotorGirarIzq,type=abstract]{Orden}
+\umlclass[above=1.3cm of MotorIniciarGiroIzq,type=abstract]{Orden}
 {}
 {
 \umlvirt{ejecutar()}
@@ -569,8 +568,8 @@ ejecutar() \{ \\
 
 
 \umluniaggreg[geometry=|-]{Controller}{Orden}
-\umlinherit{MotorGirarIzq}{Orden}
-\umluniassoc[geometry=-|-]{MotorGirarIzq}{Motor}
+\umlinherit{MotorIniciarGiroIzq}{Orden}
+\umluniassoc[geometry=-|-]{MotorIniciarGiroIzq}{Motor}
 
 \end{tikzpicture}
 }
@@ -584,14 +583,14 @@ ejecutar() \{ \\
 }
 \assigns
 \is{Orden}{Orden}
-\is{MotorGirarIzq}{OrdenConcreta}
+\is{MotorIniciarGiroIzq}{OrdenConcreta}
 \is{Motor}{Receptor}
 \is{Controller}{Invocador}
 \end{pattern}
 }
 
 \end{figure}
-Un módulo \Controller, necesita manejar un \gls{pasoapaso} representado en el diseño por el módulo \Motor. Para hacerlo se deben ejecutar una serie de métodos de la interfaz del \Motor. En particular, primero se debe habilitar el giro del motor llamando al método \verb|enable|, luego configurar el sentido de giro con el método \verb|left| o \verb|right| (izquierda o derecha) y por último avanzar un paso de giro invocando \verb|pulse|. Tradicionalmente, esto sería realizado desde el módulo \Controller agregando el código en cierto método de este (ver ejemplo en Código \ref{notCommand}), provocando así, un fuerte acoplamiento entre \Controller y \Motor. Esto es, ante cualquier cambio de la interfaz de \Motor, se debe actualizar la implementación del módulo \Controller, es decir, hay que modificar dos módulos y como dijimos el sistema debe estar cerrado a cambios y abierto a extensiones. Reduciendo al mínimo la modificación de código existente lo que podría traer como resultado la introducción de errores.
+Un módulo \Controller, necesita manejar un \gls{pasoapaso} representado en el diseño por el módulo \Motor. Para hacerlo se deben ejecutar una serie de métodos de la interfaz del \Motor. En particular, primero se debe habilitar el giro del motor llamando al método \verb|enable| y luego configurar el sentido de giro con el método \verb|left| o \verb|right| (izquierda o derecha). Tradicionalmente, esto sería realizado desde el módulo \Controller agregando el código en el método \verb|control()| de este (ver ejemplo en Código \ref{notCommand}), provocando así, un fuerte acoplamiento entre \Controller y \Motor. Esto es, ante cualquier cambio de la interfaz de \Motor, se debe actualizar la implementación del módulo \Controller, es decir, hay que modificar dos módulos y como dijimos el sistema debe estar cerrado a cambios y abierto a extensiones. Reduciendo al mínimo la modificación de código existente lo que podría traer como resultado la introducción de errores.
 
 
 \begin{lstlisting}[label={notCommand}, caption=Ejemplo de implementación sin usar el patrón \textit{Command}.]
@@ -603,12 +602,12 @@ control() {
     ... 
 }
 \end{lstlisting}
-Para aplicar el patrón \textit{Command} se debe crear el módulo heredero de \Orden que representa el comando en cuestión, en este caso, \MotorGirarIzq. Este encapsula cómo deben invocarse los métodos del módulo \Motor para que este realice un paso de giro hacia la izquierda. Por lo tanto, \Controller invocará el método ejecutar de \MotorGirarIzq para realizar dicha acción.
+Para aplicar el patrón \textit{Command} se debe crear el módulo heredero de \Orden que representa el comando en cuestión, en este caso, \MotorIniciarGiroIzq. Este encapsula cómo deben invocarse los métodos del módulo \Motor para que este realice un paso de giro hacia la izquierda. Por lo tanto, \Controller invocará el método ejecutar de \MotorIniciarGiroIzq para realizar dicha acción.
 
-Los problemas del diseño tradicional se solucionan al aplicar este patrón. Se logra desacoplar al \Motor del \Controller: los posibles cambios en el módulo \Motor afectan solo al módulo \MotorGirarIzq. El \Controller desconoce cómo se lleva a cabo la acción de girar el motor un paso hacia la izquierda.
+Los problemas del diseño tradicional se solucionan al aplicar este patrón. Se logra desacoplar al \Motor del \Controller: los posibles cambios en el módulo \Motor afectan solo al módulo \MotorIniciarGiroIzq. El \Controller desconoce cómo se lleva a cabo la acción de girar el motor un paso hacia la izquierda.
 
 En caso de que la interfaz de \Motor cambie por cualquier motivo, se puede crear un nuevo módulo heredado de \Orden, el cual implemente cómo ejecutar la acción de girar a la izquierda sobre el nuevo motor.
 
-Como se mencionó, o tro uso interesante del patrón surge cuando se define una cierta estructura conceptual en el sistema. Esta puede responder a la naturaleza de la aplicación. Por ejemplo, en un sistema de control, se puede definir que los módulos que toman decisiones sobre el control sean quienes invoquen a los sensores para obtener información, generando así una jerarquía en la que los sensores no deben invocar métodos de módulos superiores. En caso de ser necesaria la comunicación en sentido inverso, se puede utilizar el patrón \textit{Command} para reemplazar el uso de \textit{callbacks}.
+Como se mencionó, otro uso interesante del patrón surge cuando se define una cierta estructura conceptual en el sistema. Esta puede responder a la naturaleza de la aplicación. Por ejemplo, en un sistema de control, se puede definir que los módulos que toman decisiones sobre el control sean quienes invoquen a los sensores para obtener información, generando así una jerarquía en la que los sensores no deben invocar métodos de módulos superiores. En caso de ser necesaria la comunicación en sentido inverso, se puede utilizar el patrón \textit{Command} para reemplazar el uso de \textit{callbacks}.
 
 Este empleo del patrón \textit{Command} será aplicado en varias de las soluciones a problemas comunes en sistemas embebidos que se proponen más adelante en esta tesina.
