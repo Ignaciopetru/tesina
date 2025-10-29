@@ -37,7 +37,7 @@ Un \textbf{módulo} es un elemento de diseño que, en un lenguaje de programaci�
 Además, el principio de diseño abierto-cerrado \cite{DBLP:books/ph/Meyer97} se implementa para garantizar que el sistema pueda extenderse mediante nuevos módulos en lugar de modificar los existentes, reduciendo el riesgo de introducir errores al alterar componentes ya probados. Es decir, un sistema debe estar abierto a extensiones pero cerrado a modificaciones. Esto se complementa con la aplicación de patrones de diseño y estilos arquitectónicos, que aportan soluciones probadas para preveer cambios recurrentes en dominios específicos \cite{Gamma:1995:DPE:186897, DBLP:books/lib/BuschmannHS07}. Por ejemplo, en sistemas robóticos, un estilo arquitectónico basado en bucles de control puede destacar las características esenciales del sistema y facilitar decisiones de diseño óptimas \cite{ShawGarlan1996}.
 
 \subsubsection*{Herencia de Interfaz}
-En el diseño modular, un módulo consta de una parte visible llamada \textit{interfaz} y una oculta la llamada \textit{implementación}. La interfaz define el conjunto de métodos accesibles externamente, mientras que la implementación gestiona cómo el módulo lleva a cabo los comportamientos de cada método definido en la interfaz. Se dice que la implementación es invisible para el resto de módulos de sistema.
+En el diseño modular, un módulo consta de una parte visible llamada \textit{interfaz} y una oculta llamada \textit{implementación}. La interfaz define el conjunto de métodos accesibles externamente, mientras que la implementación gestiona cómo el módulo lleva a cabo los comportamientos de cada método definido en la interfaz. Se dice que la implementación es invisible para el resto de módulos de sistema.
 
 Existen esencialmente dos tipos de herencia:
 
@@ -67,7 +67,7 @@ Principio de Ocultación de la Información: Los ítems con alta probabilidad de
 Extracto del apunte de clase \cite{cristia2022diseno}.
 \\
 \indent
-El núcleo de esta metodología es la identificación de los ítems con alta probabilidad de cambio dentro del sistema. Estos ítems representan aspectos de diseño o implementación susceptibles de modificaciones futuras, como algoritmos, estructuras de datos, interfaces con hardware o incluso requerimientos del usuario (ver lista extendida en la Sección \ref{listaItems}). Una vez identificados, Parnas sugiere ocultar y aislar cada ítem de cambio en un módulo independiente, asegurando que cada módulo oculte las decisiones de diseño específicas que podrían cambiar. Esto se logra diseñando interfaces que expongan tan poco como sea imposible sobre sus detalles de implementación, permitiendo que los módulos interactúen sin conocer su trabajo interno. 
+El núcleo de esta metodología es la identificación de los ítems con alta probabilidad de cambio dentro del sistema. Estos ítems representan aspectos de diseño o implementación susceptibles de modificaciones futuras, como algoritmos, estructuras de datos, interfaces con hardware o incluso requerimientos del usuario (ver lista extendida en la Sección \ref{listaItems}). Una vez identificados, Parnas sugiere ocultar y aislar cada ítem de cambio en un módulo independiente, asegurando que cada módulo oculte las decisiones de diseño específicas que podrían cambiar. Esto se logra diseñando interfaces que expongan tan poco como sea posible sus detalles de implementación, permitiendo que los módulos interactúen sin conocer su trabajo interno. 
 
 La razón por la que queremos aplicar esta metodología es clara: minimizar los costos asociados al desarrollo y mantenimiento del software. Al aislar las áreas susceptibles de cambio, cualquier modificación futura afectará únicamente al módulo correspondiente, sin propagarse al resto del sistema. Además, esta aproximación mejora la capacidad de escalar el sistema, facilita la colaboración en equipos de desarrollo grandes y permite que diferentes programadores trabajen en módulos específicos de manera independiente.
 
@@ -112,27 +112,27 @@ Es útil consultar estos ítems a la hora de diseñar siguiendo los criterios de
 
 \section{Patrones de Diseño}
 
-A la hora de estructurar código podemos distinguir dos niveles, uno se tratará en esa subsección y el otro en Sección \ref{secArq}. Los patrones de diseño se aplican en el nivel de diseño. En este los elementos son módulos y la comunicación se lleva a cabo mediante llamadas a procedimiento. Además de las llamadas, se aplican dos conceptos previamente mencionados en la Sección \ref{ingso}, la composición y la herencia de interfaces. Estas son las herramientas con las se cuenta en el nivel de diseño para estructurar el código.
+A la hora de estructurar código podemos distinguir dos niveles, uno se tratará en esa Sección y el otro en Sección \ref{secArq}. Los patrones de diseño se aplican en el nivel de diseño. En este los elementos son módulos y la comunicación se lleva a cabo mediante llamadas a procedimiento. Además de las llamadas, se aplican dos conceptos previamente mencionados en la Sección \ref{ingso}, la composición y la herencia de interfaces. Estas son las herramientas con las se cuenta en el nivel de diseño para estructurar el código.
 
 En \cite{Gamma:1995:DPE:186897}, los autores traen a colación la definición de patrón de diseño que dio Christopher Alexander:
 
 \textit{``cada patrón describe un problema que ocurre una y otra vez en nuestro entorno, así como la solución al problema, de modo que pueda aplicarse un millón de veces esta solución sin hacer lo mismo dos veces''}
 
-Christopher era arquitecto, pero su definición fue aplicada al ámbito del software, en lugar de paredes, vigas y columnas, trabajamos con módulos, sus interfaces y las relaciones entre ellos.
+Christopher era arquitecto, pero su definición fue aplicada al ámbito del software. En lugar de paredes, vigas y columnas, trabajamos con módulos, sus interfaces y las relaciones entre ellos.
 
 Un patrón tiene tres elementos principales:
 
 \begin{itemize}
 	\item El \textbf{problema} al que se intenta dar solución. Posee una explicación del mismo, con el fin de que el usuario pueda saber si aplica o no a su situación en cuestión.
-	\item La \textbf{solución} al problema dada como los módulos, sus relaciones responsabilidades y colaboraciones. Es una plantilla que puede ser aplicada en diferentes condiciones.
-	\item Las \textbf{consecuencias}, que son los resultados de aplicar esta solución. Es decir, qué beneficios y costos obtenemos de la aplicación. Así como las formas que el patrón provee para anticiparse a los posibles cambios futuros.
+	\item La \textbf{solución} al problema dada como los módulos, sus relaciones, responsabilidades y colaboraciones. Es una plantilla que puede ser aplicada en diferentes condiciones.
+	\item Las \textbf{consecuencias}, que son los resultados de aplicar esta solución. Es decir, qué beneficios y costos obtenemos de la aplicación, así como las formas que el patrón provee para anticiparse a los posibles cambios futuros.
 \end{itemize}
 
 Determinar qué es o no un patrón resulta objetivo y el criterio de selección varía entre autores. Para este trabajo se utilizará el mismo criterio que los autores eligieron en \cite{Gamma:1995:DPE:186897}:
 
 \textit{``descripciones de módulos relacionados que están particularizados para resolver un problema de diseño general en un determinado contexto''}
 
-Notar que no solo se quiere saber cómo resolver un problema, sino que se busca que la solución se alinee con los principios de la \gls{IS} y provea un buen diseño que permita lograr las propiedades que se buscan; modificabilidad, reusabilidad, mantenibilidad, etc.
+Notar que no solo se quiere saber cómo resolver un problema, sino que se busca que la solución se alinee con los principios de la \gls{IS} y provea un buen diseño que permita lograr las propiedades que se buscan: Modificabilidad, reusabilidad, mantenibilidad, etc.
 
 Para anticiparse al cambio, los patrones aseguran que un sistema pueda cambiar de manera concreta; es decir, se deja que algún aspecto de la estructura varíe de manera independiente y esperada.
 
@@ -306,7 +306,7 @@ A fines didácticos, en esta tesina utilizaremos solo la representación gráfic
 \chapter{Soluciones útiles}
 \label{soluciones}
 
-\section{Un estilo arquitectonico para sistemas embebidos}
+\section{Un estilo arquitectónico para sistemas embebidos}
 \label{arqControlProc}
 
 Si nos centramos en los sistemas embebidos de control como los que se definieron en la Sección \ref{sistControl}, encontramos que existen trabajos sobre estilos arquitectónicos de software orientados al control de procesos; por ejemplo el estilo arquitectónico de \textit{Control de Procesos} presentado en \cite{ShawGarlan1996}. El mismo está definido para ser aplicado en sistemas de control de procesos físicos donde se quiere mantener ciertas propiedades de la salida del proceso, cerca de valores de referencia. Algunos ejemplos son el control de la velocidad de giro de una rueda, la posición del extrusor de una impresora 3D, la temperatura del agua en una caldera, etc.
@@ -322,24 +322,24 @@ Antes de explicar en qué se basa el estilo, veamos las definiciones presentes e
 \begin{tabular}{|>{\raggedright\arraybackslash}p{4.5cm}|>{\raggedright\arraybackslash}p{10.5cm}|}
 \hline
 \textbf{Término}               & \textbf{Definición}                                                                                                                                       \\ \hline
-\textbf{Variable controlada}   & Propiedad o valor físico que puede ser medido mediante un sensor, velocidad de giro de una rueda, temperatura del agua, etc..    \\ \hline
-\textbf{Variable manipulada}   & Variable del proceso que se puede ajustar directamente para influir en las variables controladas, como la tensión suministrada al un motor. \\ \hline
+\textbf{Variable controlada}   & Propiedad o valor físico que puede ser medido mediante un sensor, como ser la velocidad de giro de una rueda, la temperatura del agua, etc.    \\ \hline
+\textbf{Variable manipulada}   & Variable del proceso que se puede ajustar directamente para influir en las variables controladas, como la tensión suministrada a un motor. \\ \hline
 \textbf{Set Point}             & El valor deseado o de referencia para una variable controlada. Se busca ajustar el sistema para alcanzar y mantener este valor.                              \\ \hline
 
 \end{tabular}
 \end{table}
 
-El control se basa en un proceso a ciclo cerrado (\textit{clossed-loop}) con retroalimentación hacia atrás (feedback). En este se realizan las siguientes operaciones:
+El control se basa en un proceso a ciclo cerrado (\textit{closed-loop}) con retroalimentación hacia atrás (\textit{feedback}). En este se realizan las siguientes operaciones:
 \begin{itemize}
 \item El sistema recibe valores de referencia llamados \textit{set-points}.
 \item Se leen los valores de las variables controladas a través de sensores.
 \item Con los valores recolectados, se realizan los cálculos a fin de modificar mediante actuadores las variables manipuladas intentando que las variables controladas lleguen a los valores de referencia.
-\item Una vez decidida la acción, se aplica el ajuste sobre las variables manipuladas y la iteración se repite.
+\item Una vez decidida la acción, se aplica el ajuste sobre las variables manipuladas y la iteración se repite luego de un determinado tiempo.
 \end{itemize}
 
 De esta manera se logra alcanzar, si es posible, a los valores deseados luego de una serie de iteraciones.
 
-Supóngase que se está trabajando con un robot móvil y, en particular, con una de sus ruedas motorizadas. El objetivo del control es lograr que la velocidad de la rueda alcance los valores de referencia configurados por el usuario. La variable controlada es la velocidad de giro de la rueda, medida mediante con un velocímetro, y la variable manipulada es la tensión aplicada al motor. Modificando dicha tensión se logra alterar la velocidad de giro del motor y, por ende, la de la rueda.
+Supóngase que se está trabajando con un robot móvil y, en particular, con una de sus ruedas motorizadas. El objetivo del control es lograr que la velocidad de la rueda alcance los valores de referencia configurados por el usuario. La variable controlada es la velocidad de giro de la rueda, medida mediante un velocímetro, y la variable manipulada es la tensión aplicada al motor. Modificando dicha tensión se logra alterar la velocidad de giro del motor y, por ende, la de la rueda.
 
 Siguiendo los pasos descriptos, el sistema leerá primero el valor de velocidad establecido por el usuario y luego el valor medido por el velocímetro. Con estos dos datos, decidirá qué tensión aplicar. Por ejemplo, si el usuario solicita 30  \gls{RPM} y el velocímetro mide 20  \gls{RPM}, el sistema incrementará la tensión. En una iteración futura, si se alcanza la velocidad deseada, se ajustará nuevamente la tensión para no sobrepasar el valor configurado.
 
@@ -434,7 +434,7 @@ Para llevar este comportamiento a cabo, el estilo arquitectónico propone los co
  
 \node[below right=4.5cm and 2.5cm of sensorDir](f41){};
 \node[below right=4.5cm and 4.5cm of sensorDir](f42){};
-\draw[pipe] (f41) edge node[above, text width =1.5cm]{tubo}
+\draw[pipe] (f41) edge node[above, text width =1.5cm]{pipe}
  (f42);
  
 \node[shape=circle,draw,minimum width=1.2cm,below=1.5cm of f1,label={control}](c){};
@@ -448,7 +448,7 @@ Para llevar este comportamiento a cabo, el estilo arquitectónico propone los co
 \end{figure}
 
 
-Como se puede observar el estilo se basa en tres componentes básicos \textbf{Control}, \textbf{Proceso} y \textbf{Sensores}. Cada uno de ellos trabaja de manera independiente y se comunican mediante dos mecanismos principales, llamadas a procedimientos y tubos (\textit{pipes}). Veamos qué información oculta cada uno:
+Como se puede observar el estilo se basa en tres componentes básicos \textbf{Control}, \textbf{Proceso} y \textbf{Sensores}. Cada uno de ellos trabaja de manera independiente y se comunican mediante dos mecanismos principales, llamadas a procedimientos y pipes. Veamos qué información oculta cada uno:
 
 \begin{itemize}
 \item \textbf{Proceso}: encapsula los mecanismos y dispositivos que permiten modificar las variables manipuladas del proceso físico. Por ejemplo, el hardware y los drivers que permiten ajustar la tensión que se entrega al motor de una rueda. Nótese que este es un componente de software; no debe confundirse con el proceso físico que ocurre en el mundo real.
@@ -458,10 +458,10 @@ Como se puede observar el estilo se basa en tres componentes básicos \textbf{Co
 \item \textbf{Sensores}: encapsulan los dispositivos y mecanismos necesarios para obtener los valores de las variables controladas. Por ejemplo, el funcionamiento del velocímetro.
 \end{itemize}
 
-Además, el estilo cuenta con otro tipo de componente importante: los \textbf{tubos} (\textit{pipes}). Estos se utilizan para transmitir los valores de las variables controladas desde los sensores al algoritmo de control de manera desacoplada. El objetivo es que el \textbf{Control} pueda operar sin conocer directamente los sensores, logrando así una mayor independencia. Comúnmente, cada \textbf{tubo} es un módulo que provee un método para escribir y otro para leer. En este esquema, los \textbf{Sensores} escriben los valores obtenidos del entorno físico, y el \textbf{Control} los recupera utilizando el método de lectura del \textbf{tubo}.
+Además, el estilo cuenta con otro tipo de componente importante: los \textbf{pipes}. Estos módulos se utilizan para transmitir los valores de las variables controladas desde los sensores al algoritmo de control de manera desacoplada. El objetivo es que el \textbf{Control} pueda operar sin conocer directamente los sensores, logrando así una mayor independencia. Comúnmente, cada \textbf{pipe} es un módulo que provee un método para escribir y otro para leer. En este esquema, los \textbf{Sensores} escriben los valores obtenidos del entorno físico, y el \textbf{Control} los recupera utilizando el método de lectura del \textbf{pipe}.
 
 
-La ventaja de este estilo arquitectónico es que brinda un enfoque modular con independencia entre componentes. Por ejemplo, un sensor emite información colocándola en un tubo sin conocer al destinatario. Esto permite que los sensores puedan ser modificados o reemplazados sin afectar al controlador, así como agregar nuevos sensores. De manera similar, existe una separación clara entre el algoritmo de control, que realiza los cálculos para alcanzar los valores de referencia, y el proceso, que se encarga de aplicar dichos cálculos. Este desacople permite que cambios en el algoritmo de control no impacten directamente en el proceso y viceversa. En conclusión se facilita la incorporación de nuevos sensores, actualizaciones en el algoritmo de control y cambios en el hardware, promoviendo flexibilidad y escalabilidad.
+La ventaja de este estilo arquitectónico es que brinda un enfoque modular con independencia entre componentes. Por ejemplo, un sensor emite información colocándola en un pipe sin conocer al destinatario. Esto permite que los sensores puedan ser modificados o reemplazados sin afectar al controlador, así como agregar nuevos sensores. De manera similar, existe una separación clara entre el algoritmo de control, que realiza los cálculos para alcanzar los valores de referencia, y el proceso, que se encarga de aplicar dichos cálculos. Este desacople permite que cambios en el algoritmo de control no impacten directamente en el proceso y viceversa. En conclusión se facilita la incorporación de nuevos sensores, actualizaciones en el algoritmo de control y cambios en el hardware, promoviendo flexibilidad y escalabilidad.
 
 
 
@@ -470,7 +470,7 @@ La ventaja de este estilo arquitectónico es que brinda un enfoque modular con i
 
 Parnas en \cite{Parnas1972} establece que desacoplar se refiere a la idea de reducir la dependencia entre módulos en un sistema de software. Un sistema está acoplado cuando los cambios en un módulo requieren modificaciones en otros módulos. Desacoplar significa diseñar los módulos de manera que puedan funcionar y cambiar independientemente.
 
-A lo largo de los ejemplos del documento, veremos repetidas veces el uso de la noción de \textit{orden} o \textit{comando}. Cada vez que sea nombrado haremos referencia a la aplicación de un patrón de diseño de Gamma \cite{Gamma:1995:DPE:186897}, llamdo \textit{Command} \ref{anexoCommand}. Este patrón es el que más veces se aplicó en el trabajo del robot desmalezador \cite{paperPomponio}, por lo que es importante conocerlo.
+A lo largo de los ejemplos del documento, veremos repetidas veces el uso de la noción de \textit{orden} o \textit{comando}. Cada vez que sea nombrado haremos referencia a la aplicación de un patrón de diseño de Gamma \cite{Gamma:1995:DPE:186897}, llamado \textit{Command} \ref{anexoCommand}. Este patrón es el que más veces se aplicó en el trabajo del robot desmalezador \cite{paperPomponio}, por lo que es importante conocerlo.
 
 La función principal que cumple este patrón es la de desacoplar el módulo que invoca una orden, la orden en sí y aquel que sabe como llevarla a cabo. En particular, este patrón puede ser utilizado para reemplazar las \textit{callbacks} entre módulos. Es común utilizar \textit{callbacks} para mantener los niveles de abstracción, en donde módulos de bajo nivel de abstracción desconocen la existencia de módulos más abstractos.
 
@@ -518,7 +518,7 @@ ejecutar()
     \item \Invocador: le pide a la \Orden que ejecute la acción.
     \item \Orden: declara la interfaz para ejecutar una acción.
     \item \OrdenConcreta: implementa el método ejecución el cual se encarga de llamar a el o los métodos del \Receptor con el objetivo de llevar a cabo la acción.
-    \item \Receptor: cualquier módulo sobre la cual se realiza la acción.
+    \item \Receptor: cualquier módulo sobre el cual se realiza la acción.
 \end{itemize}
 
 Como objetivo fundamental, buscamos no tener que modificar la implementación del módulo invocador en caso de un cambio en el módulo que se encarga de realizar las tareas. Además, se le quita la responsabilidad de saber exactamente qué acciones realizar para llevar a cabo un procedimiento particular. Por ejemplo, un módulo necesita que otro se inicie, pero este último para hacerlo requiere que se invoque una serie de sus métodos de manera ordenada. Si se lo hace de la forma clásica, el primer módulo debe ajustar su implementación al segundo. En cambio, con una orden se mueve la responsabilidad a un nuevo módulo.
@@ -529,7 +529,7 @@ Al encapsular cada solicitud de una operación dentro de un módulo, el patrón 
 
 \declareCMod{Motor}
 \declareAMod{Orden}
-\declareCMod{MotorGirarIzq}
+\declareCMod{MotorIniciarGiroIzq}
 \declareCMod{Controller}
 
 \begin{figure}[H]
@@ -538,11 +538,6 @@ Al encapsular cada solicitud de una operación dentro de un módulo, el patrón 
 \scalebox{.90}{
 \begin{tikzpicture}\sf
 \umlsimpleclass[]{Controller}
-\umlclass[right=2cm of Controller]{MotorGirarIzq}
-{}
-{
-ejecutar()
-}
 \umlclass[below=1cm of Controller]{Motor}
 {}
 {
@@ -552,15 +547,21 @@ disable() \\
 enable() \\
 pulse()
 }
+\umlclass[right=2cm of Motor]{MotorGirarIzq}
+{}
+{
+ejecutar()
+}
 
-\umlnote[below=1cm of MotorGirarIzq]{MotorIniciarGiroIzq}{
+
+\umlnote[below=1cm of MotorGirarIzq]{MotorGirarIzq}{
 ejecutar() \{ \\
 \ \ \ \ motor.enable() \\
 \ \ \ \ motor.left() \\
 \}
 }
 
-\umlclass[above=1.3cm of MotorIniciarGiroIzq,type=abstract]{Orden}
+\umlclass[above=1.3cm of MotorGirarIzq,type=abstract]{Orden}
 {}
 {
 \umlvirt{ejecutar()}
@@ -568,8 +569,8 @@ ejecutar() \{ \\
 
 
 \umluniaggreg[geometry=|-]{Controller}{Orden}
-\umlinherit{MotorIniciarGiroIzq}{Orden}
-\umluniassoc[geometry=-|-]{MotorIniciarGiroIzq}{Motor}
+\umlinherit{MotorGirarIzq}{Orden}
+\umluniassoc[geometry=-|-]{MotorGirarIzq}{Motor}
 
 \end{tikzpicture}
 }
@@ -590,7 +591,7 @@ ejecutar() \{ \\
 }
 
 \end{figure}
-Un módulo \Controller, necesita manejar un \gls{pasoapaso} representado en el diseño por el módulo \Motor. Para hacerlo se deben ejecutar una serie de métodos de la interfaz del \Motor. En particular, primero se debe habilitar el giro del motor llamando al método \verb|enable| y luego configurar el sentido de giro con el método \verb|left| o \verb|right| (izquierda o derecha). Tradicionalmente, esto sería realizado desde el módulo \Controller agregando el código en el método \verb|control()| de este (ver ejemplo en Código \ref{notCommand}), provocando así, un fuerte acoplamiento entre \Controller y \Motor. Esto es, ante cualquier cambio de la interfaz de \Motor, se debe actualizar la implementación del módulo \Controller, es decir, hay que modificar dos módulos y como dijimos el sistema debe estar cerrado a cambios y abierto a extensiones. Reduciendo al mínimo la modificación de código existente lo que podría traer como resultado la introducción de errores.
+Un módulo \Controller, necesita manejar un \gls{pasoapaso} representado en el diseño por el módulo \Motor. Para hacerlo se deben ejecutar una serie de métodos de la interfaz del \Motor. En particular, primero se debe habilitar el giro del motor llamando al método \verb|enable| y luego configurar el sentido de giro con el método \verb|left| o \verb|right| (izquierda o derecha). Tradicionalmente, esto sería realizado desde el módulo \Controller agregando el código en el método \verb|control()| de este (ver ejemplo en Código \ref{notCommand}), provocando así, un fuerte acoplamiento entre \Controller y \Motor. Esto es, ante cualquier cambio de la interfaz de \Motor, se debe actualizar la implementación del módulo \Controller, es decir, habría que modificar dos módulos pero como dijimos, el sistema debe estar cerrado a cambios y abierto a extensiones, reduciendo al mínimo la modificación de código existente porque esto es algo que podría traer como resultado la introducción de errores.
 
 
 \begin{lstlisting}[label={notCommand}, caption=Ejemplo de implementación sin usar el patrón \textit{Command}.]

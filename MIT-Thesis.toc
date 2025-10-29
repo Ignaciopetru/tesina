@@ -6,7 +6,7 @@
 \contentsline {chapter}{\numberline {2}Estado del arte}{17}{chapter.2}%
 \contentsline {chapter}{\numberline {3}Sistemas embebidos}{23}{chapter.3}%
 \contentsline {section}{\numberline {3.1}Definición}{23}{section.3.1}%
-\contentsline {section}{\numberline {3.2}Interrupciones}{25}{section.3.2}%
+\contentsline {section}{\numberline {3.2}Interrupciones}{26}{section.3.2}%
 \contentsline {section}{\numberline {3.3}Sistemas Embebidos de Control Robótico}{27}{section.3.3}%
 \contentsline {chapter}{\numberline {4}Ingeniería de Software}{29}{chapter.4}%
 \contentsline {section}{\numberline {4.1}Definiciones}{29}{section.4.1}%
@@ -16,7 +16,7 @@
 \contentsline {section}{\numberline {4.5}Arquitectura de Software}{34}{section.4.5}%
 \contentsline {section}{\numberline {4.6}Documentación}{34}{section.4.6}%
 \contentsline {chapter}{\numberline {5}Soluciones útiles}{39}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Un estilo arquitectonico para sistemas embebidos}{39}{section.5.1}%
+\contentsline {section}{\numberline {5.1}Un estilo arquitectónico para sistemas embebidos}{39}{section.5.1}%
 \contentsline {section}{\numberline {5.2}Un patrón muy conveniente para sistemas embebidos}{42}{section.5.2}%
 \contentsline {subsubsection}{\numberline {5.2.0.1}Ejemplo}{44}{subsubsection.5.2.0.1}%
 \contentsline {chapter}{\numberline {6}Problemas comunes}{47}{chapter.6}%

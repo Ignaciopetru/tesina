@@ -88,13 +88,15 @@ El patrón encapsula una solicitud como un módulo, permitiendo parametrizar cli
 \begin{itemize}
 \item Parametrizar objetos con una acción a realizar. Esta parametrización puede expresarse en un lenguaje procedimental mediante una función de \gls{callback}, es decir, una función registrada para ser llamada posteriormente. Los comandos representan una solución orientada a objetos que reemplaza los \glspl{callback}.
 
-\item Especificar, encolar y ejecutar solicitudes en diferentes momentos. Un módulo \textbf{Command} puede tener una vida útil independiente de la solicitud original. Si el receptor de una solicitud puede representarse de forma independiente del espacio de direcciones, puedes transferir un objeto \textbf{Command} a otro proceso y ejecutar la solicitud allí.
+\declareCMod{Command}
 
-\item Soportar la funcionalidad de deshacer (``undo''). El método \textbf{Execute} del \textbf{Command} puede almacenar el estado necesario para revertir sus efectos. La interfaz del \textbf{Command} debe incluir una operación \textbf{Unexecute} para revertir los efectos de una ejecución previa. Los comandos ejecutados se almacenan en una lista de historial, lo que permite deshacer y rehacer a múltiples niveles navegando hacia adelante y hacia atrás en la lista mientras se llaman a \textbf{Unexecute} y \textbf{Execute}.
+\item Especificar, encolar y ejecutar solicitudes en diferentes momentos. Un módulo \Command puede tener una vida útil independiente de la solicitud original. Si el receptor de una solicitud puede representarse de forma independiente del espacio de direcciones, puedes transferir un objeto \Command a otro proceso y ejecutar la solicitud allí.
 
-\item Registrar cambios para que puedan replicarse en caso de una falla del sistema. Al ampliar la interfaz del \textbf{Command} con operaciones de carga y almacenamiento, puedes mantener un registro persistente de los cambios. Recuperar un sistema tras una falla implica recargar los comandos registrados desde el disco y re-ejecutarlos mediante la operación \textbf{Execute}.
+\item Soportar la funcionalidad de deshacer (``undo''). El método \textbf{Execute} del \Command puede almacenar el estado necesario para revertir sus efectos. La interfaz del \Command debe incluir una operación \textbf{Unexecute} para revertir los efectos de una ejecución previa. Los comandos ejecutados se almacenan en una lista de historial, lo que permite deshacer y rehacer a múltiples niveles navegando hacia adelante y hacia atrás en la lista mientras se llaman a \textbf{Unexecute} y \textbf{Execute}.
 
-\item Estructurar un sistema en torno a operaciones de alto nivel basadas en operaciones primitivas. Esta estructura es común en sistemas de información que admiten transacciones. Una transacción encapsula un conjunto de cambios a los datos. El patrón \textbf{Command} proporciona una forma de modelar transacciones, ya que los comandos tienen una interfaz común, lo que permite invocar todas las transacciones de la misma manera. Además, el patrón facilita la extensión del sistema con nuevas transacciones.
+\item Registrar cambios para que puedan replicarse en caso de una falla del sistema. Al ampliar la interfaz del \Command con operaciones de carga y almacenamiento, puedes mantener un registro persistente de los cambios. Recuperar un sistema tras una falla implica recargar los comandos registrados desde el disco y re-ejecutarlos mediante la operación \textbf{Execute}.
+
+\item Estructurar un sistema en torno a operaciones de alto nivel basadas en operaciones primitivas. Esta estructura es común en sistemas de información que admiten transacciones. Una transacción encapsula un conjunto de cambios a los datos. El patrón \textit{Command} proporciona una forma de modelar transacciones, ya que los comandos tienen una interfaz común, lo que permite invocar todas las transacciones de la misma manera. Además, el patrón facilita la extensión del sistema con nuevas transacciones.
 \end{itemize}
 
 
@@ -257,7 +259,7 @@ Define un módulo que encapsula cómo interactúa un conjunto de módulos. Fomen
 \begin{itemize}
 \item \Mediador Define una interfaz para comunicarse con los módulos Colega.
 \item \MediadorConcreto Implementa un comportamiento cooperativo coordinando los módulos Colega. Conoce y mantiene a sus colegas.
-\item \Colega Conoce a su objeto Mediator y se comunica con sé siempre que, de otra forma, se habría comunicado con otro Colega.
+\item \Colega Conoce a su módulo \Mediador y se comunica con él en lugar de hacerlo con otros módulos \Colega.
 \end{itemize}
 
 \subsection*{Estructura}
@@ -416,16 +418,16 @@ Este patrón ofrece flexibilidad, seguridad y eficiencia en la gestión de inter
 \subsection*{Participantes}
 \declareCMod{Proxy}
 \declareCMod{Sujeto}
-\declareCMod{RealSubject}
+\declareCMod{SujetoReal}
 
 \begin{itemize}
-\item \Proxy Mantiene una referencia que permite al proxy acceder al sujeto real. El Proxy puede referirse a un \Sujuteo si las interfaces de \SujetoRea y \Sujeto son las mismas.
+\item \Proxy Mantiene una referencia que permite al proxy acceder al sujeto real. El Proxy puede referirse a un \Sujeto si las interfaces de \SujetoReal y \Sujeto son las mismas.
 Proporciona una interfaz idéntica a la de \Sujeto, de manera que un proxy puede ser sustituido por el sujeto real.
 Controla el acceso al sujeto real y puede ser responsable de crearlo y eliminarlo.
 
-\item \Sujeto Define la interfaz común para \SujetoReal y \textbf{Proxy}, de modo que un \Proxy se pueda usar en cualquier lugar donde se espere un \SujetoReal.
+\item \Sujeto Define la interfaz común para \SujetoReal y \Proxy, de modo que un \Proxy se pueda usar en cualquier lugar donde se espere un \SujetoReal.
 
-\item \RealSubject Define el objeto real que el proxy representa.
+\item \SujetoReal Define el objeto real que el proxy representa.
 
 \end{itemize}
 
@@ -501,9 +503,9 @@ Proporcionar un modo de acceder secuencialmente a elementos de un módulo sin ex
 \begin{itemize}
 \item \Iterador Define una interfaz para recorrer los elementos y acceder a ellos.
 
-\item \IteradorConcreto Implementa la interfaz de \Iterator.
+\item \IteradorConcreto Implementa la interfaz de \Iterador.
 
-\item \Agregado Define una interfaz para crear una instancia de \Iterator
+\item \Agregado Define una interfaz para crear una instancia de \Iterador
 
 \item \AgregadoConcreto Implementa la interfaz de Agregado.
 
