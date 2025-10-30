@@ -259,6 +259,13 @@ metodo2(): Tipo\\
 \umldep{A}{B}
 \end{tikzpicture} & {\modFCFont A} crea uno o más elementos de tipo {\modFCFont B}.\\\hline
 &\\
+&\\
+\begin{tikzpicture}\sf
+\umlsimpleclass{A}
+\umlsimpleclass[right=1cm of A]{B}
+\umluniassoc{A}{B}
+\end{tikzpicture} & {\modFCFont A} invoca algun método de {\modFCFont B}.\\\hline
+&\\
 \begin{tikzpicture}\sf
 \umlsimpleclass{A}
 \umlnote[right= 1cm of A, width=1cm]{A}{ B}
@@ -346,11 +353,27 @@ Siguiendo los pasos descriptos, el sistema leerá primero el valor de velocidad 
 Para llevar este comportamiento a cabo, el estilo arquitectónico propone los componentes de software que se muestran en la Figura \ref{fig:arqCtrlRobot}.
 
 
+
+
+
+
+
+Como se puede observar el estilo se basa en tres componentes básicos \textbf{Control}, \textbf{Proceso} y \textbf{Sensores}. Cada uno de ellos trabaja de manera independiente y se comunican mediante dos mecanismos principales, llamadas a procedimientos y pipes. Veamos qué información oculta cada uno:
+
+\begin{itemize}
+\item \textbf{Proceso}: encapsula los mecanismos y dispositivos que permiten modificar las variables manipuladas del proceso físico. Por ejemplo, el hardware y los drivers que permiten ajustar la tensión que se entrega al motor de una rueda. Nótese que este es un componente de software; no debe confundirse con el proceso físico que ocurre en el mundo real.
+
+\item \textbf{Control}: encapsula el algoritmo que decide cómo modificar las variables manipuladas para que las variables controladas alcancen los valores de referencia deseados. Siguiendo el ejemplo planteado anteriormente, oculta el algoritmo que, a partir de la velocidad deseada y la medida por el velocímetro, determina cuál es la tensión que debe aplicarse al motor para alcanzar el valor requerido.
+
+\item \textbf{Sensores}: encapsulan los dispositivos y mecanismos necesarios para obtener los valores de las variables controladas. Por ejemplo, el funcionamiento del velocímetro.
+\end{itemize}
+
 \begin{figure}[H]
 \caption{Diagrama de la arquitectura control de procesos}
 \label{fig:arqCtrlRobot}
 \vspace{0.5cm}
 \centering
+\scalebox{0.90}{
 \begin{tikzpicture}\hypertarget{fig:arqCtrlRobot}{}
 
 \tikzstyle{moduloL}=[minimum width=3cm, minimum height=1.5cm,inner sep=2mm,above right,draw,align=center, font=\scshape] 
@@ -445,18 +468,8 @@ Para llevar este comportamiento a cabo, el estilo arquitectónico propone los co
  
 \node[supest, fit=(f11)(f2)(f32)(f42)(c)(p)]{};
 \end{tikzpicture}
+}
 \end{figure}
-
-
-Como se puede observar el estilo se basa en tres componentes básicos \textbf{Control}, \textbf{Proceso} y \textbf{Sensores}. Cada uno de ellos trabaja de manera independiente y se comunican mediante dos mecanismos principales, llamadas a procedimientos y pipes. Veamos qué información oculta cada uno:
-
-\begin{itemize}
-\item \textbf{Proceso}: encapsula los mecanismos y dispositivos que permiten modificar las variables manipuladas del proceso físico. Por ejemplo, el hardware y los drivers que permiten ajustar la tensión que se entrega al motor de una rueda. Nótese que este es un componente de software; no debe confundirse con el proceso físico que ocurre en el mundo real.
-
-\item \textbf{Control}: encapsula el algoritmo que decide cómo modificar las variables manipuladas para que las variables controladas alcancen los valores de referencia deseados. Siguiendo el ejemplo planteado anteriormente, oculta el algoritmo que, a partir de la velocidad deseada y la medida por el velocímetro, determina cuál es la tensión que debe aplicarse al motor para alcanzar el valor requerido.
-
-\item \textbf{Sensores}: encapsulan los dispositivos y mecanismos necesarios para obtener los valores de las variables controladas. Por ejemplo, el funcionamiento del velocímetro.
-\end{itemize}
 
 Además, el estilo cuenta con otro tipo de componente importante: los \textbf{pipes}. Estos módulos se utilizan para transmitir los valores de las variables controladas desde los sensores al algoritmo de control de manera desacoplada. El objetivo es que el \textbf{Control} pueda operar sin conocer directamente los sensores, logrando así una mayor independencia. Comúnmente, cada \textbf{pipe} es un módulo que provee un método para escribir y otro para leer. En este esquema, los \textbf{Sensores} escriben los valores obtenidos del entorno físico, y el \textbf{Control} los recupera utilizando el método de lectura del \textbf{pipe}.
 
@@ -485,7 +498,7 @@ En la Figura \ref{commandEst} podemos observar la estructura de módulos del mis
 \caption{Estructura del patrón \textit{Command}}
 \label{commandEst}
 \begin{center}
-\scalebox{.90}{
+\scalebox{.85}{
 \begin{tikzpicture}\sf
 \umlsimpleclass[]{Invocador}
 \umlclass[right=2cm of Invocador,type=abstract]{Orden}
@@ -525,17 +538,40 @@ Como objetivo fundamental, buscamos no tener que modificar la implementación de
 
 Al encapsular cada solicitud de una operación dentro de un módulo, el patrón permite que los módulos que invocan acciones no necesiten conocer los detalles de implementación de los módulos que las ejecutan. Esto reduce significativamente las dependencias y hace que el sistema sea más fácil de mantener, ya que cada módulo se concentra en su propia responsabilidad, sin acoplarse a los detalles del resto de módulos. Esta estructura es particularmente útil cuando se necesita modificar o añadir funcionalidades de manera frecuente. Al mismo tiempo, los comandos encapsulados pueden almacenarse, reutilizarse y combinarse en secuencias, lo que facilita la implementación de operaciones complejas que se repiten o que requieren ser acumuladas para un procesamiento posterior. Por otro lado, como la orden es un módulo puede ser extendido para implementar múltiples funcionalidades, como deshacer operaciones o registrar cambios. 
 
-\subsubsection{Ejemplo}
-
 \declareCMod{Motor}
 \declareAMod{Orden}
 \declareCMod{MotorIniciarGiroIzq}
 \declareCMod{Controller}
+\subsubsection*{Ejemplo}
+Un módulo \Controller, necesita manejar un \gls{pasoapaso} representado en el diseño por el módulo \Motor. Para hacerlo se deben ejecutar una serie de métodos de la interfaz del \Motor. En particular, primero se debe habilitar el giro del motor llamando al método \verb|enable| y luego configurar el sentido de giro con el método \verb|left| o \verb|right| (izquierda o derecha). Tradicionalmente, esto sería realizado desde el módulo \Controller agregando el código en el método \verb|control()| de este (ver ejemplo en Código \ref{notCommand}), provocando así, un fuerte acoplamiento entre \Controller y \Motor. Esto es, ante cualquier cambio de la interfaz de \Motor, se debe actualizar la implementación del módulo \Controller, es decir, habría que modificar dos módulos pero como dijimos, el sistema debe estar cerrado a cambios y abierto a extensiones, reduciendo al mínimo la modificación de código existente porque esto es algo que podría traer como resultado la introducción de errores.
+
+
+\begin{lstlisting}[label={notCommand}, caption=Ejemplo de implementación sin usar el patrón \textit{Command}.]
+Controller::control() {
+    ...
+    motor.enable()
+    motor.left()
+    motor.pulse()
+    ... 
+}
+\end{lstlisting}
+
+
+
+
+Para aplicar el patrón \textit{Command} se debe crear el módulo heredero de \Orden que representa el comando en cuestión, en este caso, \MotorIniciarGiro. Este encapsula cómo deben invocarse los métodos del módulo \Motor para que este realice un paso de giro hacia la izquierda. Por lo tanto, \Controller invocará el método ejecutar de \MotorIniciarGiro para realizar dicha acción.
+
+Los problemas del diseño tradicional se solucionan al aplicar este patrón. Se logra desacoplar al \Motor del \Controller: los posibles cambios en el módulo \Motor afectan solo al módulo \MotorIniciarGiro. El \Controller desconoce cómo se lleva a cabo la acción de girar el motor un paso hacia la izquierda.
+
+En caso de que la interfaz de \Motor cambie por cualquier motivo, se puede crear un nuevo módulo heredado de \Orden, el cual implemente cómo ejecutar la acción de girar a la izquierda sobre el nuevo motor.
+
+Esta estructura de módulo puede observarse en la Figura \ref{basicCommand}, y su correspondiente documentación de aplicacion del patron en la Figura \ref{basicCommandDoc}.
 
 \begin{figure}[H]
 \caption{Ejemplo de aplicación básica del patrón \textit{Command}}
+\label{basicCommand}
 \begin{center}
-\scalebox{.90}{
+\scalebox{.85}{
 \begin{tikzpicture}\sf
 \umlsimpleclass[]{Controller}
 \umlclass[below=1cm of Controller]{Motor}
@@ -575,7 +611,11 @@ ejecutar() \{ \\
 \end{tikzpicture}
 }
 \end{center}
-\scalebox{.90}{
+\end{figure}
+\begin{figure}[H]
+\caption{Documentación de la aplicación del patrón \textit{Command}}
+\label{basicCommandDoc}
+\scalebox{.85}{
 \begin{pattern}[]{Orden para controlar un motor paso a paso}{Algorithm}{idFigAlg}
 \based{Orden (Command)}
 \why{\textbf{Cambios previstos}: Se pueden agregar o modificar órdenes.
@@ -591,23 +631,7 @@ ejecutar() \{ \\
 }
 
 \end{figure}
-Un módulo \Controller, necesita manejar un \gls{pasoapaso} representado en el diseño por el módulo \Motor. Para hacerlo se deben ejecutar una serie de métodos de la interfaz del \Motor. En particular, primero se debe habilitar el giro del motor llamando al método \verb|enable| y luego configurar el sentido de giro con el método \verb|left| o \verb|right| (izquierda o derecha). Tradicionalmente, esto sería realizado desde el módulo \Controller agregando el código en el método \verb|control()| de este (ver ejemplo en Código \ref{notCommand}), provocando así, un fuerte acoplamiento entre \Controller y \Motor. Esto es, ante cualquier cambio de la interfaz de \Motor, se debe actualizar la implementación del módulo \Controller, es decir, habría que modificar dos módulos pero como dijimos, el sistema debe estar cerrado a cambios y abierto a extensiones, reduciendo al mínimo la modificación de código existente porque esto es algo que podría traer como resultado la introducción de errores.
-
-
-\begin{lstlisting}[label={notCommand}, caption=Ejemplo de implementación sin usar el patrón \textit{Command}.]
-Controller::control() {
-    ...
-    motor.enable()
-    motor.left()
-    motor.pulse()
-    ... 
-}
-\end{lstlisting}
-Para aplicar el patrón \textit{Command} se debe crear el módulo heredero de \Orden que representa el comando en cuestión, en este caso, \MotorIniciarGiroIzq. Este encapsula cómo deben invocarse los métodos del módulo \Motor para que este realice un paso de giro hacia la izquierda. Por lo tanto, \Controller invocará el método ejecutar de \MotorIniciarGiroIzq para realizar dicha acción.
-
-Los problemas del diseño tradicional se solucionan al aplicar este patrón. Se logra desacoplar al \Motor del \Controller: los posibles cambios en el módulo \Motor afectan solo al módulo \MotorIniciarGiroIzq. El \Controller desconoce cómo se lleva a cabo la acción de girar el motor un paso hacia la izquierda.
-
-En caso de que la interfaz de \Motor cambie por cualquier motivo, se puede crear un nuevo módulo heredado de \Orden, el cual implemente cómo ejecutar la acción de girar a la izquierda sobre el nuevo motor.
+\newpage
 
 Como se mencionó, otro uso interesante del patrón surge cuando se define una cierta estructura conceptual en el sistema. Esta puede responder a la naturaleza de la aplicación. Por ejemplo, en un sistema de control, se puede definir que los módulos que toman decisiones sobre el control sean quienes invoquen a los sensores para obtener información, generando así una jerarquía en la que los sensores no deben invocar métodos de módulos superiores. En caso de ser necesaria la comunicación en sentido inverso, se puede utilizar el patrón \textit{Command} para reemplazar el uso de \textit{callbacks}.
 

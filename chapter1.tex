@@ -1720,23 +1720,32 @@ Este es otro ejemplo en el que el patrón \textit{Decorator} permite la adición
 
 En un sistema robótico embebido suelen ejecutarse múltiples tareas para alcanzar un determinado objetivo, ya sea que se haya elegido seguir un estilo arquitectónico del tipo ``Control de procesos'' (ver Sección \ref{arqControlProc}) o no. Por lo general, es necesario verificar la información recibida a través de sensores y otras fuentes (comunicación serial, web, etc.), realizar cómputos y ejecutar acciones con los actuadores presentes en el sistema, todo ello en tiempo real.
 
-Una implementación simple de este comportamiento consiste en crear funciones para cada parte del proceso y llamarlas en un \textit{loop} desde la función \textit{main}. Si es necesario, se pueden añadir tiempos de espera entre cada ejecución mediante \textit{sleeps}. La principal desventaja de este enfoque es que los sistemas robóticos son de tiempo real; por ejemplo, pueden perder, por ejemplo, \textit{inputs} de sensores si no se los maneja adecuadamente. Además, los tiempos de espera son bloqueantes, por lo que se desperdicia capacidad de cómputo.
 
-Una estrategia para mejorar estos puntos consiste en utilizar las interrupciones del microcontrolador, lo que permite atender las señales de entrada y los eventos del entorno en tiempo real. Esto representa una mejora, pero aun así puede introducir ciertos problemas si no se gestiona correctamente. Recordemos que, al atender una interrupción, el procesamiento del resto del sistema queda bloqueado hasta que esta finaliza.
+Una implementación simple de este comportamiento consiste en crear funciones para cada parte del proceso y llamarlas en un \textit{loop} desde la función \textit{main}. Si es necesario, se pueden añadir tiempos de espera entre cada ejecución mediante \textit{sleeps}. La principal desventaja de este enfoque es que los sistemas robóticos son de tiempo real; por ejemplo, pueden perder \textit{inputs} de sensores si no se las maneja adecuadamente. Además, los tiempos de espera son bloqueantes, por lo que se desperdicia capacidad de cómputo.
+
+
+Una estrategia para mejorar estos puntos consiste en utilizar las interrupciones del \gls{MCU} (ver Sección \ref{secInterrupciones}), lo que permite atender las señales de entrada y los eventos del entorno en tiempo real. Esto representa una mejora, pero aun así puede introducir ciertos problemas si no se gestiona correctamente. Recordemos que, al atender una interrupción, el procesamiento del resto del sistema queda bloqueado hasta que esta finaliza.
+
 
 Para evitar que las interrupciones bloqueen la ejecución del programa principal, se puede implementar un sistema de ejecución diferida de interrupciones. Básicamente, esto consiste en registrar qué interrupciones fueron recibidas y ejecutarlas en un momento específico, sin bloquear las porciones críticas del sistema. De este modo, se logra atender eventos externos, como señales de hardware o entrada de datos, sin retrasar ni afectar la ejecución principal.
 
+
 Una de las formas en que tradicionalmente se implementa este sistema es mediante el uso de banderas. Cada bandera representa si una interrupción fue recibida o no. Es decir, cuando el manejador de una interrupción es invocado, marca en una bandera que dicha interrupción ha sido recibida y debe ejecutarse en algún momento. Luego, el programa revisa cada una de las banderas y, en caso de que alguna esté activa, la apaga y ejecuta el código correspondiente a esa interrupción.
 
-Sin embargo, esta solución presenta varios inconvenientes desde el punto de vista del diseño para el cambio. Al utilizar banderas, el código principal debe verificar cada una mediante sentencias \textit{if}, como se muestra en el Código \ref{codigoInt}. Si se necesita agregar nuevas interrupciones, la lista de condiciones \textit{if} crecerá, generando código extenso y difícil de mantener, como se observa en el Código \ref{codigoIntMult}.
+
+Sin embargo, esta solución presenta varios inconvenientes desde el punto de vista del diseño para el cambio. Al utilizar banderas, el código principal debe verificar cada una mediante sentencias \textit{if}, como se muestra en el Código \ref{codigoInt}. Si se necesita agregar nuevas interrupciones, la lista de condiciones \textit{if} crecerá, generando código extenso y difícil de mantener, como se observa en el Código \ref{codigoIntMult}. Además, debe saber qué ejecutar para atender cada interrupción. 
+\newpage
 \begin{lstlisting}[caption=Ejemplo de verificación de bandera de interrupción simple., label=codigoInt]
-# bandera_serial representa la bandera que indica si una interrupcion 
-# proveniente del puerto serie fue recibida.
+# banderaSerial representa la bandera que indica si una interrupcion 
+# proveniente del puerto serie fue recibida. Es prendida en el manejador
+# de la interrupcion.
+bool banderaSerial = False
+
 loop() {
    ...
    if (banderaSerial)
        banderaSerial = False
-       ejecutarIntSerial()
+       ...ejecutar interrupcion serial...
 }
 \end{lstlisting}
 
@@ -1745,22 +1754,23 @@ loop() {
    ...
    if (banderaSerial)
        banderaSerial = False
-       ejecutarIntSerial()
+       ...ejecutar interrupcion serial...
    if (banderaInt2)
-       banderaSerial = False
-       ejecutarInt2()
+       banderaInt2 = False
+       ...ejecutar interrupcion 2...
    if (banderaInt3)
-       banderaSerial = False
-       ejecutarInt3()
+       banderaInt3 = False
+       ...ejecutar interrupcion 3...
    ...
 }
 \end{lstlisting}
 
-Por otro lado, el uso de variables globales facilita la introducción de errores, ya que no resulta evidente qué impacto tiene cada una de ellas a lo largo del sistema. Además, se genera un acoplamiento innecesario entre el sistema principal (representado por la función \verb|loop| en el ejemplo) y el manejador de la interrupción. Este último activa la bandera y \verb|loop| la apaga. Cualquier modificación en alguno de ellos debe tener en cuenta esta relación implícita, que no resulta clara a simple vista en el código.
+Por otro lado, el uso de variables globales facilita la introducción de errores, ya que no resulta evidente qué impacto tiene cada una de ellas a lo largo del sistema. Además, se genera un acoplamiento innecesario entre el sistema principal (representado por la función \verb|loop| en el ejemplo del Código \ref{codigoIntMult}) y el manejador de la interrupción. Este último activa la bandera y \verb|loop| la apaga. Cualquier modificación en alguno de ellos debe tener en cuenta esta relación implícita, que no resulta clara a simple vista en el código.
 
-\declareCmod{Manejador}
-\declareCmod{Recibida}
-\declareCmod{NoRecibida}
+\declareCMod{Manejador}
+\declareCMod{Recibida}
+\declareCMod{NoRecibida}
+
 Una posible solución, considerando los principios del diseño para el cambio, consiste en encapsular todo el manejo de interrupciones de un tipo determinado dentro de un módulo denominado \Manejador. Este módulo provee tres métodos:
 \begin{itemize}
 \item Uno que se registra en el \gls{MCU} para ser invocado cuando se recibe una interrupción del tipo correspondiente (\verb|manejarInt|).
@@ -1768,9 +1778,13 @@ Una posible solución, considerando los principios del diseño para el cambio, c
 \item Y, finalmente, un método que permite modificar su estado interno (\verb|cambiarEstado|).
 \end{itemize}
 
-\Manejador mantiene un estado interno que puede adoptar dos valores: \textit{Recibida}, si se ha recibido una interrupción del tipo correspondiente y está pendiente de ejecución, o \textit{NoRecibida}, si aún no se ha registrado ninguna. El comportamiento del módulo varía según el estado en que se encuentre.
+\Manejador mantiene un estado interno que puede adoptar dos valores: \textit{Recibida}, si se ha recibido una interrupción del tipo correspondiente y está pendiente de ejecución, o \textit{NoRecibida}, si aún no se ha registrado ninguna. El comportamiento del módulo varía según el estado en que se encuentre. De modo que los clientes de este solo deban realizar dos tareas para gestionar las interrupciones de manera diferida:
+\begin{itemize}
+\item Registrar como manejador de la interrupción el método \verb|manejarInt|, de modo que el \gls{MCU} lo invoque cuando se reciba la interrupción.
+\item Ejecutar el método \verb|ejecutarInt| cuando sea conveniente, para realizar el trabajo asociado a la interrupción en caso de que esta haya sido recibida.
+\end{itemize}
 
-Para diseñar esta solución, se aplica el patrón \textit{State} \ref{anexoState}. De esta forma, se crean dos módulos, uno para cada estado: \Recibida (la interrupción fue recibida pero aún no se ejecutó) y \NoRecibida (aún no se registró). Así, cuando el microcontrolador invoque el método encargado de manejar la interrupción, el estado cambiará a \textit{Recibida}, haciendo que cualquier nueva llamada al manejador retorne inmediatamente. Una vez que el programa principal ejecute la interrupción, el estado volverá a \textit{NoRecibida}, permitiendo el manejo de futuras interrupciones. Del mismo modo, si se invoca el método de ejecución sin que se haya recibido una interrupción, la función retornará rápidamente, evitando procesamiento innecesario.
+Para diseñar esta solución, se aplica el patrón \textit{State} \ref{anexoState}. De esta forma, se crean dos módulos, uno para cada estado: \Recibida (la interrupción fue recibida pero aún no se ejecutó) y \NoRecibida (aún no se registró).Así, cuando el \gls{MCU} invoque el método encargado de manejar la interrupción (\verb|manejarInt|), el estado cambiará a \Recibida, de modo que, si la interrupción se recibe nuevamente, el sistema retornará rápidamente. Una vez que el programa principal ejecute la interrupción mediante \verb|ejecutarInt|, el estado volverá a \NoRecibida, permitiendo el manejo de futuras interrupciones. De manera similar, si el método de ejecución es invocado antes de que se registre una interrupción, la función retornará rápidamente, evitando un procesamiento no válido y garantizando que la ejecución del código ocurra de manera diferida.
 
 La estructura de módulos subyacente a esta solución se presenta en la Figura \ref{estructuraInterrup}, mientras que en la Figura \ref{docStateInt} se muestra la documentación correspondiente al uso del patrón en este ejemplo.
 
@@ -1821,7 +1835,7 @@ NoRecibida(i: Recibida)
 manejarInt(Manejador m) \{\}\\
 ejectuarInt(Manejador m) \{ \\
 \ \ \ \ m.cambiarEstado(noRecibida)\\
-\ \ \ \ ...ejecutar int...\\
+\ \ \ \ ...ejecutar interrupción...\\
 \}
 }
 
@@ -1867,9 +1881,9 @@ ejectuarInt(Manejador m) \{\}
 \end{figure}
 
 
-Con este módulo \Manejador, el programa principal puede delegar la verificación de si se ha recibido o no una interrupción. Solo necesita iterar sobre todos los manejadores de interrupciones y ejecutar el método \verb|ejecutarInt()|. Incluso es posible aplicar el patrón \textit{Iterator} \ref{iterator} para recorrerlos de manera ordenada.
+Con este módulo \Manejador, el programa principal puede delegar la verificación de sí se ha recibido o no una interrupción. Solo necesita iterar sobre todos los manejadores de interrupciones y ejecutar el método \verb|ejecutarInt()|. Incluso es posible aplicar el patrón \textit{Iterator} \ref{iterator} para recorrerlos de manera ordenada.
 
-Al combinar el uso de interrupciones con patrones de diseño como \textit{State}, el sistema embebido de control adquiere una estructura más robusta, modular y mantenible. Se reduce el riesgo de introducir errores asociados al uso de variables globales y se encapsula el manejo del estado de una interrupción dentro de un módulo aislado. De esta forma, se libera al módulo principal de la responsabilidad de decidir cuándo es apropiado ejecutar las interrupciones recibidas, logrando un sistema más claro, extensible y preparado para el cambio.
+Al combinar el uso de interrupciones con patrones de diseño como \textit{State}, el sistema embebido de control adquiere una estructura más robusta, modular y mantenible. Se reduce el riesgo de introducir errores asociados al uso de variables globales y se encapsula el manejo del estado de una interrupción dentro de un módulo aislado. De esta forma, se libera al módulo principal de las responsabilidades de verificar si una interrupción fue recibida y de ejecutar lo referido al manejo de la misma. Logrando un sistema más claro, extensible y preparado para el cambio.
 
 
 
@@ -2645,7 +2659,7 @@ Para esto, debemos definir el iterador, al que llamaremos \Steps, cuya interfaz 
 \caption{Interfaz módulo \Steps.}
 \label{iterator}
 \begin{center}
-\scalebox{.90}{
+\scalebox{.80}{
 \begin{tikzpicture}\sf
 \umlclass[]{Steps}
 {}
@@ -2655,8 +2669,6 @@ siguiente()\\
 elementoActual(): Orden\\
 haTerminado(): Bool\\
 }
-
-
 \end{tikzpicture}
 }
 \end{center}
@@ -2664,7 +2676,7 @@ haTerminado(): Bool\\
 \begin{figure}[H]
 \caption{Documentación de aplicación del patrón \textit{Iterator}.}
 \label{docIterator}
-\scalebox{.85}{
+\scalebox{.80}{
 \begin{pattern}[]{Órdenes a ejecutar para realizar el movimiento requerido.}{Algorithm}{idFigAlg}
 \based{Iterador (Iterator)}
 \why{\textbf{Cambios previstos}: Se pueden agregar, quitar o modificar órdenes pero siempre con la posibilidad de iterar. Además, puede cambiar la estructura de datos subyacente.
@@ -2679,7 +2691,7 @@ haTerminado(): Bool\\
 }
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}
 \caption{Interfaces de las ordenes de ejecución para cada subsistema.}
 \label{orden}
 \begin{center}
@@ -2741,7 +2753,6 @@ ejecutar() \{  \\
 \end{center}
 \end{figure}
 
-\begin{figure}
 \begin{lstlisting}[caption=Ejemplo de implementación del módulo \OrdenRotor,label={ejemploOrdenRotor}]
 ejecutar {
     rotorController.setSetPoint(setPoint)
@@ -2750,10 +2761,9 @@ ejecutar {
     rotorController.control()
 }
 \end{lstlisting}
-\end{figure}
 
 
-\begin{figure}[h]
+\begin{figure}[H]
 \caption{Documentación de la aplicación del patrón \textit{Command} para el desacople de órdenes a ejecutar en cada actuador del brazo en un paso.}
 \label{docCommandSteps}
 \scalebox{.80}{

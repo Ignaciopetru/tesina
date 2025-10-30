@@ -20,53 +20,54 @@
 \addvspace {10\p@ }
 \contentsline {xchapter}{Soluciones útiles}{39}{chapter.5}%
 \contentsline {figure}{\numberline {5.1}{\ignorespaces Diagrama de la arquitectura control de procesos}}{41}{figure.caption.19}%
-\contentsline {figure}{\numberline {5.2}{\ignorespaces Estructura del patrón \textit {Command}}}{43}{figure.caption.20}%
+\contentsline {figure}{\numberline {5.2}{\ignorespaces Estructura del patrón \textit {Command}}}{42}{figure.caption.20}%
 \contentsline {figure}{\numberline {5.3}{\ignorespaces Ejemplo de aplicación básica del patrón \textit {Command}}}{44}{figure.caption.21}%
+\contentsline {figure}{\numberline {5.4}{\ignorespaces Documentación de la aplicación del patrón \textit {Command}}}{44}{figure.caption.22}%
 \addvspace {10\p@ }
 \contentsline {xchapter}{Problemas comunes}{47}{chapter.6}%
-\contentsline {figure}{\numberline {6.1}{\ignorespaces Conexionado de la placa de control DRV8838.}}{48}{figure.caption.22}%
-\contentsline {figure}{\numberline {6.2}{\ignorespaces Interfaz \mbox {\sffamily MotorDC}\xspace }}{54}{figure.caption.24}%
-\contentsline {figure}{\numberline {6.3}{\ignorespaces Módulo \mbox {\sffamily MotorDC}\xspace abstracto y estructura de herencia.}}{56}{figure.caption.25}%
-\contentsline {figure}{\numberline {6.4}{\ignorespaces Display 7 segmentos 4 digitos}}{57}{figure.caption.26}%
-\contentsline {figure}{\numberline {6.5}{\ignorespaces Diseño tradicional del uso de la librería del fabricante.}}{58}{figure.caption.27}%
-\contentsline {figure}{\numberline {6.6}{\ignorespaces Introducción del nuevo módulo abstracto \mbox {\itshape \sffamily Display}\xspace .}}{59}{figure.caption.28}%
-\contentsline {figure}{\numberline {6.7}{\ignorespaces Diseño aplicando el patrón \textit {Adapter}.}}{60}{figure.caption.29}%
-\contentsline {figure}{\numberline {6.8}{\ignorespaces Documentación de la aplicación del patrón \textit {Adapter} al ejemplo del display.}}{60}{figure.caption.30}%
-\contentsline {figure}{\numberline {6.9}{\ignorespaces Estructura componentes para la lectura de un sensor activo.}}{62}{figure.caption.31}%
-\contentsline {figure}{\numberline {6.10}{\ignorespaces Ejemplo de la variación de voltaje producida por un sensor de efecto Hall al detectar un cambio del campo magnético. Cada pico de voltaje provoca que el microcontrolador genere una interrupción. Imagen extraída de \blx@tocontentsinit {0}\cite {disenioViejo2}.}}{63}{figure.caption.32}%
-\contentsline {figure}{\numberline {6.11}{\ignorespaces Ejemplo módulos para obtener la información referida a la velocidad.}}{64}{figure.caption.33}%
-\contentsline {figure}{\numberline {6.12}{\ignorespaces Máquina de estados extraída del libro \blx@tocontentsinit {0}\cite {douglass}.}}{68}{figure.caption.34}%
-\contentsline {figure}{\numberline {6.13}{\ignorespaces Módulos participantes del patrón state en el ejemplo del horno microondas.}}{71}{figure.caption.35}%
-\contentsline {figure}{\numberline {6.14}{\ignorespaces Documentación de la aplicación del patrón \textit {State} para el manejo de los estados del microondas.}}{72}{figure.caption.36}%
-\contentsline {figure}{\numberline {6.15}{\ignorespaces Ejemplo de señal de un botón siendo afectada por el fenómeno de rebote, extraída de \blx@tocontentsinit {0}\cite {douglass}.}}{73}{figure.caption.37}%
-\contentsline {figure}{\numberline {6.16}{\ignorespaces Máquina de estados propuesta para el control antirebote.}}{75}{figure.caption.38}%
-\contentsline {figure}{\numberline {6.17}{\ignorespaces Módulos encargados de gestionar el comportamiento del temporizador utilizado en la transición de estados del módulo \mbox {\sffamily Boton}\xspace .}}{75}{figure.caption.39}%
-\contentsline {figure}{\numberline {6.18}{\ignorespaces Diagrama de módulos relacionados al botón.}}{76}{figure.caption.40}%
-\contentsline {figure}{\numberline {6.19}{\ignorespaces Documentación de la aplicación del patrón \textit {State} para el control del estado del botón.}}{77}{figure.caption.41}%
-\contentsline {figure}{\numberline {6.20}{\ignorespaces Interfaz del módulo \mbox {\itshape \sffamily Mecanismo}\xspace .}}{79}{figure.caption.42}%
-\contentsline {figure}{\numberline {6.21}{\ignorespaces Ejemplo de aplicación del patrón \textit {Decorator} \ref {anexoDecorator} para garantizar el cumplimiento de precondiciones.}}{80}{figure.caption.43}%
-\contentsline {figure}{\numberline {6.22}{\ignorespaces Documentación de la aplicación del patrón \textit {Decorator} al caso de verificación de la integridad de la información.}}{81}{figure.caption.44}%
-\contentsline {figure}{\numberline {6.23}{\ignorespaces Interfaz del módulo \mbox {\sffamily Data}\xspace .}}{82}{figure.caption.45}%
-\contentsline {figure}{\numberline {6.24}{\ignorespaces Ejemplo de manejador diferido de interrupciones usando \textit {State}.}}{85}{figure.caption.46}%
-\contentsline {figure}{\numberline {6.25}{\ignorespaces Documentación de la aplicación del patrón \textit {State} para el ejemplo del manejador de interrupciones.}}{85}{figure.caption.47}%
-\contentsline {figure}{\numberline {6.26}{\ignorespaces Diagrama de flujo que explica el comportamiento de la función emergency \blx@tocontentsinit {0}\cite [pág. 82]{disenioViejo1}.}}{88}{figure.caption.48}%
-\contentsline {figure}{\numberline {6.27}{\ignorespaces Esquema del brazo robótico.}}{90}{figure.caption.49}%
-\contentsline {figure}{\numberline {6.28}{\ignorespaces Módulos de un subsistema de control y el componente arquitectónico al que pertenecen.}}{92}{figure.caption.50}%
-\contentsline {figure}{\numberline {6.29}{\ignorespaces Estructura módulo \mbox {\sffamily ControlSeguimiento}\xspace .}}{94}{figure.caption.51}%
-\contentsline {figure}{\numberline {6.30}{\ignorespaces Documentación de la aplicación del patrón \textit {State} en el módulo Control.}}{95}{figure.caption.52}%
-\contentsline {figure}{\numberline {6.31}{\ignorespaces Diagrama de los componentes del sistema brazo robótico.}}{96}{figure.caption.53}%
-\contentsline {figure}{\numberline {6.32}{\ignorespaces Actuadores paso a paso.}}{97}{figure.caption.54}%
-\contentsline {figure}{\numberline {6.33}{\ignorespaces Interfaz módulo \mbox {\sffamily Pinza}\xspace .}}{97}{figure.caption.54}%
-\contentsline {figure}{\numberline {6.34}{\ignorespaces Sensores del brazo robótico.}}{98}{figure.caption.55}%
-\contentsline {figure}{\numberline {6.35}{\ignorespaces Módulo \mbox {\sffamily Timer}\xspace .}}{98}{figure.caption.56}%
-\contentsline {figure}{\numberline {6.36}{\ignorespaces Documentación de la aplicación del patrón \textit {Command} para el desacople de ejecuciones que invoca \mbox {\sffamily Timer}\xspace .}}{99}{figure.caption.57}%
-\contentsline {figure}{\numberline {6.37}{\ignorespaces Módulos que forman parte del patrón \textit {State} que son necesarios para complementar al módulo \mbox {\sffamily RotorCtrl}\xspace .}}{99}{figure.caption.58}%
-\contentsline {figure}{\numberline {6.38}{\ignorespaces Módulo complementario a \mbox {\sffamily RotorCtrl}\xspace .}}{100}{figure.caption.59}%
-\contentsline {figure}{\numberline {6.39}{\ignorespaces Diagrama del módulo \mbox {\sffamily RotorCtrl}\xspace .}}{100}{figure.caption.60}%
-\contentsline {figure}{\numberline {6.40}{\ignorespaces Interfaz módulo \mbox {\sffamily Steps}\xspace .}}{102}{figure.caption.61}%
-\contentsline {figure}{\numberline {6.41}{\ignorespaces Documentación de aplicación del patrón \textit {Iterator}.}}{102}{figure.caption.62}%
-\contentsline {figure}{\numberline {6.42}{\ignorespaces Interfaces de las ordenes de ejecución para cada subsistema.}}{103}{figure.caption.63}%
-\contentsline {figure}{\numberline {6.43}{\ignorespaces Documentación de la aplicación del patrón \textit {Command} para el desacople de órdenes a ejecutar en cada actuador del brazo en un paso.}}{104}{figure.caption.65}%
+\contentsline {figure}{\numberline {6.1}{\ignorespaces Conexionado de la placa de control DRV8838.}}{48}{figure.caption.23}%
+\contentsline {figure}{\numberline {6.2}{\ignorespaces Interfaz \mbox {\sffamily MotorDC}\xspace }}{54}{figure.caption.25}%
+\contentsline {figure}{\numberline {6.3}{\ignorespaces Módulo \mbox {\sffamily MotorDC}\xspace abstracto y estructura de herencia.}}{56}{figure.caption.26}%
+\contentsline {figure}{\numberline {6.4}{\ignorespaces Display 7 segmentos 4 digitos}}{57}{figure.caption.27}%
+\contentsline {figure}{\numberline {6.5}{\ignorespaces Diseño tradicional del uso de la librería del fabricante.}}{58}{figure.caption.28}%
+\contentsline {figure}{\numberline {6.6}{\ignorespaces Introducción del nuevo módulo abstracto \mbox {\itshape \sffamily Display}\xspace .}}{59}{figure.caption.29}%
+\contentsline {figure}{\numberline {6.7}{\ignorespaces Diseño aplicando el patrón \textit {Adapter}.}}{60}{figure.caption.30}%
+\contentsline {figure}{\numberline {6.8}{\ignorespaces Documentación de la aplicación del patrón \textit {Adapter} al ejemplo del display.}}{60}{figure.caption.31}%
+\contentsline {figure}{\numberline {6.9}{\ignorespaces Estructura componentes para la lectura de un sensor activo.}}{62}{figure.caption.32}%
+\contentsline {figure}{\numberline {6.10}{\ignorespaces Ejemplo de la variación de voltaje producida por un sensor de efecto Hall al detectar un cambio del campo magnético. Cada pico de voltaje provoca que el microcontrolador genere una interrupción. Imagen extraída de \blx@tocontentsinit {0}\cite {disenioViejo2}.}}{63}{figure.caption.33}%
+\contentsline {figure}{\numberline {6.11}{\ignorespaces Ejemplo módulos para obtener la información referida a la velocidad.}}{64}{figure.caption.34}%
+\contentsline {figure}{\numberline {6.12}{\ignorespaces Máquina de estados extraída del libro \blx@tocontentsinit {0}\cite {douglass}.}}{68}{figure.caption.35}%
+\contentsline {figure}{\numberline {6.13}{\ignorespaces Módulos participantes del patrón state en el ejemplo del horno microondas.}}{71}{figure.caption.36}%
+\contentsline {figure}{\numberline {6.14}{\ignorespaces Documentación de la aplicación del patrón \textit {State} para el manejo de los estados del microondas.}}{72}{figure.caption.37}%
+\contentsline {figure}{\numberline {6.15}{\ignorespaces Ejemplo de señal de un botón siendo afectada por el fenómeno de rebote, extraída de \blx@tocontentsinit {0}\cite {douglass}.}}{73}{figure.caption.38}%
+\contentsline {figure}{\numberline {6.16}{\ignorespaces Máquina de estados propuesta para el control antirebote.}}{75}{figure.caption.39}%
+\contentsline {figure}{\numberline {6.17}{\ignorespaces Módulos encargados de gestionar el comportamiento del temporizador utilizado en la transición de estados del módulo \mbox {\sffamily Boton}\xspace .}}{75}{figure.caption.40}%
+\contentsline {figure}{\numberline {6.18}{\ignorespaces Diagrama de módulos relacionados al botón.}}{76}{figure.caption.41}%
+\contentsline {figure}{\numberline {6.19}{\ignorespaces Documentación de la aplicación del patrón \textit {State} para el control del estado del botón.}}{77}{figure.caption.42}%
+\contentsline {figure}{\numberline {6.20}{\ignorespaces Interfaz del módulo \mbox {\itshape \sffamily Mecanismo}\xspace .}}{79}{figure.caption.43}%
+\contentsline {figure}{\numberline {6.21}{\ignorespaces Ejemplo de aplicación del patrón \textit {Decorator} \ref {anexoDecorator} para garantizar el cumplimiento de precondiciones.}}{80}{figure.caption.44}%
+\contentsline {figure}{\numberline {6.22}{\ignorespaces Documentación de la aplicación del patrón \textit {Decorator} al caso de verificación de la integridad de la información.}}{81}{figure.caption.45}%
+\contentsline {figure}{\numberline {6.23}{\ignorespaces Interfaz del módulo \mbox {\sffamily Data}\xspace .}}{82}{figure.caption.46}%
+\contentsline {figure}{\numberline {6.24}{\ignorespaces Ejemplo de manejador diferido de interrupciones usando \textit {State}.}}{85}{figure.caption.47}%
+\contentsline {figure}{\numberline {6.25}{\ignorespaces Documentación de la aplicación del patrón \textit {State} para el ejemplo del manejador de interrupciones.}}{86}{figure.caption.48}%
+\contentsline {figure}{\numberline {6.26}{\ignorespaces Diagrama de flujo que explica el comportamiento de la función emergency \blx@tocontentsinit {0}\cite [pág. 82]{disenioViejo1}.}}{88}{figure.caption.49}%
+\contentsline {figure}{\numberline {6.27}{\ignorespaces Esquema del brazo robótico.}}{90}{figure.caption.50}%
+\contentsline {figure}{\numberline {6.28}{\ignorespaces Módulos de un subsistema de control y el componente arquitectónico al que pertenecen.}}{92}{figure.caption.51}%
+\contentsline {figure}{\numberline {6.29}{\ignorespaces Estructura módulo \mbox {\sffamily ControlSeguimiento}\xspace .}}{94}{figure.caption.52}%
+\contentsline {figure}{\numberline {6.30}{\ignorespaces Documentación de la aplicación del patrón \textit {State} en el módulo Control.}}{95}{figure.caption.53}%
+\contentsline {figure}{\numberline {6.31}{\ignorespaces Diagrama de los componentes del sistema brazo robótico.}}{96}{figure.caption.54}%
+\contentsline {figure}{\numberline {6.32}{\ignorespaces Actuadores paso a paso.}}{97}{figure.caption.55}%
+\contentsline {figure}{\numberline {6.33}{\ignorespaces Interfaz módulo \mbox {\sffamily Pinza}\xspace .}}{97}{figure.caption.55}%
+\contentsline {figure}{\numberline {6.34}{\ignorespaces Sensores del brazo robótico.}}{98}{figure.caption.56}%
+\contentsline {figure}{\numberline {6.35}{\ignorespaces Módulo \mbox {\sffamily Timer}\xspace .}}{98}{figure.caption.57}%
+\contentsline {figure}{\numberline {6.36}{\ignorespaces Documentación de la aplicación del patrón \textit {Command} para el desacople de ejecuciones que invoca \mbox {\sffamily Timer}\xspace .}}{99}{figure.caption.58}%
+\contentsline {figure}{\numberline {6.37}{\ignorespaces Módulos que forman parte del patrón \textit {State} que son necesarios para complementar al módulo \mbox {\sffamily RotorCtrl}\xspace .}}{99}{figure.caption.59}%
+\contentsline {figure}{\numberline {6.38}{\ignorespaces Módulo complementario a \mbox {\sffamily RotorCtrl}\xspace .}}{100}{figure.caption.60}%
+\contentsline {figure}{\numberline {6.39}{\ignorespaces Diagrama del módulo \mbox {\sffamily RotorCtrl}\xspace .}}{100}{figure.caption.61}%
+\contentsline {figure}{\numberline {6.40}{\ignorespaces Interfaz módulo \mbox {\sffamily Steps}\xspace .}}{102}{figure.caption.62}%
+\contentsline {figure}{\numberline {6.41}{\ignorespaces Documentación de aplicación del patrón \textit {Iterator}.}}{102}{figure.caption.63}%
+\contentsline {figure}{\numberline {6.42}{\ignorespaces Interfaces de las ordenes de ejecución para cada subsistema.}}{103}{figure.caption.64}%
+\contentsline {figure}{\numberline {6.43}{\ignorespaces Documentación de la aplicación del patrón \textit {Command} para el desacople de órdenes a ejecutar en cada actuador del brazo en un paso.}}{103}{figure.caption.65}%
 \contentsline {figure}{\numberline {6.44}{\ignorespaces Transiciones de estados del \mbox {\sffamily MainController}\xspace }}{104}{figure.caption.66}%
 \contentsline {figure}{\numberline {6.45}{\ignorespaces Diagrama del módulo \mbox {\sffamily MainController}\xspace .}}{105}{figure.caption.67}%
 \contentsline {figure}{\numberline {6.46}{\ignorespaces Documentación de la aplicación del patrón \textit {State} para el manejo de ejecución de pasos completos.}}{106}{figure.caption.68}%
